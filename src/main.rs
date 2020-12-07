@@ -12,6 +12,10 @@ mod vector;
 pub use vector::Vector3D;
 
 mod colour;
+pub use colour::Colour;
+
+mod canvas;
+pub use canvas::*;
 
 fn main() {
     println!("Hello, world!");

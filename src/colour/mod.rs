@@ -7,6 +7,12 @@ mod tests;
 pub struct Colour(f64, f64, f64);
 
 impl Colour {
+    pub const BLACK: Colour = Colour::new(0.0, 0.0, 0.0);
+    pub const WHITE: Colour = Colour::new(1.0, 1.0, 1.0);
+    pub const RED: Colour = Colour::new(1.0, 0.0, 0.0);
+    pub const GREEN: Colour = Colour::new(0.0, 1.0, 0.0);
+    pub const BLUE: Colour = Colour::new(0.0, 0.0, 1.0);
+
     pub const fn new(r: f64, g: f64, b: f64) -> Self {
         Colour(r, g, b)
     }
