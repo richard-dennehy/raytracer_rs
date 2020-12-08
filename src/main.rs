@@ -17,6 +17,8 @@ pub use colour::Colour;
 mod canvas;
 pub use canvas::*;
 
+mod ppm_writer;
+
 fn main() {
     println!("Hello, world!");
 }
