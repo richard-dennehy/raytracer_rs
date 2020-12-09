@@ -22,6 +22,8 @@ use std::num::NonZeroU16;
 
 mod ppm_writer;
 
+mod matrix;
+
 fn main() {
     let environment = Environment {
         gravity: Vector3D::new(0.0, -0.08, 0.0),
