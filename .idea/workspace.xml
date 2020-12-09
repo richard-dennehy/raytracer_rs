@@ -9,9 +9,7 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implemented basic Canvas operations">
-      <change afterPath="$PROJECT_DIR$/src/ppm_writer/mod.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/ppm_writer/tests.rs" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implemented basic PPM writer">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
     </list>
@@ -53,12 +51,7 @@
       <command value="cargo test" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.test">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="Cargo.Run">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="channel" value="DEFAULT" />
       <option name="command" value="run --package raytracer --bin raytracer" />
@@ -131,6 +124,11 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.test" />
@@ -159,7 +157,8 @@
       <workItem from="1607255108772" duration="5333000" />
       <workItem from="1607267564059" duration="93000" />
       <workItem from="1607345538060" duration="5561000" />
-      <workItem from="1607455429484" duration="3481000" />
+      <workItem from="1607455429484" duration="3664000" />
+      <workItem from="1607541795493" duration="1436000" />
     </task>
     <task id="LOCAL-00001" summary="basic 3D Vector and Point operations">
       <created>1607266278125</created>
@@ -182,7 +181,14 @@
       <option name="project" value="LOCAL" />
       <updated>1607357098915</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="implemented basic PPM writer">
+      <created>1607459051934</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1607459051934</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -201,7 +207,8 @@
     <MESSAGE value="basic 3D Vector and Point operations" />
     <MESSAGE value="implemented Colour" />
     <MESSAGE value="implemented basic Canvas operations" />
-    <option name="LAST_COMMIT_MESSAGE" value="implemented basic Canvas operations" />
+    <MESSAGE value="implemented basic PPM writer" />
+    <option name="LAST_COMMIT_MESSAGE" value="implemented basic PPM writer" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
