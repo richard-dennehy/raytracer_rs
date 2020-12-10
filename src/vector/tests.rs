@@ -125,15 +125,7 @@ mod unit_tests {
 
 mod property_tests {
     extern crate quickcheck;
-
-    use self::quickcheck::{Arbitrary, Gen};
     use super::*;
-
-    impl Arbitrary for Vector3D {
-        fn arbitrary<G: Gen>(g: &mut G) -> Self {
-            Vector3D::new(f64::arbitrary(g), f64::arbitrary(g), f64::arbitrary(g))
-        }
-    }
 
     #[quickcheck]
     fn first_element_should_be_x(x: f64, y: f64, z: f64) {

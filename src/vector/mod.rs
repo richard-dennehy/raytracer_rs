@@ -112,3 +112,13 @@ impl Div<f64> for &Vector3D {
         Vector3D(self.0 / rhs, self.1 / rhs, self.2 / rhs)
     }
 }
+
+#[cfg(test)]
+use quickcheck::{Arbitrary, Gen};
+
+#[cfg(test)]
+impl Arbitrary for Vector3D {
+    fn arbitrary<G: Gen>(g: &mut G) -> Self {
+        Vector3D::new(f64::arbitrary(g), f64::arbitrary(g), f64::arbitrary(g))
+    }
+}

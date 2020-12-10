@@ -4,7 +4,7 @@ use std::ops::{Add, Sub};
 #[cfg(test)]
 mod tests;
 
-#[derive(PartialEq, Clone, Debug)]
+#[derive(PartialEq, Clone, Copy, Debug)]
 pub struct Point3D(f64, f64, f64);
 
 impl Point3D {
@@ -50,5 +50,15 @@ impl Sub<Vector3D> for Point3D {
 
     fn sub(self, rhs: Vector3D) -> Self::Output {
         Point3D(self.0 - rhs.x(), self.1 - rhs.y(), self.2 - rhs.z())
+    }
+}
+
+#[cfg(test)]
+use quickcheck::{Arbitrary, Gen};
+
+#[cfg(test)]
+impl Arbitrary for Point3D {
+    fn arbitrary<G: Gen>(g: &mut G) -> Self {
+        Point3D::new(f64::arbitrary(g), f64::arbitrary(g), f64::arbitrary(g))
     }
 }
