@@ -24,6 +24,125 @@ impl Matrix4D {
             [0.0, 0.0, 0.0, 1.0],
         )
     }
+
+    pub fn transpose(&self) -> Self {
+        Matrix4D::new(
+            [self.m00(), self.m10(), self.m20(), self.m30()],
+            [self.m01(), self.m11(), self.m21(), self.m31()],
+            [self.m02(), self.m12(), self.m22(), self.m32()],
+            [self.m03(), self.m13(), self.m23(), self.m33()],
+        )
+    }
+
+    fn determinant(&self) -> f64 {
+        self.m00() * self.cofactor(0, 0)
+            + self.m01() * self.cofactor(0, 1)
+            + self.m02() * self.cofactor(0, 2)
+            + self.m03() * self.cofactor(0, 3)
+    }
+
+    fn cofactor(&self, row: u8, column: u8) -> f64 {
+        let minor = self.minor(row, column);
+
+        if (row + column) % 2 == 0 {
+            minor
+        } else {
+            -minor
+        }
+    }
+
+    fn minor(&self, row: u8, column: u8) -> f64 {
+        self.submatrix(row, column).determinant()
+    }
+
+    pub fn submatrix(&self, excluding_row: u8, excluding_column: u8) -> Matrix3D {
+        match (excluding_row, excluding_column) {
+            (0, 0) => Matrix3D::new(
+                [self.m11(), self.m12(), self.m13()],
+                [self.m21(), self.m22(), self.m23()],
+                [self.m31(), self.m32(), self.m33()],
+            ),
+            (0, 1) => Matrix3D::new(
+                [self.m10(), self.m12(), self.m13()],
+                [self.m20(), self.m22(), self.m23()],
+                [self.m30(), self.m32(), self.m33()],
+            ),
+            (0, 2) => Matrix3D::new(
+                [self.m10(), self.m11(), self.m13()],
+                [self.m20(), self.m21(), self.m23()],
+                [self.m30(), self.m31(), self.m33()],
+            ),
+            (0, 3) => Matrix3D::new(
+                [self.m10(), self.m11(), self.m12()],
+                [self.m20(), self.m21(), self.m22()],
+                [self.m30(), self.m31(), self.m32()],
+            ),
+            (1, 0) => Matrix3D::new(
+                [self.m01(), self.m02(), self.m03()],
+                [self.m21(), self.m22(), self.m23()],
+                [self.m31(), self.m32(), self.m33()],
+            ),
+            (1, 1) => Matrix3D::new(
+                [self.m00(), self.m02(), self.m03()],
+                [self.m20(), self.m22(), self.m23()],
+                [self.m30(), self.m32(), self.m33()],
+            ),
+            (1, 2) => Matrix3D::new(
+                [self.m00(), self.m01(), self.m03()],
+                [self.m20(), self.m21(), self.m23()],
+                [self.m30(), self.m31(), self.m33()],
+            ),
+            (1, 3) => Matrix3D::new(
+                [self.m00(), self.m01(), self.m02()],
+                [self.m20(), self.m21(), self.m22()],
+                [self.m30(), self.m31(), self.m32()],
+            ),
+            (2, 0) => Matrix3D::new(
+                [self.m01(), self.m02(), self.m03()],
+                [self.m11(), self.m12(), self.m13()],
+                [self.m31(), self.m32(), self.m33()],
+            ),
+            (2, 1) => Matrix3D::new(
+                [self.m00(), self.m02(), self.m03()],
+                [self.m10(), self.m12(), self.m13()],
+                [self.m30(), self.m32(), self.m33()],
+            ),
+            (2, 2) => Matrix3D::new(
+                [self.m00(), self.m01(), self.m03()],
+                [self.m10(), self.m11(), self.m13()],
+                [self.m30(), self.m31(), self.m33()],
+            ),
+            (2, 3) => Matrix3D::new(
+                [self.m00(), self.m01(), self.m03()],
+                [self.m10(), self.m11(), self.m13()],
+                [self.m30(), self.m31(), self.m33()],
+            ),
+            (3, 0) => Matrix3D::new(
+                [self.m01(), self.m02(), self.m03()],
+                [self.m11(), self.m12(), self.m13()],
+                [self.m21(), self.m22(), self.m23()],
+            ),
+            (3, 1) => Matrix3D::new(
+                [self.m00(), self.m02(), self.m03()],
+                [self.m10(), self.m12(), self.m13()],
+                [self.m20(), self.m22(), self.m23()],
+            ),
+            (3, 2) => Matrix3D::new(
+                [self.m00(), self.m01(), self.m03()],
+                [self.m10(), self.m11(), self.m13()],
+                [self.m20(), self.m21(), self.m23()],
+            ),
+            (3, 3) => Matrix3D::new(
+                [self.m00(), self.m01(), self.m02()],
+                [self.m10(), self.m11(), self.m12()],
+                [self.m20(), self.m21(), self.m22()],
+            ),
+            _ => panic!(
+                "invalid 4D matrix row {} and column {}",
+                excluding_row, excluding_column
+            ),
+        }
+    }
 }
 
 impl Mul<Matrix4D> for Matrix4D {
@@ -145,6 +264,44 @@ impl Matrix3D {
         }
     }
 
+    fn determinant(&self) -> f64 {
+        self.m00() * self.cofactor(0, 0)
+            + self.m01() * self.cofactor(0, 1)
+            + self.m02() * self.cofactor(0, 2)
+    }
+
+    fn cofactor(&self, row: u8, column: u8) -> f64 {
+        let minor = self.minor(row, column);
+
+        if (row + column) % 2 == 0 {
+            minor
+        } else {
+            -minor
+        }
+    }
+
+    fn minor(&self, row: u8, column: u8) -> f64 {
+        self.submatrix(row, column).determinant()
+    }
+
+    fn submatrix(&self, excluding_row: u8, excluding_column: u8) -> Matrix2D {
+        match (excluding_row, excluding_column) {
+            (0, 0) => Matrix2D::new([self.m11(), self.m12()], [self.m21(), self.m22()]),
+            (0, 1) => Matrix2D::new([self.m10(), self.m12()], [self.m20(), self.m22()]),
+            (0, 2) => Matrix2D::new([self.m10(), self.m11()], [self.m20(), self.m21()]),
+            (1, 0) => Matrix2D::new([self.m01(), self.m02()], [self.m21(), self.m22()]),
+            (1, 1) => Matrix2D::new([self.m00(), self.m02()], [self.m20(), self.m22()]),
+            (1, 2) => Matrix2D::new([self.m00(), self.m01()], [self.m20(), self.m21()]),
+            (2, 0) => Matrix2D::new([self.m01(), self.m02()], [self.m11(), self.m12()]),
+            (2, 1) => Matrix2D::new([self.m00(), self.m02()], [self.m10(), self.m12()]),
+            (2, 2) => Matrix2D::new([self.m00(), self.m01()], [self.m10(), self.m11()]),
+            _ => panic!(
+                "invalid 3D matrix row {} and column {}",
+                excluding_row, excluding_column
+            ),
+        }
+    }
+
     pub fn m00(&self) -> f64 {
         self.underlying[0][0]
     }
@@ -192,6 +349,10 @@ impl Matrix2D {
         Matrix2D {
             underlying: [row0, row1],
         }
+    }
+
+    pub fn determinant(&self) -> f64 {
+        self.m00() * self.m11() - self.m01() * self.m10()
     }
 
     pub fn m00(&self) -> f64 {

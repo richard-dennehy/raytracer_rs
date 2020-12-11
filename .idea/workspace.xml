@@ -9,13 +9,10 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="initial matrix 4D, 3D, and 2D data structures">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="multiplication of vectors and points by matrices, and identity matrix">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/matrix/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/matrix/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/point/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/point/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vector/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/vector/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vector/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/vector/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,11 +53,6 @@
     </option>
   </component>
   <component name="RunManager" selected="Cargo.test">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="channel" value="DEFAULT" />
       <option name="command" value="run --package raytracer --bin raytracer" />
@@ -133,6 +125,11 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.test" />
@@ -163,7 +160,8 @@
       <workItem from="1607345538060" duration="5561000" />
       <workItem from="1607455429484" duration="3664000" />
       <workItem from="1607541795493" duration="3622000" />
-      <workItem from="1607623050687" duration="4662000" />
+      <workItem from="1607623050687" duration="4947000" />
+      <workItem from="1607714672201" duration="5013000" />
     </task>
     <task id="LOCAL-00001" summary="basic 3D Vector and Point operations">
       <created>1607266278125</created>
@@ -207,7 +205,14 @@
       <option name="project" value="LOCAL" />
       <updated>1607544822380</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="multiplication of vectors and points by matrices, and identity matrix">
+      <created>1607627971421</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1607627971421</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -229,7 +234,8 @@
     <MESSAGE value="implemented basic PPM writer" />
     <MESSAGE value="basic example program to test canvas output" />
     <MESSAGE value="initial matrix 4D, 3D, and 2D data structures" />
-    <option name="LAST_COMMIT_MESSAGE" value="initial matrix 4D, 3D, and 2D data structures" />
+    <MESSAGE value="multiplication of vectors and points by matrices, and identity matrix" />
+    <option name="LAST_COMMIT_MESSAGE" value="multiplication of vectors and points by matrices, and identity matrix" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
