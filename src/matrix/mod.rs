@@ -25,6 +25,44 @@ impl Matrix4D {
         )
     }
 
+    pub fn inverse(&self) -> Option<Self> {
+        let determinant = self.determinant();
+
+        if determinant == 0.0 {
+            return None;
+        }
+
+        // build transposed cofactor matrix, with all elements divided by determinant, in one set of operations
+        // (as opposed to building a cofactor matrix, calling `transpose`, and then dividing all elements)
+        // n.b. could optimise by avoiding repetition of cofactor(0, 0), (0,1), (0,2), (0, 3) calculation
+        let row0 = [
+            self.cofactor(0, 0) / determinant,
+            self.cofactor(1, 0) / determinant,
+            self.cofactor(2, 0) / determinant,
+            self.cofactor(3, 0) / determinant,
+        ];
+        let row1 = [
+            self.cofactor(0, 1) / determinant,
+            self.cofactor(1, 1) / determinant,
+            self.cofactor(2, 1) / determinant,
+            self.cofactor(3, 1) / determinant,
+        ];
+        let row2 = [
+            self.cofactor(0, 2) / determinant,
+            self.cofactor(1, 2) / determinant,
+            self.cofactor(2, 2) / determinant,
+            self.cofactor(3, 2) / determinant,
+        ];
+        let row3 = [
+            self.cofactor(0, 3) / determinant,
+            self.cofactor(1, 3) / determinant,
+            self.cofactor(2, 3) / determinant,
+            self.cofactor(3, 3) / determinant,
+        ];
+
+        Some(Matrix4D::new(row0, row1, row2, row3))
+    }
+
     pub fn transpose(&self) -> Self {
         Matrix4D::new(
             [self.m00(), self.m10(), self.m20(), self.m30()],
@@ -113,9 +151,9 @@ impl Matrix4D {
                 [self.m30(), self.m31(), self.m33()],
             ),
             (2, 3) => Matrix3D::new(
-                [self.m00(), self.m01(), self.m03()],
-                [self.m10(), self.m11(), self.m13()],
-                [self.m30(), self.m31(), self.m33()],
+                [self.m00(), self.m01(), self.m02()],
+                [self.m10(), self.m11(), self.m12()],
+                [self.m30(), self.m31(), self.m32()],
             ),
             (3, 0) => Matrix3D::new(
                 [self.m01(), self.m02(), self.m03()],
@@ -435,5 +473,39 @@ impl Matrix4D {
 
     pub fn m33(&self) -> f64 {
         self.underlying[3][3]
+    }
+}
+
+#[cfg(test)]
+use quickcheck::{Arbitrary, Gen};
+#[cfg(test)]
+impl Arbitrary for Matrix4D {
+    fn arbitrary<G: Gen>(g: &mut G) -> Self {
+        Matrix4D::new(
+            [
+                f64::arbitrary(g),
+                f64::arbitrary(g),
+                f64::arbitrary(g),
+                f64::arbitrary(g),
+            ],
+            [
+                f64::arbitrary(g),
+                f64::arbitrary(g),
+                f64::arbitrary(g),
+                f64::arbitrary(g),
+            ],
+            [
+                f64::arbitrary(g),
+                f64::arbitrary(g),
+                f64::arbitrary(g),
+                f64::arbitrary(g),
+            ],
+            [
+                f64::arbitrary(g),
+                f64::arbitrary(g),
+                f64::arbitrary(g),
+                f64::arbitrary(g),
+            ],
+        )
     }
 }
