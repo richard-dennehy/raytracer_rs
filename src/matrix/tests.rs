@@ -2,6 +2,7 @@ use super::*;
 
 mod unit_tests {
     use super::*;
+    use std::f64::consts::PI;
 
     #[test]
     fn should_be_able_to_create_4d_matrix() {
@@ -310,6 +311,199 @@ mod unit_tests {
 
         assert_eq!(second.inverse().unwrap(), second_inverted);
     }
+
+    #[test]
+    fn multiplying_a_point_by_a_translation_matrix_should_move_the_point_by_the_provided_x_y_and_z()
+    {
+        let point = Point3D::new(-3.0, 4.0, 5.0);
+        let translation = Matrix4D::translation(5.0, -3.0, 2.0);
+
+        let translated = translation * point;
+        assert_eq!(translated, (2.0, 1.0, 7.0, 1.0));
+    }
+
+    #[test]
+    fn multiplying_an_inverted_translation_matrix_by_a_point_should_move_the_point_by_negative_x_y_and_z(
+    ) {
+        let point = Point3D::new(-3.0, 4.0, 5.0);
+        let translation = Matrix4D::translation(5.0, -3.0, 2.0);
+
+        let translated = translation.inverse().unwrap() * point;
+        assert_eq!(translated, (-8.0, 7.0, 3.0, 1.0));
+    }
+
+    #[test]
+    fn multiplying_a_translation_matrix_by_a_vector_should_produce_the_same_vector() {
+        let vector = Vector3D::new(-3.0, 4.0, 5.0);
+        let translation = Matrix4D::translation(5.0, -3.0, 2.0);
+
+        let translated = translation * vector;
+        assert_eq!(translated, (-3.0, 4.0, 5.0, 0.0));
+    }
+
+    #[test]
+    fn multiplying_a_scaling_matrix_by_a_point_should_scale_x_y_and_z_components() {
+        let point = Point3D::new(-4.0, 6.0, 8.0);
+        let scale = Matrix4D::scaling(2.0, 3.0, 4.0);
+
+        let scaled = scale * point;
+        assert_eq!(scaled, (-8.0, 18.0, 32.0, 1.0));
+    }
+
+    #[test]
+    fn multiplying_a_scaling_matrix_by_a_vector_should_scale_x_y_and_z_components() {
+        let vector = Vector3D::new(-4.0, 6.0, 8.0);
+        let scale = Matrix4D::scaling(2.0, 3.0, 4.0);
+
+        let scaled = scale * vector;
+        assert_eq!(scaled, (-8.0, 18.0, 32.0, 0.0));
+    }
+
+    #[test]
+    fn multiplying_an_inverted_scaling_matrix_by_a_vector_should_scale_down_x_y_and_z_components() {
+        let vector = Vector3D::new(-4.0, 6.0, 8.0);
+        let scale = Matrix4D::scaling(2.0, 3.0, 4.0);
+
+        let scaled = scale.inverse().unwrap() * vector;
+        assert_eq!(scaled, (-2.0, 2.0, 2.0, 0.0));
+    }
+
+    #[test]
+    fn should_be_able_to_rotate_a_point_around_x_axis() {
+        let point = Point3D::new(0.0, 1.0, 0.0);
+        let half_quarter = Matrix4D::rotation_x(PI / 4.0);
+        let full_quarter = Matrix4D::rotation_x(PI / 2.0);
+
+        {
+            let (x, y, z, w) = half_quarter * point;
+            assert_eq!(x, 0.0);
+            assert!(approx_eq!(f64, y, 2.0_f64.sqrt() / 2.0));
+            assert!(approx_eq!(f64, z, 2.0_f64.sqrt() / 2.0));
+            assert_eq!(w, 1.0);
+        }
+
+        {
+            let (x, y, z, w) = full_quarter * point;
+            assert_eq!(x, 0.0);
+            assert!(approx_eq!(f64, y, 0.0));
+            assert!(approx_eq!(f64, z, 1.0));
+            assert_eq!(w, 1.0);
+        }
+    }
+
+    #[test]
+    fn should_be_able_to_rotate_around_the_y_axis() {
+        let point = Point3D::new(0.0, 0.0, 1.0);
+        let half_quarter = Matrix4D::rotation_y(PI / 4.0);
+        let full_quarter = Matrix4D::rotation_y(PI / 2.0);
+
+        {
+            let (x, y, z, w) = half_quarter * point;
+            assert!(approx_eq!(f64, x, 2.0_f64.sqrt() / 2.0));
+            assert_eq!(y, 0.0);
+            assert!(approx_eq!(f64, z, 2.0_f64.sqrt() / 2.0));
+            assert_eq!(w, 1.0);
+        }
+
+        {
+            let (x, y, z, w) = full_quarter * point;
+            assert!(approx_eq!(f64, x, 1.0));
+            assert_eq!(y, 0.0);
+            assert!(approx_eq!(f64, z, 0.0));
+            assert_eq!(w, 1.0);
+        }
+    }
+
+    #[test]
+    fn should_be_able_to_rotate_around_the_z_axis() {
+        let point = Point3D::new(0.0, 1.0, 0.0);
+        let half_quarter = Matrix4D::rotation_z(PI / 4.0);
+        let full_quarter = Matrix4D::rotation_z(PI / 2.0);
+
+        {
+            let (x, y, z, w) = half_quarter * point;
+            assert!(approx_eq!(f64, x, -(2.0_f64.sqrt() / 2.0)));
+            assert!(approx_eq!(f64, y, 2.0_f64.sqrt() / 2.0));
+            assert_eq!(z, 0.0);
+            assert_eq!(w, 1.0);
+        }
+
+        {
+            let (x, y, z, w) = full_quarter * point;
+            assert!(approx_eq!(f64, x, -1.0));
+            assert!(approx_eq!(f64, y, 0.0));
+            assert_eq!(z, 0.0);
+            assert_eq!(w, 1.0);
+        }
+    }
+
+    #[test]
+    fn rotating_a_point_around_an_inverted_rotation_matrix_rotates_in_the_opposite_direction() {
+        let point = Point3D::new(0.0, 1.0, 0.0);
+        let half_quarter = Matrix4D::rotation_x(PI / 4.0);
+
+        {
+            let (x, y, z, w) = half_quarter.inverse().unwrap() * point;
+            assert_eq!(x, 0.0);
+            assert!(approx_eq!(f64, y, 2.0_f64.sqrt() / 2.0));
+            assert!(approx_eq!(f64, z, -(2.0_f64.sqrt() / 2.0)));
+            assert_eq!(w, 1.0);
+        }
+    }
+
+    #[test]
+    fn an_x_to_y_shear_moves_x_in_proportion_to_y() {
+        let point = Point3D::new(2.0, 3.0, 4.0);
+        let shear = Matrix4D::shear(1.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+
+        let sheared = shear * point;
+        assert_eq!(sheared, (5.0, 3.0, 4.0, 1.0));
+    }
+
+    #[test]
+    fn an_x_to_z_shear_moves_x_in_proportion_to_z() {
+        let point = Point3D::new(2.0, 3.0, 4.0);
+        let shear = Matrix4D::shear(0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
+
+        let sheared = shear * point;
+        assert_eq!(sheared, (6.0, 3.0, 4.0, 1.0));
+    }
+
+    #[test]
+    fn a_y_to_x_shear_moves_y_in_proportion_to_x() {
+        let point = Point3D::new(2.0, 3.0, 4.0);
+        let shear = Matrix4D::shear(0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+
+        let sheared = shear * point;
+        assert_eq!(sheared, (2.0, 5.0, 4.0, 1.0));
+    }
+
+    #[test]
+    fn a_y_to_z_shear_moves_y_in_proportion_to_z() {
+        let point = Point3D::new(2.0, 3.0, 4.0);
+        let shear = Matrix4D::shear(0.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+
+        let sheared = shear * point;
+        assert_eq!(sheared, (2.0, 7.0, 4.0, 1.0));
+    }
+
+    #[test]
+    fn a_z_to_x_shear_moves_z_in_proportion_to_x() {
+        let point = Point3D::new(2.0, 3.0, 4.0);
+        let shear = Matrix4D::shear(0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+        let sheared = shear * point;
+        assert_eq!(sheared, (2.0, 3.0, 6.0, 1.0));
+    }
+
+    #[test]
+    fn a_z_to_y_shear_moves_z_in_proportion_to_y() {
+        let point = Point3D::new(2.0, 3.0, 4.0);
+        let shear = Matrix4D::shear(0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+
+        let sheared = shear * point;
+        assert_eq!(sheared, (2.0, 3.0, 7.0, 1.0));
+    }
 }
 
 mod property_tests {
@@ -375,5 +569,15 @@ mod property_tests {
             assert_close_enough(first.m32(), product.m32());
             assert_close_enough(first.m33(), product.m33());
         }
+    }
+
+    #[quickcheck]
+    fn vectors_cannot_be_translated(vector: Vector3D, x: f64, y: f64, z: f64) {
+        let translation = Matrix4D::translation(x, y, z);
+
+        assert_eq!(
+            translation * vector,
+            (vector.x(), vector.y(), vector.z(), 0.0)
+        );
     }
 }

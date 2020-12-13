@@ -16,6 +16,86 @@ impl Matrix4D {
         }
     }
 
+    pub const fn translation(x: f64, y: f64, z: f64) -> Self {
+        Matrix4D::new(
+            [1.0, 0.0, 0.0, x],
+            [0.0, 1.0, 0.0, y],
+            [0.0, 0.0, 1.0, z],
+            [0.0, 0.0, 0.0, 1.0],
+        )
+    }
+
+    pub const fn scaling(x: f64, y: f64, z: f64) -> Self {
+        Matrix4D::new(
+            [x, 0.0, 0.0, 0.0],
+            [0.0, y, 0.0, 0.0],
+            [0.0, 0.0, z, 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+        )
+    }
+
+    pub fn rotation_x(radians: f64) -> Self {
+        let cos_r = radians.cos();
+        let sin_r = radians.sin();
+
+        Matrix4D::new(
+            [1.0, 0.0, 0.0, 0.0],
+            [0.0, cos_r, -sin_r, 0.0],
+            [0.0, sin_r, cos_r, 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+        )
+    }
+
+    #[rustfmt::skip]
+    pub fn rotation_y(radians: f64) -> Self {
+        let cos_r = radians.cos();
+        let sin_r = radians.sin();
+
+        Matrix4D::new(
+            [cos_r,  0.0, sin_r, 0.0],
+            [0.0,    1.0,   0.0, 0.0],
+            [-sin_r, 0.0, cos_r, 0.0],
+            [0.0,    0.0,   0.0, 1.0],
+        )
+    }
+
+    #[rustfmt::skip]
+    pub fn rotation_z(radians: f64) -> Self {
+        let cos_r = radians.cos();
+        let sin_r = radians.sin();
+
+        Matrix4D::new(
+            [cos_r, -sin_r, 0.0, 0.0],
+            [sin_r,  cos_r, 0.0, 0.0],
+            [0.0,    0.0,   1.0, 0.0],
+            [0.0,    0.0,   0.0, 1.0],
+        )
+    }
+
+    #[rustfmt::skip]
+    pub fn shear(
+        x_proportionate_to_y: f64,
+        x_proportionate_to_z: f64,
+        y_proportionate_to_x: f64,
+        y_proportionate_to_z: f64,
+        z_proportionate_to_x: f64,
+        z_proportionate_to_y: f64,
+    ) -> Self {
+        let x_to_y = x_proportionate_to_y;
+        let x_to_z = x_proportionate_to_z;
+        let y_to_x = y_proportionate_to_x;
+        let y_to_z = y_proportionate_to_z;
+        let z_to_x = z_proportionate_to_x;
+        let z_to_y = z_proportionate_to_y;
+
+        Matrix4D::new(
+            [1.0,    x_to_y, x_to_z, 0.0],
+            [y_to_x, 1.0,    y_to_z, 0.0],
+            [z_to_x, z_to_y, 1.0,    0.0],
+            [0.0,    0.0,    0.0,    1.0],
+        )
+    }
+
     pub const fn identity() -> Self {
         Matrix4D::new(
             [1.0, 0.0, 0.0, 0.0],
@@ -478,6 +558,7 @@ impl Matrix4D {
 
 #[cfg(test)]
 use quickcheck::{Arbitrary, Gen};
+
 #[cfg(test)]
 impl Arbitrary for Matrix4D {
     fn arbitrary<G: Gen>(g: &mut G) -> Self {
