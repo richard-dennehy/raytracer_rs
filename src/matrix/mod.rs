@@ -9,11 +9,21 @@ pub struct Matrix4D {
     underlying: [[f64; 4]; 4],
 }
 
+// FIXME define immutable functions using mutable functions and `clone`
 impl Matrix4D {
     pub const fn new(row0: [f64; 4], row1: [f64; 4], row2: [f64; 4], row3: [f64; 4]) -> Self {
         Matrix4D {
             underlying: [row0, row1, row2, row3],
         }
+    }
+
+    pub const fn identity() -> Self {
+        Matrix4D::new(
+            [1.0, 0.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0, 0.0],
+            [0.0, 0.0, 1.0, 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+        )
     }
 
     pub const fn translation(x: f64, y: f64, z: f64) -> Self {
@@ -25,6 +35,12 @@ impl Matrix4D {
         )
     }
 
+    pub fn with_translation(self, x: f64, y: f64, z: f64) -> Self {
+        let translation = Matrix4D::translation(x, y, z);
+
+        translation * self
+    }
+
     pub const fn scaling(x: f64, y: f64, z: f64) -> Self {
         Matrix4D::new(
             [x, 0.0, 0.0, 0.0],
@@ -32,6 +48,12 @@ impl Matrix4D {
             [0.0, 0.0, z, 0.0],
             [0.0, 0.0, 0.0, 1.0],
         )
+    }
+
+    pub fn with_scaling(self, x: f64, y: f64, z: f64) -> Self {
+        let scaling = Matrix4D::scaling(x, y, z);
+
+        scaling * self
     }
 
     pub fn rotation_x(radians: f64) -> Self {
@@ -44,6 +66,12 @@ impl Matrix4D {
             [0.0, sin_r, cos_r, 0.0],
             [0.0, 0.0, 0.0, 1.0],
         )
+    }
+
+    pub fn with_rotation_x(self, radians: f64) -> Self {
+        let rotation_x = Matrix4D::rotation_x(radians);
+
+        rotation_x * self
     }
 
     #[rustfmt::skip]
@@ -59,6 +87,12 @@ impl Matrix4D {
         )
     }
 
+    pub fn with_rotation_y(self, radians: f64) -> Self {
+        let rotation_y = Matrix4D::rotation_y(radians);
+
+        rotation_y * self
+    }
+
     #[rustfmt::skip]
     pub fn rotation_z(radians: f64) -> Self {
         let cos_r = radians.cos();
@@ -70,6 +104,12 @@ impl Matrix4D {
             [0.0,    0.0,   1.0, 0.0],
             [0.0,    0.0,   0.0, 1.0],
         )
+    }
+
+    pub fn with_rotation_z(self, radians: f64) -> Self {
+        let rotation_z = Matrix4D::rotation_z(radians);
+
+        rotation_z * self
     }
 
     #[rustfmt::skip]
@@ -96,13 +136,25 @@ impl Matrix4D {
         )
     }
 
-    pub const fn identity() -> Self {
-        Matrix4D::new(
-            [1.0, 0.0, 0.0, 0.0],
-            [0.0, 1.0, 0.0, 0.0],
-            [0.0, 0.0, 1.0, 0.0],
-            [0.0, 0.0, 0.0, 1.0],
-        )
+    pub fn with_shear(
+        self,
+        x_proportionate_to_y: f64,
+        x_proportionate_to_z: f64,
+        y_proportionate_to_x: f64,
+        y_proportionate_to_z: f64,
+        z_proportionate_to_x: f64,
+        z_proportionate_to_y: f64,
+    ) -> Self {
+        let shear = Matrix4D::shear(
+            x_proportionate_to_y,
+            x_proportionate_to_z,
+            y_proportionate_to_x,
+            y_proportionate_to_z,
+            z_proportionate_to_x,
+            z_proportionate_to_y,
+        );
+
+        shear * self
     }
 
     pub fn inverse(&self) -> Option<Self> {
@@ -366,6 +418,19 @@ impl Mul<Point3D> for Matrix4D {
             self.m10() * rhs.x() + self.m11() * rhs.y() + self.m12() * rhs.z() + self.m13(),
             self.m20() * rhs.x() + self.m21() * rhs.y() + self.m22() * rhs.z() + self.m23(),
             self.m30() * rhs.x() + self.m31() * rhs.y() + self.m32() * rhs.z() + self.m33(),
+        )
+    }
+}
+
+impl Mul<(f64, f64, f64, f64)> for Matrix4D {
+    type Output = (f64, f64, f64, f64);
+
+    fn mul(self, (x, y, z, w): (f64, f64, f64, f64)) -> Self::Output {
+        (
+            self.m00() * x + self.m01() * y + self.m02() * z + self.m03() * w,
+            self.m10() * x + self.m11() * y + self.m12() * z + self.m13() * w,
+            self.m20() * x + self.m21() * y + self.m22() * z + self.m23() * w,
+            self.m30() * x + self.m31() * y + self.m32() * z + self.m33() * w,
         )
     }
 }

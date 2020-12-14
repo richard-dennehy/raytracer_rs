@@ -504,6 +504,75 @@ mod unit_tests {
         let sheared = shear * point;
         assert_eq!(sheared, (2.0, 3.0, 7.0, 1.0));
     }
+
+    #[test]
+    fn individual_transformations_are_applied_in_sequence() {
+        let point = Point3D::new(1.0, 0.0, 1.0);
+        let rotation = Matrix4D::rotation_x(PI / 2.0);
+        let scale = Matrix4D::scaling(5.0, 5.0, 5.0);
+        let translation = Matrix4D::translation(10.0, 5.0, 7.0);
+
+        let rotated = rotation * point;
+        {
+            let (x, y, z, _) = rotated;
+
+            assert!(approx_eq!(f64, x, 1.0));
+            assert!(approx_eq!(f64, y, -1.0));
+            assert!(approx_eq!(f64, z, 0.0));
+        }
+
+        let scaled = scale * rotated;
+        {
+            let (x, y, z, _) = scaled;
+
+            assert!(approx_eq!(f64, x, 5.0));
+            assert!(approx_eq!(f64, y, -5.0));
+            assert!(approx_eq!(
+                f64,
+                z,
+                0.0,
+                ulps = 5,
+                epsilon = f32::EPSILON as f64
+            ));
+        }
+
+        let translated = translation * scaled;
+        {
+            let (x, y, z, _) = translated;
+
+            assert!(approx_eq!(f64, x, 15.0));
+            assert!(approx_eq!(f64, y, 0.0));
+            assert!(approx_eq!(f64, z, 7.0));
+        }
+    }
+
+    #[test]
+    fn combined_transformations_are_applied_in_reverse_order() {
+        let point = Point3D::new(1.0, 0.0, 1.0);
+        let rotation = Matrix4D::rotation_x(PI / 2.0);
+        let scale = Matrix4D::scaling(5.0, 5.0, 5.0);
+        let translation = Matrix4D::translation(10.0, 5.0, 7.0);
+
+        let transform = translation * scale * rotation;
+        let (x, y, z, w) = transform * point;
+
+        assert_eq!(x, 15.0);
+        assert_eq!(y, 0.0);
+        assert_eq!(z, 7.0);
+        assert_eq!(w, 1.0);
+    }
+
+    #[test]
+    fn fluent_api_applies_transformations_in_sequence() {
+        let point = Point3D::new(1.0, 0.0, 1.0);
+
+        let translation = Matrix4D::identity()
+            .with_rotation_x(PI / 2.0)
+            .with_scaling(5.0, 5.0, 5.0)
+            .with_translation(10.0, 5.0, 7.0);
+
+        assert_eq!(translation * point, (15.0, 0.0, 7.0, 1.0));
+    }
 }
 
 mod property_tests {
@@ -579,5 +648,72 @@ mod property_tests {
             translation * vector,
             (vector.x(), vector.y(), vector.z(), 0.0)
         );
+    }
+
+    #[quickcheck]
+    fn fluent_translate_api_behaves_the_same_as_translation_matrix(
+        point: Point3D,
+        x: f64,
+        y: f64,
+        z: f64,
+    ) {
+        let direct = Matrix4D::translation(x, y, z);
+        let fluent = Matrix4D::identity().with_translation(x, y, z);
+
+        assert_eq!(direct * point, fluent * point);
+    }
+
+    #[quickcheck]
+    fn fluent_scaling_api_behaves_the_same_as_scaling_matrix(
+        point: Point3D,
+        x: f64,
+        y: f64,
+        z: f64,
+    ) {
+        let direct = Matrix4D::scaling(x, y, z);
+        let fluent = Matrix4D::identity().with_scaling(x, y, z);
+
+        assert_eq!(direct * point, fluent * point);
+    }
+
+    #[quickcheck]
+    fn fluent_rotation_x_api_behaves_the_same_as_rotation_x_matrix(point: Point3D, radians: f64) {
+        let direct = Matrix4D::rotation_x(radians);
+        let fluent = Matrix4D::identity().with_rotation_x(radians);
+
+        assert_eq!(direct * point, fluent * point);
+    }
+
+    #[quickcheck]
+    fn fluent_rotation_y_api_behaves_the_same_as_rotation_y_matrix(point: Point3D, radians: f64) {
+        let direct = Matrix4D::rotation_y(radians);
+        let fluent = Matrix4D::identity().with_rotation_y(radians);
+
+        assert_eq!(direct * point, fluent * point);
+    }
+
+    #[quickcheck]
+    fn fluent_rotation_z_api_behaves_the_same_as_rotation_z_matrix(point: Point3D, radians: f64) {
+        let direct = Matrix4D::rotation_z(radians);
+        let fluent = Matrix4D::identity().with_rotation_z(radians);
+
+        assert_eq!(direct * point, fluent * point);
+    }
+
+    #[quickcheck]
+    fn fluent_shear_api_behaves_the_same_as_shear_matrix(
+        point: Point3D,
+        x_to_y: f64,
+        x_to_z: f64,
+        y_to_x: f64,
+        y_to_z: f64,
+        z_to_x: f64,
+        z_to_y: f64,
+    ) {
+        let direct = Matrix4D::shear(x_to_y, x_to_z, y_to_x, y_to_z, z_to_x, z_to_y);
+        let fluent =
+            Matrix4D::identity().with_shear(x_to_y, x_to_z, y_to_x, y_to_z, z_to_x, z_to_y);
+
+        assert_eq!(direct * point, fluent * point);
     }
 }

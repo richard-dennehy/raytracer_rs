@@ -12,3 +12,4 @@ quickcheck_macros = "0.9.1"
 float-cmp = "0.8.0"
 
 [dependencies]
+nonzero_ext = "0.2.0"

@@ -79,6 +79,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0ee1c47aaa256ecabcaea351eae4a9b01ef39ed810004e298d2511ed284b1525"
 
 [[package]]
+name = "nonzero_ext"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "44a1290799eababa63ea60af0cbc3f03363e328e58f32fb0294798ed3e85f444"
+
+[[package]]
 name = "num-traits"
 version = "0.2.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -180,6 +186,7 @@ name = "raytracer"
 version = "0.1.0"
 dependencies = [
  "float-cmp",
+ "nonzero_ext",
  "quickcheck",
  "quickcheck_macros",
 ]
