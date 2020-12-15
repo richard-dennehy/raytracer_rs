@@ -8,25 +8,11 @@ extern crate float_cmp;
 #[macro_use]
 extern crate nonzero_ext;
 
-mod point;
-pub use point::Point3D;
-
-mod vector;
-pub use vector::Vector3D;
-
-mod colour;
-pub use colour::Colour;
-
-mod canvas;
-pub use canvas::*;
-
+use std::f64::consts::PI;
 use std::fs;
 
-mod ppm_writer;
-
-mod matrix;
-pub use matrix::Matrix4D;
-use std::f64::consts::PI;
+mod lib;
+use lib::*;
 
 fn main() {
     let mut canvas = Canvas::new(nonzero!(800u16), nonzero!(800u16)).unwrap();

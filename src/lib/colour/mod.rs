@@ -6,6 +6,7 @@ mod tests;
 #[derive(PartialEq, Debug, Copy, Clone)]
 pub struct Colour(f64, f64, f64);
 
+#[allow(dead_code)]
 impl Colour {
     pub const BLACK: Colour = Colour::new(0.0, 0.0, 0.0);
     pub const WHITE: Colour = Colour::new(1.0, 1.0, 1.0);
