@@ -21,3 +21,9 @@ mod matrix;
 pub use matrix::Matrix4D;
 
 pub mod ppm_writer;
+
+mod ray;
+pub use ray::Ray;
+
+mod sphere;
+pub use sphere::Sphere;

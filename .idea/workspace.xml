@@ -9,22 +9,12 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="refactor to `lib.rs` based project structure">
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="probably finally done moving files around">
+      <change afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ray/tests.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/sphere/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray_tracer/canvas/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/canvas/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray_tracer/canvas/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/canvas/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray_tracer/colour/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/colour/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray_tracer/colour/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/colour/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray_tracer/matrix/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray_tracer/matrix/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray_tracer/mod.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray_tracer/point/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/point/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray_tracer/point/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/point/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray_tracer/ppm_writer/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ppm_writer/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray_tracer/ppm_writer/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ppm_writer/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray_tracer/vector/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/vector/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray_tracer/vector/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/vector/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,7 +67,7 @@
       <command value="cargo test" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.Run ray_tracer">
+  <component name="RunManager" selected="Cargo.test">
     <configuration name="Run ray_tracer" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="command" value="run --package ray_tracer --bin ray_tracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -169,8 +159,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.Run ray_tracer" />
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.Run ray_tracer" />
         <item itemvalue="Cargo.Test vector::tests::vector_tests::subtracting_a_vector_from_a_vector_should_produce_a_vector_of_the_change_in_direction" />
         <item itemvalue="Cargo.Test vector::tests::vector_tests::multiplying_a_vector_by_a_scalar_should_multiply_x_y_and_z" />
         <item itemvalue="Cargo.Test vector::tests::vector_tests::dividing_a_vector_by_a_scalar_should_divide_x_y_and_z" />
@@ -203,7 +193,7 @@
       <workItem from="1607867019177" duration="3929000" />
       <workItem from="1607946670590" duration="4027000" />
       <workItem from="1608061935286" duration="8000" />
-      <workItem from="1608061957234" duration="1112000" />
+      <workItem from="1608061957234" duration="2735000" />
     </task>
     <task id="LOCAL-00001" summary="basic 3D Vector and Point operations">
       <created>1607266278125</created>
@@ -296,7 +286,14 @@
       <option name="project" value="LOCAL" />
       <updated>1608062741893</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="probably finally done moving files around">
+      <created>1608063080798</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1608063080798</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -325,7 +322,8 @@
     <MESSAGE value="fluent API for combining matrix transformations and example clock program" />
     <MESSAGE value="migrate core code to lib folder" />
     <MESSAGE value="refactor to `lib.rs` based project structure" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor to `lib.rs` based project structure" />
+    <MESSAGE value="probably finally done moving files around" />
+    <option name="LAST_COMMIT_MESSAGE" value="probably finally done moving files around" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
