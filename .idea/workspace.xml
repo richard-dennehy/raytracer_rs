@@ -9,25 +9,22 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="migrate core code to lib folder">
-      <change afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/canvas/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray_tracer/canvas/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/canvas/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray_tracer/canvas/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/colour/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray_tracer/colour/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/colour/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray_tracer/colour/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/matrix/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray_tracer/matrix/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/matrix/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray_tracer/matrix/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray_tracer/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/point/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray_tracer/point/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/point/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray_tracer/point/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/ppm_writer/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray_tracer/ppm_writer/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/ppm_writer/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray_tracer/ppm_writer/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/vector/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray_tracer/vector/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/vector/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray_tracer/vector/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="refactor to `lib.rs` based project structure">
+      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray_tracer/canvas/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/canvas/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray_tracer/canvas/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/canvas/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray_tracer/colour/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/colour/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray_tracer/colour/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/colour/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray_tracer/matrix/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray_tracer/matrix/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray_tracer/mod.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray_tracer/point/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/point/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray_tracer/point/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/point/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray_tracer/ppm_writer/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ppm_writer/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray_tracer/ppm_writer/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ppm_writer/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray_tracer/vector/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/vector/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray_tracer/vector/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/vector/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,6 +68,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Richard\CLionProjects\raytracer\src" />
       <recent name="C:\Users\Richard\CLionProjects\raytracer\src\lib" />
     </key>
   </component>
@@ -205,7 +203,7 @@
       <workItem from="1607867019177" duration="3929000" />
       <workItem from="1607946670590" duration="4027000" />
       <workItem from="1608061935286" duration="8000" />
-      <workItem from="1608061957234" duration="587000" />
+      <workItem from="1608061957234" duration="1112000" />
     </task>
     <task id="LOCAL-00001" summary="basic 3D Vector and Point operations">
       <created>1607266278125</created>
@@ -291,7 +289,14 @@
       <option name="project" value="LOCAL" />
       <updated>1608062263201</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="refactor to `lib.rs` based project structure">
+      <created>1608062741893</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1608062741893</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -319,7 +324,8 @@
     <MESSAGE value="implement matrix operations on vectors and points" />
     <MESSAGE value="fluent API for combining matrix transformations and example clock program" />
     <MESSAGE value="migrate core code to lib folder" />
-    <option name="LAST_COMMIT_MESSAGE" value="migrate core code to lib folder" />
+    <MESSAGE value="refactor to `lib.rs` based project structure" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor to `lib.rs` based project structure" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

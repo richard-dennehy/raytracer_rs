@@ -3,7 +3,7 @@ extern crate ray_tracer;
 #[macro_use]
 extern crate nonzero_ext;
 
-use ray_tracer::ray_tracer::*;
+use ray_tracer::*;
 use std::f64::consts::PI;
 use std::fs;
 
