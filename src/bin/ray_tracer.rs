@@ -1,18 +1,11 @@
-#[cfg(test)]
-#[macro_use(quickcheck)]
-extern crate quickcheck_macros;
-#[cfg(test)]
-#[macro_use]
-extern crate float_cmp;
+extern crate ray_tracer;
 
 #[macro_use]
 extern crate nonzero_ext;
 
+use ray_tracer::ray_tracer::*;
 use std::f64::consts::PI;
 use std::fs;
-
-mod lib;
-use lib::*;
 
 fn main() {
     let mut canvas = Canvas::new(nonzero!(800u16), nonzero!(800u16)).unwrap();

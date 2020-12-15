@@ -182,7 +182,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "raytracer"
+name = "ray_tracer"
 version = "0.1.0"
 dependencies = [
  "float-cmp",

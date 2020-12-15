@@ -9,8 +9,25 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="fluent API for combining matrix transformations and example clock program">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="migrate core code to lib folder">
+      <change afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/canvas/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray_tracer/canvas/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/canvas/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray_tracer/canvas/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/colour/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray_tracer/colour/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/colour/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray_tracer/colour/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/matrix/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray_tracer/matrix/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/matrix/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray_tracer/matrix/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray_tracer/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/point/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray_tracer/point/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/point/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray_tracer/point/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/ppm_writer/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray_tracer/ppm_writer/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/ppm_writer/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray_tracer/ppm_writer/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/vector/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray_tracer/vector/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/vector/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray_tracer/vector/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,6 +36,13 @@
   </component>
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Rust File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -45,14 +69,19 @@
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
     <property name="settings.editor.selected.configurable" value="editing.templates" />
   </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Richard\CLionProjects\raytracer\src\lib" />
+    </key>
+  </component>
   <component name="RunAnythingCache">
     <option name="myCommands">
       <command value="cargo test" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.test">
-    <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
-      <option name="command" value="run --package raytracer --bin raytracer" />
+  <component name="RunManager" selected="Cargo.Run ray_tracer">
+    <configuration name="Run ray_tracer" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="run --package ray_tracer --bin ray_tracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="allFeatures" value="false" />
@@ -65,8 +94,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test ppm_writer::tests::unit_tests::should_limit_line_length_to_70" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package raytracer --bin raytracer ppm_writer::tests::unit_tests::should_limit_line_length_to_70 -- --exact" />
+    <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="allFeatures" value="false" />
@@ -142,11 +171,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.Run ray_tracer" />
         <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.Test vector::tests::vector_tests::subtracting_a_vector_from_a_vector_should_produce_a_vector_of_the_change_in_direction" />
         <item itemvalue="Cargo.Test vector::tests::vector_tests::multiplying_a_vector_by_a_scalar_should_multiply_x_y_and_z" />
         <item itemvalue="Cargo.Test vector::tests::vector_tests::dividing_a_vector_by_a_scalar_should_divide_x_y_and_z" />
-        <item itemvalue="Cargo.Test ppm_writer::tests::unit_tests::should_limit_line_length_to_70" />
       </list>
     </recent_temporary>
   </component>
@@ -176,6 +205,7 @@
       <workItem from="1607867019177" duration="3929000" />
       <workItem from="1607946670590" duration="4027000" />
       <workItem from="1608061935286" duration="8000" />
+      <workItem from="1608061957234" duration="587000" />
     </task>
     <task id="LOCAL-00001" summary="basic 3D Vector and Point operations">
       <created>1607266278125</created>
@@ -254,7 +284,14 @@
       <option name="project" value="LOCAL" />
       <updated>1607950700059</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="migrate core code to lib folder">
+      <created>1608062263201</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1608062263201</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -281,7 +318,8 @@
     <MESSAGE value="implement matrix inversion" />
     <MESSAGE value="implement matrix operations on vectors and points" />
     <MESSAGE value="fluent API for combining matrix transformations and example clock program" />
-    <option name="LAST_COMMIT_MESSAGE" value="fluent API for combining matrix transformations and example clock program" />
+    <MESSAGE value="migrate core code to lib folder" />
+    <option name="LAST_COMMIT_MESSAGE" value="migrate core code to lib folder" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
