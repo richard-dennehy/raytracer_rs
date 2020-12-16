@@ -1,5 +1,6 @@
 use crate::{Matrix4D, Point3D};
 
+#[derive(Debug)]
 pub struct Sphere {
     transform: Matrix4D,
 }

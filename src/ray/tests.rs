@@ -1,6 +1,6 @@
 use super::*;
 
-mod unit_tests {
+mod ray_unit_tests {
     use super::*;
 
     #[test]
@@ -18,7 +18,12 @@ mod unit_tests {
         let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
         let sphere = Sphere::unit();
 
-        assert_eq!(ray.intersect(sphere), Some((4.0, 6.0)));
+        let intersection = ray.intersect(&sphere);
+        assert!(intersection.is_some());
+        let intersection = intersection.unwrap();
+
+        assert_eq!(intersection.first, 4.0);
+        assert_eq!(intersection.second, 6.0);
     }
 
     #[test]
@@ -26,7 +31,13 @@ mod unit_tests {
         let ray = Ray::new(Point3D::new(0.0, 1.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
         let sphere = Sphere::unit();
 
-        assert_eq!(ray.intersect(sphere), Some((5.0, 5.0)));
+        let intersection = ray.intersect(&sphere);
+
+        assert!(intersection.is_some());
+        let intersection = intersection.unwrap();
+
+        assert_eq!(intersection.first, 5.0);
+        assert_eq!(intersection.second, 5.0);
     }
 
     #[test]
@@ -34,7 +45,9 @@ mod unit_tests {
         let ray = Ray::new(Point3D::new(0.0, 2.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
         let sphere = Sphere::unit();
 
-        assert_eq!(ray.intersect(sphere), None);
+        let intersection = ray.intersect(&sphere);
+
+        assert!(intersection.is_none());
     }
 
     #[test]
@@ -42,7 +55,13 @@ mod unit_tests {
         let ray = Ray::new(Point3D::new(0.0, 0.0, 0.0), Vector3D::new(0.0, 0.0, 1.0));
         let sphere = Sphere::unit();
 
-        assert_eq!(ray.intersect(sphere), Some((-1.0, 1.0)));
+        let intersection = ray.intersect(&sphere);
+
+        assert!(intersection.is_some());
+        let intersection = intersection.unwrap();
+
+        assert_eq!(intersection.first, -1.0);
+        assert_eq!(intersection.second, 1.0);
     }
 
     #[test]
@@ -51,6 +70,12 @@ mod unit_tests {
         let ray = Ray::new(Point3D::new(0.0, 0.0, 5.0), Vector3D::new(0.0, 0.0, 1.0));
         let sphere = Sphere::unit();
 
-        assert_eq!(ray.intersect(sphere), Some((-6.0, -4.0)));
+        let intersection = ray.intersect(&sphere);
+
+        assert!(intersection.is_some());
+        let intersection = intersection.unwrap();
+
+        assert_eq!(intersection.first, -6.0);
+        assert_eq!(intersection.second, -4.0);
     }
 }
