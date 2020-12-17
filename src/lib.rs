@@ -23,7 +23,7 @@ pub use matrix::Matrix4D;
 pub mod ppm_writer;
 
 mod ray;
-pub use ray::Ray;
+pub use ray::{Intersection, Intersections, Ray};
 
 mod sphere;
 pub use sphere::Sphere;

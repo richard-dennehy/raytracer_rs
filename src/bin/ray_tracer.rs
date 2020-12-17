@@ -4,32 +4,33 @@ extern crate ray_tracer;
 extern crate nonzero_ext;
 
 use ray_tracer::*;
-use std::f64::consts::PI;
 use std::fs;
+use std::num::NonZeroU16;
+
+const WIDTH: NonZeroU16 = nonzero!(800u16);
+const HEIGHT: NonZeroU16 = nonzero!(800u16);
 
 fn main() {
-    let mut canvas = Canvas::new(nonzero!(800u16), nonzero!(800u16)).unwrap();
+    let mut canvas = Canvas::new(WIDTH, HEIGHT).unwrap();
+    let mut sphere = Sphere::unit();
+    sphere.transform(Matrix4D::scaling(50.0, 50.0, 1.0).with_translation(
+        (WIDTH.get() / 2) as _,
+        (HEIGHT.get() / 2) as _,
+        1.0,
+    ));
 
-    let point = Point3D::new(0.0, 0.0, 0.0);
-    let diameter = 350.0;
-    let centre = (400.0, 400.0);
+    let direction = Vector3D::new(0.0, 0.0, 1.0);
 
-    for i in 0..12 {
-        let angle = ((2.0 * PI) / 12.0) * i as f64;
+    for x in 0..WIDTH.get() {
+        for y in 0..HEIGHT.get() {
+            let ray = Ray::new(Point3D::new(x as _, y as _, 0.0), direction);
+            let intersection = ray.intersect(&sphere);
+            if let Some(intersection) = intersection {
+                let hit = Intersections::of(intersection).hit();
 
-        let transform = Matrix4D::translation(0.0, diameter, 0.0)
-            .with_rotation_z(-angle) // rotation is anti-clockwise
-            .with_translation(centre.0, centre.1, 0.0);
-
-        let (x, y, _, _) = transform * point;
-
-        // paint 3x3 "pixel"
-        for dx in 0..2 {
-            for dy in 0..2 {
-                let x = (x.round() as i16 + (dx - 1)) as u16;
-                let y = (799 - (y.round() as i16 + (dy - 1))) as u16;
-
-                canvas.set(x, y, Colour::WHITE);
+                if let Some(_) = hit {
+                    canvas.set(x, HEIGHT.get() - y, Colour::RED)
+                }
             }
         }
     }

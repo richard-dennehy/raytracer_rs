@@ -26,10 +26,10 @@ impl Ray {
 
         let transformed = self.transformed(ray_transform);
 
-        let sphere_to_ray = transformed.origin - with.origin();
+        let sphere_to_ray = transformed.origin - Point3D::new(0.0, 0.0, 0.0);
         let a = transformed.direction.dot(&transformed.direction);
         let b = 2.0 * transformed.direction.dot(&sphere_to_ray);
-        let c = sphere_to_ray.dot(&sphere_to_ray) - with.radius();
+        let c = sphere_to_ray.dot(&sphere_to_ray) - 1.0;
 
         let discriminant = b * b - 4.0 * a * c;
 
