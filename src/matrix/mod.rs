@@ -396,7 +396,20 @@ impl Mul<Matrix4D> for Matrix4D {
     }
 }
 
-impl Mul<Vector3D> for Matrix4D {
+impl Mul<Point3D> for &Matrix4D {
+    type Output = (f64, f64, f64, f64);
+
+    fn mul(self, rhs: Point3D) -> Self::Output {
+        (
+            self.m00() * rhs.x() + self.m01() * rhs.y() + self.m02() * rhs.z() + self.m03(),
+            self.m10() * rhs.x() + self.m11() * rhs.y() + self.m12() * rhs.z() + self.m13(),
+            self.m20() * rhs.x() + self.m21() * rhs.y() + self.m22() * rhs.z() + self.m23(),
+            self.m30() * rhs.x() + self.m31() * rhs.y() + self.m32() * rhs.z() + self.m33(),
+        )
+    }
+}
+
+impl Mul<Vector3D> for &Matrix4D {
     type Output = (f64, f64, f64, f64);
 
     fn mul(self, rhs: Vector3D) -> Self::Output {
@@ -409,16 +422,19 @@ impl Mul<Vector3D> for Matrix4D {
     }
 }
 
+impl Mul<Vector3D> for Matrix4D {
+    type Output = (f64, f64, f64, f64);
+
+    fn mul(self, rhs: Vector3D) -> Self::Output {
+        &self * rhs
+    }
+}
+
 impl Mul<Point3D> for Matrix4D {
     type Output = (f64, f64, f64, f64);
 
     fn mul(self, rhs: Point3D) -> Self::Output {
-        (
-            self.m00() * rhs.x() + self.m01() * rhs.y() + self.m02() * rhs.z() + self.m03(),
-            self.m10() * rhs.x() + self.m11() * rhs.y() + self.m12() * rhs.z() + self.m13(),
-            self.m20() * rhs.x() + self.m21() * rhs.y() + self.m22() * rhs.z() + self.m23(),
-            self.m30() * rhs.x() + self.m31() * rhs.y() + self.m32() * rhs.z() + self.m33(),
-        )
+        &self * rhs
     }
 }
 

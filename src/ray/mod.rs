@@ -1,4 +1,4 @@
-use crate::{Point3D, Sphere, Vector3D};
+use crate::{Matrix4D, Point3D, Sphere, Vector3D};
 use std::cmp::Ordering;
 
 #[cfg(test)]
@@ -19,10 +19,17 @@ impl Ray {
     }
 
     pub fn intersect<'with>(&self, with: &'with Sphere) -> Option<Intersection<'with>> {
-        let sphere_to_ray = self.origin - with.origin();
-        let a = self.direction.dot(&self.direction);
-        let b = 2.0 * self.direction.dot(&sphere_to_ray);
-        let c = sphere_to_ray.dot(&sphere_to_ray) - 1.0; // <- Radius?
+        let ray_transform = &with
+            .transform
+            .inverse()
+            .expect("A translation matrix should be invertible");
+
+        let transformed = self.transformed(ray_transform);
+
+        let sphere_to_ray = transformed.origin - with.origin();
+        let a = transformed.direction.dot(&transformed.direction);
+        let b = 2.0 * transformed.direction.dot(&sphere_to_ray);
+        let c = sphere_to_ray.dot(&sphere_to_ray) - with.radius();
 
         let discriminant = b * b - 4.0 * a * c;
 
@@ -34,6 +41,18 @@ impl Ray {
         let t2 = (-b + discriminant.sqrt()) / (2.0 * a);
 
         Some(Intersection::new(t1, t2, with))
+    }
+
+    pub fn transformed(&self, transformation: &Matrix4D) -> Self {
+        let (x, y, z, w) = transformation * self.origin;
+        debug_assert!(w == 1.0, "matrix transform did not return a Point");
+        let transformed_origin = Point3D::new(x, y, z);
+
+        let (x, y, z, w) = transformation * self.direction;
+        debug_assert!(w == 0.0, "matrix transform did not return a Vector");
+        let transformed_direction = Vector3D::new(x, y, z);
+
+        Ray::new(transformed_origin, transformed_direction)
     }
 }
 
@@ -77,14 +96,21 @@ impl<'scene> Intersections<'scene> {
     pub fn hit(&self) -> Option<Hit<'scene>> {
         self.0
             .iter()
-            .max_by(|&i1, &i2| {
+            .filter(|&intersect| intersect.second >= 0.0)
+            .min_by(|&i1, &i2| {
                 if i1.second > i2.second {
                     Ordering::Greater
                 } else {
                     Ordering::Less
                 }
             })
-            .map(|intersect| Hit::new(intersect.second, intersect.with))
+            .map(|intersect| {
+                if intersect.first >= 0.0 {
+                    Hit::new(intersect.first, intersect.with)
+                } else {
+                    Hit::new(intersect.second, intersect.with)
+                }
+            })
     }
 }
 

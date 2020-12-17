@@ -78,4 +78,99 @@ mod ray_unit_tests {
         assert_eq!(intersection.first, -6.0);
         assert_eq!(intersection.second, -4.0);
     }
+
+    #[test]
+    fn the_hit_of_an_intersection_should_be_the_lowest_positive_t_value() {
+        let sphere = Sphere::unit();
+        let intersections = Intersections::of(Intersection::new(1.0, 2.0, &sphere));
+        let hit = intersections.hit();
+
+        assert!(hit.is_some());
+        let hit = hit.unwrap();
+
+        assert_eq!(hit.t, 1.0);
+        assert_eq!(hit.object, &sphere);
+    }
+
+    #[test]
+    fn the_hit_of_intersections_should_not_be_the_negative_t_intersection() {
+        let sphere = Sphere::unit();
+        let intersections = Intersections::of(Intersection::new(-1.0, 1.0, &sphere));
+        let hit = intersections.hit();
+
+        assert!(hit.is_some());
+        let hit = hit.unwrap();
+
+        assert_eq!(hit.t, 1.0);
+        assert_eq!(hit.object, &sphere);
+    }
+
+    #[test]
+    fn the_hit_of_all_negative_intersections_should_be_none() {
+        let sphere = Sphere::unit();
+        let intersections = Intersections::of(Intersection::new(-2.0, -1.0, &sphere));
+        let hit = intersections.hit();
+
+        assert!(hit.is_none());
+    }
+
+    #[test]
+    fn the_hit_of_multiple_intersections_should_be_the_lowest_positive_t_value() {
+        let sphere = Sphere::unit();
+        let intersections = Intersections::of(Intersection::new(5.0, 7.0, &sphere))
+            .push(Intersection::new(-3.0, 2.0, &sphere));
+        let hit = intersections.hit();
+
+        assert!(hit.is_some());
+        let hit = hit.unwrap();
+
+        assert_eq!(hit.t, 2.0);
+        assert_eq!(hit.object, &sphere);
+    }
+
+    #[test]
+    fn a_ray_can_be_translated() {
+        let matrix = Matrix4D::translation(3.0, 4.0, 5.0);
+        let ray = Ray::new(Point3D::new(1.0, 2.0, 3.0), Vector3D::new(0.0, 1.0, 0.0));
+
+        let transformed = ray.transformed(&matrix);
+        assert_eq!(transformed.origin, Point3D::new(4.0, 6.0, 8.0));
+        assert_eq!(transformed.direction, Vector3D::new(0.0, 1.0, 0.0));
+    }
+
+    #[test]
+    fn a_ray_can_be_scaled() {
+        let matrix = Matrix4D::scaling(2.0, 3.0, 4.0);
+        let ray = Ray::new(Point3D::new(1.0, 2.0, 3.0), Vector3D::new(0.0, 1.0, 0.0));
+
+        let transformed = ray.transformed(&matrix);
+        assert_eq!(transformed.origin, Point3D::new(2.0, 6.0, 12.0));
+        assert_eq!(transformed.direction, Vector3D::new(0.0, 3.0, 0.0));
+    }
+
+    #[test]
+    fn a_ray_should_intersect_a_scaled_sphere() {
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+        let scale = Matrix4D::scaling(2.0, 2.0, 2.0);
+        let mut sphere = Sphere::unit();
+        sphere.transform(scale);
+
+        let intersection = ray.intersect(&sphere);
+        assert!(intersection.is_some());
+        let intersection = intersection.unwrap();
+
+        assert_eq!(intersection.first, 3.0);
+        assert_eq!(intersection.second, 7.0);
+    }
+
+    #[test]
+    fn a_ray_should_not_intersect_a_sphere_translated_away_from_it() {
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+        let translation = Matrix4D::translation(5.0, 0.0, 0.0);
+        let mut sphere = Sphere::unit();
+        sphere.transform(translation);
+
+        let intersection = ray.intersect(&sphere);
+        assert!(intersection.is_none());
+    }
 }

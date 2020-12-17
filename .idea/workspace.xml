@@ -9,8 +9,9 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implemented ray intersection">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="migrated to Intersection struct">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/matrix/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ray/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/tests.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/sphere/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/sphere/mod.rs" afterDir="false" />
@@ -67,11 +68,6 @@
     </option>
   </component>
   <component name="RunManager" selected="Cargo.test">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Run ray_tracer" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="command" value="run --package ray_tracer --bin ray_tracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -156,6 +152,11 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.test" />
@@ -193,7 +194,8 @@
       <workItem from="1607946670590" duration="4027000" />
       <workItem from="1608061935286" duration="8000" />
       <workItem from="1608061957234" duration="2792000" />
-      <workItem from="1608144594392" duration="2627000" />
+      <workItem from="1608144594392" duration="2642000" />
+      <workItem from="1608234309676" duration="2239000" />
     </task>
     <task id="LOCAL-00001" summary="basic 3D Vector and Point operations">
       <created>1607266278125</created>
@@ -300,7 +302,14 @@
       <option name="project" value="LOCAL" />
       <updated>1608064751153</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="migrated to Intersection struct">
+      <created>1608147900407</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1608147900407</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -331,7 +340,8 @@
     <MESSAGE value="refactor to `lib.rs` based project structure" />
     <MESSAGE value="probably finally done moving files around" />
     <MESSAGE value="implemented ray intersection" />
-    <option name="LAST_COMMIT_MESSAGE" value="implemented ray intersection" />
+    <MESSAGE value="migrated to Intersection struct" />
+    <option name="LAST_COMMIT_MESSAGE" value="migrated to Intersection struct" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
