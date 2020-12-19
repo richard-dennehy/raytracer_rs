@@ -27,3 +27,9 @@ pub use ray::{Intersection, Intersections, Ray};
 
 mod sphere;
 pub use sphere::Sphere;
+
+mod light;
+pub use light::PointLight;
+
+mod material;
+pub use material::Material;

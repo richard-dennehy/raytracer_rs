@@ -9,11 +9,14 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="updated ray casting example">
-      <change afterPath="$PROJECT_DIR$/src/sphere/tests.rs" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="sphere normals">
+      <change afterPath="$PROJECT_DIR$/src/light/mod.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/material/mod.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/material/tests.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sphere/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/sphere/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/vector/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/vector/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/vector/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/vector/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -201,7 +204,7 @@
       <workItem from="1608144594392" duration="2642000" />
       <workItem from="1608234309676" duration="3561000" />
       <workItem from="1608321837416" duration="2268000" />
-      <workItem from="1608381108533" duration="2047000" />
+      <workItem from="1608381108533" duration="5301000" />
     </task>
     <task id="LOCAL-00001" summary="basic 3D Vector and Point operations">
       <created>1607266278125</created>
@@ -336,7 +339,14 @@
       <option name="project" value="LOCAL" />
       <updated>1608381210214</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="sphere normals">
+      <created>1608383171613</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1608383171613</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -371,7 +381,8 @@
     <MESSAGE value="add ray and sphere translations" />
     <MESSAGE value="ray casting example" />
     <MESSAGE value="updated ray casting example" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated ray casting example" />
+    <MESSAGE value="sphere normals" />
+    <option name="LAST_COMMIT_MESSAGE" value="sphere normals" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

@@ -121,6 +121,28 @@ mod unit_tests {
         assert_eq!(v1.cross(&v2), Vector3D::new(-1.0, 2.0, -1.0));
         assert_eq!(v2.cross(&v1), Vector3D::new(1.0, -2.0, 1.0));
     }
+
+    #[test]
+    fn should_correctly_reflect_a_vector_at_a_45_degree_angle_to_the_normal_plane() {
+        let vector = Vector3D::new(1.0, -1.0, 0.0);
+        let normal = Vector3D::new(0.0, 1.0, 0.0);
+
+        let reflected = vector.reflect_through(normal);
+        assert_eq!(reflected, Vector3D::new(1.0, 1.0, 0.0));
+    }
+
+    #[test]
+    fn should_correctly_reflect_a_vector_off_a_slanted_plane() {
+        let vector = Vector3D::new(0.0, -1.0, 0.0);
+        let normal = Vector3D::new(2.0_f64.sqrt() / 2.0, 2.0_f64.sqrt() / 2.0, 0.0);
+
+        let reflected = vector.reflect_through(normal);
+        assert!(approx_eq!(
+            Vector3D,
+            reflected,
+            Vector3D::new(1.0, 0.0, 0.0)
+        ));
+    }
 }
 
 mod property_tests {

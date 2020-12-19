@@ -47,6 +47,10 @@ impl Vector3D {
             (self.x() * other.y()) - (self.y() * other.x()),
         )
     }
+
+    pub fn reflect_through(&self, normal: Vector3D) -> Self {
+        *self - (normal * 2.0 * self.dot(&normal))
+    }
 }
 
 impl Add<Vector3D> for Vector3D {
