@@ -9,9 +9,11 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="ray casting example">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="updated ray casting example">
+      <change afterPath="$PROJECT_DIR$/src/sphere/tests.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sphere/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/sphere/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/vector/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/vector/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,7 +68,7 @@
       <command value="cargo clippy" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.Run ray_tracer">
+  <component name="RunManager" selected="Cargo.test">
     <configuration name="Run ray_tracer" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="command" value="run --package ray_tracer --bin ray_tracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -151,11 +153,16 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.Run ray_tracer" />
         <item itemvalue="Cargo.clippy" />
-        <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.Test vector::tests::vector_tests::subtracting_a_vector_from_a_vector_should_produce_a_vector_of_the_change_in_direction" />
         <item itemvalue="Cargo.Test vector::tests::vector_tests::multiplying_a_vector_by_a_scalar_should_multiply_x_y_and_z" />
       </list>
@@ -194,6 +201,7 @@
       <workItem from="1608144594392" duration="2642000" />
       <workItem from="1608234309676" duration="3561000" />
       <workItem from="1608321837416" duration="2268000" />
+      <workItem from="1608381108533" duration="2047000" />
     </task>
     <task id="LOCAL-00001" summary="basic 3D Vector and Point operations">
       <created>1607266278125</created>
@@ -321,7 +329,14 @@
       <option name="project" value="LOCAL" />
       <updated>1608237624969</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="updated ray casting example">
+      <created>1608381210214</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1608381210214</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -355,7 +370,8 @@
     <MESSAGE value="migrated to Intersection struct" />
     <MESSAGE value="add ray and sphere translations" />
     <MESSAGE value="ray casting example" />
-    <option name="LAST_COMMIT_MESSAGE" value="ray casting example" />
+    <MESSAGE value="updated ray casting example" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated ray casting example" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

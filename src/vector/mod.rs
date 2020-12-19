@@ -114,11 +114,29 @@ impl Div<f64> for &Vector3D {
 }
 
 #[cfg(test)]
-use quickcheck::{Arbitrary, Gen};
+mod test_utils {
+    use super::*;
+    use float_cmp::{ApproxEq, F64Margin};
+    use quickcheck::{Arbitrary, Gen};
 
-#[cfg(test)]
-impl Arbitrary for Vector3D {
-    fn arbitrary<G: Gen>(g: &mut G) -> Self {
-        Vector3D::new(f64::arbitrary(g), f64::arbitrary(g), f64::arbitrary(g))
+    impl Arbitrary for Vector3D {
+        fn arbitrary<G: Gen>(g: &mut G) -> Self {
+            Vector3D::new(f64::arbitrary(g), f64::arbitrary(g), f64::arbitrary(g))
+        }
+    }
+
+    impl ApproxEq for Vector3D {
+        type Margin = F64Margin;
+
+        fn approx_eq<M: Into<Self::Margin>>(self, other: Self, margin: M) -> bool {
+            let margin = margin.into();
+
+            self.0.approx_eq(other.0, margin)
+                && self.1.approx_eq(other.1, margin)
+                && self.2.approx_eq(other.2, margin)
+        }
     }
 }
+
+#[cfg(test)]
+pub use test_utils::*;
