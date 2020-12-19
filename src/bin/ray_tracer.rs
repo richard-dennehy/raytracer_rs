@@ -9,27 +9,29 @@ use std::num::NonZeroU16;
 
 const WIDTH: NonZeroU16 = nonzero!(800u16);
 const HEIGHT: NonZeroU16 = nonzero!(800u16);
+const WALL_Z: f64 = 1.1;
 
 fn main() {
     let mut canvas = Canvas::new(WIDTH, HEIGHT).unwrap();
     let mut sphere = Sphere::unit();
-    sphere.transform(Matrix4D::scaling(50.0, 50.0, 1.0).with_translation(
-        (WIDTH.get() / 2) as _,
-        (HEIGHT.get() / 2) as _,
-        1.0,
-    ));
+    sphere.transform(Matrix4D::translation(0.0, 20.0, 0.0));
 
-    let direction = Vector3D::new(0.0, 0.0, 1.0);
+    let ray_origin = Point3D::new(0.0, 0.0, -1.1);
 
     for x in 0..WIDTH.get() {
         for y in 0..HEIGHT.get() {
-            let ray = Ray::new(Point3D::new(x as _, y as _, 0.0), direction);
+            let world_x = x as i16 - ((WIDTH.get() / 2) as i16);
+            let world_y = ((HEIGHT.get() / 2) as i16) - y as i16;
+
+            let target = Point3D::new(world_x as _, world_y as _, WALL_Z);
+
+            let ray = Ray::new(ray_origin, (target - ray_origin).normalised());
             let intersection = ray.intersect(&sphere);
             if let Some(intersection) = intersection {
                 let hit = Intersections::of(intersection).hit();
 
                 if let Some(_) = hit {
-                    canvas.set(x, HEIGHT.get() - y, Colour::RED)
+                    canvas.set(x, y, Colour::RED)
                 }
             }
         }

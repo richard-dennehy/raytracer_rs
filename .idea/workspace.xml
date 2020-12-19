@@ -9,12 +9,9 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add ray and sphere translations">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="ray casting example">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sphere/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/sphere/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,7 +51,8 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
-    <property name="settings.editor.selected.configurable" value="editing.templates" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+    <property name="settings.editor.selected.configurable" value="language.rust.cargo" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -65,6 +63,7 @@
   <component name="RunAnythingCache">
     <option name="myCommands">
       <command value="cargo test" />
+      <command value="cargo clippy" />
     </option>
   </component>
   <component name="RunManager" selected="Cargo.Run ray_tracer">
@@ -84,20 +83,6 @@
     </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <option name="channel" value="DEFAULT" />
-      <option name="allFeatures" value="false" />
-      <option name="emulateTerminal" value="false" />
-      <option name="backtrace" value="SHORT" />
-      <envs />
-      <option name="isRedirectInput" value="false" />
-      <option name="redirectInputPath" value="" />
-      <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Test vector::tests::vector_tests::dividing_a_vector_by_a_scalar_should_divide_x_y_and_z" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package raytracer --bin raytracer vector::tests::vector_tests::dividing_a_vector_by_a_scalar_should_divide_x_y_and_z -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="allFeatures" value="false" />
@@ -138,6 +123,20 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration name="clippy" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="clippy" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="test" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="command" value="test" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -152,22 +151,20 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.Run ray_tracer" />
+        <item itemvalue="Cargo.clippy" />
         <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.Test vector::tests::vector_tests::subtracting_a_vector_from_a_vector_should_produce_a_vector_of_the_change_in_direction" />
         <item itemvalue="Cargo.Test vector::tests::vector_tests::multiplying_a_vector_by_a_scalar_should_multiply_x_y_and_z" />
-        <item itemvalue="Cargo.Test vector::tests::vector_tests::dividing_a_vector_by_a_scalar_should_divide_x_y_and_z" />
       </list>
     </recent_temporary>
   </component>
   <component name="RustProjectSettings">
+    <option name="externalLinter" value="Clippy" />
+    <option name="externalLinterArguments" value="clippy::pedantic clippy::all" />
+    <option name="runExternalLinterOnTheFly" value="true" />
     <option name="runRustfmtOnSave" value="true" />
     <option name="toolchainHomeDirectory" value="$USER_HOME$/.cargo/bin" />
     <option name="useRustfmt" value="true" />
@@ -195,7 +192,8 @@
       <workItem from="1608061935286" duration="8000" />
       <workItem from="1608061957234" duration="2792000" />
       <workItem from="1608144594392" duration="2642000" />
-      <workItem from="1608234309676" duration="3148000" />
+      <workItem from="1608234309676" duration="3561000" />
+      <workItem from="1608321837416" duration="2268000" />
     </task>
     <task id="LOCAL-00001" summary="basic 3D Vector and Point operations">
       <created>1607266278125</created>
@@ -316,7 +314,14 @@
       <option name="project" value="LOCAL" />
       <updated>1608236606026</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="ray casting example">
+      <created>1608237624969</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1608237624969</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -349,7 +354,8 @@
     <MESSAGE value="implemented ray intersection" />
     <MESSAGE value="migrated to Intersection struct" />
     <MESSAGE value="add ray and sphere translations" />
-    <option name="LAST_COMMIT_MESSAGE" value="add ray and sphere translations" />
+    <MESSAGE value="ray casting example" />
+    <option name="LAST_COMMIT_MESSAGE" value="ray casting example" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
