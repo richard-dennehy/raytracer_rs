@@ -9,12 +9,12 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="material lighting">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="updated example to use lighting">
       <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/material/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/material/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/material/tests.rs" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/sphere/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/sphere/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sphere/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/sphere/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,8 +103,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test vector::tests::vector_tests::multiplying_a_vector_by_a_scalar_should_multiply_x_y_and_z" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package raytracer --bin raytracer vector::tests::vector_tests::multiplying_a_vector_by_a_scalar_should_multiply_x_y_and_z -- --exact" />
+    <configuration name="Test sphere::tests::unit_tests::lighting_with_the_eye_in_between_the_light_and_the_surface_should_have_full_intensity" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib sphere::tests::unit_tests::lighting_with_the_eye_in_between_the_light_and_the_surface_should_have_full_intensity -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="allFeatures" value="false" />
@@ -117,8 +117,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test vector::tests::vector_tests::subtracting_a_vector_from_a_vector_should_produce_a_vector_of_the_change_in_direction" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package raytracer --bin raytracer vector::tests::vector_tests::subtracting_a_vector_from_a_vector_should_produce_a_vector_of_the_change_in_direction -- --exact" />
+    <configuration name="Test sphere::tests::unit_tests::lighting_with_the_light_at_45_deg_and_the_eye_at_neg_45_deg_to_the_surface_normal_should_have_less_diffuse" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib sphere::tests::unit_tests::lighting_with_the_light_at_45_deg_and_the_eye_at_neg_45_deg_to_the_surface_normal_should_have_less_diffuse -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="allFeatures" value="false" />
@@ -163,9 +163,9 @@
       <list>
         <item itemvalue="Cargo.Run ray_tracer" />
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.Test sphere::tests::unit_tests::lighting_with_the_light_at_45_deg_and_the_eye_at_neg_45_deg_to_the_surface_normal_should_have_less_diffuse" />
+        <item itemvalue="Cargo.Test sphere::tests::unit_tests::lighting_with_the_eye_in_between_the_light_and_the_surface_should_have_full_intensity" />
         <item itemvalue="Cargo.clippy" />
-        <item itemvalue="Cargo.Test vector::tests::vector_tests::subtracting_a_vector_from_a_vector_should_produce_a_vector_of_the_change_in_direction" />
-        <item itemvalue="Cargo.Test vector::tests::vector_tests::multiplying_a_vector_by_a_scalar_should_multiply_x_y_and_z" />
       </list>
     </recent_temporary>
   </component>
@@ -203,7 +203,7 @@
       <workItem from="1608234309676" duration="3561000" />
       <workItem from="1608321837416" duration="2268000" />
       <workItem from="1608381108533" duration="5581000" />
-      <workItem from="1608469835253" duration="1309000" />
+      <workItem from="1608469835253" duration="1981000" />
     </task>
     <task id="LOCAL-00001" summary="basic 3D Vector and Point operations">
       <created>1607266278125</created>
@@ -352,7 +352,14 @@
       <option name="project" value="LOCAL" />
       <updated>1608391833695</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="updated example to use lighting">
+      <created>1608471154947</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1608471154947</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -389,7 +396,8 @@
     <MESSAGE value="updated ray casting example" />
     <MESSAGE value="sphere normals" />
     <MESSAGE value="material lighting" />
-    <option name="LAST_COMMIT_MESSAGE" value="material lighting" />
+    <MESSAGE value="updated example to use lighting" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated example to use lighting" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

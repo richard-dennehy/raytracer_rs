@@ -36,16 +36,10 @@ fn main() {
 
                 if let Some(hit) = hit {
                     let position = ray.position(hit.t);
-                    let surface_normal = hit.object.normal_at(position);
 
                     let eye_vector = -ray.direction;
 
-                    let colour = hit.object.material.with_light(
-                        &light,
-                        position,
-                        eye_vector,
-                        surface_normal,
-                    );
+                    let colour = hit.object.colour_at(position, &light, eye_vector);
                     canvas.set(x, y, colour)
                 }
             }
