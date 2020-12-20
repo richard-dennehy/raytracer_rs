@@ -3,6 +3,7 @@ use crate::{Colour, Point3D, PointLight, Vector3D};
 #[cfg(test)]
 mod tests;
 
+#[derive(Debug, PartialEq)]
 pub struct Material {
     pub colour: Colour,
     pub ambient: f64,

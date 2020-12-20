@@ -1,4 +1,4 @@
-use crate::{Matrix4D, Point3D, Vector3D};
+use crate::{Material, Matrix4D, Point3D, Vector3D};
 
 #[cfg(test)]
 mod tests;
@@ -6,12 +6,14 @@ mod tests;
 #[derive(Debug, PartialEq)]
 pub struct Sphere {
     pub transform: Matrix4D,
+    pub material: Material,
 }
 
 impl Sphere {
-    pub const fn unit() -> Self {
+    pub fn unit() -> Self {
         Sphere {
             transform: Matrix4D::identity(),
+            material: Material::default(),
         }
     }
 

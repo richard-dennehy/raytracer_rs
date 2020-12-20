@@ -5,8 +5,8 @@ use std::cmp::Ordering;
 mod tests;
 
 pub struct Ray {
-    origin: Point3D,
-    direction: Vector3D,
+    pub origin: Point3D,
+    pub direction: Vector3D,
 }
 
 impl Ray {

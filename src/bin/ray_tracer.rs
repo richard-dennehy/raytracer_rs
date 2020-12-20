@@ -7,31 +7,46 @@ use ray_tracer::*;
 use std::fs;
 use std::num::NonZeroU16;
 
-const WIDTH: NonZeroU16 = nonzero!(800u16);
-const HEIGHT: NonZeroU16 = nonzero!(800u16);
-const WALL_Z: f64 = 1.1;
+const CANVAS_SIZE: NonZeroU16 = nonzero!(800u16);
+const WALL_Z: f64 = 10.0;
+const WALL_SIZE: f64 = 7.0;
 
 fn main() {
-    let mut canvas = Canvas::new(WIDTH, HEIGHT).unwrap();
+    let mut canvas = Canvas::new(CANVAS_SIZE, CANVAS_SIZE).unwrap();
     let mut sphere = Sphere::unit();
-    sphere.transform(Matrix4D::translation(0.0, 20.0, 0.0));
+    sphere.material.colour = Colour::new(1.0, 0.2, 1.0);
 
-    let ray_origin = Point3D::new(0.0, 0.0, -1.1);
+    let light = PointLight::new(Colour::WHITE, Point3D::new(-10.0, 10.0, -10.0));
 
-    for x in 0..WIDTH.get() {
-        for y in 0..HEIGHT.get() {
-            let world_x = x as i16 - ((WIDTH.get() / 2) as i16);
-            let world_y = ((HEIGHT.get() / 2) as i16) - y as i16;
+    let ray_origin = Point3D::new(0.0, 0.0, -5.0);
+    let pixel_size = WALL_SIZE / (CANVAS_SIZE.get() as f64);
+    let half = WALL_SIZE / 2.0;
 
-            let target = Point3D::new(world_x as _, world_y as _, WALL_Z);
+    for x in 0..CANVAS_SIZE.get() {
+        for y in 0..CANVAS_SIZE.get() {
+            let world_x = -half + pixel_size * x as f64;
+            let world_y = half - pixel_size * y as f64;
+
+            let target = Point3D::new(world_x, world_y, WALL_Z);
 
             let ray = Ray::new(ray_origin, (target - ray_origin).normalised());
             let intersection = ray.intersect(&sphere);
             if let Some(intersection) = intersection {
                 let hit = Intersections::of(intersection).hit();
 
-                if let Some(_) = hit {
-                    canvas.set(x, y, Colour::RED)
+                if let Some(hit) = hit {
+                    let position = ray.position(hit.t);
+                    let surface_normal = hit.object.normal_at(position);
+
+                    let eye_vector = -ray.direction;
+
+                    let colour = hit.object.material.with_light(
+                        &light,
+                        position,
+                        eye_vector,
+                        surface_normal,
+                    );
+                    canvas.set(x, y, colour)
                 }
             }
         }
