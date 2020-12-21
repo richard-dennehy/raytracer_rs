@@ -50,6 +50,10 @@ impl Matrix4D {
         )
     }
 
+    pub const fn uniform_scaling(scale: f64) -> Self {
+        Self::scaling(scale, scale, scale)
+    }
+
     pub fn with_scaling(self, x: f64, y: f64, z: f64) -> Self {
         let scaling = Matrix4D::scaling(x, y, z);
 

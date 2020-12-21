@@ -31,15 +31,15 @@ fn main() {
 
             let ray = Ray::new(ray_origin, (target - ray_origin).normalised());
             let intersection = ray.intersect(&sphere);
-            if let Some(intersection) = intersection {
-                let hit = Intersections::of(intersection).hit();
+            if let Some((first, second)) = intersection {
+                let hit = Intersections::of(first, second).hit();
 
                 if let Some(hit) = hit {
                     let position = ray.position(hit.t);
 
                     let eye_vector = -ray.direction;
 
-                    let colour = hit.object.colour_at(position, &light, eye_vector);
+                    let colour = hit.with.colour_at(position, &light, eye_vector);
                     canvas.set(x, y, colour)
                 }
             }

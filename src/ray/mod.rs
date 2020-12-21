@@ -18,7 +18,10 @@ impl Ray {
         self.origin + self.direction * time
     }
 
-    pub fn intersect<'with>(&self, with: &'with Sphere) -> Option<Intersection<'with>> {
+    pub fn intersect<'with>(
+        &self,
+        with: &'with Sphere,
+    ) -> Option<(Intersection<'with>, Intersection<'with>)> {
         let ray_transform = &with
             .transform
             .inverse()
@@ -40,7 +43,7 @@ impl Ray {
         let t1 = (-b - discriminant.sqrt()) / (2.0 * a);
         let t2 = (-b + discriminant.sqrt()) / (2.0 * a);
 
-        Some(Intersection::new(t1, t2, with))
+        Some((Intersection::new(t1, with), (Intersection::new(t2, with))))
     }
 
     pub fn transformed(&self, transformation: &Matrix4D) -> Self {
@@ -56,35 +59,40 @@ impl Ray {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Intersection<'with> {
-    pub first: f64,
-    pub second: f64,
+    pub t: f64,
     pub with: &'with Sphere,
 }
 
 impl<'with> Intersection<'with> {
-    pub fn new(first: f64, second: f64, with: &'with Sphere) -> Intersection {
-        debug_assert!(first <= second, "the first `t` value should always be less than (or equal to) the second `t` value - Intersections::hit relies on this invariant");
-
-        Intersection {
-            first,
-            second,
-            with,
-        }
+    pub fn new(t: f64, with: &'with Sphere) -> Intersection {
+        Intersection { t, with }
     }
 }
 
+/// Invariants:
+///  - contains an even number of elements
+///  - always sorted by ascending `t` values
 pub struct Intersections<'scene>(Vec<Intersection<'scene>>);
 
-/// Invariant: always non-empty
 impl<'scene> Intersections<'scene> {
-    pub fn of(intersection: Intersection<'scene>) -> Self {
-        Intersections(vec![intersection])
+    pub fn empty() -> Self {
+        Intersections(Vec::new())
     }
 
-    pub fn push(mut self, intersection: Intersection<'scene>) -> Self {
-        self.0.push(intersection);
+    pub fn of(first: Intersection<'scene>, second: Intersection<'scene>) -> Self {
+        let mut vec = vec![first, second];
+        vec.sort_unstable_by(Self::sort_by_t);
+
+        Intersections(vec)
+    }
+
+    pub fn push(mut self, first: Intersection<'scene>, second: Intersection<'scene>) -> Self {
+        self.0.push(first);
+        self.0.push(second);
+
+        self.0.sort_unstable_by(Self::sort_by_t);
 
         self
     }
@@ -93,34 +101,20 @@ impl<'scene> Intersections<'scene> {
         self.0.len()
     }
 
-    pub fn hit(&self) -> Option<Hit<'scene>> {
-        self.0
-            .iter()
-            .filter(|&intersect| intersect.second >= 0.0)
-            .min_by(|&i1, &i2| {
-                if i1.second > i2.second {
-                    Ordering::Greater
-                } else {
-                    Ordering::Less
-                }
-            })
-            .map(|intersect| {
-                if intersect.first >= 0.0 {
-                    Hit::new(intersect.first, intersect.with)
-                } else {
-                    Hit::new(intersect.second, intersect.with)
-                }
-            })
+    pub fn hit(&self) -> Option<Intersection<'scene>> {
+        self.0.iter().find(|&intersect| intersect.t >= 0.0).cloned()
     }
-}
 
-pub struct Hit<'object> {
-    pub t: f64,
-    pub object: &'object Sphere,
-}
+    pub fn append(&mut self, mut other: Intersections<'scene>) {
+        self.0.append(&mut other.0);
+        self.0.sort_unstable_by(Self::sort_by_t);
+    }
 
-impl<'object> Hit<'object> {
-    pub fn new(t: f64, object: &'object Sphere) -> Self {
-        Hit { t, object }
+    pub fn get(&self, index: usize) -> Option<&Intersection> {
+        self.0.get(index)
+    }
+
+    fn sort_by_t(first: &Intersection, second: &Intersection) -> Ordering {
+        f64::partial_cmp(&first.t, &second.t).expect("a `t` value should never be NaN")
     }
 }

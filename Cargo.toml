@@ -13,3 +13,4 @@ float-cmp = "0.8.0"
 
 [dependencies]
 nonzero_ext = "0.2.0"
+sorted-vec = "0.5.2"

@@ -20,10 +20,10 @@ mod ray_unit_tests {
 
         let intersection = ray.intersect(&sphere);
         assert!(intersection.is_some());
-        let intersection = intersection.unwrap();
+        let (first, second) = intersection.unwrap();
 
-        assert_eq!(intersection.first, 4.0);
-        assert_eq!(intersection.second, 6.0);
+        assert_eq!(first.t, 4.0);
+        assert_eq!(second.t, 6.0);
     }
 
     #[test]
@@ -34,10 +34,10 @@ mod ray_unit_tests {
         let intersection = ray.intersect(&sphere);
 
         assert!(intersection.is_some());
-        let intersection = intersection.unwrap();
+        let (first, second) = intersection.unwrap();
 
-        assert_eq!(intersection.first, 5.0);
-        assert_eq!(intersection.second, 5.0);
+        assert_eq!(first.t, 5.0);
+        assert_eq!(second.t, 5.0);
     }
 
     #[test]
@@ -58,10 +58,10 @@ mod ray_unit_tests {
         let intersection = ray.intersect(&sphere);
 
         assert!(intersection.is_some());
-        let intersection = intersection.unwrap();
+        let (first, second) = intersection.unwrap();
 
-        assert_eq!(intersection.first, -1.0);
-        assert_eq!(intersection.second, 1.0);
+        assert_eq!(first.t, -1.0);
+        assert_eq!(second.t, 1.0);
     }
 
     #[test]
@@ -73,42 +73,51 @@ mod ray_unit_tests {
         let intersection = ray.intersect(&sphere);
 
         assert!(intersection.is_some());
-        let intersection = intersection.unwrap();
+        let (first, second) = intersection.unwrap();
 
-        assert_eq!(intersection.first, -6.0);
-        assert_eq!(intersection.second, -4.0);
+        assert_eq!(first.t, -6.0);
+        assert_eq!(second.t, -4.0);
     }
 
     #[test]
     fn the_hit_of_an_intersection_should_be_the_lowest_positive_t_value() {
         let sphere = Sphere::unit();
-        let intersections = Intersections::of(Intersection::new(1.0, 2.0, &sphere));
+        let intersections = Intersections::of(
+            Intersection::new(1.0, &sphere),
+            Intersection::new(2.0, &sphere),
+        );
         let hit = intersections.hit();
 
         assert!(hit.is_some());
         let hit = hit.unwrap();
 
         assert_eq!(hit.t, 1.0);
-        assert_eq!(hit.object, &sphere);
+        assert_eq!(hit.with, &sphere);
     }
 
     #[test]
     fn the_hit_of_intersections_should_not_be_the_negative_t_intersection() {
         let sphere = Sphere::unit();
-        let intersections = Intersections::of(Intersection::new(-1.0, 1.0, &sphere));
+        let intersections = Intersections::of(
+            Intersection::new(-1.0, &sphere),
+            Intersection::new(1.0, &sphere),
+        );
         let hit = intersections.hit();
 
         assert!(hit.is_some());
         let hit = hit.unwrap();
 
         assert_eq!(hit.t, 1.0);
-        assert_eq!(hit.object, &sphere);
+        assert_eq!(hit.with, &sphere);
     }
 
     #[test]
     fn the_hit_of_all_negative_intersections_should_be_none() {
         let sphere = Sphere::unit();
-        let intersections = Intersections::of(Intersection::new(-2.0, -1.0, &sphere));
+        let intersections = Intersections::of(
+            Intersection::new(-2.0, &sphere),
+            Intersection::new(-1.0, &sphere),
+        );
         let hit = intersections.hit();
 
         assert!(hit.is_none());
@@ -117,15 +126,21 @@ mod ray_unit_tests {
     #[test]
     fn the_hit_of_multiple_intersections_should_be_the_lowest_positive_t_value() {
         let sphere = Sphere::unit();
-        let intersections = Intersections::of(Intersection::new(5.0, 7.0, &sphere))
-            .push(Intersection::new(-3.0, 2.0, &sphere));
+        let intersections = Intersections::of(
+            Intersection::new(5.0, &sphere),
+            Intersection::new(7.0, &sphere),
+        )
+        .push(
+            Intersection::new(-3.0, &sphere),
+            Intersection::new(2.0, &sphere),
+        );
         let hit = intersections.hit();
 
         assert!(hit.is_some());
         let hit = hit.unwrap();
 
         assert_eq!(hit.t, 2.0);
-        assert_eq!(hit.object, &sphere);
+        assert_eq!(hit.with, &sphere);
     }
 
     #[test]
@@ -157,10 +172,10 @@ mod ray_unit_tests {
 
         let intersection = ray.intersect(&sphere);
         assert!(intersection.is_some());
-        let intersection = intersection.unwrap();
+        let (first, second) = intersection.unwrap();
 
-        assert_eq!(intersection.first, 3.0);
-        assert_eq!(intersection.second, 7.0);
+        assert_eq!(first.t, 3.0);
+        assert_eq!(second.t, 7.0);
     }
 
     #[test]

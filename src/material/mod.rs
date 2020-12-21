@@ -9,6 +9,18 @@ pub struct Material {
     pub shininess: f64,
 }
 
+impl Material {
+    pub fn new(colour: Colour, ambient: f64, diffuse: f64, specular: f64, shininess: f64) -> Self {
+        Material {
+            colour,
+            ambient,
+            diffuse,
+            specular,
+            shininess,
+        }
+    }
+}
+
 impl Default for Material {
     fn default() -> Self {
         Material {

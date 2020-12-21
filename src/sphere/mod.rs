@@ -10,6 +10,20 @@ pub struct Sphere {
 }
 
 impl Sphere {
+    pub fn with_transform(transform: Matrix4D) -> Self {
+        Sphere {
+            transform,
+            material: Material::default(),
+        }
+    }
+
+    pub fn with_material(material: Material) -> Self {
+        Sphere {
+            transform: Matrix4D::identity(),
+            material,
+        }
+    }
+
     pub fn unit() -> Self {
         Sphere {
             transform: Matrix4D::identity(),

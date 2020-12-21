@@ -189,6 +189,7 @@ dependencies = [
  "nonzero_ext",
  "quickcheck",
  "quickcheck_macros",
+ "sorted-vec",
 ]
 
 [[package]]
@@ -208,6 +209,12 @@ name = "regex-syntax"
 version = "0.6.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3b181ba2dcf07aaccad5448e8ead58db5b742cf85dfe035e2227f137a539a189"
+
+[[package]]
+name = "sorted-vec"
+version = "0.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c026467316e4ed9196f9ebe09c7801e4541c9052bf9f0d34b6f6c504ffccc233"
 
 [[package]]
 name = "syn"

@@ -33,3 +33,6 @@ pub use light::PointLight;
 
 mod material;
 pub use material::Material;
+
+mod world;
+pub use world::World;
