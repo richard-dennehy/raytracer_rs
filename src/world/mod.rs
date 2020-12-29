@@ -1,3 +1,4 @@
+use crate::ray::HitData;
 use crate::{Colour, Intersections, Material, Matrix4D, Point3D, PointLight, Ray, Sphere};
 
 #[cfg(test)]
@@ -35,12 +36,26 @@ impl World {
         }
     }
 
-    pub fn intersect(&self, ray: Ray) -> Intersections {
+    pub fn colour_at(&self, ray: Ray) -> Colour {
+        let intersections = self.intersect(&ray);
+        if let Some(hit) = intersections.hit() {
+            let hit_data = ray.hit_data(hit);
+            self.shade_hit(&hit_data)
+        } else {
+            Colour::BLACK
+        }
+    }
+
+    fn intersect(&self, ray: &Ray) -> Intersections {
         self.objects
             .iter()
             .filter_map(|obj| ray.intersect(obj))
             .fold(Intersections::empty(), |acc, (first, second)| {
                 acc.push(first, second)
             })
+    }
+
+    fn shade_hit(&self, hit_data: &HitData) -> Colour {
+        self.lights.iter().map(|light| hit_data.colour(light)).sum()
     }
 }

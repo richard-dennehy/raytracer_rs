@@ -9,19 +9,13 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="moved apply lighting function to sphere">
-      <change afterPath="$PROJECT_DIR$/src/world/mod.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/world/tests.rs" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="create World structure and ensure Intersections list is always sorted">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/material/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/material/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/matrix/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/colour/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/colour/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ray/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sphere/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/sphere/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/world/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/world/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -161,13 +155,18 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.test" />
-        <item itemvalue="Cargo.Run ray_tracer" />
+        <item itemvalue="Cargo.clippy" />
         <item itemvalue="Cargo.Test sphere::tests::unit_tests::lighting_with_the_light_at_45_deg_and_the_eye_at_neg_45_deg_to_the_surface_normal_should_have_less_diffuse" />
         <item itemvalue="Cargo.Test sphere::tests::unit_tests::lighting_with_the_eye_in_between_the_light_and_the_surface_should_have_full_intensity" />
-        <item itemvalue="Cargo.clippy" />
+        <item itemvalue="Cargo.Run ray_tracer" />
       </list>
     </recent_temporary>
   </component>
@@ -206,7 +205,9 @@
       <workItem from="1608321837416" duration="2268000" />
       <workItem from="1608381108533" duration="5581000" />
       <workItem from="1608469835253" duration="2067000" />
-      <workItem from="1608550890980" duration="3517000" />
+      <workItem from="1608550890980" duration="3619000" />
+      <workItem from="1609241917763" duration="78000" />
+      <workItem from="1609242008651" duration="3377000" />
     </task>
     <task id="LOCAL-00001" summary="basic 3D Vector and Point operations">
       <created>1607266278125</created>
@@ -369,7 +370,14 @@
       <option name="project" value="LOCAL" />
       <updated>1608471861280</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="create World structure and ensure Intersections list is always sorted">
+      <created>1608554512893</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1608554512893</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -408,7 +416,8 @@
     <MESSAGE value="material lighting" />
     <MESSAGE value="updated example to use lighting" />
     <MESSAGE value="moved apply lighting function to sphere" />
-    <option name="LAST_COMMIT_MESSAGE" value="moved apply lighting function to sphere" />
+    <MESSAGE value="create World structure and ensure Intersections list is always sorted" />
+    <option name="LAST_COMMIT_MESSAGE" value="create World structure and ensure Intersections list is always sorted" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

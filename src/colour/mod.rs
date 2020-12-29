@@ -1,3 +1,4 @@
+use std::iter::Sum;
 use std::ops::{Add, Mul, Sub};
 
 #[cfg(test)]
@@ -72,5 +73,11 @@ impl Mul<Colour> for Colour {
             self.green() * rhs.green(),
             self.blue() * rhs.blue(),
         )
+    }
+}
+
+impl Sum for Colour {
+    fn sum<I: Iterator<Item = Colour>>(iter: I) -> Self {
+        iter.fold(Colour::BLACK, |acc, next| acc + next)
     }
 }

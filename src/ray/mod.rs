@@ -1,9 +1,10 @@
-use crate::{Matrix4D, Point3D, Sphere, Vector3D};
+use crate::{Colour, Matrix4D, Point3D, PointLight, Sphere, Vector3D};
 use std::cmp::Ordering;
 
 #[cfg(test)]
 mod tests;
 
+#[derive(Clone)]
 pub struct Ray {
     pub origin: Point3D,
     pub direction: Vector3D,
@@ -57,6 +58,23 @@ impl Ray {
 
         Ray::new(transformed_origin, transformed_direction)
     }
+
+    pub fn hit_data<'obj>(&self, intersection: Intersection<'obj>) -> HitData<'obj> {
+        let point = self.position(intersection.t);
+        let eye = -self.direction;
+        let normal = intersection.with.normal_at(point);
+
+        let inside = normal.dot(&eye) < 0.0;
+
+        HitData {
+            t: intersection.t,
+            object: intersection.with,
+            point,
+            eye,
+            normal: if inside { -normal } else { normal },
+            inside,
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -68,6 +86,21 @@ pub struct Intersection<'with> {
 impl<'with> Intersection<'with> {
     pub fn new(t: f64, with: &'with Sphere) -> Intersection {
         Intersection { t, with }
+    }
+}
+
+pub struct HitData<'obj> {
+    pub t: f64,
+    pub object: &'obj Sphere,
+    pub point: Point3D,
+    pub eye: Vector3D,
+    pub normal: Vector3D,
+    pub inside: bool,
+}
+
+impl<'obj> HitData<'obj> {
+    pub fn colour(&self, light: &PointLight) -> Colour {
+        self.object.colour_at(self.point, light, self.eye)
     }
 }
 

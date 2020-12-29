@@ -188,4 +188,38 @@ mod ray_unit_tests {
         let intersection = ray.intersect(&sphere);
         assert!(intersection.is_none());
     }
+
+    #[test]
+    fn should_be_able_to_precompute_hit_data_for_an_outside_hit() {
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+        let sphere = Sphere::unit();
+
+        let intersection = ray.intersect(&sphere);
+        assert!(intersection.is_some());
+        let (intersection, _) = intersection.unwrap();
+        let data = ray.hit_data(intersection);
+        assert_eq!(data.t, 4.0);
+        assert_eq!(data.object, &sphere);
+        assert_eq!(data.point, Point3D::new(0.0, 0.0, -1.0));
+        assert_eq!(data.eye, Vector3D::new(0.0, 0.0, -1.0));
+        assert_eq!(data.normal, Vector3D::new(0.0, 0.0, -1.0));
+        assert_eq!(data.inside, false);
+    }
+
+    #[test]
+    fn should_be_able_to_precompute_hit_data_for_an_inside_hit() {
+        let ray = Ray::new(Point3D::new(0.0, 0.0, 0.0), Vector3D::new(0.0, 0.0, 1.0));
+        let sphere = Sphere::unit();
+
+        let intersection = ray.intersect(&sphere);
+        assert!(intersection.is_some());
+        let (_, intersection) = intersection.unwrap();
+        let data = ray.hit_data(intersection);
+        assert_eq!(data.t, 1.0);
+        assert_eq!(data.object, &sphere);
+        assert_eq!(data.point, Point3D::new(0.0, 0.0, 1.0));
+        assert_eq!(data.eye, Vector3D::new(0.0, 0.0, -1.0));
+        assert_eq!(data.normal, Vector3D::new(0.0, 0.0, -1.0));
+        assert!(data.inside);
+    }
 }
