@@ -39,3 +39,5 @@ pub use world::World;
 
 mod camera;
 pub use camera::Camera;
+
+pub mod renderer;

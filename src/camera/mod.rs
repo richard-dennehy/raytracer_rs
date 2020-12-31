@@ -7,7 +7,6 @@ mod tests;
 pub struct Camera {
     width: NonZeroU16,
     height: NonZeroU16,
-    fov: f64,
     transform: Matrix4D,
     pixel_size: f64,
     half_canvas_width: f64,
@@ -38,7 +37,6 @@ impl Camera {
         Camera {
             width,
             height,
-            fov: fov_radians,
             transform,
             pixel_size,
             half_canvas_width,
@@ -46,7 +44,7 @@ impl Camera {
         }
     }
 
-    fn ray_at(&self, x: u16, y: u16) -> Ray {
+    pub fn ray_at(&self, x: u16, y: u16) -> Ray {
         let x_offset = (x as f64 + 0.5) * self.pixel_size;
         let y_offset = (y as f64 + 0.5) * self.pixel_size;
 
@@ -66,5 +64,13 @@ impl Camera {
 
         let direction = (pixel - origin).normalised();
         Ray::new(origin, direction)
+    }
+
+    pub fn width(&self) -> NonZeroU16 {
+        self.width
+    }
+
+    pub fn height(&self) -> NonZeroU16 {
+        self.height
     }
 }

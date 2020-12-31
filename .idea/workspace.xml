@@ -9,15 +9,12 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implement world shading">
-      <change afterPath="$PROJECT_DIR$/src/camera/mod.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/camera/tests.rs" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="ray casting through camera and canvas">
+      <change afterPath="$PROJECT_DIR$/src/renderer/mod.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/renderer/tests.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/camera/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/camera/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/matrix/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/matrix/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vector/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/vector/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -212,7 +209,7 @@
       <workItem from="1609242008651" duration="3517000" />
       <workItem from="1609326931755" duration="2999000" />
       <workItem from="1609414185835" duration="17000" />
-      <workItem from="1609414212041" duration="2151000" />
+      <workItem from="1609414212041" duration="2816000" />
     </task>
     <task id="LOCAL-00001" summary="basic 3D Vector and Point operations">
       <created>1607266278125</created>
@@ -389,7 +386,14 @@
       <option name="project" value="LOCAL" />
       <updated>1609245528386</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="ray casting through camera and canvas">
+      <created>1609416499051</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1609416499051</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -405,7 +409,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="basic 3D Vector and Point operations" />
     <MESSAGE value="implemented Colour" />
     <MESSAGE value="implemented basic Canvas operations" />
     <MESSAGE value="implemented basic PPM writer" />
@@ -430,18 +433,8 @@
     <MESSAGE value="moved apply lighting function to sphere" />
     <MESSAGE value="create World structure and ensure Intersections list is always sorted" />
     <MESSAGE value="implement world shading" />
-    <option name="LAST_COMMIT_MESSAGE" value="implement world shading" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/camera/mod.rs</url>
-          <line>55</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="ray casting through camera and canvas" />
+    <option name="LAST_COMMIT_MESSAGE" value="ray casting through camera and canvas" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
