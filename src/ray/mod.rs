@@ -4,7 +4,7 @@ use std::cmp::Ordering;
 #[cfg(test)]
 mod tests;
 
-#[derive(Clone)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Ray {
     pub origin: Point3D,
     pub direction: Vector3D,

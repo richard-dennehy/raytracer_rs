@@ -36,3 +36,6 @@ pub use material::Material;
 
 mod world;
 pub use world::World;
+
+mod camera;
+pub use camera::Camera;

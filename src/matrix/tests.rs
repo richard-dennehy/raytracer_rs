@@ -573,6 +573,59 @@ mod unit_tests {
 
         assert_eq!(translation * point, (15.0, 0.0, 7.0, 1.0));
     }
+
+    #[test]
+    fn the_view_transform_of_the_default_orientation_is_the_identity_matrix() {
+        let transform = Matrix4D::view_transform(
+            Point3D::new(0.0, 0.0, 0.0),
+            Point3D::new(0.0, 0.0, -1.0),
+            Vector3D::new(0.0, 1.0, 0.0),
+        );
+
+        assert_eq!(transform, Matrix4D::identity());
+    }
+
+    #[test]
+    fn the_view_transform_for_a_positive_z_orientation_is_a_scaling_matrix() {
+        let transform = Matrix4D::view_transform(
+            Point3D::new(0.0, 0.0, 0.0),
+            Point3D::new(0.0, 0.0, 1.0),
+            Vector3D::new(0.0, 1.0, 0.0),
+        );
+
+        assert_eq!(transform, Matrix4D::scaling(-1.0, 1.0, -1.0));
+    }
+
+    #[test]
+    fn a_view_translation_moves_the_world_in_the_opposite_direction() {
+        let transform = Matrix4D::view_transform(
+            Point3D::new(0.0, 0.0, 8.0),
+            Point3D::new(0.0, 0.0, 0.0),
+            Vector3D::new(0.0, 1.0, 0.0),
+        );
+
+        assert_eq!(transform, Matrix4D::translation(0.0, 0.0, -8.0));
+    }
+
+    #[test]
+    fn an_arbitrary_orientation_produces_the_correct_view_transform() {
+        let transform = Matrix4D::view_transform(
+            Point3D::new(1.0, 3.0, 2.0),
+            Point3D::new(4.0, -2.0, 8.0),
+            Vector3D::new(1.0, 1.0, 0.0),
+        );
+
+        #[rustfmt::skip]
+        assert_eq!(
+            transform,
+            Matrix4D::new(
+                [-0.5070925528371099, 0.5070925528371099, 0.6761234037828132, -2.366431913239846],
+                [0.7677159338596801, 0.6060915267313263, 0.12121830534626524, -2.8284271247461894],
+                [-0.35856858280031806, 0.5976143046671968, -0.7171371656006361, 0.0],
+                [0.0, 0.0, 0.0, 1.0]
+            )
+        );
+    }
 }
 
 mod property_tests {

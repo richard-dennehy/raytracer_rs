@@ -118,6 +118,9 @@ impl Div<f64> for &Vector3D {
 }
 
 #[cfg(test)]
+pub use test_utils::*;
+
+#[cfg(test)]
 mod test_utils {
     use super::*;
     use float_cmp::{ApproxEq, F64Margin};
@@ -141,6 +144,3 @@ mod test_utils {
         }
     }
 }
-
-#[cfg(test)]
-pub use test_utils::*;

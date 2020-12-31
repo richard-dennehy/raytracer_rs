@@ -317,6 +317,22 @@ impl Matrix4D {
             ),
         }
     }
+
+    pub fn view_transform(from: Point3D, to: Point3D, up: Vector3D) -> Self {
+        let up = up.normalised();
+        let forward = (to - from).normalised();
+        let left = forward.cross(&up);
+        let true_up = left.cross(&forward);
+
+        let orientation = Matrix4D::new(
+            [left.x(), left.y(), left.z(), 0.0],
+            [true_up.x(), true_up.y(), true_up.z(), 0.0],
+            [-forward.x(), -forward.y(), -forward.z(), 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+        );
+
+        orientation * Matrix4D::translation(-from.x(), -from.y(), -from.z())
+    }
 }
 
 impl Mul<Matrix4D> for Matrix4D {
