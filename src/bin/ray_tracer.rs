@@ -4,49 +4,83 @@ extern crate ray_tracer;
 extern crate nonzero_ext;
 
 use ray_tracer::*;
+use std::f64::consts::PI;
 use std::fs;
 use std::num::NonZeroU16;
+use std::time::Instant;
 
-const CANVAS_SIZE: NonZeroU16 = nonzero!(800u16);
-const WALL_Z: f64 = 10.0;
-const WALL_SIZE: f64 = 7.0;
+const CAMERA_WIDTH: NonZeroU16 = nonzero!(800u16);
+const CAMERA_HEIGHT: NonZeroU16 = nonzero!(600u16);
 
 fn main() {
-    let mut canvas = Canvas::new(CANVAS_SIZE, CANVAS_SIZE).unwrap();
-    let mut sphere = Sphere::unit();
-    sphere.material.colour = Colour::new(1.0, 0.2, 1.0);
+    let timer = Instant::now();
 
-    let light = PointLight::new(Colour::WHITE, Point3D::new(-10.0, 10.0, -10.0));
+    let mut floor = Sphere::with_transform(Matrix4D::scaling(10.0, 0.01, 10.0));
+    floor.material.colour = Colour::new(1.0, 0.9, 0.9);
+    floor.material.specular = 0.0;
 
-    let ray_origin = Point3D::new(0.0, 0.0, -5.0);
-    let pixel_size = WALL_SIZE / (CANVAS_SIZE.get() as f64);
-    let half = WALL_SIZE / 2.0;
+    let mut left_wall = Sphere::with_transform(
+        Matrix4D::scaling(10.0, 0.01, 10.0)
+            .with_rotation_x(PI / 2.0)
+            .with_rotation_y(-PI / 4.0)
+            .with_translation(0.0, 0.0, 5.0),
+    );
 
-    for x in 0..CANVAS_SIZE.get() {
-        for y in 0..CANVAS_SIZE.get() {
-            let world_x = -half + pixel_size * x as f64;
-            let world_y = half - pixel_size * y as f64;
+    left_wall.material = floor.material.clone();
 
-            let target = Point3D::new(world_x, world_y, WALL_Z);
+    let mut right_wall = Sphere::with_transform(
+        Matrix4D::scaling(10.0, 0.01, 10.0)
+            .with_rotation_x(PI / 2.0)
+            .with_rotation_y(PI / 4.0)
+            .with_translation(0.0, 0.0, 5.0),
+    );
 
-            let ray = Ray::new(ray_origin, (target - ray_origin).normalised());
-            let intersection = ray.intersect(&sphere);
-            if let Some((first, second)) = intersection {
-                let hit = Intersections::of(first, second).hit();
+    right_wall.material = floor.material.clone();
 
-                if let Some(hit) = hit {
-                    let position = ray.position(hit.t);
+    let mut middle_sphere = Sphere::with_transform(Matrix4D::translation(-0.5, 1.0, 0.5));
+    middle_sphere.material.colour = Colour::new(0.1, 1.0, 0.5);
+    middle_sphere.material.diffuse = 0.7;
+    middle_sphere.material.specular = 0.3;
 
-                    let eye_vector = -ray.direction;
+    let mut right_sphere =
+        Sphere::with_transform(Matrix4D::uniform_scaling(0.5).with_translation(1.5, 0.5, -0.5));
+    right_sphere.material.colour = Colour::new(0.1, 1.0, 0.5);
+    right_sphere.material.diffuse = 0.7;
+    right_sphere.material.specular = 0.3;
 
-                    let colour = hit.with.colour_at(position, &light, eye_vector);
-                    canvas.set(x, y, colour)
-                }
-            }
-        }
-    }
+    let mut left_sphere =
+        Sphere::with_transform(Matrix4D::uniform_scaling(0.33).with_translation(-1.5, 0.33, -0.75));
+    left_sphere.material.colour = Colour::new(1.0, 0.8, 0.1);
+    left_sphere.material.diffuse = 0.7;
+    left_sphere.material.specular = 0.3;
+
+    let mut world = World::empty();
+    world.lights.push(PointLight::new(
+        Colour::WHITE,
+        Point3D::new(-10.0, 10.0, -10.0),
+    ));
+    world.objects.push(floor);
+    world.objects.push(left_wall);
+    world.objects.push(right_wall);
+    world.objects.push(middle_sphere);
+    world.objects.push(right_sphere);
+    world.objects.push(left_sphere);
+
+    let camera = Camera::new(
+        CAMERA_WIDTH,
+        CAMERA_HEIGHT,
+        PI / 3.0,
+        Matrix4D::view_transform(
+            Point3D::new(0.0, 1.5, -5.0),
+            Point3D::new(0.0, 1.0, 0.0),
+            Vector3D::new(0.0, 1.0, 0.0),
+        ),
+    );
+    let canvas = renderer::render(world, camera);
 
     let ppm_content = ppm_writer::write_ppm(&canvas);
 
-    fs::write("out.ppm", ppm_content).expect("Failed to write output file")
+    fs::write("out.ppm", ppm_content).expect("Failed to write output file");
+
+    println!("Completed in {:.2?}", timer.elapsed())
 }

@@ -5,8 +5,8 @@ use crate::{Colour, Intersections, Material, Matrix4D, Point3D, PointLight, Ray,
 mod tests;
 
 pub struct World {
-    objects: Vec<Sphere>,
-    lights: Vec<PointLight>,
+    pub objects: Vec<Sphere>,
+    pub lights: Vec<PointLight>,
 }
 
 impl World {
