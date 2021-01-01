@@ -222,4 +222,17 @@ mod ray_unit_tests {
         assert_eq!(data.normal, Vector3D::new(0.0, 0.0, -1.0));
         assert!(data.inside);
     }
+
+    #[test]
+    fn should_calculate_offset_point_for_shadow_calculations() {
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+        let sphere = Sphere::with_transform(Matrix4D::translation(0.0, 0.0, 1.0));
+
+        let intersection = ray.intersect(&sphere);
+        assert!(intersection.is_some());
+        let (intersection, _) = intersection.unwrap();
+        let data = ray.hit_data(intersection);
+        assert!(data.shadow_point.z() < -f64::EPSILON / 2.0);
+        assert!(data.point.z() > data.shadow_point.z());
+    }
 }

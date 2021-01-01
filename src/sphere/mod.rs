@@ -53,14 +53,24 @@ impl Sphere {
         world_normal.normalised()
     }
 
-    pub fn colour_at(&self, point: Point3D, light: &PointLight, eye_vector: Vector3D) -> Colour {
-        let surface_normal = self.normal_at(point);
+    pub fn colour_at(
+        &self,
+        point: Point3D,
+        light: &PointLight,
+        eye_vector: Vector3D,
+        in_shadow: bool,
+    ) -> Colour {
         let material = &self.material;
 
         let colour = material.colour * light.intensity;
-        let light_vector = (light.position - point).normalised();
-
         let ambient = colour * material.ambient;
+
+        if in_shadow {
+            return ambient;
+        }
+
+        let light_vector = (light.position - point).normalised();
+        let surface_normal = self.normal_at(point);
 
         let light_dot_normal = light_vector.dot(&surface_normal);
         // if dot product is <= 0, the light is behind the surface

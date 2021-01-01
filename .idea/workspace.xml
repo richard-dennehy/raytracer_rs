@@ -9,11 +9,14 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add renderer">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="ray tracer example with multiple objects">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/material/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/material/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sphere/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/sphere/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sphere/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/sphere/tests.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/world/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/world/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,14 +69,10 @@
     <option name="myCommands">
       <command value="cargo test" />
       <command value="cargo clippy" />
+      <command value="cargo run --release" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.run">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="Cargo.test">
     <configuration name="Run ray_tracer" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="command" value="run --package ray_tracer --bin ray_tracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -158,11 +157,16 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.run" />
         <item itemvalue="Cargo.Run ray_tracer" />
-        <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.Test camera::tests::unit_tests::a_ray_through_the_centre_of_the_camera_should_travel_along_negative_z_from_the_world_origin" />
         <item itemvalue="Cargo.clippy" />
       </list>
@@ -209,7 +213,8 @@
       <workItem from="1609326931755" duration="2999000" />
       <workItem from="1609414185835" duration="17000" />
       <workItem from="1609414212041" duration="3663000" />
-      <workItem from="1609500589564" duration="1338000" />
+      <workItem from="1609500589564" duration="1861000" />
+      <workItem from="1609503257854" duration="1938000" />
     </task>
     <task id="LOCAL-00001" summary="basic 3D Vector and Point operations">
       <created>1607266278125</created>
@@ -400,7 +405,14 @@
       <option name="project" value="LOCAL" />
       <updated>1609417279478</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="ray tracer example with multiple objects">
+      <created>1609502231940</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1609502231940</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -416,7 +428,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="implemented basic Canvas operations" />
     <MESSAGE value="implemented basic PPM writer" />
     <MESSAGE value="basic example program to test canvas output" />
     <MESSAGE value="initial matrix 4D, 3D, and 2D data structures" />
@@ -441,7 +452,8 @@
     <MESSAGE value="implement world shading" />
     <MESSAGE value="ray casting through camera and canvas" />
     <MESSAGE value="add renderer" />
-    <option name="LAST_COMMIT_MESSAGE" value="add renderer" />
+    <MESSAGE value="ray tracer example with multiple objects" />
+    <option name="LAST_COMMIT_MESSAGE" value="ray tracer example with multiple objects" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

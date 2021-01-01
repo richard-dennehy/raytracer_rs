@@ -84,7 +84,7 @@ mod unit_tests {
         let eye_vector = Vector3D::new(0.0, 0.0, -1.0);
         let light = PointLight::new(Colour::WHITE, Point3D::new(0.0, 0.0, -10.0));
 
-        let lit_material = sphere.colour_at(point, &light, eye_vector);
+        let lit_material = sphere.colour_at(point, &light, eye_vector, false);
         assert_eq!(lit_material, Colour::new(1.9, 1.9, 1.9));
     }
 
@@ -96,7 +96,7 @@ mod unit_tests {
         let eye_vector = Vector3D::new(0.0, 2.0_f64.sqrt() / 2.0, -2.0_f64.sqrt() / 2.0);
         let light = PointLight::new(Colour::WHITE, Point3D::new(0.0, 0.0, -10.0));
 
-        let lit_material = sphere.colour_at(point, &light, eye_vector);
+        let lit_material = sphere.colour_at(point, &light, eye_vector, false);
         assert_eq!(lit_material, Colour::new(1.0, 1.0, 1.0));
     }
 
@@ -110,7 +110,7 @@ mod unit_tests {
         let eye_vector = Vector3D::new(0.0, 0.0, -1.0);
         let light = PointLight::new(Colour::WHITE, Point3D::new(0.0, 10.0, -10.0));
 
-        let lit_material = sphere.colour_at(point, &light, eye_vector);
+        let lit_material = sphere.colour_at(point, &light, eye_vector, false);
         assert_eq!(
             lit_material,
             Colour::new(0.7363961030678927, 0.7363961030678927, 0.7363961030678927)
@@ -127,7 +127,7 @@ mod unit_tests {
         let eye_vector = Vector3D::new(0.0, -2.0_f64.sqrt() / 2.0, -2.0_f64.sqrt() / 2.0);
         let light = PointLight::new(Colour::WHITE, Point3D::new(0.0, 10.0, -10.0));
 
-        let lit_material = sphere.colour_at(point, &light, eye_vector);
+        let lit_material = sphere.colour_at(point, &light, eye_vector, false);
         assert_eq!(
             lit_material,
             Colour::new(1.6363961030678928, 1.6363961030678928, 1.6363961030678928)
@@ -142,7 +142,19 @@ mod unit_tests {
         let eye_vector = Vector3D::new(0.0, 0.0, -1.0);
         let light = PointLight::new(Colour::WHITE, Point3D::new(0.0, 0.0, 10.0));
 
-        let lit_material = sphere.colour_at(point, &light, eye_vector);
+        let lit_material = sphere.colour_at(point, &light, eye_vector, false);
+        assert_eq!(lit_material, Colour::new(0.1, 0.1, 0.1));
+    }
+
+    #[test]
+    fn lighting_a_point_in_shadow_should_only_have_ambient() {
+        let sphere = Sphere::unit();
+        let point = Point3D::new(0.0, 0.0, -1.0);
+
+        let eye_vector = Vector3D::new(0.0, 0.0, -1.0);
+        let light = PointLight::new(Colour::WHITE, Point3D::new(0.0, 0.0, -10.0));
+
+        let lit_material = sphere.colour_at(point, &light, eye_vector, true);
         assert_eq!(lit_material, Colour::new(0.1, 0.1, 0.1));
     }
 }

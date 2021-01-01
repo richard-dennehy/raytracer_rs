@@ -65,6 +65,7 @@ impl Ray {
         let normal = intersection.with.normal_at(point);
 
         let inside = normal.dot(&eye) < 0.0;
+        let over_point = point + normal * (f32::EPSILON as f64); // f64 epsilon isn't sufficient to compensate for rounding errors
 
         HitData {
             t: intersection.t,
@@ -73,6 +74,7 @@ impl Ray {
             eye,
             normal: if inside { -normal } else { normal },
             inside,
+            shadow_point: over_point,
         }
     }
 }
@@ -96,11 +98,13 @@ pub struct HitData<'obj> {
     pub eye: Vector3D,
     pub normal: Vector3D,
     pub inside: bool,
+    pub shadow_point: Point3D,
 }
 
 impl<'obj> HitData<'obj> {
-    pub fn colour(&self, light: &PointLight) -> Colour {
-        self.object.colour_at(self.point, light, self.eye)
+    pub fn colour(&self, light: &PointLight, in_shadow: bool) -> Colour {
+        self.object
+            .colour_at(self.point, light, self.eye, in_shadow)
     }
 }
 

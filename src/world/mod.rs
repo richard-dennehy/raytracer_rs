@@ -56,6 +56,22 @@ impl World {
     }
 
     fn shade_hit(&self, hit_data: &HitData) -> Colour {
-        self.lights.iter().map(|light| hit_data.colour(light)).sum()
+        self.lights
+            .iter()
+            .map(|light| hit_data.colour(light, self.is_in_shadow(hit_data.shadow_point, light)))
+            .sum()
+    }
+
+    fn is_in_shadow(&self, point: Point3D, light: &PointLight) -> bool {
+        let light_vector = light.position - point;
+        let light_distance = light_vector.magnitude();
+        let light_vector = light_vector.normalised();
+
+        let ray = Ray::new(point, light_vector);
+        if let Some(hit) = self.intersect(&ray).hit() {
+            hit.t < light_distance
+        } else {
+            false
+        }
     }
 }

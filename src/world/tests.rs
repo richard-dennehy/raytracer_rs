@@ -101,4 +101,48 @@ mod unit_tests {
 
         assert_eq!(world.colour_at(ray), Colour::WHITE);
     }
+
+    #[test]
+    fn a_point_with_no_objects_collinear_to_the_light_should_not_be_shadowed() {
+        let world = World::default();
+        let light = world
+            .lights
+            .get(0)
+            .expect("The default world should have a light");
+
+        assert!(!world.is_in_shadow(Point3D::new(0.0, 10.0, 0.0), light))
+    }
+
+    #[test]
+    fn a_point_behind_a_lit_object_should_be_shadowed() {
+        let world = World::default();
+        let light = world
+            .lights
+            .get(0)
+            .expect("The default world should have a light");
+
+        assert!(world.is_in_shadow(Point3D::new(10.0, -10.0, 10.0), light))
+    }
+
+    #[test]
+    fn a_point_behind_the_light_should_not_be_shadowed() {
+        let world = World::default();
+        let light = world
+            .lights
+            .get(0)
+            .expect("The default world should have a light");
+
+        assert!(!world.is_in_shadow(Point3D::new(-20.0, 20.0, -20.0), light))
+    }
+
+    #[test]
+    fn a_point_in_between_the_light_and_an_object_should_not_be_shadowed() {
+        let world = World::default();
+        let light = world
+            .lights
+            .get(0)
+            .expect("The default world should have a light");
+
+        assert!(!world.is_in_shadow(Point3D::new(-2.0, 2.0, -2.0), light))
+    }
 }
