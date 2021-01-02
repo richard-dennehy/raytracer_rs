@@ -27,9 +27,10 @@ mod unit_tests {
             .objects
             .first()
             .expect("Default world should have objects");
-        let intersection = ray.intersect(sphere);
+        let intersection = sphere.intersect(&ray).hit();
         assert!(intersection.is_some());
-        let (intersection, _) = intersection.unwrap();
+        let intersection = intersection.unwrap();
+
         let hit_data = ray.hit_data(intersection);
         let colour = world.shade_hit(&hit_data);
 
@@ -54,11 +55,9 @@ mod unit_tests {
             .get(1)
             .expect("Default world should have objects");
 
-        let intersection = ray.intersect(sphere);
+        let intersection = sphere.intersect(&ray).hit();
         assert!(intersection.is_some());
-
-        let (_, intersection) = intersection.unwrap();
-        assert!(intersection.t >= 0.0);
+        let intersection = intersection.unwrap();
 
         let hit_data = ray.hit_data(intersection);
         let colour = world.shade_hit(&hit_data);

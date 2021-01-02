@@ -1,11 +1,11 @@
 use crate::ray::HitData;
-use crate::{Colour, Intersections, Material, Matrix4D, Point3D, PointLight, Ray, Sphere};
+use crate::{Colour, Intersections, Material, Matrix4D, Object, Point3D, PointLight, Ray};
 
 #[cfg(test)]
 mod tests;
 
 pub struct World {
-    pub objects: Vec<Sphere>,
+    pub objects: Vec<Object>,
     pub lights: Vec<PointLight>,
 }
 
@@ -20,14 +20,14 @@ impl World {
     pub fn default() -> Self {
         World {
             objects: vec![
-                Sphere::with_material(Material::new(
+                Object::sphere().with_material(Material::new(
                     Colour::new(0.8, 1.0, 0.6),
                     0.1,
                     0.7,
                     0.2,
                     200.0,
                 )),
-                Sphere::with_transform(Matrix4D::uniform_scaling(0.5)),
+                Object::sphere().with_transform(Matrix4D::uniform_scaling(0.5)),
             ],
             lights: vec![PointLight::new(
                 Colour::WHITE,
@@ -49,10 +49,8 @@ impl World {
     fn intersect(&self, ray: &Ray) -> Intersections {
         self.objects
             .iter()
-            .filter_map(|obj| ray.intersect(obj))
-            .fold(Intersections::empty(), |acc, (first, second)| {
-                acc.push(first, second)
-            })
+            .map(|obj| obj.intersect(&ray))
+            .fold(Intersections::empty(), Intersections::join)
     }
 
     fn shade_hit(&self, hit_data: &HitData) -> Colour {

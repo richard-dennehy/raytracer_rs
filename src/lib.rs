@@ -25,9 +25,6 @@ pub mod ppm_writer;
 mod ray;
 pub use ray::{Intersection, Intersections, Ray};
 
-mod sphere;
-pub use sphere::Sphere;
-
 mod light;
 pub use light::PointLight;
 
@@ -41,3 +38,6 @@ mod camera;
 pub use camera::Camera;
 
 pub mod renderer;
+
+mod object;
+pub use object::Object;

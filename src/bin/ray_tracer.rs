@@ -15,11 +15,11 @@ const CAMERA_HEIGHT: NonZeroU16 = nonzero!(600u16);
 fn main() {
     let timer = Instant::now();
 
-    let mut floor = Sphere::with_transform(Matrix4D::scaling(10.0, 0.01, 10.0));
+    let mut floor = Object::sphere().with_transform(Matrix4D::scaling(10.0, 0.01, 10.0));
     floor.material.colour = Colour::new(1.0, 0.9, 0.9);
     floor.material.specular = 0.0;
 
-    let mut left_wall = Sphere::with_transform(
+    let mut left_wall = Object::sphere().with_transform(
         Matrix4D::scaling(10.0, 0.01, 10.0)
             .with_rotation_x(PI / 2.0)
             .with_rotation_y(-PI / 4.0)
@@ -28,7 +28,7 @@ fn main() {
 
     left_wall.material = floor.material.clone();
 
-    let mut right_wall = Sphere::with_transform(
+    let mut right_wall = Object::sphere().with_transform(
         Matrix4D::scaling(10.0, 0.01, 10.0)
             .with_rotation_x(PI / 2.0)
             .with_rotation_y(PI / 4.0)
@@ -37,19 +37,19 @@ fn main() {
 
     right_wall.material = floor.material.clone();
 
-    let mut middle_sphere = Sphere::with_transform(Matrix4D::translation(-0.5, 1.0, 0.5));
+    let mut middle_sphere = Object::sphere().with_transform(Matrix4D::translation(-0.5, 1.0, 0.5));
     middle_sphere.material.colour = Colour::new(0.1, 1.0, 0.5);
     middle_sphere.material.diffuse = 0.7;
     middle_sphere.material.specular = 0.3;
 
-    let mut right_sphere =
-        Sphere::with_transform(Matrix4D::uniform_scaling(0.5).with_translation(1.5, 0.5, -0.5));
+    let mut right_sphere = Object::sphere()
+        .with_transform(Matrix4D::uniform_scaling(0.5).with_translation(1.5, 0.5, -0.5));
     right_sphere.material.colour = Colour::new(0.1, 1.0, 0.5);
     right_sphere.material.diffuse = 0.7;
     right_sphere.material.specular = 0.3;
 
-    let mut left_sphere =
-        Sphere::with_transform(Matrix4D::uniform_scaling(0.33).with_translation(-1.5, 0.33, -0.75));
+    let mut left_sphere = Object::sphere()
+        .with_transform(Matrix4D::uniform_scaling(0.33).with_translation(-1.5, 0.33, -0.75));
     left_sphere.material.colour = Colour::new(1.0, 0.8, 0.1);
     left_sphere.material.diffuse = 0.7;
     left_sphere.material.specular = 0.3;
