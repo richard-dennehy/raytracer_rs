@@ -21,6 +21,14 @@ impl Object {
         }
     }
 
+    pub fn plane() -> Self {
+        Object {
+            transform: Matrix4D::identity(),
+            material: Material::default(),
+            kind: Shape::Plane,
+        }
+    }
+
     pub fn normal_at(&self, point: Point3D) -> Vector3D {
         let inverted_transform = self
             .transform
@@ -88,11 +96,12 @@ impl Object {
         let transformed = with.transformed(&ray_transform);
 
         let ts = self.kind.object_intersect(transformed);
-        let mut intersections = Intersections::empty();
-        ts.into_iter()
-            .for_each(|t| intersections.push_one(Intersection::new(t, &self)));
+        let intersections = ts
+            .into_iter()
+            .map(|t| Intersection::new(t, &self))
+            .collect();
 
-        intersections
+        Intersections::of(intersections)
     }
 
     pub fn with_material(mut self, material: Material) -> Self {
@@ -109,22 +118,25 @@ impl Object {
 #[derive(Debug, PartialEq)]
 enum Shape {
     Sphere,
+    Plane,
 }
 
 impl Shape {
     pub fn object_normal_at(&self, point: Point3D) -> Vector3D {
         match self {
             &Shape::Sphere => point - Point3D::new(0.0, 0.0, 0.0),
+            &Shape::Plane => Vector3D::new(0.0, 1.0, 0.0),
         }
     }
 
     pub fn object_intersect(&self, with: Ray) -> Vec<f64> {
         match self {
-            &Shape::Sphere => self.sphere_intersect(with),
+            &Shape::Sphere => Shape::sphere_intersect(with),
+            &Shape::Plane => Shape::plane_intersect(with),
         }
     }
 
-    fn sphere_intersect(&self, with: Ray) -> Vec<f64> {
+    fn sphere_intersect(with: Ray) -> Vec<f64> {
         let sphere_to_ray = with.origin - Point3D::new(0.0, 0.0, 0.0);
         let a = with.direction.dot(&with.direction);
         let b = 2.0 * with.direction.dot(&sphere_to_ray);
@@ -140,5 +152,13 @@ impl Shape {
         let t2 = (-b + discriminant.sqrt()) / (2.0 * a);
 
         vec![t1, t2]
+    }
+
+    fn plane_intersect(with: Ray) -> Vec<f64> {
+        if with.direction.y().abs() <= f32::EPSILON as f64 {
+            return Vec::new();
+        }
+
+        vec![-with.origin.y() / with.direction.y()]
     }
 }

@@ -1,5 +1,4 @@
 use crate::{Colour, Matrix4D, Object, Point3D, PointLight, Vector3D};
-use std::cmp::Ordering;
 
 #[cfg(test)]
 mod tests;
@@ -81,8 +80,8 @@ impl<'obj> HitData<'obj> {
 }
 
 /// Invariants:
-///  - contains an even number of elements
 ///  - always sorted by ascending `t` values
+#[derive(Debug, PartialEq)]
 pub struct Intersections<'scene>(Vec<Intersection<'scene>>);
 
 impl<'scene> Intersections<'scene> {
@@ -95,30 +94,20 @@ impl<'scene> Intersections<'scene> {
         Intersections(Vec::new())
     }
 
-    pub fn of(first: Intersection<'scene>, second: Intersection<'scene>) -> Self {
-        let mut vec = vec![first, second];
-        vec.sort_unstable_by(Self::sort_by_t);
-
-        Intersections(vec)
+    pub fn of(intersections: Vec<Intersection<'scene>>) -> Self {
+        let mut this = Intersections(intersections);
+        this.sort();
+        this
     }
 
-    pub fn push_one(&mut self, intersection: Intersection<'scene>) {
+    pub fn push(&mut self, intersection: Intersection<'scene>) {
         self.0.push(intersection);
-        self.0.sort_unstable_by(Self::sort_by_t);
-    }
-
-    pub fn push(mut self, first: Intersection<'scene>, second: Intersection<'scene>) -> Self {
-        self.0.push(first);
-        self.0.push(second);
-
-        self.0.sort_unstable_by(Self::sort_by_t);
-
-        self
+        self.sort();
     }
 
     pub fn join(mut self, mut other: Intersections<'scene>) -> Self {
         self.0.append(&mut other.0);
-        self.0.sort_unstable_by(Self::sort_by_t);
+        self.sort();
 
         self
     }
@@ -133,14 +122,16 @@ impl<'scene> Intersections<'scene> {
 
     pub fn append(&mut self, mut other: Intersections<'scene>) {
         self.0.append(&mut other.0);
-        self.0.sort_unstable_by(Self::sort_by_t);
+        self.sort();
     }
 
     pub fn get(&self, index: usize) -> Option<&Intersection> {
         self.0.get(index)
     }
 
-    fn sort_by_t(first: &Intersection, second: &Intersection) -> Ordering {
-        f64::partial_cmp(&first.t, &second.t).expect("a `t` value should never be NaN")
+    pub fn sort(&mut self) {
+        self.0.sort_unstable_by(|first, second| {
+            f64::partial_cmp(&first.t, &second.t).expect("a `t` value should never be NaN")
+        })
     }
 }

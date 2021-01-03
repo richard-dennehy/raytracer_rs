@@ -15,27 +15,9 @@ const CAMERA_HEIGHT: NonZeroU16 = nonzero!(600u16);
 fn main() {
     let timer = Instant::now();
 
-    let mut floor = Object::sphere().with_transform(Matrix4D::scaling(10.0, 0.01, 10.0));
+    let mut floor = Object::plane();
     floor.material.colour = Colour::new(1.0, 0.9, 0.9);
     floor.material.specular = 0.0;
-
-    let mut left_wall = Object::sphere().with_transform(
-        Matrix4D::scaling(10.0, 0.01, 10.0)
-            .with_rotation_x(PI / 2.0)
-            .with_rotation_y(-PI / 4.0)
-            .with_translation(0.0, 0.0, 5.0),
-    );
-
-    left_wall.material = floor.material.clone();
-
-    let mut right_wall = Object::sphere().with_transform(
-        Matrix4D::scaling(10.0, 0.01, 10.0)
-            .with_rotation_x(PI / 2.0)
-            .with_rotation_y(PI / 4.0)
-            .with_translation(0.0, 0.0, 5.0),
-    );
-
-    right_wall.material = floor.material.clone();
 
     let mut middle_sphere = Object::sphere().with_transform(Matrix4D::translation(-0.5, 1.0, 0.5));
     middle_sphere.material.colour = Colour::new(0.1, 1.0, 0.5);
@@ -60,8 +42,6 @@ fn main() {
         Point3D::new(-10.0, 10.0, -10.0),
     ));
     world.objects.push(floor);
-    world.objects.push(left_wall);
-    world.objects.push(right_wall);
     world.objects.push(middle_sphere);
     world.objects.push(right_sphere);
     world.objects.push(left_sphere);

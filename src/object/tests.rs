@@ -245,3 +245,86 @@ mod sphere_tests {
         assert!(intersections.underlying().is_empty())
     }
 }
+
+mod plane_tests {
+    use super::*;
+    use std::f64::consts::PI;
+
+    #[quickcheck]
+    fn the_normal_of_an_xz_plane_is_constant_at_all_points(x: f64, z: f64) {
+        assert_eq!(
+            Object::plane().normal_at(Point3D::new(x, 0.0, z)),
+            Vector3D::new(0.0, 1.0, 0.0)
+        );
+    }
+
+    #[quickcheck]
+    fn the_normal_of_an_xy_plane_is_constant_at_all_points(x: f64, y: f64) {
+        let plane = Object::plane().with_transform(Matrix4D::rotation_x(PI / 2.0));
+
+        assert!(approx_eq!(
+            Vector3D,
+            plane.normal_at(Point3D::new(x, y, 0.0)),
+            Vector3D::new(0.0, 0.0, 1.0)
+        ));
+    }
+
+    #[quickcheck]
+    fn the_normal_of_a_yz_plane_is_constant_at_all_points(y: f64, z: f64) {
+        let plane = Object::plane().with_transform(Matrix4D::rotation_z(PI / 2.0));
+
+        assert!(approx_eq!(
+            Vector3D,
+            plane.normal_at(Point3D::new(0.0, y, z)),
+            Vector3D::new(-1.0, 0.0, 0.0)
+        ));
+    }
+
+    #[test]
+    fn a_plane_is_not_intersected_by_a_parallel_ray() {
+        assert_eq!(
+            Object::plane().intersect(&Ray::new(
+                Point3D::new(0.0, 1.0, 0.0),
+                Vector3D::new(1.0, 0.0, 0.0)
+            )),
+            Intersections::empty()
+        );
+    }
+
+    #[test]
+    fn a_plane_is_not_intersected_by_a_coplanar_ray() {
+        assert_eq!(
+            Object::plane().intersect(&Ray::new(
+                Point3D::new(0.0, 0.0, 0.0),
+                Vector3D::new(1.0, 0.0, 0.0)
+            )),
+            Intersections::empty()
+        );
+    }
+
+    #[test]
+    fn a_plane_is_intersected_by_a_ray_originating_from_above() {
+        let plane = Object::plane();
+        let intersections = plane.intersect(&Ray::new(
+            Point3D::new(0.0, 1.0, 0.0),
+            Vector3D::new(0.0, -1.0, 0.0),
+        ));
+
+        assert_eq!(intersections.len(), 1);
+
+        assert_eq!(intersections.underlying()[0].t, 1.0);
+    }
+
+    #[test]
+    fn a_plane_is_intersected_by_a_ray_originating_from_below() {
+        let plane = Object::plane();
+        let intersections = plane.intersect(&Ray::new(
+            Point3D::new(0.0, -1.0, 0.0),
+            Vector3D::new(0.0, 1.0, 0.0),
+        ));
+
+        assert_eq!(intersections.len(), 1);
+
+        assert_eq!(intersections.underlying()[0].t, 1.0);
+    }
+}

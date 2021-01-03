@@ -16,10 +16,10 @@ mod ray_unit_tests {
     #[test]
     fn the_hit_of_an_intersection_should_be_the_lowest_positive_t_value() {
         let sphere = Object::sphere();
-        let intersections = Intersections::of(
+        let intersections = Intersections::of(vec![
             Intersection::new(1.0, &sphere),
             Intersection::new(2.0, &sphere),
-        );
+        ]);
         let hit = intersections.hit();
 
         assert!(hit.is_some());
@@ -32,10 +32,10 @@ mod ray_unit_tests {
     #[test]
     fn the_hit_of_intersections_should_not_be_the_negative_t_intersection() {
         let sphere = Object::sphere();
-        let intersections = Intersections::of(
+        let intersections = Intersections::of(vec![
             Intersection::new(-1.0, &sphere),
             Intersection::new(1.0, &sphere),
-        );
+        ]);
         let hit = intersections.hit();
 
         assert!(hit.is_some());
@@ -48,10 +48,10 @@ mod ray_unit_tests {
     #[test]
     fn the_hit_of_all_negative_intersections_should_be_none() {
         let sphere = Object::sphere();
-        let intersections = Intersections::of(
+        let intersections = Intersections::of(vec![
             Intersection::new(-2.0, &sphere),
             Intersection::new(-1.0, &sphere),
-        );
+        ]);
         let hit = intersections.hit();
 
         assert!(hit.is_none());
@@ -60,14 +60,12 @@ mod ray_unit_tests {
     #[test]
     fn the_hit_of_multiple_intersections_should_be_the_lowest_positive_t_value() {
         let sphere = Object::sphere();
-        let intersections = Intersections::of(
+        let intersections = Intersections::of(vec![
             Intersection::new(5.0, &sphere),
             Intersection::new(7.0, &sphere),
-        )
-        .push(
             Intersection::new(-3.0, &sphere),
             Intersection::new(2.0, &sphere),
-        );
+        ]);
         let hit = intersections.hit();
 
         assert!(hit.is_some());
