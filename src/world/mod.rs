@@ -1,5 +1,5 @@
 use crate::ray::HitData;
-use crate::{Colour, Intersections, Material, Matrix4D, Object, Point3D, PointLight, Ray};
+use crate::{Colour, Intersections, Material, Matrix4D, Object, Pattern, Point3D, PointLight, Ray};
 
 #[cfg(test)]
 mod tests;
@@ -21,7 +21,7 @@ impl World {
         World {
             objects: vec![
                 Object::sphere().with_material(Material::new(
-                    Colour::new(0.8, 1.0, 0.6),
+                    Pattern::solid(Colour::new(0.8, 1.0, 0.6)),
                     0.1,
                     0.7,
                     0.2,

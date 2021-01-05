@@ -41,3 +41,6 @@ pub mod renderer;
 
 mod object;
 pub use object::Object;
+
+mod pattern;
+pub use pattern::Pattern;

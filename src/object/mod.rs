@@ -56,7 +56,16 @@ impl Object {
     ) -> Colour {
         let material = &self.material;
 
-        let colour = material.colour * light.intensity;
+        let object_point = {
+            let inverse = self
+                .transform
+                .inverse()
+                .expect("A transformation matrix must be invertible");
+            let (x, y, z, _) = inverse * point;
+            Point3D::new(x, y, z)
+        };
+
+        let colour = material.pattern.colour_at(object_point) * light.intensity;
         let ambient = colour * material.ambient;
 
         if in_shadow {
@@ -64,6 +73,7 @@ impl Object {
         }
 
         let light_vector = (light.position - point).normalised();
+        // FIXME calculating inverse multiple times
         let surface_normal = self.normal_at(point);
 
         let light_dot_normal = light_vector.dot(&surface_normal);
