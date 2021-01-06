@@ -1,4 +1,4 @@
-use crate::pattern::Kind::{Solid, Striped};
+use crate::pattern::Kind::{Gradient, Solid, Striped};
 use crate::{Colour, Matrix4D, Point3D};
 
 #[cfg(test)]
@@ -14,6 +14,7 @@ pub struct Pattern {
 enum Kind {
     Solid(Colour),
     Striped(Colour, Colour),
+    Gradient { from: Colour, delta: Colour },
 }
 
 impl Pattern {
@@ -27,6 +28,16 @@ impl Pattern {
     pub const fn striped(primary: Colour, secondary: Colour) -> Self {
         Pattern {
             kind: Striped(primary, secondary),
+            transform: Matrix4D::identity(),
+        }
+    }
+
+    pub fn gradient(from: Colour, to: Colour) -> Self {
+        Pattern {
+            kind: Gradient {
+                from,
+                delta: to - from,
+            },
             transform: Matrix4D::identity(),
         }
     }
@@ -51,6 +62,7 @@ impl Pattern {
             Solid(colour) => colour,
             Striped(primary, _) if point.x().floor() % 2.0 == 0.0 => primary,
             Striped(_, secondary) => secondary,
+            Gradient { from, delta } => from + delta * object_point.x().fract(),
         }
     }
 }

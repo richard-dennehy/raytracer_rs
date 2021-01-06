@@ -2,6 +2,8 @@ use super::*;
 
 mod shape_tests {
     use super::*;
+    use crate::Pattern;
+    use std::f64::consts::PI;
 
     #[test]
     fn lighting_with_the_eye_in_between_the_light_and_the_surface_should_have_full_intensity() {
@@ -84,10 +86,57 @@ mod shape_tests {
         let lit_material = sphere.colour_at(point, &light, eye_vector, true);
         assert_eq!(lit_material, Colour::new(0.1, 0.1, 0.1));
     }
+
+    #[test]
+    fn translating_an_object_should_translate_the_pattern_in_world_space() {
+        let sphere = Object::sphere()
+            .with_transform(Matrix4D::translation(1.0, 0.0, 0.0))
+            .with_material(Material::new(
+                Pattern::striped(Colour::WHITE, Colour::BLACK),
+                1.0,
+                0.0,
+                0.0,
+                200.0,
+            ));
+
+        assert_eq!(
+            sphere.colour_at(
+                Point3D::new(0.5, 0.0, 0.0),
+                &PointLight::new(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0)),
+                Vector3D::new(-1.0, 0.0, 0.0),
+                false
+            ),
+            Colour::BLACK
+        );
+    }
+
+    #[test]
+    fn rotating_an_object_should_rotate_the_pattern_in_world_space() {
+        let sphere = Object::sphere()
+            .with_transform(Matrix4D::rotation_y(PI))
+            .with_material(Material::new(
+                Pattern::striped(Colour::WHITE, Colour::BLACK),
+                1.0,
+                0.0,
+                0.0,
+                200.0,
+            ));
+
+        assert_eq!(
+            sphere.colour_at(
+                Point3D::new(-0.5, 0.0, 0.0),
+                &PointLight::new(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0)),
+                Vector3D::new(-1.0, 0.0, 0.0),
+                false
+            ),
+            Colour::WHITE
+        );
+    }
 }
 
 mod sphere_tests {
     use super::*;
+    use crate::Pattern;
 
     #[test]
     fn should_be_able_to_calculate_the_normal_on_the_x_axis() {
@@ -243,6 +292,50 @@ mod sphere_tests {
 
         let intersections = sphere.intersect(&ray);
         assert!(intersections.underlying().is_empty())
+    }
+
+    #[test]
+    fn lighting_a_point_on_the_left_hemisphere_of_a_default_sphere_with_a_default_stripe_pattern_should_use_the_secondary_colour(
+    ) {
+        let sphere = Object::sphere().with_material(Material::new(
+            Pattern::striped(Colour::WHITE, Colour::BLACK),
+            1.0,
+            0.0,
+            0.0,
+            200.0,
+        ));
+
+        assert_eq!(
+            sphere.colour_at(
+                Point3D::new(-0.5, 0.0, 0.0),
+                &PointLight::new(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0)),
+                Vector3D::new(-1.0, 0.0, 0.0),
+                false
+            ),
+            Colour::BLACK
+        );
+    }
+
+    #[test]
+    fn lighting_a_point_on_the_right_hemisphere_of_a_default_sphere_with_a_default_stripe_pattern_should_use_the_primary_colour(
+    ) {
+        let sphere = Object::sphere().with_material(Material::new(
+            Pattern::striped(Colour::WHITE, Colour::BLACK),
+            1.0,
+            0.0,
+            0.0,
+            200.0,
+        ));
+
+        assert_eq!(
+            sphere.colour_at(
+                Point3D::new(0.5, 0.0, 0.0),
+                &PointLight::new(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0)),
+                Vector3D::new(-1.0, 0.0, 0.0),
+                false
+            ),
+            Colour::WHITE
+        );
     }
 }
 

@@ -16,7 +16,8 @@ fn main() {
     let timer = Instant::now();
 
     let mut floor = Object::plane();
-    floor.material.pattern = Pattern::striped(Colour::new(1.0, 0.9, 0.9), Colour::WHITE);
+    floor.material.pattern = Pattern::striped(Colour::new(1.0, 0.9, 0.9), Colour::WHITE)
+        .with_transform(Matrix4D::shear(0.0, 1.0, 0.0, 0.0, 0.0, 0.0));
     floor.material.specular = 0.0;
 
     let mut middle_sphere = Object::sphere().with_transform(Matrix4D::translation(-0.5, 1.0, 0.5));
