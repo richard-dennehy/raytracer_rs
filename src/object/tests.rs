@@ -97,6 +97,7 @@ mod shape_tests {
                 0.0,
                 0.0,
                 200.0,
+                0.0,
             ));
 
         assert_eq!(
@@ -120,6 +121,7 @@ mod shape_tests {
                 0.0,
                 0.0,
                 200.0,
+                0.0,
             ));
 
         assert_eq!(
@@ -303,6 +305,7 @@ mod sphere_tests {
             0.0,
             0.0,
             200.0,
+            0.0,
         ));
 
         assert_eq!(
@@ -325,6 +328,7 @@ mod sphere_tests {
             0.0,
             0.0,
             200.0,
+            0.0,
         ));
 
         assert_eq!(

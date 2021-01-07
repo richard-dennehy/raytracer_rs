@@ -26,6 +26,7 @@ impl World {
                     0.7,
                     0.2,
                     200.0,
+                    0.0,
                 )),
                 Object::sphere().with_transform(Matrix4D::uniform_scaling(0.5)),
             ],

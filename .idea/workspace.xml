@@ -12,10 +12,14 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="added tests for stripes and applying patterns to objects, and implemented gradient pattern">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="checkers and ring patterns">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pattern/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pattern/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/material/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/material/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/world/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,6 +38,14 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="7aea3jlo" />
@@ -219,7 +231,7 @@
       <workItem from="1609789123164" duration="1937000" />
       <workItem from="1609877041921" duration="1754000" />
       <workItem from="1609961946537" duration="3361000" />
-      <workItem from="1610049610348" duration="618000" />
+      <workItem from="1610049610348" duration="1973000" />
     </task>
     <task id="LOCAL-00001" summary="basic 3D Vector and Point operations">
       <created>1607266278125</created>
@@ -452,7 +464,14 @@
       <option name="project" value="LOCAL" />
       <updated>1609965308370</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="checkers and ring patterns">
+      <created>1610050499105</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1610050499105</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -468,7 +487,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="implement matrix inversion" />
     <MESSAGE value="implement matrix operations on vectors and points" />
     <MESSAGE value="fluent API for combining matrix transformations and example clock program" />
     <MESSAGE value="migrate core code to lib folder" />
@@ -493,7 +511,8 @@
     <MESSAGE value="added plane shape" />
     <MESSAGE value="implemented basic patterns" />
     <MESSAGE value="added tests for stripes and applying patterns to objects, and implemented gradient pattern" />
-    <option name="LAST_COMMIT_MESSAGE" value="added tests for stripes and applying patterns to objects, and implemented gradient pattern" />
+    <MESSAGE value="checkers and ring patterns" />
+    <option name="LAST_COMMIT_MESSAGE" value="checkers and ring patterns" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

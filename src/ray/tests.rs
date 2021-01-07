@@ -2,6 +2,7 @@ use super::*;
 
 mod ray_unit_tests {
     use super::*;
+    use std::f64::consts::SQRT_2;
 
     #[test]
     fn should_be_able_to_calculate_the_position_of_a_ray_at_a_given_time() {
@@ -134,7 +135,7 @@ mod ray_unit_tests {
     }
 
     #[test]
-    fn should_calculate_offset_point_for_shadow_calculations() {
+    fn the_hit_data_should_contain_offset_point_for_shadow_calculations() {
         let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
         let sphere = Object::sphere().with_transform(Matrix4D::translation(0.0, 0.0, 1.0));
 
@@ -145,5 +146,24 @@ mod ray_unit_tests {
         let data = ray.hit_data(intersection);
         assert!(data.shadow_point.z() < -f64::EPSILON / 2.0);
         assert!(data.point.z() > data.shadow_point.z());
+    }
+
+    #[test]
+    fn hit_data_should_contain_the_reflection_vector() {
+        let ray = Ray::new(
+            Point3D::new(0.0, 1.0, -1.0),
+            Vector3D::new(0.0, -SQRT_2 / 2.0, SQRT_2 / 2.0),
+        );
+        let sphere = Object::plane();
+
+        let intersections = sphere.intersect(&ray);
+        assert_eq!(intersections.len(), 1);
+
+        let intersection = intersections.0[0].clone();
+        let data = ray.hit_data(intersection);
+        assert_eq!(
+            data.reflection,
+            Vector3D::new(0.0, SQRT_2 / 2.0, SQRT_2 / 2.0)
+        );
     }
 }
