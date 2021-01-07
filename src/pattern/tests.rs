@@ -125,6 +125,94 @@ mod unit_tests {
             Colour::new(0.25, 0.25, 0.25)
         );
     }
+
+    #[test]
+    fn a_ring_pattern_alternates_primary_and_secondary_colour_rings() {
+        let pattern = Pattern::ring(Colour::WHITE, Colour::BLACK);
+
+        assert_eq!(
+            pattern.colour_at(Point3D::new(0.0, 0.0, 0.0)),
+            Colour::WHITE
+        );
+        assert_eq!(
+            pattern.colour_at(Point3D::new(1.0, 0.0, 0.0)),
+            Colour::BLACK
+        );
+        assert_eq!(
+            pattern.colour_at(Point3D::new(0.0, 0.0, 1.0)),
+            Colour::BLACK
+        );
+        assert_eq!(
+            pattern.colour_at(Point3D::new(0.708, 0.0, 0.708)),
+            Colour::BLACK
+        );
+    }
+
+    #[test]
+    fn a_checkers_pattern_alternates_in_integer_increments_of_x() {
+        let pattern = Pattern::checkers(Colour::WHITE, Colour::BLACK);
+
+        assert_eq!(
+            pattern.colour_at(Point3D::new(0.0, 0.0, 0.0)),
+            Colour::WHITE
+        );
+        assert_eq!(
+            pattern.colour_at(Point3D::new(0.99, 0.0, 0.0)),
+            Colour::WHITE
+        );
+        assert_eq!(
+            pattern.colour_at(Point3D::new(1.0, 0.0, 0.0)),
+            Colour::BLACK
+        );
+        assert_eq!(
+            pattern.colour_at(Point3D::new(2.0, 0.0, 0.0)),
+            Colour::WHITE
+        );
+    }
+
+    #[test]
+    fn a_checkers_pattern_alternates_in_integer_increments_of_y() {
+        let pattern = Pattern::checkers(Colour::WHITE, Colour::BLACK);
+
+        assert_eq!(
+            pattern.colour_at(Point3D::new(0.0, 0.0, 0.0)),
+            Colour::WHITE
+        );
+        assert_eq!(
+            pattern.colour_at(Point3D::new(0.0, 0.99, 0.0)),
+            Colour::WHITE
+        );
+        assert_eq!(
+            pattern.colour_at(Point3D::new(0.0, 1.0, 0.0)),
+            Colour::BLACK
+        );
+        assert_eq!(
+            pattern.colour_at(Point3D::new(0.0, 2.0, 0.0)),
+            Colour::WHITE
+        );
+    }
+
+    #[test]
+    fn a_checkers_pattern_alternates_in_integer_increments_of_z() {
+        let pattern = Pattern::checkers(Colour::WHITE, Colour::BLACK);
+
+        assert_eq!(
+            pattern.colour_at(Point3D::new(0.0, 0.0, 0.0)),
+            Colour::WHITE
+        );
+        assert_eq!(
+            pattern.colour_at(Point3D::new(0.0, 0.0, 0.99)),
+            Colour::WHITE
+        );
+        assert_eq!(
+            pattern.colour_at(Point3D::new(0.0, 0.0, 1.0)),
+            Colour::BLACK
+        );
+        assert_eq!(
+            pattern.colour_at(Point3D::new(0.0, 0.0, 2.0)),
+            Colour::WHITE
+        );
+    }
 }
 
 mod property_tests {

@@ -12,10 +12,8 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implemented basic patterns">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="added tests for stripes and applying patterns to objects, and implemented gradient pattern">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pattern/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pattern/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/tests.rs" afterDir="false" />
     </list>
@@ -74,11 +72,6 @@
     </option>
   </component>
   <component name="RunManager" selected="Cargo.test">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Run ray_tracer" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="command" value="run --package ray_tracer --bin ray_tracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -163,6 +156,11 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.test" />
@@ -220,7 +218,8 @@
       <workItem from="1609675578526" duration="2130000" />
       <workItem from="1609789123164" duration="1937000" />
       <workItem from="1609877041921" duration="1754000" />
-      <workItem from="1609961946537" duration="3067000" />
+      <workItem from="1609961946537" duration="3361000" />
+      <workItem from="1610049610348" duration="618000" />
     </task>
     <task id="LOCAL-00001" summary="basic 3D Vector and Point operations">
       <created>1607266278125</created>
@@ -446,7 +445,14 @@
       <option name="project" value="LOCAL" />
       <updated>1609878796182</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="added tests for stripes and applying patterns to objects, and implemented gradient pattern">
+      <created>1609965308370</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1609965308370</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -462,7 +468,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="matrix determinant algorithms" />
     <MESSAGE value="implement matrix inversion" />
     <MESSAGE value="implement matrix operations on vectors and points" />
     <MESSAGE value="fluent API for combining matrix transformations and example clock program" />
@@ -487,7 +492,8 @@
     <MESSAGE value="refactor to be able to introduce new shape types" />
     <MESSAGE value="added plane shape" />
     <MESSAGE value="implemented basic patterns" />
-    <option name="LAST_COMMIT_MESSAGE" value="implemented basic patterns" />
+    <MESSAGE value="added tests for stripes and applying patterns to objects, and implemented gradient pattern" />
+    <option name="LAST_COMMIT_MESSAGE" value="added tests for stripes and applying patterns to objects, and implemented gradient pattern" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

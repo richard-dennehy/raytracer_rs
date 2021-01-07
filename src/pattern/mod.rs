@@ -1,4 +1,4 @@
-use crate::pattern::Kind::{Gradient, Solid, Striped};
+use crate::pattern::Kind::{Checkers, Gradient, Ring, Solid, Striped};
 use crate::{Colour, Matrix4D, Point3D};
 
 #[cfg(test)]
@@ -15,6 +15,8 @@ enum Kind {
     Solid(Colour),
     Striped(Colour, Colour),
     Gradient { from: Colour, delta: Colour },
+    Ring(Colour, Colour),
+    Checkers(Colour, Colour),
 }
 
 impl Pattern {
@@ -42,6 +44,20 @@ impl Pattern {
         }
     }
 
+    pub const fn ring(primary: Colour, secondary: Colour) -> Self {
+        Pattern {
+            kind: Ring(primary, secondary),
+            transform: Matrix4D::identity(),
+        }
+    }
+
+    pub const fn checkers(primary: Colour, secondary: Colour) -> Self {
+        Pattern {
+            kind: Checkers(primary, secondary),
+            transform: Matrix4D::identity(),
+        }
+    }
+
     pub fn with_transform(mut self, transform: Matrix4D) -> Self {
         self.transform = transform;
         self
@@ -63,6 +79,18 @@ impl Pattern {
             Striped(primary, _) if point.x().floor() % 2.0 == 0.0 => primary,
             Striped(_, secondary) => secondary,
             Gradient { from, delta } => from + delta * object_point.x().fract(),
+            Ring(primary, _)
+                if (point.x() * point.x() + point.z() * point.z())
+                    .sqrt()
+                    .floor()
+                    % 2.0
+                    == 0.0 =>
+            {
+                primary
+            }
+            Ring(_, secondary) => secondary,
+            Checkers(primary, _) if (x.floor() + y.floor() + z.floor()) % 2.0 == 0.0 => primary,
+            Checkers(_, secondary) => secondary,
         }
     }
 }
