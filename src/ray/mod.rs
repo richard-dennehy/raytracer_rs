@@ -36,7 +36,7 @@ impl Ray {
         let normal = intersection.with.normal_at(point);
 
         let inside = normal.dot(&eye) < 0.0;
-        let shadow_point = point + normal * (f32::EPSILON as f64); // f64 epsilon isn't sufficient to compensate for rounding errors
+        let offset_point = point + normal * (f32::EPSILON as f64); // f64 epsilon isn't sufficient to compensate for rounding errors
 
         let normal = if inside { -normal } else { normal };
         let reflection = self.direction.reflect_through(normal);
@@ -48,7 +48,7 @@ impl Ray {
             eye,
             normal,
             inside,
-            shadow_point,
+            offset_point,
             reflection,
         }
     }
@@ -73,7 +73,7 @@ pub struct HitData<'obj> {
     pub eye: Vector3D,
     pub normal: Vector3D,
     pub inside: bool,
-    pub shadow_point: Point3D,
+    pub offset_point: Point3D,
     pub reflection: Vector3D,
 }
 

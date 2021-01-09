@@ -3,6 +3,7 @@ use super::*;
 mod unit_tests {
     use super::*;
     use crate::Vector3D;
+    use std::f64::consts::{PI, SQRT_2};
 
     #[test]
     fn intersecting_a_ray_with_the_default_world_should_produce_a_sorted_list_of_intersections() {
@@ -143,5 +144,62 @@ mod unit_tests {
             .expect("The default world should have a light");
 
         assert!(!world.is_in_shadow(Point3D::new(-2.0, 2.0, -2.0), light))
+    }
+
+    #[test]
+    fn a_hit_on_a_reflective_surface_should_combine_the_surface_colour_with_the_reflected_colour() {
+        let mut world = World::default();
+        {
+            let reflective_plane = Object::plane()
+                .with_material(Material {
+                    reflective: 0.5,
+                    ..Default::default()
+                })
+                .with_transform(Matrix4D::translation(0.0, -1.0, 0.0));
+
+            world.objects.push(reflective_plane);
+        };
+
+        assert_eq!(
+            world.colour_at(Ray::new(
+                Point3D::new(0.0, 0.0, -3.0),
+                Vector3D::new(0.0, -SQRT_2 / 2.0, SQRT_2 / 2.0),
+            )),
+            Colour::new(0.8767560060717737, 0.9243386603443418, 0.8291733517992057)
+        );
+    }
+
+    #[test]
+    fn a_hit_facing_a_pair_of_parallel_mirrors_should_not_reflect_infinitely() {
+        let reflective_non_blinding_material = Material {
+            reflective: 1.0,
+            ambient: 0.2,
+            specular: 0.0,
+            diffuse: 0.0,
+            ..Default::default()
+        };
+
+        let mut world = World::empty();
+        {
+            let upper = Object::plane()
+                .with_material(reflective_non_blinding_material.clone())
+                .with_transform(Matrix4D::rotation_x(PI).with_translation(0.0, 1.0, 0.0));
+            world.objects.push(upper);
+        };
+
+        {
+            let lower = Object::plane()
+                .with_material(reflective_non_blinding_material)
+                .with_transform(Matrix4D::translation(0.0, -1.0, 0.0));
+            world.objects.push(lower);
+        };
+        world
+            .lights
+            .push(PointLight::new(Colour::WHITE, Point3D::new(0.0, 0.0, 0.0)));
+
+        assert_eq!(
+            world.colour_at(Ray::new(Point3D::ORIGIN, Vector3D::new(0.0, 1.0, 0.0))),
+            Colour::WHITE
+        );
     }
 }

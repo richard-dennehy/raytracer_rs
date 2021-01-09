@@ -8,6 +8,8 @@ mod tests;
 pub struct Point3D(f64, f64, f64);
 
 impl Point3D {
+    pub const ORIGIN: Point3D = Point3D::new(0.0, 0.0, 0.0);
+
     pub const fn new(x: f64, y: f64, z: f64) -> Self {
         Point3D(x, y, z)
     }

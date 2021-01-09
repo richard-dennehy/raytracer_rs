@@ -38,13 +38,29 @@ impl World {
     }
 
     pub fn colour_at(&self, ray: Ray) -> Colour {
-        let intersections = self.intersect(&ray);
-        if let Some(hit) = intersections.hit() {
-            let hit_data = ray.hit_data(hit);
-            self.shade_hit(&hit_data)
-        } else {
-            Colour::BLACK
+        fn inner(this: &World, ray: Ray, limit: usize) -> Colour {
+            if limit == 0 {
+                return Colour::BLACK;
+            }
+
+            let intersections = this.intersect(&ray);
+            if let Some(hit) = intersections.hit() {
+                let hit_data = ray.hit_data(hit);
+                let surface = this.shade_hit(&hit_data);
+
+                if hit_data.object.material.reflective == 0.0 {
+                    return surface;
+                }
+
+                let reflection = Ray::new(hit_data.offset_point, hit_data.reflection);
+
+                surface + inner(this, reflection, limit - 1) * hit_data.object.material.reflective
+            } else {
+                Colour::BLACK
+            }
         }
+
+        inner(self, ray, 5)
     }
 
     fn intersect(&self, ray: &Ray) -> Intersections {
@@ -57,7 +73,7 @@ impl World {
     fn shade_hit(&self, hit_data: &HitData) -> Colour {
         self.lights
             .iter()
-            .map(|light| hit_data.colour(light, self.is_in_shadow(hit_data.shadow_point, light)))
+            .map(|light| hit_data.colour(light, self.is_in_shadow(hit_data.offset_point, light)))
             .sum()
     }
 

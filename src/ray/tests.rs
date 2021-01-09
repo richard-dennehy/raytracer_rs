@@ -144,8 +144,8 @@ mod ray_unit_tests {
 
         let intersection = intersections.0[0].clone();
         let data = ray.hit_data(intersection);
-        assert!(data.shadow_point.z() < -f64::EPSILON / 2.0);
-        assert!(data.point.z() > data.shadow_point.z());
+        assert!(data.offset_point.z() < -f64::EPSILON / 2.0);
+        assert!(data.point.z() > data.offset_point.z());
     }
 
     #[test]
