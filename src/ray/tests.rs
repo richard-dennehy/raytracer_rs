@@ -2,6 +2,7 @@ use super::*;
 
 mod ray_unit_tests {
     use super::*;
+    use crate::Material;
     use std::f64::consts::SQRT_2;
 
     #[test]
@@ -106,7 +107,7 @@ mod ray_unit_tests {
 
         let intersection = intersections.0[0].clone();
 
-        let data = ray.hit_data(intersection);
+        let data = HitData::from(&ray, intersection, intersections);
         assert_eq!(data.t, 4.0);
         assert_eq!(data.object, &sphere);
         assert_eq!(data.point, Point3D::new(0.0, 0.0, -1.0));
@@ -125,7 +126,7 @@ mod ray_unit_tests {
 
         let intersection = intersections.0[1].clone();
 
-        let data = ray.hit_data(intersection);
+        let data = HitData::from(&ray, intersection, intersections);
         assert_eq!(data.t, 1.0);
         assert_eq!(data.object, &sphere);
         assert_eq!(data.point, Point3D::new(0.0, 0.0, 1.0));
@@ -143,9 +144,23 @@ mod ray_unit_tests {
         assert_eq!(intersections.len(), 2);
 
         let intersection = intersections.0[0].clone();
-        let data = ray.hit_data(intersection);
-        assert!(data.offset_point.z() < -f64::EPSILON / 2.0);
-        assert!(data.point.z() > data.offset_point.z());
+        let data = HitData::from(&ray, intersection, intersections);
+        assert!(data.over_point.z() < -f64::EPSILON / 2.0);
+        assert!(data.point.z() > data.over_point.z());
+    }
+
+    #[test]
+    fn the_hit_data_should_contain_an_under_offset_point_for_refraction_calculations() {
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+        let sphere = Object::sphere().with_transform(Matrix4D::translation(0.0, 0.0, 1.0));
+
+        let intersections = sphere.intersect(&ray);
+        assert_eq!(intersections.len(), 2);
+
+        let intersection = intersections.0[0].clone();
+        let data = HitData::from(&ray, intersection, intersections);
+        assert!(data.under_point.z() > -f64::EPSILON / 2.0);
+        assert!(data.point.z() < data.under_point.z());
     }
 
     #[test]
@@ -160,10 +175,99 @@ mod ray_unit_tests {
         assert_eq!(intersections.len(), 1);
 
         let intersection = intersections.0[0].clone();
-        let data = ray.hit_data(intersection);
+        let data = HitData::from(&ray, intersection, intersections);
         assert_eq!(
             data.reflection,
             Vector3D::new(0.0, SQRT_2 / 2.0, SQRT_2 / 2.0)
         );
+    }
+
+    #[test]
+    fn hit_data_should_calculate_refraction_data() {
+        let first = Object::sphere()
+            .with_material(Material {
+                transparency: 1.0,
+                refractive: 1.5,
+                ..Default::default()
+            })
+            .with_transform(Matrix4D::uniform_scaling(2.0));
+
+        let second = Object::sphere()
+            .with_material(Material {
+                transparency: 1.0,
+                refractive: 2.0,
+                ..Default::default()
+            })
+            .with_transform(Matrix4D::translation(0.0, 0.0, -0.25));
+
+        let third = Object::sphere()
+            .with_material(Material {
+                transparency: 1.0,
+                refractive: 2.5,
+                ..Default::default()
+            })
+            .with_transform(Matrix4D::translation(0.0, 0.0, 0.25));
+
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -4.0), Vector3D::new(0.0, 0.0, 1.0));
+        let intersections = first
+            .intersect(&ray)
+            .join(second.intersect(&ray))
+            .join(third.intersect(&ray));
+
+        assert_eq!(intersections.len(), 6);
+
+        // enter first sphere
+        let hit_data = HitData::from(
+            &ray,
+            intersections.underlying()[0].clone(),
+            intersections.clone(),
+        );
+        assert_eq!(hit_data.entered_refractive, 1.0);
+        assert_eq!(hit_data.exited_refractive, 1.5);
+
+        // enter second sphere (nested in first)
+        let hit_data = HitData::from(
+            &ray,
+            intersections.underlying()[1].clone(),
+            intersections.clone(),
+        );
+        assert_eq!(hit_data.entered_refractive, 1.5);
+        assert_eq!(hit_data.exited_refractive, 2.0);
+
+        // enter third sphere (overlapping with second)
+        let hit_data = HitData::from(
+            &ray,
+            intersections.underlying()[2].clone(),
+            intersections.clone(),
+        );
+        assert_eq!(hit_data.entered_refractive, 2.0);
+        assert_eq!(hit_data.exited_refractive, 2.5);
+
+        // exit second sphere (still in third sphere)
+        let hit_data = HitData::from(
+            &ray,
+            intersections.underlying()[3].clone(),
+            intersections.clone(),
+        );
+        assert_eq!(hit_data.entered_refractive, 2.5);
+        assert_eq!(hit_data.exited_refractive, 2.5);
+
+        // exit third sphere into first
+        let hit_data = HitData::from(
+            &ray,
+            intersections.underlying()[4].clone(),
+            intersections.clone(),
+        );
+        assert_eq!(hit_data.entered_refractive, 2.5);
+        assert_eq!(hit_data.exited_refractive, 1.5);
+
+        // exit first sphere into void
+        let hit_data = HitData::from(
+            &ray,
+            intersections.underlying()[5].clone(),
+            intersections.clone(),
+        );
+        assert_eq!(hit_data.entered_refractive, 1.5);
+        assert_eq!(hit_data.exited_refractive, 1.0);
     }
 }

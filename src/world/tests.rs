@@ -28,11 +28,12 @@ mod unit_tests {
             .objects
             .first()
             .expect("Default world should have objects");
-        let intersection = sphere.intersect(&ray).hit();
+        let intersections = sphere.intersect(&ray);
+        let intersection = intersections.hit();
         assert!(intersection.is_some());
         let intersection = intersection.unwrap();
 
-        let hit_data = ray.hit_data(intersection);
+        let hit_data = HitData::from(&ray, intersection, intersections);
         let colour = world.shade_hit(&hit_data);
 
         assert_eq!(
@@ -56,11 +57,12 @@ mod unit_tests {
             .get(1)
             .expect("Default world should have objects");
 
-        let intersection = sphere.intersect(&ray).hit();
+        let intersections = sphere.intersect(&ray);
+        let intersection = intersections.hit();
         assert!(intersection.is_some());
         let intersection = intersection.unwrap();
 
-        let hit_data = ray.hit_data(intersection);
+        let hit_data = HitData::from(&ray, intersection, intersections);
         let colour = world.shade_hit(&hit_data);
 
         assert_eq!(colour, Colour::new(0.1, 0.1, 0.1));

@@ -91,14 +91,13 @@ mod shape_tests {
     fn translating_an_object_should_translate_the_pattern_in_world_space() {
         let sphere = Object::sphere()
             .with_transform(Matrix4D::translation(1.0, 0.0, 0.0))
-            .with_material(Material::new(
-                Pattern::striped(Colour::WHITE, Colour::BLACK),
-                1.0,
-                0.0,
-                0.0,
-                200.0,
-                0.0,
-            ));
+            .with_material(Material {
+                pattern: Pattern::striped(Colour::WHITE, Colour::BLACK),
+                ambient: 1.0,
+                diffuse: 0.0,
+                specular: 0.0,
+                ..Default::default()
+            });
 
         assert_eq!(
             sphere.colour_at(
@@ -115,14 +114,13 @@ mod shape_tests {
     fn rotating_an_object_should_rotate_the_pattern_in_world_space() {
         let sphere = Object::sphere()
             .with_transform(Matrix4D::rotation_y(PI))
-            .with_material(Material::new(
-                Pattern::striped(Colour::WHITE, Colour::BLACK),
-                1.0,
-                0.0,
-                0.0,
-                200.0,
-                0.0,
-            ));
+            .with_material(Material {
+                pattern: Pattern::striped(Colour::WHITE, Colour::BLACK),
+                ambient: 1.0,
+                diffuse: 0.0,
+                specular: 0.0,
+                ..Default::default()
+            });
 
         assert_eq!(
             sphere.colour_at(
@@ -299,14 +297,13 @@ mod sphere_tests {
     #[test]
     fn lighting_a_point_on_the_left_hemisphere_of_a_default_sphere_with_a_default_stripe_pattern_should_use_the_secondary_colour(
     ) {
-        let sphere = Object::sphere().with_material(Material::new(
-            Pattern::striped(Colour::WHITE, Colour::BLACK),
-            1.0,
-            0.0,
-            0.0,
-            200.0,
-            0.0,
-        ));
+        let sphere = Object::sphere().with_material(Material {
+            pattern: Pattern::striped(Colour::WHITE, Colour::BLACK),
+            ambient: 1.0,
+            diffuse: 0.0,
+            specular: 0.0,
+            ..Default::default()
+        });
 
         assert_eq!(
             sphere.colour_at(
@@ -322,14 +319,13 @@ mod sphere_tests {
     #[test]
     fn lighting_a_point_on_the_right_hemisphere_of_a_default_sphere_with_a_default_stripe_pattern_should_use_the_primary_colour(
     ) {
-        let sphere = Object::sphere().with_material(Material::new(
-            Pattern::striped(Colour::WHITE, Colour::BLACK),
-            1.0,
-            0.0,
-            0.0,
-            200.0,
-            0.0,
-        ));
+        let sphere = Object::sphere().with_material(Material {
+            pattern: Pattern::striped(Colour::WHITE, Colour::BLACK),
+            ambient: 1.0,
+            diffuse: 0.0,
+            specular: 0.0,
+            ..Default::default()
+        });
 
         assert_eq!(
             sphere.colour_at(

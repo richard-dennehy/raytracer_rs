@@ -8,26 +8,8 @@ pub struct Material {
     pub specular: f64,
     pub shininess: f64,
     pub reflective: f64,
-}
-
-impl Material {
-    pub fn new(
-        pattern: Pattern,
-        ambient: f64,
-        diffuse: f64,
-        specular: f64,
-        shininess: f64,
-        reflective: f64,
-    ) -> Self {
-        Material {
-            pattern,
-            ambient,
-            diffuse,
-            specular,
-            shininess,
-            reflective,
-        }
-    }
+    pub transparency: f64,
+    pub refractive: f64,
 }
 
 impl Default for Material {
@@ -39,6 +21,8 @@ impl Default for Material {
             specular: 0.9,
             shininess: 200.0,
             reflective: 0.0,
+            transparency: 0.0,
+            refractive: 1.0,
         }
     }
 }

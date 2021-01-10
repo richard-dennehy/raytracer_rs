@@ -20,14 +20,13 @@ impl World {
     pub fn default() -> Self {
         World {
             objects: vec![
-                Object::sphere().with_material(Material::new(
-                    Pattern::solid(Colour::new(0.8, 1.0, 0.6)),
-                    0.1,
-                    0.7,
-                    0.2,
-                    200.0,
-                    0.0,
-                )),
+                Object::sphere().with_material(Material {
+                    pattern: Pattern::solid(Colour::new(0.8, 1.0, 0.6)),
+                    ambient: 0.1,
+                    diffuse: 0.7,
+                    specular: 0.2,
+                    ..Default::default()
+                }),
                 Object::sphere().with_transform(Matrix4D::uniform_scaling(0.5)),
             ],
             lights: vec![PointLight::new(
@@ -45,16 +44,39 @@ impl World {
 
             let intersections = this.intersect(&ray);
             if let Some(hit) = intersections.hit() {
-                let hit_data = ray.hit_data(hit);
+                let hit_data = HitData::from(&ray, hit, intersections);
                 let surface = this.shade_hit(&hit_data);
 
-                if hit_data.object.material.reflective == 0.0 {
-                    return surface;
-                }
+                let reflective = if hit_data.object.material.reflective == 0.0 {
+                    Colour::BLACK
+                } else {
+                    let reflection = Ray::new(hit_data.over_point, hit_data.reflection);
+                    inner(this, reflection, limit - 1) * hit_data.object.material.reflective
+                };
 
-                let reflection = Ray::new(hit_data.offset_point, hit_data.reflection);
+                let refractive = if hit_data.object.material.transparency == 0.0 {
+                    Colour::BLACK
+                } else {
+                    // check for total internal reflection
+                    let ratio = hit_data.entered_refractive / hit_data.exited_refractive;
+                    let cos_i = hit_data.eye.dot(&hit_data.normal);
+                    let sin2_t = (ratio * ratio) * (1.0 - (cos_i * cos_i));
 
-                surface + inner(this, reflection, limit - 1) * hit_data.object.material.reflective
+                    if sin2_t > 1.0 {
+                        Colour::BLACK
+                    } else {
+                        let cos_t = (1.0 - sin2_t).sqrt();
+                        let refracted_direction =
+                            hit_data.normal * (ratio * cos_i - cos_t) - (hit_data.eye * ratio);
+
+                        let refracted_ray = Ray::new(hit_data.under_point, refracted_direction);
+
+                        inner(this, refracted_ray, limit - 1)
+                            * hit_data.object.material.transparency
+                    }
+                };
+
+                surface + reflective + refractive
             } else {
                 Colour::BLACK
             }
@@ -73,7 +95,7 @@ impl World {
     fn shade_hit(&self, hit_data: &HitData) -> Colour {
         self.lights
             .iter()
-            .map(|light| hit_data.colour(light, self.is_in_shadow(hit_data.offset_point, light)))
+            .map(|light| hit_data.colour(light, self.is_in_shadow(hit_data.over_point, light)))
             .sum()
     }
 
