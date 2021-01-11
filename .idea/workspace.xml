@@ -12,13 +12,8 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implement reflectivity">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP implemented refraction; missing tests">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/material/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/material/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/world/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/world/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -84,25 +79,6 @@
     </option>
   </component>
   <component name="RunManager" selected="Cargo.test">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Run ray_tracer" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="run --package ray_tracer --bin ray_tracer" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <option name="channel" value="DEFAULT" />
-      <option name="allFeatures" value="false" />
-      <option name="emulateTerminal" value="false" />
-      <option name="backtrace" value="SHORT" />
-      <envs />
-      <option name="isRedirectInput" value="false" />
-      <option name="redirectInputPath" value="" />
-      <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -131,8 +107,22 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test world::tests::unit_tests::a_hit_facing_a_pair_of_parallel_mirrors_should_not_reflect_infinitely" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib world::tests::unit_tests::a_hit_facing_a_pair_of_parallel_mirrors_should_not_reflect_infinitely -- --exact" />
+    <configuration name="Test world::tests::unit_tests::a_hit_on_a_fully_transparent_object_should_include_the_colour_of_objects_behind_it" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib world::tests::unit_tests::a_hit_on_a_fully_transparent_object_should_include_the_colour_of_objects_behind_it -- --exact" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test world::tests::unit_tests::a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib world::tests::unit_tests::a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="allFeatures" value="false" />
@@ -173,13 +163,18 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.Test world::tests::unit_tests::a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it" />
+        <item itemvalue="Cargo.Test world::tests::unit_tests::a_hit_on_a_fully_transparent_object_should_include_the_colour_of_objects_behind_it" />
         <item itemvalue="Cargo.Test ray::tests::ray_unit_tests::hit_data_should_calculate_refraction_data" />
         <item itemvalue="Cargo.run" />
-        <item itemvalue="Cargo.Test world::tests::unit_tests::a_hit_facing_a_pair_of_parallel_mirrors_should_not_reflect_infinitely" />
-        <item itemvalue="Cargo.Run ray_tracer" />
       </list>
     </recent_temporary>
   </component>
@@ -234,7 +229,8 @@
       <workItem from="1610049610348" duration="2229000" />
       <workItem from="1610136222005" duration="2691000" />
       <workItem from="1610192257707" duration="3406000" />
-      <workItem from="1610280301867" duration="4691000" />
+      <workItem from="1610280301867" duration="4999000" />
+      <workItem from="1610394875512" duration="2890000" />
     </task>
     <task id="LOCAL-00001" summary="basic 3D Vector and Point operations">
       <created>1607266278125</created>
@@ -488,7 +484,14 @@
       <option name="project" value="LOCAL" />
       <updated>1610195665897</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="WIP implemented refraction; missing tests">
+      <created>1610285303689</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1610285303689</updated>
+    </task>
+    <option name="localTasksCounter" value="38" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -504,7 +507,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="migrate core code to lib folder" />
     <MESSAGE value="refactor to `lib.rs` based project structure" />
     <MESSAGE value="probably finally done moving files around" />
     <MESSAGE value="implemented ray intersection" />
@@ -529,7 +531,8 @@
     <MESSAGE value="checkers and ring patterns" />
     <MESSAGE value="add reflective component to materials" />
     <MESSAGE value="implement reflectivity" />
-    <option name="LAST_COMMIT_MESSAGE" value="implement reflectivity" />
+    <MESSAGE value="WIP implemented refraction; missing tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP implemented refraction; missing tests" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -540,24 +543,19 @@
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/object/mod.rs</url>
-          <line>167</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/object/mod.rs</url>
-          <line>68</line>
-          <option name="timeStamp" value="5" />
+          <url>file://$PROJECT_DIR$/src/world/mod.rs</url>
+          <line>78</line>
+          <option name="timeStamp" value="11" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/world/mod.rs</url>
-          <line>108</line>
-          <option name="timeStamp" value="6" />
+          <line>73</line>
+          <option name="timeStamp" value="12" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/ray/mod.rs</url>
-          <line>102</line>
-          <option name="timeStamp" value="8" />
+          <url>file://$PROJECT_DIR$/src/object/mod.rs</url>
+          <line>171</line>
+          <option name="timeStamp" value="13" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

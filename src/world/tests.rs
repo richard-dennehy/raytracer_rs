@@ -204,4 +204,120 @@ mod unit_tests {
             Colour::WHITE
         );
     }
+
+    #[test]
+    fn a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it() {
+        let mut world = World::empty();
+        {
+            let front = Object::plane()
+                .with_material(Material {
+                    ambient: 1.0,
+                    specular: 0.0,
+                    diffuse: 0.0,
+                    pattern: Pattern::solid(Colour::new(0.1, 0.1, 0.1)),
+                    transparency: 0.0,
+                    ..Default::default()
+                })
+                .with_transform(Matrix4D::rotation_x(-PI / 2.0));
+            world.objects.push(front);
+        };
+
+        {
+            let back = Object::sphere()
+                .with_material(Material {
+                    pattern: Pattern::solid(Colour::GREEN),
+                    ambient: 1.0,
+                    diffuse: 0.0,
+                    specular: 0.0,
+                    ..Default::default()
+                })
+                .with_transform(Matrix4D::translation(0.0, 0.0, 1.0));
+            world.objects.push(back);
+        };
+
+        world
+            .lights
+            .push(PointLight::new(Colour::WHITE, Point3D::ORIGIN));
+
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -1.0), Vector3D::new(0.0, 0.0, 1.0));
+        assert_eq!(world.colour_at(ray), Colour::new(0.1, 0.1, 0.1));
+    }
+
+    #[test]
+    fn a_hit_on_a_fully_transparent_non_refractive_object_should_include_the_colour_of_objects_behind_it(
+    ) {
+        let mut world = World::empty();
+        {
+            let front = Object::plane()
+                .with_material(Material {
+                    ambient: 1.0,
+                    specular: 0.0,
+                    diffuse: 0.0,
+                    pattern: Pattern::solid(Colour::BLACK),
+                    transparency: 1.0,
+                    refractive: 1.0,
+                    ..Default::default()
+                })
+                .with_transform(Matrix4D::rotation_x(-PI / 2.0));
+            world.objects.push(front);
+        };
+
+        {
+            let back = Object::sphere()
+                .with_material(Material {
+                    pattern: Pattern::solid(Colour::GREEN),
+                    ambient: 1.0,
+                    diffuse: 0.0,
+                    specular: 0.0,
+                    ..Default::default()
+                })
+                .with_transform(Matrix4D::translation(0.0, 0.0, 1.0));
+            world.objects.push(back);
+        };
+
+        world
+            .lights
+            .push(PointLight::new(Colour::WHITE, Point3D::new(0.0, 0.0, 0.5)));
+
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -1.0), Vector3D::new(0.0, 0.0, 1.0));
+        assert_eq!(world.colour_at(ray), Colour::GREEN);
+    }
+
+    #[test]
+    fn a_hit_on_a_refractive_object_should_include_the_colour_from_refracted_rays() {
+        let mut world = World::default();
+        {
+            let refractive_plane = Object::plane()
+                .with_transform(Matrix4D::translation(0.0, -1.0, 0.0))
+                .with_material(Material {
+                    transparency: 0.5,
+                    refractive: 1.5,
+                    ..Default::default()
+                });
+
+            world.objects.push(refractive_plane);
+        };
+
+        {
+            let ball = Object::sphere()
+                .with_transform(Matrix4D::translation(0.0, -3.5, -0.5))
+                .with_material(Material {
+                    pattern: Pattern::solid(Colour::RED),
+                    ambient: 0.5,
+                    ..Default::default()
+                });
+
+            world.objects.push(ball);
+        };
+
+        let ray = Ray::new(
+            Point3D::new(0.0, 0.0, -3.0),
+            Vector3D::new(0.0, -SQRT_2 / 2.0, SQRT_2 / 2.0),
+        );
+
+        assert_eq!(
+            world.colour_at(ray),
+            Colour::new(0.9364253889815014, 0.6864253889815014, 0.6864253889815014)
+        );
+    }
 }
