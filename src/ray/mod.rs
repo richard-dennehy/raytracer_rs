@@ -68,11 +68,11 @@ impl<'obj> HitData<'obj> {
         let normal = intersection.with.normal_at(point);
 
         let inside = normal.dot(&eye) < 0.0;
+
+        let normal = if inside { -normal } else { normal };
         let offset = normal * (f32::EPSILON as f64); // f64 epsilon isn't sufficient to compensate for rounding errors
         let over_point = point + offset;
         let under_point = point - offset;
-
-        let normal = if inside { -normal } else { normal };
         let reflection = ray.direction.reflect_through(normal);
 
         // calculate refraction changes from entering one material and exiting another (including the empty space)
@@ -127,6 +127,31 @@ impl<'obj> HitData<'obj> {
     pub fn colour(&self, light: &PointLight, in_shadow: bool) -> Colour {
         self.object
             .colour_at(self.point, light, self.eye, in_shadow)
+    }
+
+    /// `shlick` approximation of fresnel
+    pub fn reflectance(&self) -> f64 {
+        let mut cos = self.eye.dot(&self.normal);
+
+        if self.entered_refractive > self.exited_refractive {
+            // FIXME duplicated total internal reflection logic
+            let ratio = self.entered_refractive / self.exited_refractive;
+            let sin2_t = ratio.powi(2) * (1.0 - cos.powi(2));
+
+            if sin2_t > 1.0 {
+                return 1.0;
+            }
+
+            let cos_t = (1.0 - sin2_t).sqrt();
+
+            cos = cos_t;
+        }
+
+        let r0 = ((self.entered_refractive - self.exited_refractive)
+            / (self.entered_refractive + self.exited_refractive))
+            .powi(2);
+
+        r0 + (1.0 - r0) * (1.0 - cos).powi(5)
     }
 }
 

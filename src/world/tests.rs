@@ -320,4 +320,83 @@ mod unit_tests {
             Colour::new(0.9364253889815014, 0.6864253889815014, 0.6864253889815014)
         );
     }
+
+    #[test]
+    fn a_hit_on_a_transparent_refractive_and_reflective_object_should_have_fresnel() {
+        let mut world = World::default();
+        {
+            let refractive_plane = Object::plane()
+                .with_transform(Matrix4D::translation(0.0, -1.0, 0.0))
+                .with_material(Material {
+                    transparency: 0.5,
+                    reflective: 0.5,
+                    refractive: 1.5,
+                    ..Default::default()
+                });
+
+            world.objects.push(refractive_plane);
+        };
+
+        {
+            let ball = Object::sphere()
+                .with_transform(Matrix4D::translation(0.0, -3.5, -0.5))
+                .with_material(Material {
+                    pattern: Pattern::solid(Colour::RED),
+                    ambient: 0.5,
+                    ..Default::default()
+                });
+
+            world.objects.push(ball);
+        };
+
+        let ray = Ray::new(
+            Point3D::new(0.0, 0.0, -3.0),
+            Vector3D::new(0.0, -SQRT_2 / 2.0, SQRT_2 / 2.0),
+        );
+
+        assert_eq!(
+            world.colour_at(ray),
+            Colour::new(0.9339151414147093, 0.6964342273743777, 0.6924306920172272)
+        );
+    }
+
+    #[test]
+    fn a_transparent_sphere_should_include_the_colour_of_objects_behind_it() {
+        let mut world = World::empty();
+        world.lights.push(PointLight::new(
+            Colour::WHITE,
+            Point3D::new(-10.0, 10.0, -10.0),
+        ));
+
+        {
+            let wall = Object::plane()
+                .with_transform(Matrix4D::rotation_x(-PI / 2.0).with_translation(0.0, 0.0, 5.0))
+                .with_material(Material {
+                    pattern: Pattern::solid(Colour::BLUE),
+                    ambient: 1.0,
+                    ..Default::default()
+                });
+
+            world.objects.push(wall);
+        };
+
+        {
+            let glass_sphere = Object::sphere()
+                .with_transform(Matrix4D::translation(0.0, 0.0, 1.0))
+                .with_material(Material {
+                    pattern: Pattern::solid(Colour::new(0.05, 0.05, 0.05)),
+                    transparency: 1.0,
+                    ..Default::default()
+                });
+
+            world.objects.push(glass_sphere);
+        };
+
+        let ray = Ray::new(Point3D::ORIGIN, Vector3D::new(0.0, 0.0, 1.0));
+
+        assert_eq!(
+            world.colour_at(ray),
+            Colour::new(0.03598076211353316, 0.03598076211353316, 1.690826949711632)
+        );
+    }
 }

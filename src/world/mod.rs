@@ -60,7 +60,7 @@ impl World {
                     // check for total internal reflection
                     let ratio = hit_data.entered_refractive / hit_data.exited_refractive;
                     let cos_i = hit_data.eye.dot(&hit_data.normal);
-                    let sin2_t = (ratio * ratio) * (1.0 - (cos_i * cos_i));
+                    let sin2_t = ratio.powi(2) * (1.0 - cos_i.powi(2));
 
                     if sin2_t > 1.0 {
                         Colour::BLACK
@@ -76,7 +76,15 @@ impl World {
                     }
                 };
 
-                surface + reflective + refractive
+                if hit_data.object.material.reflective > 0.0
+                    && hit_data.object.material.transparency > 0.0
+                {
+                    let reflectance = hit_data.reflectance();
+
+                    surface + reflective * reflectance + refractive * (1.0 - reflectance)
+                } else {
+                    surface + reflective + refractive
+                }
             } else {
                 Colour::BLACK
             }

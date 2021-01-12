@@ -270,4 +270,68 @@ mod ray_unit_tests {
         assert_eq!(hit_data.entered_refractive, 1.5);
         assert_eq!(hit_data.exited_refractive, 1.0);
     }
+
+    #[test]
+    fn the_reflectance_under_total_internal_reflection_should_be_1() {
+        let shape = Object::sphere().with_material(Material {
+            transparency: 1.0,
+            refractive: 1.5,
+            reflective: 1.0,
+            ..Default::default()
+        });
+
+        let ray = Ray::new(
+            Point3D::new(0.0, 0.0, SQRT_2 / 2.0),
+            Vector3D::new(0.0, 1.0, 0.0),
+        );
+
+        let intersections = shape.intersect(&ray);
+        let intersection = intersections.hit();
+        assert!(intersection.is_some());
+        let intersection = intersection.unwrap();
+
+        let hit_data = HitData::from(&ray, intersection, intersections);
+        assert_eq!(hit_data.reflectance(), 1.0);
+    }
+
+    #[test]
+    fn the_reflectance_should_be_low_when_the_ray_is_perpendicular() {
+        let shape = Object::sphere().with_material(Material {
+            transparency: 1.0,
+            refractive: 1.5,
+            reflective: 1.0,
+            ..Default::default()
+        });
+
+        let ray = Ray::new(Point3D::new(0.0, 0.0, 0.0), Vector3D::new(0.0, 1.0, 0.0));
+
+        let intersections = shape.intersect(&ray);
+        let intersection = intersections.hit();
+        assert!(intersection.is_some());
+        let intersection = intersection.unwrap();
+
+        let hit_data = HitData::from(&ray, intersection, intersections);
+        assert_eq!(hit_data.reflectance(), 0.04000000000000001);
+    }
+
+    #[test]
+    fn the_reflectance_should_be_significant_when_exiting_a_more_refractive_material_at_a_shallow_angle(
+    ) {
+        let shape = Object::sphere().with_material(Material {
+            transparency: 1.0,
+            refractive: 1.5,
+            reflective: 1.0,
+            ..Default::default()
+        });
+
+        let ray = Ray::new(Point3D::new(0.0, 0.99, -2.0), Vector3D::new(0.0, 0.0, 1.0));
+
+        let intersections = shape.intersect(&ray);
+        let intersection = intersections.hit();
+        assert!(intersection.is_some());
+        let intersection = intersection.unwrap();
+
+        let hit_data = HitData::from(&ray, intersection, intersections);
+        assert_eq!(hit_data.reflectance(), 0.4888143830387389);
+    }
 }
