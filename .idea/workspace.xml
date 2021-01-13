@@ -12,13 +12,10 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implemented tests for refraction; missing fresnel">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implement fresnel effect">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/world/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/world/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,12 +79,7 @@
       <command value="cargo run --release" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.run">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="Cargo.test">
     <configuration name="Run ray_tracer" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="command" value="run --package ray_tracer --bin ray_tracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -172,10 +164,15 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.run" />
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.run" />
         <item itemvalue="Cargo.Test world::tests::unit_tests::a_transparent_sphere_should_include_the_colour_of_objects_behind_it" />
         <item itemvalue="Cargo.Test world::tests::unit_tests::a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it" />
         <item itemvalue="Cargo.Run ray_tracer" />
@@ -235,7 +232,8 @@
       <workItem from="1610192257707" duration="3406000" />
       <workItem from="1610280301867" duration="4999000" />
       <workItem from="1610394875512" duration="3160000" />
-      <workItem from="1610477970717" duration="6228000" />
+      <workItem from="1610477970717" duration="6238000" />
+      <workItem from="1610568211676" duration="2290000" />
     </task>
     <task id="LOCAL-00001" summary="basic 3D Vector and Point operations">
       <created>1607266278125</created>
@@ -503,7 +501,14 @@
       <option name="project" value="LOCAL" />
       <updated>1610398706139</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="implement fresnel effect">
+      <created>1610484214057</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1610484214057</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -519,7 +524,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="probably finally done moving files around" />
     <MESSAGE value="implemented ray intersection" />
     <MESSAGE value="migrated to Intersection struct" />
     <MESSAGE value="add ray and sphere translations" />
@@ -544,7 +548,8 @@
     <MESSAGE value="implement reflectivity" />
     <MESSAGE value="WIP implemented refraction; missing tests" />
     <MESSAGE value="implemented tests for refraction; missing fresnel" />
-    <option name="LAST_COMMIT_MESSAGE" value="implemented tests for refraction; missing fresnel" />
+    <MESSAGE value="implement fresnel effect" />
+    <option name="LAST_COMMIT_MESSAGE" value="implement fresnel effect" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -421,3 +421,131 @@ mod plane_tests {
         assert_eq!(intersections.underlying()[0].t, 1.0);
     }
 }
+
+mod cube_tests {
+    use super::*;
+
+    #[test]
+    fn a_ray_directly_towards_the_pos_x_face_should_intersect() {
+        let cube = Object::cube();
+        let ray = Ray::new(Point3D::new(5.0, 0.5, 0.0), Vector3D::new(-1.0, 0.0, 0.0));
+
+        let intersections = cube.intersect(&ray);
+        assert_eq!(intersections.len(), 2);
+
+        assert_eq!(intersections.underlying()[0].t, 4.0);
+        assert_eq!(intersections.underlying()[1].t, 6.0);
+    }
+
+    #[test]
+    fn a_ray_directly_towards_the_neg_x_face_should_intersect() {
+        let cube = Object::cube();
+        let ray = Ray::new(Point3D::new(-5.0, 0.5, 0.0), Vector3D::new(1.0, 0.0, 0.0));
+
+        let intersections = cube.intersect(&ray);
+        assert_eq!(intersections.len(), 2);
+
+        assert_eq!(intersections.underlying()[0].t, 4.0);
+        assert_eq!(intersections.underlying()[1].t, 6.0);
+    }
+
+    #[test]
+    fn a_ray_directly_towards_the_pos_y_face_should_intersect() {
+        let cube = Object::cube();
+        let ray = Ray::new(Point3D::new(0.5, 5.0, 0.0), Vector3D::new(0.0, -1.0, 0.0));
+
+        let intersections = cube.intersect(&ray);
+        assert_eq!(intersections.len(), 2);
+
+        assert_eq!(intersections.underlying()[0].t, 4.0);
+        assert_eq!(intersections.underlying()[1].t, 6.0);
+    }
+
+    #[test]
+    fn a_ray_directly_towards_the_neg_y_face_should_intersect() {
+        let cube = Object::cube();
+        let ray = Ray::new(Point3D::new(0.5, -5.0, 0.0), Vector3D::new(0.0, 1.0, 0.0));
+
+        let intersections = cube.intersect(&ray);
+        assert_eq!(intersections.len(), 2);
+
+        assert_eq!(intersections.underlying()[0].t, 4.0);
+        assert_eq!(intersections.underlying()[1].t, 6.0);
+    }
+
+    #[test]
+    fn a_ray_directly_towards_the_pos_z_face_should_intersect() {
+        let cube = Object::cube();
+        let ray = Ray::new(Point3D::new(0.5, 0.0, 5.0), Vector3D::new(0.0, 0.0, -1.0));
+
+        let intersections = cube.intersect(&ray);
+        assert_eq!(intersections.len(), 2);
+
+        assert_eq!(intersections.underlying()[0].t, 4.0);
+        assert_eq!(intersections.underlying()[1].t, 6.0);
+    }
+
+    #[test]
+    fn a_ray_directly_towards_the_neg_z_face_should_intersect() {
+        let cube = Object::cube();
+        let ray = Ray::new(Point3D::new(0.5, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+
+        let intersections = cube.intersect(&ray);
+        assert_eq!(intersections.len(), 2);
+
+        assert_eq!(intersections.underlying()[0].t, 4.0);
+        assert_eq!(intersections.underlying()[1].t, 6.0);
+    }
+
+    #[test]
+    fn a_ray_starting_inside_the_cube_should_intersect_in_positive_and_negative_t() {
+        let cube = Object::cube();
+        let ray = Ray::new(Point3D::new(0.5, 0.0, 0.0), Vector3D::new(0.0, 0.0, 1.0));
+
+        let intersections = cube.intersect(&ray);
+        assert_eq!(intersections.len(), 2);
+
+        assert_eq!(intersections.underlying()[0].t, -1.0);
+        assert_eq!(intersections.underlying()[1].t, 1.0);
+    }
+
+    #[test]
+    fn an_ray_passing_diagonally_by_the_cube_should_not_intersect() {
+        let cube = Object::cube();
+        let ray = Ray::new(
+            Point3D::new(-2.0, 0.0, 0.0),
+            Vector3D::new(0.2673, 0.5345, 0.8018),
+        );
+
+        assert_eq!(cube.intersect(&ray).underlying(), &vec![]);
+    }
+
+    #[test]
+    fn an_ray_parallel_to_the_pos_x_face_originating_from_the_right_should_not_intersect() {
+        let cube = Object::cube();
+        let ray = Ray::new(Point3D::new(2.0, 2.0, 0.0), Vector3D::new(-1.0, 0.0, 0.0));
+
+        assert_eq!(cube.intersect(&ray).underlying(), &vec![]);
+    }
+
+    #[test]
+    fn the_normal_of_a_cube_point_should_be_based_off_the_largest_component() {
+        vec![
+            (Point3D::new(1.0, 0.5, -0.8), Vector3D::new(1.0, 0.0, 0.0)),
+            (Point3D::new(-1.0, -0.2, 0.9), Vector3D::new(-1.0, 0.0, 0.0)),
+            (Point3D::new(-0.4, 1.0, -0.1), Vector3D::new(0.0, 1.0, 0.0)),
+            (Point3D::new(0.3, -1.0, -0.7), Vector3D::new(0.0, -1.0, 0.0)),
+            (Point3D::new(-0.6, 0.3, 1.0), Vector3D::new(0.0, 0.0, 1.0)),
+            (Point3D::new(0.4, 0.4, -1.0), Vector3D::new(0.0, 0.0, -1.0)),
+            (Point3D::new(1.0, 1.0, 1.0), Vector3D::new(1.0, 0.0, 0.0)),
+            (
+                Point3D::new(-1.0, -1.0, -1.0),
+                Vector3D::new(-1.0, 0.0, 0.0),
+            ),
+        ]
+        .into_iter()
+        .for_each(|(point, normal)| {
+            assert_eq!(Object::cube().normal_at(point), normal);
+        })
+    }
+}

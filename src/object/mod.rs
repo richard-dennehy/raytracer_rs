@@ -14,18 +14,22 @@ pub struct Object {
 
 impl Object {
     pub fn sphere() -> Self {
-        Object {
-            transform: Matrix4D::identity(),
-            material: Material::default(),
-            kind: Shape::Sphere,
-        }
+        Self::new(Shape::Sphere)
     }
 
     pub fn plane() -> Self {
+        Self::new(Shape::Plane)
+    }
+
+    pub fn cube() -> Self {
+        Self::new(Shape::Cube)
+    }
+
+    fn new(kind: Shape) -> Self {
         Object {
             transform: Matrix4D::identity(),
             material: Material::default(),
-            kind: Shape::Plane,
+            kind,
         }
     }
 
@@ -129,20 +133,33 @@ impl Object {
 enum Shape {
     Sphere,
     Plane,
+    Cube,
 }
 
 impl Shape {
     pub fn object_normal_at(&self, point: Point3D) -> Vector3D {
-        match self {
-            &Shape::Sphere => point - Point3D::new(0.0, 0.0, 0.0),
-            &Shape::Plane => Vector3D::new(0.0, 1.0, 0.0),
+        match *self {
+            Shape::Sphere => point - Point3D::new(0.0, 0.0, 0.0),
+            Shape::Plane => Vector3D::new(0.0, 1.0, 0.0),
+            Shape::Cube => Self::cube_normal(point),
+        }
+    }
+
+    fn cube_normal(point: Point3D) -> Vector3D {
+        if point.x().abs() >= point.y().abs() && point.x().abs() >= point.z().abs() {
+            Vector3D::new(point.x(), 0.0, 0.0)
+        } else if point.y().abs() >= point.x().abs() && point.y().abs() >= point.z().abs() {
+            Vector3D::new(0.0, point.y(), 0.0)
+        } else {
+            Vector3D::new(0.0, 0.0, point.z())
         }
     }
 
     pub fn object_intersect(&self, with: Ray) -> Vec<f64> {
-        match self {
-            &Shape::Sphere => Shape::sphere_intersect(with),
-            &Shape::Plane => Shape::plane_intersect(with),
+        match *self {
+            Shape::Sphere => Shape::sphere_intersect(with),
+            Shape::Plane => Shape::plane_intersect(with),
+            Shape::Cube => Shape::cube_intersect(with),
         }
     }
 
@@ -170,5 +187,34 @@ impl Shape {
         }
 
         vec![-with.origin.y() / with.direction.y()]
+    }
+
+    fn cube_intersect(with: Ray) -> Vec<f64> {
+        fn check_axis(origin: f64, direction: f64) -> (f64, f64) {
+            let t_min_numerator = -1.0 - origin;
+            let t_max_numerator = 1.0 - origin;
+
+            let t_min = t_min_numerator / direction;
+            let t_max = t_max_numerator / direction;
+
+            if t_min > t_max {
+                (t_max, t_min)
+            } else {
+                (t_min, t_max)
+            }
+        }
+
+        let (t_min_x, t_max_x) = check_axis(with.origin.x(), with.direction.x());
+        let (t_min_y, t_max_y) = check_axis(with.origin.y(), with.direction.y());
+        let (t_min_z, t_max_z) = check_axis(with.origin.z(), with.direction.z());
+
+        let t_min = t_min_x.max(t_min_y).max(t_min_z);
+        let t_max = t_max_x.min(t_max_y).min(t_max_z);
+
+        if t_min > t_max {
+            vec![]
+        } else {
+            vec![t_min, t_max]
+        }
     }
 }
