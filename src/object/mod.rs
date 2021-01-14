@@ -25,6 +25,30 @@ impl Object {
         Self::new(Shape::Cube)
     }
 
+    pub fn infinite_cylinder() -> Self {
+        Self::new(Shape::Cylinder {
+            max_y: f64::INFINITY,
+            min_y: f64::INFINITY,
+            capped: false,
+        })
+    }
+
+    pub fn hollow_cylinder(min_y: f64, max_y: f64) -> Self {
+        Self::new(Shape::Cylinder {
+            max_y,
+            min_y,
+            capped: false,
+        })
+    }
+
+    pub fn solid_cylinder(min_y: f64, max_y: f64) -> Self {
+        Self::new(Shape::Cylinder {
+            max_y,
+            min_y,
+            capped: true,
+        })
+    }
+
     fn new(kind: Shape) -> Self {
         Object {
             transform: Matrix4D::identity(),
@@ -134,6 +158,11 @@ enum Shape {
     Sphere,
     Plane,
     Cube,
+    Cylinder {
+        max_y: f64,
+        min_y: f64,
+        capped: bool,
+    },
 }
 
 impl Shape {
@@ -142,6 +171,7 @@ impl Shape {
             Shape::Sphere => point - Point3D::new(0.0, 0.0, 0.0),
             Shape::Plane => Vector3D::new(0.0, 1.0, 0.0),
             Shape::Cube => Self::cube_normal(point),
+            Shape::Cylinder { min_y, max_y, .. } => Self::cylinder_normal(point, min_y, max_y),
         }
     }
 
@@ -155,11 +185,28 @@ impl Shape {
         }
     }
 
+    fn cylinder_normal(point: Point3D, min_y: f64, max_y: f64) -> Vector3D {
+        let distance = point.x().powi(2) + point.z().powi(2);
+
+        if distance < 1.0 && point.y() >= max_y - f64::EPSILON {
+            Vector3D::new(0.0, 1.0, 0.0)
+        } else if distance < 1.0 && point.y() <= min_y + f64::EPSILON {
+            Vector3D::new(0.0, -1.0, 0.0)
+        } else {
+            Vector3D::new(point.x(), 0.0, point.z())
+        }
+    }
+
     pub fn object_intersect(&self, with: Ray) -> Vec<f64> {
         match *self {
             Shape::Sphere => Shape::sphere_intersect(with),
             Shape::Plane => Shape::plane_intersect(with),
             Shape::Cube => Shape::cube_intersect(with),
+            Shape::Cylinder {
+                min_y,
+                max_y,
+                capped,
+            } => Self::cylinder_intersect(with, min_y, max_y, capped),
         }
     }
 
@@ -216,5 +263,63 @@ impl Shape {
         } else {
             vec![t_min, t_max]
         }
+    }
+
+    fn cylinder_intersect(with: Ray, min_y: f64, max_y: f64, capped: bool) -> Vec<f64> {
+        let intersects_cap = |t: f64| {
+            let x = with.origin.x() + t * with.direction.x();
+            let z = with.origin.z() + t * with.direction.z();
+
+            (x.powi(2) + z.powi(2)) <= 1.0
+        };
+
+        let a = with.direction.x().powi(2) + with.direction.z().powi(2);
+
+        if a.abs() <= f64::EPSILON {
+            return vec![];
+        };
+
+        let b =
+            2.0 * with.origin.x() * with.direction.x() + 2.0 * with.origin.z() * with.direction.z();
+        let c = with.origin.x().powi(2) + with.origin.z().powi(2) - 1.0;
+
+        let discriminant = b.powi(2) - 4.0 * a * c;
+
+        if discriminant < 0.0 {
+            return vec![];
+        };
+
+        let first = (-b - discriminant.sqrt()) / (2.0 * a);
+        let second = (-b + discriminant.sqrt()) / (2.0 * a);
+
+        let y_first = with.origin.y() + with.direction.y() * first;
+        let y_second = with.origin.y() + with.direction.y() * second;
+
+        let mut ts = Vec::with_capacity(2);
+        if y_first > min_y && y_first < max_y {
+            ts.push(y_first);
+        }
+
+        if y_second > min_y && y_second < max_y {
+            ts.push(y_second);
+        }
+
+        if capped {
+            // check bottom cap
+            let t = (min_y - with.origin.y()) / with.direction.y();
+
+            if intersects_cap(t) {
+                ts.push(t);
+            }
+
+            // check top cap
+            let t = (max_y - with.origin.y()) / with.direction.y();
+
+            if intersects_cap(t) {
+                ts.push(t);
+            }
+        }
+
+        ts
     }
 }
