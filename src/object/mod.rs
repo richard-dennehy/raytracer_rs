@@ -28,7 +28,7 @@ impl Object {
     pub fn infinite_cylinder() -> Self {
         Self::new(Shape::Cylinder {
             max_y: f64::INFINITY,
-            min_y: f64::INFINITY,
+            min_y: -f64::INFINITY,
             capped: false,
         })
     }
@@ -297,11 +297,11 @@ impl Shape {
 
         let mut ts = Vec::with_capacity(2);
         if y_first > min_y && y_first < max_y {
-            ts.push(y_first);
+            ts.push(first);
         }
 
         if y_second > min_y && y_second < max_y {
-            ts.push(y_second);
+            ts.push(second);
         }
 
         if capped {

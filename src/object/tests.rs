@@ -528,6 +528,7 @@ mod cube_tests {
         assert_eq!(cube.intersect(&ray).underlying(), &vec![]);
     }
 
+    #[rustfmt::skip]
     #[test]
     fn the_normal_of_a_cube_point_should_be_based_off_the_largest_component() {
         vec![
@@ -538,14 +539,62 @@ mod cube_tests {
             (Point3D::new(-0.6, 0.3, 1.0), Vector3D::new(0.0, 0.0, 1.0)),
             (Point3D::new(0.4, 0.4, -1.0), Vector3D::new(0.0, 0.0, -1.0)),
             (Point3D::new(1.0, 1.0, 1.0), Vector3D::new(1.0, 0.0, 0.0)),
-            (
-                Point3D::new(-1.0, -1.0, -1.0),
-                Vector3D::new(-1.0, 0.0, 0.0),
-            ),
+            (Point3D::new(-1.0, -1.0, -1.0), Vector3D::new(-1.0, 0.0, 0.0)),
         ]
         .into_iter()
         .for_each(|(point, normal)| {
             assert_eq!(Object::cube().normal_at(point), normal);
+        })
+    }
+}
+
+mod cylinder_tests {
+    use super::*;
+
+    #[test]
+    fn a_ray_that_misses_an_infinite_cylinder_should_not_intersect() {
+        let cylinder = Object::infinite_cylinder();
+
+        vec![
+            Ray::new(Point3D::new(1.0, 0.0, 0.0), Vector3D::new(0.0, 1.0, 0.0)),
+            Ray::new(Point3D::ORIGIN, Vector3D::new(0.0, 1.0, 0.0)),
+            Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(1.0, 1.0, 1.0)),
+        ]
+        .into_iter()
+        .for_each(|ray| assert_eq!(cylinder.intersect(&ray).len(), 0))
+    }
+
+    #[test]
+    fn a_ray_that_hits_an_infinite_cylinder_should_intersect_twice() {
+        let cylinder = Object::infinite_cylinder();
+
+        vec![
+            (
+                Ray::new(Point3D::new(1.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0)),
+                5.0,
+                5.0,
+                "tangent",
+            ),
+            (
+                Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0)),
+                4.0,
+                6.0,
+                "through centre",
+            ),
+            (
+                Ray::new(Point3D::new(0.5, 0.0, -5.0), Vector3D::new(0.1, 1.0, 1.0)),
+                6.80798,
+                7.08872,
+                "from angle",
+            ),
+        ]
+        .into_iter()
+        .for_each(|(ray, t0, t1, scenario)| {
+            let intersections = cylinder.intersect(&ray);
+
+            assert_eq!(intersections.len(), 2, "{}", scenario);
+            assert_eq!(intersections.underlying()[0].t, t0, "{}", scenario);
+            assert_eq!(intersections.underlying()[1].t, t1, "{}", scenario);
         })
     }
 }

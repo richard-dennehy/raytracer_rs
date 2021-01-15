@@ -12,9 +12,10 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implement cubes">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP implement cylinders">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,9 +79,9 @@
       <command value="cargo run --release" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.test">
-    <configuration name="Run ray_tracer" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="run --package ray_tracer --bin ray_tracer" />
+  <component name="RunManager" selected="Cargo.Test object::tests::cylinder_tests::a_ray_that_hits_an_infinite_cylinder_should_intersect_twice">
+    <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="allFeatures" value="false" />
@@ -93,8 +94,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
-      <option name="command" value="run --package raytracer --bin raytracer" />
+    <configuration name="Test object::tests::cylinder_tests::a_ray_that_hits_an_infinite_cylinder_should_intersect_twice" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib object::tests::cylinder_tests::a_ray_that_hits_an_infinite_cylinder_should_intersect_twice -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="allFeatures" value="false" />
@@ -163,13 +164,18 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.Test object::tests::cylinder_tests::a_ray_that_hits_an_infinite_cylinder_should_intersect_twice" />
         <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.run" />
         <item itemvalue="Cargo.Test world::tests::unit_tests::a_transparent_sphere_should_include_the_colour_of_objects_behind_it" />
         <item itemvalue="Cargo.Test world::tests::unit_tests::a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it" />
-        <item itemvalue="Cargo.Run ray_tracer" />
       </list>
     </recent_temporary>
   </component>
@@ -228,7 +234,8 @@
       <workItem from="1610394875512" duration="3160000" />
       <workItem from="1610477970717" duration="6238000" />
       <workItem from="1610568211676" duration="2492000" />
-      <workItem from="1610647933442" duration="2361000" />
+      <workItem from="1610647933442" duration="2421000" />
+      <workItem from="1610741493128" duration="1441000" />
     </task>
     <task id="LOCAL-00001" summary="basic 3D Vector and Point operations">
       <created>1607266278125</created>
@@ -510,7 +517,14 @@
       <option name="project" value="LOCAL" />
       <updated>1610570703269</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="WIP implement cylinders">
+      <created>1610650354772</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1610650354772</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -526,7 +540,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="migrated to Intersection struct" />
     <MESSAGE value="add ray and sphere translations" />
     <MESSAGE value="ray casting example" />
     <MESSAGE value="updated ray casting example" />
@@ -551,7 +564,8 @@
     <MESSAGE value="implemented tests for refraction; missing fresnel" />
     <MESSAGE value="implement fresnel effect" />
     <MESSAGE value="implement cubes" />
-    <option name="LAST_COMMIT_MESSAGE" value="implement cubes" />
+    <MESSAGE value="WIP implement cylinders" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP implement cylinders" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -566,8 +580,19 @@
           <line>73</line>
           <option name="timeStamp" value="15" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/object/mod.rs</url>
+          <line>297</line>
+          <option name="timeStamp" value="20" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="CargoCommandRunConfiguration">
+        <watch expression="first" />
+        <watch expression="second" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
