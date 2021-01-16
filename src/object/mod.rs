@@ -41,7 +41,7 @@ impl Object {
         })
     }
 
-    pub fn solid_cylinder(min_y: f64, max_y: f64) -> Self {
+    pub fn capped_cylinder(min_y: f64, max_y: f64) -> Self {
         Self::new(Shape::Cylinder {
             max_y,
             min_y,
@@ -126,6 +126,22 @@ impl Object {
     }
 
     pub fn intersect(&self, with: &Ray) -> Intersections {
+        debug_assert!(
+            {
+                let normalised = with.direction.normalised();
+                let direction = &with.direction;
+
+                direction.x() - normalised.x() <= f64::EPSILON
+                    && direction.y() - normalised.y() <= f64::EPSILON
+                    && direction.z() - normalised.z() <= f64::EPSILON
+            },
+            format!(
+                "the Ray must be normalised before intersecting: {:?}, {:?}",
+                with.direction,
+                with.direction.normalised()
+            )
+        );
+
         let ray_transform = self
             .transform
             .inverse()
@@ -216,7 +232,7 @@ impl Shape {
         let b = 2.0 * with.direction.dot(&sphere_to_ray);
         let c = sphere_to_ray.dot(&sphere_to_ray) - 1.0;
 
-        let discriminant = b * b - 4.0 * a * c;
+        let discriminant = b.powi(2) - 4.0 * a * c;
 
         if discriminant < 0.0 {
             return Vec::new();
@@ -273,10 +289,31 @@ impl Shape {
             (x.powi(2) + z.powi(2)) <= 1.0
         };
 
+        let mut cap_intersections = if capped {
+            let mut ts = Vec::with_capacity(2);
+            // check bottom cap
+            let t = (min_y - with.origin.y()) / with.direction.y();
+
+            if intersects_cap(t) {
+                ts.push(t);
+            }
+
+            // check top cap
+            let t = (max_y - with.origin.y()) / with.direction.y();
+
+            if intersects_cap(t) {
+                ts.push(t);
+            }
+
+            ts
+        } else {
+            vec![]
+        };
+
         let a = with.direction.x().powi(2) + with.direction.z().powi(2);
 
         if a.abs() <= f64::EPSILON {
-            return vec![];
+            return cap_intersections;
         };
 
         let b =
@@ -304,21 +341,7 @@ impl Shape {
             ts.push(second);
         }
 
-        if capped {
-            // check bottom cap
-            let t = (min_y - with.origin.y()) / with.direction.y();
-
-            if intersects_cap(t) {
-                ts.push(t);
-            }
-
-            // check top cap
-            let t = (max_y - with.origin.y()) / with.direction.y();
-
-            if intersects_cap(t) {
-                ts.push(t);
-            }
-        }
+        ts.append(&mut cap_intersections);
 
         ts
     }

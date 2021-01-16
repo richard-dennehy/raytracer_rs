@@ -514,7 +514,7 @@ mod cube_tests {
         let cube = Object::cube();
         let ray = Ray::new(
             Point3D::new(-2.0, 0.0, 0.0),
-            Vector3D::new(0.2673, 0.5345, 0.8018),
+            Vector3D::new(0.2673, 0.5345, 0.8018).normalised(),
         );
 
         assert_eq!(cube.intersect(&ray).underlying(), &vec![]);
@@ -558,7 +558,10 @@ mod cylinder_tests {
         vec![
             Ray::new(Point3D::new(1.0, 0.0, 0.0), Vector3D::new(0.0, 1.0, 0.0)),
             Ray::new(Point3D::ORIGIN, Vector3D::new(0.0, 1.0, 0.0)),
-            Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(1.0, 1.0, 1.0)),
+            Ray::new(
+                Point3D::new(0.0, 0.0, -5.0),
+                Vector3D::new(1.0, 1.0, 1.0).normalised(),
+            ),
         ]
         .into_iter()
         .for_each(|ray| assert_eq!(cylinder.intersect(&ray).len(), 0))
@@ -582,9 +585,12 @@ mod cylinder_tests {
                 "through centre",
             ),
             (
-                Ray::new(Point3D::new(0.5, 0.0, -5.0), Vector3D::new(0.1, 1.0, 1.0)),
-                6.80798,
-                7.08872,
+                Ray::new(
+                    Point3D::new(0.5, 0.0, -5.0),
+                    Vector3D::new(0.1, 1.0, 1.0).normalised(),
+                ),
+                6.80798191702732,
+                7.088723439378861,
                 "from angle",
             ),
         ]
@@ -595,6 +601,129 @@ mod cylinder_tests {
             assert_eq!(intersections.len(), 2, "{}", scenario);
             assert_eq!(intersections.underlying()[0].t, t0, "{}", scenario);
             assert_eq!(intersections.underlying()[1].t, t1, "{}", scenario);
+        })
+    }
+
+    #[test]
+    fn the_normal_of_an_infinite_cylinder_should_have_0_y() {
+        let cylinder = Object::infinite_cylinder();
+
+        vec![
+            (Point3D::new(1.0, 0.0, 0.0), Vector3D::new(1.0, 0.0, 0.0)),
+            (Point3D::new(0.0, 5.0, -1.0), Vector3D::new(0.0, 0.0, -1.0)),
+            (Point3D::new(0.0, -2.0, 1.0), Vector3D::new(0.0, 0.0, 1.0)),
+            (Point3D::new(-1.0, 1.0, 0.0), Vector3D::new(-1.0, 0.0, 0.0)),
+        ]
+        .into_iter()
+        .for_each(|(point, normal)| {
+            assert_eq!(cylinder.normal_at(point), normal);
+        })
+    }
+
+    #[test]
+    fn rays_that_miss_a_finite_hollow_cylinder_should_not_intersect() {
+        let cylinder = Object::hollow_cylinder(1.0, 2.0);
+
+        vec![
+            (
+                "starts inside cylinder; escapes without hitting sides",
+                Point3D::new(0.0, 1.5, 0.0),
+                Vector3D::new(0.1, 1.0, 0.0),
+            ),
+            (
+                "perpendicular ray passing above",
+                Point3D::new(0.0, 3.0, -5.0),
+                Vector3D::new(0.0, 0.0, 1.0),
+            ),
+            (
+                "perpendicular ray passing below",
+                Point3D::new(0.0, 0.0, -5.0),
+                Vector3D::new(0.0, 0.0, 1.0),
+            ),
+            (
+                "perpendicular ray passing above (max is exclusive)",
+                Point3D::new(0.0, 2.0, -5.0),
+                Vector3D::new(0.0, 0.0, 1.0),
+            ),
+            (
+                "perpendicular ray passing below (min is exclusive)",
+                Point3D::new(0.0, 1.0, -5.0),
+                Vector3D::new(0.0, 0.0, 1.0),
+            ),
+        ]
+        .into_iter()
+        .for_each(|(scenario, origin, direction)| {
+            let ray = Ray::new(origin, direction.normalised());
+
+            assert_eq!(cylinder.intersect(&ray).len(), 0, "{}", scenario);
+        })
+    }
+
+    #[test]
+    fn a_ray_that_passes_through_a_hollow_finite_cylinder_intersects_twice() {
+        let cylinder = Object::hollow_cylinder(1.0, 2.0);
+
+        let ray = Ray::new(Point3D::new(0.0, 1.5, -2.0), Vector3D::new(0.0, 0.0, 1.0));
+        let intersections = cylinder.intersect(&ray);
+        assert_eq!(intersections.len(), 2);
+        assert_eq!(intersections.underlying()[0].t, 1.0);
+        assert_eq!(intersections.underlying()[1].t, 3.0);
+    }
+
+    #[test]
+    fn a_ray_passing_through_the_caps_of_a_capped_cylinder_should_intersect_twice() {
+        let cylinder = Object::capped_cylinder(1.0, 2.0);
+
+        vec![
+            (
+                "passes through both caps from above",
+                Point3D::new(0.0, 3.0, 0.0),
+                Vector3D::new(0.0, -1.0, 0.0),
+            ),
+            (
+                "diagonally intersects one cap and wall from above",
+                Point3D::new(0.0, 3.0, -2.0),
+                Vector3D::new(0.0, -1.0, 2.0),
+            ),
+            (
+                "diagonally intersects one cap and wall from below",
+                Point3D::new(0.0, 0.0, -2.0),
+                Vector3D::new(0.0, 1.0, 2.0),
+            ),
+            (
+                "diagonally intersects top cap and bottom 'corner'",
+                Point3D::new(0.0, 4.0, -2.0),
+                Vector3D::new(0.0, -1.0, 1.0),
+            ),
+            (
+                "diagonally intersects bottom cap and top 'corner'",
+                Point3D::new(0.0, -1.0, -2.0),
+                Vector3D::new(0.0, 1.0, 1.0),
+            ),
+        ]
+        .into_iter()
+        .for_each(|(scenario, origin, direction)| {
+            let ray = Ray::new(origin, direction.normalised());
+
+            assert_eq!(cylinder.intersect(&ray).len(), 2, "{}", scenario);
+        })
+    }
+
+    #[test]
+    fn the_normal_vector_on_a_cap_should_either_be_pos_y_axis_or_neg_y_axis() {
+        let cylinder = Object::capped_cylinder(1.0, 2.0);
+
+        vec![
+            (Point3D::new(0.0, 1.0, 0.0), Vector3D::new(0.0, -1.0, 0.0)),
+            (Point3D::new(0.5, 1.0, 0.0), Vector3D::new(0.0, -1.0, 0.0)),
+            (Point3D::new(0.0, 1.0, 0.5), Vector3D::new(0.0, -1.0, 0.0)),
+            (Point3D::new(0.0, 2.0, 0.0), Vector3D::new(0.0, 1.0, 0.0)),
+            (Point3D::new(0.5, 2.0, 0.0), Vector3D::new(0.0, 1.0, 0.0)),
+            (Point3D::new(0.0, 2.0, 0.5), Vector3D::new(0.0, 1.0, 0.0)),
+        ]
+        .into_iter()
+        .for_each(|(point, normal)| {
+            assert_eq!(cylinder.normal_at(point), normal);
         })
     }
 }
