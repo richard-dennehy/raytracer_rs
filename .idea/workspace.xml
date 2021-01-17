@@ -12,13 +12,9 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="example scene with capped cylinder and cube">
-      <change afterPath="$PROJECT_DIR$/src/image_writer/mod.rs" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="output PNG file instead of PPM">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -240,7 +236,7 @@
       <workItem from="1610647933442" duration="2421000" />
       <workItem from="1610741493128" duration="1750000" />
       <workItem from="1610800330829" duration="4581000" />
-      <workItem from="1610883541034" duration="2135000" />
+      <workItem from="1610883541034" duration="3929000" />
     </task>
     <task id="LOCAL-00001" summary="basic 3D Vector and Point operations">
       <created>1607266278125</created>
@@ -550,7 +546,21 @@
       <option name="project" value="LOCAL" />
       <updated>1610884876067</updated>
     </task>
-    <option name="localTasksCounter" value="45" />
+    <task id="LOCAL-00045" summary="output PNG file instead of PPM">
+      <created>1610885790041</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1610885790041</updated>
+    </task>
+    <task id="LOCAL-00046" summary="output PNG file instead of PPM">
+      <created>1610885967903</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1610885967903</updated>
+    </task>
+    <option name="localTasksCounter" value="47" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -566,7 +576,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="sphere normals" />
     <MESSAGE value="material lighting" />
     <MESSAGE value="updated example to use lighting" />
     <MESSAGE value="moved apply lighting function to sphere" />
@@ -591,7 +600,8 @@
     <MESSAGE value="WIP test cylinders" />
     <MESSAGE value="implemented cylinders" />
     <MESSAGE value="example scene with capped cylinder and cube" />
-    <option name="LAST_COMMIT_MESSAGE" value="example scene with capped cylinder and cube" />
+    <MESSAGE value="output PNG file instead of PPM" />
+    <option name="LAST_COMMIT_MESSAGE" value="output PNG file instead of PPM" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

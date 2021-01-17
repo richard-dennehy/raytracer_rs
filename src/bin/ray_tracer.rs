@@ -17,12 +17,13 @@ fn main() {
     let mut world = World::empty();
     world.lights.push(PointLight::new(
         Colour::WHITE,
-        Point3D::new(-10.0, 12.0, -10.0),
+        Point3D::new(-3.0, 12.0, -10.0),
     ));
 
     {
         let floor = Object::plane().with_material(Material {
-            pattern: Pattern::checkers(Colour::WHITE, Colour::BLACK),
+            pattern: Pattern::checkers(Colour::WHITE, Colour::BLACK)
+                .with_transform(Matrix4D::translation(0.1, 0.0, 0.0)),
             reflective: 0.2,
             ..Default::default()
         });
@@ -49,12 +50,13 @@ fn main() {
     {
         let wall = Object::plane()
             .with_transform(
+                // Matrix4D::identity()
                 Matrix4D::rotation_x(-PI / 2.0)
                     .with_rotation_y(-PI / 4.0)
                     .with_translation(-1.0, 0.0, 5.0),
             )
             .with_material(Material {
-                pattern: Pattern::solid(Colour::new(0.98, 0.98, 0.98)),
+                pattern: Pattern::solid(Colour::new(0.8, 0.8, 0.8)),
                 ..Default::default()
             });
 
