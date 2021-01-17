@@ -12,10 +12,9 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP test cylinders">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implemented cylinders">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,12 +78,7 @@
       <command value="cargo run --release" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.test">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="Cargo.run">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -169,11 +163,16 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.run" />
         <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.Test object::tests::cylinder_tests::a_ray_that_hits_an_infinite_cylinder_should_intersect_twice" />
-        <item itemvalue="Cargo.run" />
         <item itemvalue="Cargo.Test world::tests::unit_tests::a_transparent_sphere_should_include_the_colour_of_objects_behind_it" />
         <item itemvalue="Cargo.Test world::tests::unit_tests::a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it" />
       </list>
@@ -236,7 +235,8 @@
       <workItem from="1610568211676" duration="2492000" />
       <workItem from="1610647933442" duration="2421000" />
       <workItem from="1610741493128" duration="1750000" />
-      <workItem from="1610800330829" duration="4380000" />
+      <workItem from="1610800330829" duration="4581000" />
+      <workItem from="1610883541034" duration="1207000" />
     </task>
     <task id="LOCAL-00001" summary="basic 3D Vector and Point operations">
       <created>1607266278125</created>
@@ -532,7 +532,14 @@
       <option name="project" value="LOCAL" />
       <updated>1610743226649</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="implemented cylinders">
+      <created>1610805210784</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1610805210784</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -548,7 +555,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="ray casting example" />
     <MESSAGE value="updated ray casting example" />
     <MESSAGE value="sphere normals" />
     <MESSAGE value="material lighting" />
@@ -573,7 +579,8 @@
     <MESSAGE value="implement cubes" />
     <MESSAGE value="WIP implement cylinders" />
     <MESSAGE value="WIP test cylinders" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP test cylinders" />
+    <MESSAGE value="implemented cylinders" />
+    <option name="LAST_COMMIT_MESSAGE" value="implemented cylinders" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

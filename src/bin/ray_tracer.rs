@@ -18,15 +18,44 @@ fn main() {
     let mut world = World::empty();
     world.lights.push(PointLight::new(
         Colour::WHITE,
-        Point3D::new(-10.0, 10.0, -10.0),
+        Point3D::new(-10.0, 12.0, -10.0),
     ));
 
     {
-        let wall = Object::plane()
-            .with_transform(Matrix4D::rotation_x(-PI / 2.0).with_translation(0.0, 0.0, 5.1))
+        let floor = Object::plane().with_material(Material {
+            pattern: Pattern::checkers(Colour::WHITE, Colour::BLACK),
+            reflective: 0.2,
+            ..Default::default()
+        });
+
+        world.objects.push(floor);
+    };
+
+    {
+        let mirror = Object::plane()
+            .with_transform(
+                Matrix4D::rotation_x(-PI / 2.0)
+                    .with_rotation_y(PI / 4.0)
+                    .with_translation(0.0, 0.0, 5.0),
+            )
             .with_material(Material {
-                pattern: Pattern::checkers(Colour::BLACK, Colour::WHITE)
-                    .with_transform(Matrix4D::translation(0.0, 0.0, 0.1)),
+                reflective: 1.0,
+                pattern: Pattern::solid(Colour::new(0.05, 0.05, 0.05)),
+                ..Default::default()
+            });
+
+        world.objects.push(mirror);
+    };
+
+    {
+        let wall = Object::plane()
+            .with_transform(
+                Matrix4D::rotation_x(-PI / 2.0)
+                    .with_rotation_y(-PI / 4.0)
+                    .with_translation(-1.0, 0.0, 5.0),
+            )
+            .with_material(Material {
+                pattern: Pattern::solid(Colour::new(0.98, 0.98, 0.98)),
                 ..Default::default()
             });
 
@@ -34,31 +63,26 @@ fn main() {
     };
 
     {
-        let outer_glass_sphere = Object::sphere()
-            .with_transform(Matrix4D::translation(0.0, 1.0, 0.5))
+        let cube = Object::cube()
+            .with_transform(Matrix4D::translation(-1.5, 1.0, 0.0))
             .with_material(Material {
-                pattern: Pattern::solid(Colour::BLACK),
-                transparency: 1.0,
-                refractive: 1.5,
-                reflective: 1.0,
+                pattern: Pattern::checkers(Colour::BLUE, Colour::RED)
+                    .with_transform(Matrix4D::uniform_scaling(0.33)),
                 ..Default::default()
             });
 
-        world.objects.push(outer_glass_sphere);
+        world.objects.push(cube);
     };
 
     {
-        let inner_air_sphere = Object::sphere()
-            .with_transform(Matrix4D::uniform_scaling(0.5).with_translation(0.0, 1.0, 0.5))
+        let cylinder = Object::capped_cylinder(0.0, 2.0)
+            .with_transform(Matrix4D::translation(1.0, 0.0, 1.0))
             .with_material(Material {
-                pattern: Pattern::solid(Colour::BLACK),
-                transparency: 1.0,
-                refractive: 1.0,
-                reflective: 1.0,
+                pattern: Pattern::solid(Colour::GREEN),
                 ..Default::default()
             });
 
-        world.objects.push(inner_air_sphere);
+        world.objects.push(cylinder);
     };
 
     let camera = Camera::new(
@@ -66,7 +90,7 @@ fn main() {
         CAMERA_HEIGHT,
         PI / 3.0,
         Matrix4D::view_transform(
-            Point3D::new(0.0, 1.5, -3.0),
+            Point3D::new(0.0, 2.5, -6.0),
             Point3D::new(0.0, 1.0, 0.0),
             Vector3D::new(0.0, 1.0, 0.0),
         ),
