@@ -5,12 +5,11 @@ extern crate nonzero_ext;
 
 use ray_tracer::*;
 use std::f64::consts::PI;
-use std::fs;
 use std::num::NonZeroU16;
 use std::time::Instant;
 
-const CAMERA_WIDTH: NonZeroU16 = nonzero!(800u16);
-const CAMERA_HEIGHT: NonZeroU16 = nonzero!(600u16);
+const CAMERA_WIDTH: NonZeroU16 = nonzero!(1920u16);
+const CAMERA_HEIGHT: NonZeroU16 = nonzero!(1080u16);
 
 fn main() {
     let timer = Instant::now();
@@ -97,9 +96,10 @@ fn main() {
     );
     let canvas = renderer::render(world, camera);
 
-    let ppm_content = ppm_writer::write_ppm(&canvas);
+    println!("Rendered in {:.2?}", timer.elapsed());
 
-    fs::write("out.ppm", ppm_content).expect("Failed to write output file");
+    let image = image_writer::write(canvas);
+    image.save("out.png").expect("failed to write output file");
 
     println!("Completed in {:.2?}", timer.elapsed())
 }

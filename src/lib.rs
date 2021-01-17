@@ -44,3 +44,5 @@ pub use object::Object;
 
 mod pattern;
 pub use pattern::Pattern;
+
+pub mod image_writer;
