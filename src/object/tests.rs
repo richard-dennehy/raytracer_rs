@@ -727,3 +727,59 @@ mod cylinder_tests {
         })
     }
 }
+
+mod cone_tests {
+    use super::*;
+
+    #[test]
+    fn a_ray_that_passes_through_a_double_napped_cone_should_intersect_twice() {
+        let cone = Object::double_napped_cone();
+
+        vec![
+            (
+                "Through middle",
+                Point3D::new(0.0, 0.0, -5.0),
+                Vector3D::new(0.0, 0.0, 1.0),
+                5.0,
+                5.0,
+            ),
+            (
+                "Through middle from angle",
+                Point3D::new(0.0, 0.0, -5.0),
+                Vector3D::new(1.0, 1.0, 1.0),
+                8.660254037844386,
+                8.660254037844386,
+            ),
+            (
+                "Enters and leaves cone",
+                Point3D::new(1.0, 1.0, -5.0),
+                Vector3D::new(-0.5, -1.0, 1.0),
+                4.550055679356349,
+                49.449944320643645,
+            ),
+        ]
+        .into_iter()
+        .for_each(|(scenario, origin, direction, first, second)| {
+            let ray = Ray::new(origin, direction.normalised());
+            let intersections = cone.intersect(&ray);
+
+            assert_eq!(intersections.len(), 2, "{}", scenario);
+            assert_eq!(intersections.underlying()[0].t, first, "{}", scenario);
+            assert_eq!(intersections.underlying()[1].t, second, "{}", scenario);
+        })
+    }
+
+    #[test]
+    fn a_ray_parallel_to_one_half_of_a_double_napped_cone_should_intersect_once() {
+        let cone = Object::double_napped_cone();
+
+        let ray = Ray::new(
+            Point3D::new(0.0, 0.0, -1.0),
+            Vector3D::new(0.0, 1.0, 1.0).normalised(),
+        );
+        let intersections = cone.intersect(&ray);
+
+        assert_eq!(intersections.len(), 1);
+        assert_eq!(intersections.underlying()[0].t, 0.3535533905932738);
+    }
+}

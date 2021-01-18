@@ -49,6 +49,30 @@ impl Object {
         })
     }
 
+    pub fn double_napped_cone() -> Self {
+        Self::new(Shape::Cone {
+            max_y: f64::INFINITY,
+            min_y: -f64::INFINITY,
+            capped: false,
+        })
+    }
+
+    pub fn truncated_cone(min_y: f64, max_y: f64) -> Self {
+        Self::new(Shape::Cone {
+            min_y,
+            max_y,
+            capped: false,
+        })
+    }
+
+    pub fn capped_cone(min_y: f64, max_y: f64) -> Self {
+        Self::new(Shape::Cone {
+            min_y,
+            max_y,
+            capped: true,
+        })
+    }
+
     fn new(kind: Shape) -> Self {
         Object {
             transform: Matrix4D::identity(),
@@ -179,6 +203,11 @@ enum Shape {
         min_y: f64,
         capped: bool,
     },
+    Cone {
+        max_y: f64,
+        min_y: f64,
+        capped: bool,
+    },
 }
 
 impl Shape {
@@ -188,6 +217,7 @@ impl Shape {
             Shape::Plane => Vector3D::new(0.0, 1.0, 0.0),
             Shape::Cube => Self::cube_normal(point),
             Shape::Cylinder { min_y, max_y, .. } => Self::cylinder_normal(point, min_y, max_y),
+            Shape::Cone { min_y, max_y, .. } => Self::cone_normal(point, min_y, max_y),
         }
     }
 
@@ -213,6 +243,10 @@ impl Shape {
         }
     }
 
+    fn cone_normal(point: Point3D, min_y: f64, max_y: f64) -> Vector3D {
+        todo!()
+    }
+
     pub fn object_intersect(&self, with: Ray) -> Vec<f64> {
         match *self {
             Shape::Sphere => Shape::sphere_intersect(with),
@@ -223,6 +257,11 @@ impl Shape {
                 max_y,
                 capped,
             } => Self::cylinder_intersect(with, min_y, max_y, capped),
+            Shape::Cone {
+                min_y,
+                max_y,
+                capped,
+            } => Self::cone_intersect(with, min_y, max_y, capped),
         }
     }
 
@@ -344,5 +383,29 @@ impl Shape {
         ts.append(&mut cap_intersections);
 
         ts
+    }
+
+    fn cone_intersect(with: Ray, min_y: f64, max_y: f64, capped: bool) -> Vec<f64> {
+        let a =
+            with.direction.x().powi(2) - with.direction.y().powi(2) + with.direction.z().powi(2);
+        let b = 2.0 * with.origin.x() * with.direction.x()
+            - 2.0 * with.origin.y() * with.direction.y()
+            + 2.0 * with.origin.z() * with.direction.z();
+
+        let c = with.origin.x().powi(2) - with.origin.y().powi(2) + with.origin.z().powi(2);
+
+        if a.abs() <= f64::EPSILON && b.abs() <= f64::EPSILON {
+            return vec![];
+        };
+
+        if a.abs() <= f64::EPSILON {
+            return vec![-c / (2.0 * b)];
+        };
+
+        if let Some((first, second)) = crate::util::quadratic(a, b, c) {
+            vec![first, second]
+        } else {
+            vec![]
+        }
     }
 }

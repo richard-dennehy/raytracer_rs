@@ -46,3 +46,18 @@ mod pattern;
 pub use pattern::Pattern;
 
 pub mod image_writer;
+
+pub mod util {
+    pub fn quadratic(a: f64, b: f64, c: f64) -> Option<(f64, f64)> {
+        let discriminant = b.powi(2) - 4.0 * a * c;
+
+        if discriminant < 0.0 {
+            return None;
+        };
+
+        let first = (-b - discriminant.sqrt()) / (2.0 * a);
+        let second = (-b + discriminant.sqrt()) / (2.0 * a);
+
+        Some((first, second))
+    }
+}
