@@ -244,7 +244,21 @@ impl Shape {
     }
 
     fn cone_normal(point: Point3D, min_y: f64, max_y: f64) -> Vector3D {
-        todo!()
+        let distance = point.x().powi(2) + point.z().powi(2);
+
+        if distance < point.y() && point.y() >= max_y - f64::EPSILON {
+            Vector3D::new(0.0, 1.0, 0.0)
+        } else if distance < point.y() && point.y() <= min_y + f64::EPSILON {
+            Vector3D::new(0.0, -1.0, 0.0)
+        } else {
+            let y = distance.sqrt();
+
+            if point.y() < 0.0 {
+                Vector3D::new(point.x(), -y, point.z())
+            } else {
+                Vector3D::new(point.x(), y, point.z())
+            }
+        }
     }
 
     pub fn object_intersect(&self, with: Ray) -> Vec<f64> {
@@ -362,7 +376,7 @@ impl Shape {
         let discriminant = b.powi(2) - 4.0 * a * c;
 
         if discriminant < 0.0 {
-            return vec![];
+            return cap_intersections;
         };
 
         let first = (-b - discriminant.sqrt()) / (2.0 * a);
@@ -386,6 +400,35 @@ impl Shape {
     }
 
     fn cone_intersect(with: Ray, min_y: f64, max_y: f64, capped: bool) -> Vec<f64> {
+        let intersects_cap = |t: f64| {
+            let x = with.origin.x() + t * with.direction.x();
+            let y = with.origin.y() + t * with.direction.y();
+            let z = with.origin.z() + t * with.direction.z();
+
+            (x.powi(2) + z.powi(2)) <= y.abs()
+        };
+
+        let mut cap_intersections = if capped {
+            let mut ts = Vec::with_capacity(2);
+            // check bottom cap
+            let t = (min_y - with.origin.y()) / with.direction.y();
+
+            if intersects_cap(t) {
+                ts.push(t);
+            }
+
+            // check top cap
+            let t = (max_y - with.origin.y()) / with.direction.y();
+
+            if intersects_cap(t) {
+                ts.push(t);
+            }
+
+            ts
+        } else {
+            vec![]
+        };
+
         let a =
             with.direction.x().powi(2) - with.direction.y().powi(2) + with.direction.z().powi(2);
         let b = 2.0 * with.origin.x() * with.direction.x()
@@ -395,17 +438,34 @@ impl Shape {
         let c = with.origin.x().powi(2) - with.origin.y().powi(2) + with.origin.z().powi(2);
 
         if a.abs() <= f64::EPSILON && b.abs() <= f64::EPSILON {
-            return vec![];
+            return cap_intersections;
         };
 
         if a.abs() <= f64::EPSILON {
-            return vec![-c / (2.0 * b)];
+            cap_intersections.push(-c / (2.0 * b));
+            return cap_intersections;
         };
 
-        if let Some((first, second)) = crate::util::quadratic(a, b, c) {
-            vec![first, second]
+        let mut ts = if let Some((first, second)) = crate::util::quadratic(a, b, c) {
+            let mut ts = Vec::with_capacity(2);
+
+            let y_first = with.origin.y() + with.direction.y() * first;
+            if y_first > min_y && y_first < max_y {
+                ts.push(first);
+            }
+
+            let y_second = with.origin.y() + with.direction.y() * second;
+            if y_second > min_y && y_second < max_y {
+                ts.push(second);
+            }
+
+            ts
         } else {
             vec![]
-        }
+        };
+
+        ts.append(&mut cap_intersections);
+
+        ts
     }
 }

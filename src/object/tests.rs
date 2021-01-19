@@ -730,6 +730,7 @@ mod cylinder_tests {
 
 mod cone_tests {
     use super::*;
+    use std::f64::consts::SQRT_2;
 
     #[test]
     fn a_ray_that_passes_through_a_double_napped_cone_should_intersect_twice() {
@@ -781,5 +782,54 @@ mod cone_tests {
 
         assert_eq!(intersections.len(), 1);
         assert_eq!(intersections.underlying()[0].t, 0.3535533905932738);
+    }
+
+    #[test]
+    fn a_ray_should_be_able_to_intersect_the_caps_of_a_capped_cone() {
+        let cone = Object::capped_cone(-0.5, 0.5);
+
+        vec![
+            (
+                "Misses cone",
+                Point3D::new(0.0, 0.0, -5.0),
+                Vector3D::new(0.0, 1.0, 0.0),
+                0,
+            ),
+            (
+                "Through cap and out side",
+                Point3D::new(0.0, 0.0, -0.25),
+                Vector3D::new(0.0, 1.0, 1.0),
+                2,
+            ),
+            (
+                "Through both caps and both cones",
+                Point3D::new(0.0, 0.0, -0.25),
+                Vector3D::new(0.0, 1.0, 0.0),
+                4,
+            ),
+        ]
+        .into_iter()
+        .for_each(|(scenario, origin, direction, expected)| {
+            let ray = Ray::new(origin, direction.normalised());
+
+            let intersections = cone.intersect(&ray);
+            assert_eq!(intersections.len(), expected, "{}", scenario);
+        })
+    }
+
+    #[test]
+    #[rustfmt::skip]
+    fn should_be_able_to_calculate_the_normal_of_any_point_on_a_double_napped_cone() {
+        let cone = Object::double_napped_cone();
+
+        vec![
+            (Point3D::ORIGIN, Vector3D::new(0.0, 0.0, 0.0)),
+            (Point3D::new(1.0, 1.0, 1.0), Vector3D::new(1.0, -SQRT_2, 1.0)),
+            (Point3D::new(-1.0, -1.0, 0.0), Vector3D::new(-1.0, 1.0, 0.0)),
+        ]
+        .into_iter()
+        .for_each(|(point, normal)| {
+            assert_eq!(cone.normal_at(point), normal);
+        })
     }
 }
