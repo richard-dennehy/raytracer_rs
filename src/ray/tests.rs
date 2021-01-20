@@ -28,7 +28,7 @@ mod ray_unit_tests {
         let hit = hit.unwrap();
 
         assert_eq!(hit.t, 1.0);
-        assert_eq!(hit.with, &sphere);
+        assert_eq!(hit.with.id(), sphere.id());
     }
 
     #[test]
@@ -44,7 +44,7 @@ mod ray_unit_tests {
         let hit = hit.unwrap();
 
         assert_eq!(hit.t, 1.0);
-        assert_eq!(hit.with, &sphere);
+        assert_eq!(hit.with.id(), sphere.id());
     }
 
     #[test]
@@ -74,7 +74,7 @@ mod ray_unit_tests {
         let hit = hit.unwrap();
 
         assert_eq!(hit.t, 2.0);
-        assert_eq!(hit.with, &sphere);
+        assert_eq!(hit.with.id(), sphere.id());
     }
 
     #[test]
@@ -109,7 +109,7 @@ mod ray_unit_tests {
 
         let data = HitData::from(&ray, intersection, intersections);
         assert_eq!(data.t, 4.0);
-        assert_eq!(data.object, &sphere);
+        assert_eq!(data.object.id(), sphere.id());
         assert_eq!(data.point, Point3D::new(0.0, 0.0, -1.0));
         assert_eq!(data.eye, Vector3D::new(0.0, 0.0, -1.0));
         assert_eq!(data.normal, Vector3D::new(0.0, 0.0, -1.0));
@@ -128,7 +128,7 @@ mod ray_unit_tests {
 
         let data = HitData::from(&ray, intersection, intersections);
         assert_eq!(data.t, 1.0);
-        assert_eq!(data.object, &sphere);
+        assert_eq!(data.object.id(), sphere.id());
         assert_eq!(data.point, Point3D::new(0.0, 0.0, 1.0));
         assert_eq!(data.eye, Vector3D::new(0.0, 0.0, -1.0));
         assert_eq!(data.normal, Vector3D::new(0.0, 0.0, -1.0));

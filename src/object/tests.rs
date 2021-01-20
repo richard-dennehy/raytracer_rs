@@ -375,24 +375,22 @@ mod plane_tests {
 
     #[test]
     fn a_plane_is_not_intersected_by_a_parallel_ray() {
-        assert_eq!(
-            Object::plane().intersect(&Ray::new(
+        assert!(Object::plane()
+            .intersect(&Ray::new(
                 Point3D::new(0.0, 1.0, 0.0),
                 Vector3D::new(1.0, 0.0, 0.0)
-            )),
-            Intersections::empty()
-        );
+            ))
+            .is_empty());
     }
 
     #[test]
     fn a_plane_is_not_intersected_by_a_coplanar_ray() {
-        assert_eq!(
-            Object::plane().intersect(&Ray::new(
+        assert!(Object::plane()
+            .intersect(&Ray::new(
                 Point3D::new(0.0, 0.0, 0.0),
                 Vector3D::new(1.0, 0.0, 0.0)
-            )),
-            Intersections::empty()
-        );
+            ))
+            .is_empty());
     }
 
     #[test]
@@ -517,7 +515,7 @@ mod cube_tests {
             Vector3D::new(0.2673, 0.5345, 0.8018).normalised(),
         );
 
-        assert_eq!(cube.intersect(&ray).underlying(), &vec![]);
+        assert!(cube.intersect(&ray).is_empty());
     }
 
     #[test]
@@ -525,7 +523,7 @@ mod cube_tests {
         let cube = Object::cube();
         let ray = Ray::new(Point3D::new(2.0, 2.0, 0.0), Vector3D::new(-1.0, 0.0, 0.0));
 
-        assert_eq!(cube.intersect(&ray).underlying(), &vec![]);
+        assert!(cube.intersect(&ray).is_empty());
     }
 
     #[rustfmt::skip]

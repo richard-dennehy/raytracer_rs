@@ -12,13 +12,14 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP cone normals">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implemented cones">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vector/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/vector/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vector/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/vector/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,7 +68,7 @@
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.completion" />
+    <property name="settings.editor.selected.configurable" value="editing.templates" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -82,7 +83,7 @@
       <command value="cargo run --release" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.run">
+  <component name="RunManager" selected="Cargo.test">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -174,8 +175,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.run" />
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.run" />
         <item itemvalue="Cargo.Test object::tests::cone_tests::should_be_able_to_calculate_the_normal_of_any_point_on_a_double_napped_cone" />
         <item itemvalue="Cargo.Test object::tests::cone_tests::a_ray_should_be_able_to_intersect_the_caps_of_a_capped_cone" />
         <item itemvalue="Cargo.Test object::tests::cone_tests::a_ray_that_passes_through_a_double_napped_cone_should_intersect_twice" />
@@ -244,14 +245,7 @@
       <workItem from="1611000061028" duration="32000" />
       <workItem from="1611000107292" duration="2950000" />
       <workItem from="1611086686224" duration="2314000" />
-      <workItem from="1611172862042" duration="1401000" />
-    </task>
-    <task id="LOCAL-00001" summary="basic 3D Vector and Point operations">
-      <created>1607266278125</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1607266278125</updated>
+      <workItem from="1611172862042" duration="3468000" />
     </task>
     <task id="LOCAL-00002" summary="implemented Colour">
       <created>1607354081267</created>
@@ -589,7 +583,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611089000490</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL-00050" summary="implemented cones">
+      <created>1611174270166</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1611174270166</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -605,7 +606,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="create World structure and ensure Intersections list is always sorted" />
     <MESSAGE value="implement world shading" />
     <MESSAGE value="ray casting through camera and canvas" />
     <MESSAGE value="add renderer" />
@@ -630,7 +630,8 @@
     <MESSAGE value="tweaked example lighting setup" />
     <MESSAGE value="WIP double-napped cones" />
     <MESSAGE value="WIP cone normals" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP cone normals" />
+    <MESSAGE value="implemented cones" />
+    <option name="LAST_COMMIT_MESSAGE" value="implemented cones" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -644,21 +645,6 @@
           <url>file://$PROJECT_DIR$/src/world/mod.rs</url>
           <line>73</line>
           <option name="timeStamp" value="15" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/object/mod.rs</url>
-          <line>372</line>
-          <option name="timeStamp" value="20" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/object/mod.rs</url>
-          <line>407</line>
-          <option name="timeStamp" value="25" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/object/mod.rs</url>
-          <line>246</line>
-          <option name="timeStamp" value="26" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

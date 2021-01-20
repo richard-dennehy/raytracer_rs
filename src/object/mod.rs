@@ -1,83 +1,87 @@
 use crate::{
     Colour, Intersection, Intersections, Material, Matrix4D, Point3D, PointLight, Ray, Vector3D,
 };
+use rand::Rng;
+use std::fmt::Debug;
 
 #[cfg(test)]
 mod tests;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug)]
 pub struct Object {
     pub transform: Matrix4D,
     pub material: Material,
-    kind: Shape,
+    kind: Box<dyn Shape>,
+    id: u32, // TODO check this is random enough
 }
 
 impl Object {
     pub fn sphere() -> Self {
-        Self::new(Shape::Sphere)
+        Self::new(Box::new(Sphere))
     }
 
     pub fn plane() -> Self {
-        Self::new(Shape::Plane)
+        Self::new(Box::new(Plane))
     }
 
     pub fn cube() -> Self {
-        Self::new(Shape::Cube)
+        Self::new(Box::new(Cube))
     }
 
     pub fn infinite_cylinder() -> Self {
-        Self::new(Shape::Cylinder {
+        Self::new(Box::new(Cylinder {
             max_y: f64::INFINITY,
             min_y: -f64::INFINITY,
             capped: false,
-        })
+        }))
     }
 
     pub fn hollow_cylinder(min_y: f64, max_y: f64) -> Self {
-        Self::new(Shape::Cylinder {
+        Self::new(Box::new(Cylinder {
             max_y,
             min_y,
             capped: false,
-        })
+        }))
     }
 
     pub fn capped_cylinder(min_y: f64, max_y: f64) -> Self {
-        Self::new(Shape::Cylinder {
+        Self::new(Box::new(Cylinder {
             max_y,
             min_y,
             capped: true,
-        })
+        }))
     }
 
     pub fn double_napped_cone() -> Self {
-        Self::new(Shape::Cone {
+        Self::new(Box::new(Cone {
             max_y: f64::INFINITY,
             min_y: -f64::INFINITY,
             capped: false,
-        })
+        }))
     }
 
     pub fn truncated_cone(min_y: f64, max_y: f64) -> Self {
-        Self::new(Shape::Cone {
+        Self::new(Box::new(Cone {
             min_y,
             max_y,
             capped: false,
-        })
+        }))
     }
 
     pub fn capped_cone(min_y: f64, max_y: f64) -> Self {
-        Self::new(Shape::Cone {
+        Self::new(Box::new(Cone {
             min_y,
             max_y,
             capped: true,
-        })
+        }))
     }
 
-    fn new(kind: Shape) -> Self {
+    fn new(kind: Box<dyn Shape>) -> Self {
         Object {
             transform: Matrix4D::identity(),
             material: Material::default(),
             kind,
+            id: rand::thread_rng().gen(),
         }
     }
 
@@ -191,37 +195,58 @@ impl Object {
         self.transform = transform;
         self
     }
+
+    pub fn id(&self) -> u32 {
+        self.id
+    }
 }
 
-#[derive(Debug, PartialEq)]
-enum Shape {
-    Sphere,
-    Plane,
-    Cube,
-    Cylinder {
-        max_y: f64,
-        min_y: f64,
-        capped: bool,
-    },
-    Cone {
-        max_y: f64,
-        min_y: f64,
-        capped: bool,
-    },
+pub trait Shape: Debug {
+    fn object_normal_at(&self, point: Point3D) -> Vector3D;
+    fn object_intersect(&self, with: Ray) -> Vec<f64>;
 }
 
-impl Shape {
-    pub fn object_normal_at(&self, point: Point3D) -> Vector3D {
-        match *self {
-            Shape::Sphere => point - Point3D::new(0.0, 0.0, 0.0),
-            Shape::Plane => Vector3D::new(0.0, 1.0, 0.0),
-            Shape::Cube => Self::cube_normal(point),
-            Shape::Cylinder { min_y, max_y, .. } => Self::cylinder_normal(point, min_y, max_y),
-            Shape::Cone { min_y, max_y, .. } => Self::cone_normal(point, min_y, max_y),
-        }
+#[derive(Debug)]
+struct Sphere;
+impl Shape for Sphere {
+    fn object_normal_at(&self, point: Point3D) -> Vector3D {
+        point - Point3D::ORIGIN
     }
 
-    fn cube_normal(point: Point3D) -> Vector3D {
+    fn object_intersect(&self, with: Ray) -> Vec<f64> {
+        let sphere_to_ray = with.origin - Point3D::ORIGIN;
+        let a = with.direction.dot(&with.direction);
+        let b = 2.0 * with.direction.dot(&sphere_to_ray);
+        let c = sphere_to_ray.dot(&sphere_to_ray) - 1.0;
+
+        if let Some((first, second)) = crate::util::quadratic(a, b, c) {
+            vec![first, second]
+        } else {
+            vec![]
+        }
+    }
+}
+
+#[derive(Debug)]
+struct Plane;
+impl Shape for Plane {
+    fn object_normal_at(&self, _: Point3D) -> Vector3D {
+        Vector3D::new(0.0, 1.0, 0.0)
+    }
+
+    fn object_intersect(&self, with: Ray) -> Vec<f64> {
+        if with.direction.y().abs() <= f32::EPSILON as f64 {
+            return Vec::new();
+        }
+
+        vec![-with.origin.y() / with.direction.y()]
+    }
+}
+
+#[derive(Debug)]
+struct Cube;
+impl Shape for Cube {
+    fn object_normal_at(&self, point: Point3D) -> Vector3D {
         if point.x().abs() >= point.y().abs() && point.x().abs() >= point.z().abs() {
             Vector3D::new(point.x(), 0.0, 0.0)
         } else if point.y().abs() >= point.x().abs() && point.y().abs() >= point.z().abs() {
@@ -231,81 +256,7 @@ impl Shape {
         }
     }
 
-    fn cylinder_normal(point: Point3D, min_y: f64, max_y: f64) -> Vector3D {
-        let distance = point.x().powi(2) + point.z().powi(2);
-
-        if distance < 1.0 && point.y() >= max_y - f64::EPSILON {
-            Vector3D::new(0.0, 1.0, 0.0)
-        } else if distance < 1.0 && point.y() <= min_y + f64::EPSILON {
-            Vector3D::new(0.0, -1.0, 0.0)
-        } else {
-            Vector3D::new(point.x(), 0.0, point.z())
-        }
-    }
-
-    fn cone_normal(point: Point3D, min_y: f64, max_y: f64) -> Vector3D {
-        let distance = point.x().powi(2) + point.z().powi(2);
-
-        if distance < point.y() && point.y() >= max_y - f64::EPSILON {
-            Vector3D::new(0.0, 1.0, 0.0)
-        } else if distance < point.y() && point.y() <= min_y + f64::EPSILON {
-            Vector3D::new(0.0, -1.0, 0.0)
-        } else {
-            let y = distance.sqrt();
-
-            if point.y() > 0.0 {
-                Vector3D::new(point.x(), -y, point.z())
-            } else {
-                Vector3D::new(point.x(), y, point.z())
-            }
-        }
-    }
-
-    pub fn object_intersect(&self, with: Ray) -> Vec<f64> {
-        match *self {
-            Shape::Sphere => Shape::sphere_intersect(with),
-            Shape::Plane => Shape::plane_intersect(with),
-            Shape::Cube => Shape::cube_intersect(with),
-            Shape::Cylinder {
-                min_y,
-                max_y,
-                capped,
-            } => Self::cylinder_intersect(with, min_y, max_y, capped),
-            Shape::Cone {
-                min_y,
-                max_y,
-                capped,
-            } => Self::cone_intersect(with, min_y, max_y, capped),
-        }
-    }
-
-    fn sphere_intersect(with: Ray) -> Vec<f64> {
-        let sphere_to_ray = with.origin - Point3D::new(0.0, 0.0, 0.0);
-        let a = with.direction.dot(&with.direction);
-        let b = 2.0 * with.direction.dot(&sphere_to_ray);
-        let c = sphere_to_ray.dot(&sphere_to_ray) - 1.0;
-
-        let discriminant = b.powi(2) - 4.0 * a * c;
-
-        if discriminant < 0.0 {
-            return Vec::new();
-        }
-
-        let t1 = (-b - discriminant.sqrt()) / (2.0 * a);
-        let t2 = (-b + discriminant.sqrt()) / (2.0 * a);
-
-        vec![t1, t2]
-    }
-
-    fn plane_intersect(with: Ray) -> Vec<f64> {
-        if with.direction.y().abs() <= f32::EPSILON as f64 {
-            return Vec::new();
-        }
-
-        vec![-with.origin.y() / with.direction.y()]
-    }
-
-    fn cube_intersect(with: Ray) -> Vec<f64> {
+    fn object_intersect(&self, with: Ray) -> Vec<f64> {
         fn check_axis(origin: f64, direction: f64) -> (f64, f64) {
             let t_min_numerator = -1.0 - origin;
             let t_max_numerator = 1.0 - origin;
@@ -333,8 +284,28 @@ impl Shape {
             vec![t_min, t_max]
         }
     }
+}
 
-    fn cylinder_intersect(with: Ray, min_y: f64, max_y: f64, capped: bool) -> Vec<f64> {
+#[derive(Debug, PartialEq)]
+struct Cylinder {
+    max_y: f64,
+    min_y: f64,
+    capped: bool,
+}
+impl Shape for Cylinder {
+    fn object_normal_at(&self, point: Point3D) -> Vector3D {
+        let distance = point.x().powi(2) + point.z().powi(2);
+
+        if distance < 1.0 && point.y() >= self.max_y - f64::EPSILON {
+            Vector3D::new(0.0, 1.0, 0.0)
+        } else if distance < 1.0 && point.y() <= self.min_y + f64::EPSILON {
+            Vector3D::new(0.0, -1.0, 0.0)
+        } else {
+            Vector3D::new(point.x(), 0.0, point.z())
+        }
+    }
+
+    fn object_intersect(&self, with: Ray) -> Vec<f64> {
         let intersects_cap = |t: f64| {
             let x = with.origin.x() + t * with.direction.x();
             let z = with.origin.z() + t * with.direction.z();
@@ -342,17 +313,17 @@ impl Shape {
             (x.powi(2) + z.powi(2)) <= 1.0
         };
 
-        let mut cap_intersections = if capped {
+        let mut cap_intersections = if self.capped {
             let mut ts = Vec::with_capacity(2);
             // check bottom cap
-            let t = (min_y - with.origin.y()) / with.direction.y();
+            let t = (self.min_y - with.origin.y()) / with.direction.y();
 
             if intersects_cap(t) {
                 ts.push(t);
             }
 
             // check top cap
-            let t = (max_y - with.origin.y()) / with.direction.y();
+            let t = (self.max_y - with.origin.y()) / with.direction.y();
 
             if intersects_cap(t) {
                 ts.push(t);
@@ -386,11 +357,11 @@ impl Shape {
         let y_second = with.origin.y() + with.direction.y() * second;
 
         let mut ts = Vec::with_capacity(2);
-        if y_first > min_y && y_first < max_y {
+        if y_first > self.min_y && y_first < self.max_y {
             ts.push(first);
         }
 
-        if y_second > min_y && y_second < max_y {
+        if y_second > self.min_y && y_second < self.max_y {
             ts.push(second);
         }
 
@@ -398,8 +369,34 @@ impl Shape {
 
         ts
     }
+}
 
-    fn cone_intersect(with: Ray, min_y: f64, max_y: f64, capped: bool) -> Vec<f64> {
+#[derive(Debug, PartialEq)]
+struct Cone {
+    max_y: f64,
+    min_y: f64,
+    capped: bool,
+}
+impl Shape for Cone {
+    fn object_normal_at(&self, point: Point3D) -> Vector3D {
+        let distance = point.x().powi(2) + point.z().powi(2);
+
+        if distance < point.y() && point.y() >= self.max_y - f64::EPSILON {
+            Vector3D::new(0.0, 1.0, 0.0)
+        } else if distance < point.y() && point.y() <= self.min_y + f64::EPSILON {
+            Vector3D::new(0.0, -1.0, 0.0)
+        } else {
+            let y = distance.sqrt();
+
+            if point.y() > 0.0 {
+                Vector3D::new(point.x(), -y, point.z())
+            } else {
+                Vector3D::new(point.x(), y, point.z())
+            }
+        }
+    }
+
+    fn object_intersect(&self, with: Ray) -> Vec<f64> {
         let intersects_cap = |t: f64| {
             let x = with.origin.x() + t * with.direction.x();
             let y = with.origin.y() + t * with.direction.y();
@@ -408,17 +405,17 @@ impl Shape {
             (x.powi(2) + z.powi(2)) <= y.abs()
         };
 
-        let mut cap_intersections = if capped {
+        let mut cap_intersections = if self.capped {
             let mut ts = Vec::with_capacity(2);
             // check bottom cap
-            let t = (min_y - with.origin.y()) / with.direction.y();
+            let t = (self.min_y - with.origin.y()) / with.direction.y();
 
             if intersects_cap(t) {
                 ts.push(t);
             }
 
             // check top cap
-            let t = (max_y - with.origin.y()) / with.direction.y();
+            let t = (self.max_y - with.origin.y()) / with.direction.y();
 
             if intersects_cap(t) {
                 ts.push(t);
@@ -450,12 +447,12 @@ impl Shape {
             let mut ts = Vec::with_capacity(2);
 
             let y_first = with.origin.y() + with.direction.y() * first;
-            if y_first > min_y && y_first < max_y {
+            if y_first > self.min_y && y_first < self.max_y {
                 ts.push(first);
             }
 
             let y_second = with.origin.y() + with.direction.y() * second;
-            if y_second > min_y && y_second < max_y {
+            if y_second > self.min_y && y_second < self.max_y {
                 ts.push(second);
             }
 

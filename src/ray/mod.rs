@@ -31,7 +31,7 @@ impl Ray {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct Intersection<'with> {
     pub t: f64,
     pub with: &'with Object,
@@ -81,7 +81,7 @@ impl<'obj> HitData<'obj> {
         let mut containers: Vec<&Object> = vec![];
 
         for i in intersections.0.iter() {
-            if i.t == intersection.t && i.with == intersection.with {
+            if i.t == intersection.t && i.with.id() == intersection.with.id() {
                 // intersection from entering object
                 if let Some(&last) = containers.last() {
                     entered_refractive = last.material.refractive;
@@ -92,7 +92,7 @@ impl<'obj> HitData<'obj> {
                 .iter()
                 .cloned()
                 .enumerate()
-                .find(|(_, obj)| obj == &i.with)
+                .find(|(_, obj)| obj.id() == i.with.id())
                 .map(|(idx, _)| idx)
             {
                 containers.remove(index); // exiting transparent object
@@ -100,7 +100,7 @@ impl<'obj> HitData<'obj> {
                 containers.push(i.with); // entering transparent object
             }
 
-            if i.t == intersection.t && i.with == intersection.with {
+            if i.t == intersection.t && i.with.id() == intersection.with.id() {
                 // intersection from exiting object
                 if let Some(&last) = containers.last() {
                     exited_refractive = last.material.refractive;
@@ -157,7 +157,7 @@ impl<'obj> HitData<'obj> {
 
 /// Invariants:
 ///  - always sorted by ascending `t` values
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug)]
 pub struct Intersections<'scene>(Vec<Intersection<'scene>>);
 
 impl<'scene> Intersections<'scene> {
@@ -190,6 +190,10 @@ impl<'scene> Intersections<'scene> {
 
     pub fn len(&self) -> usize {
         self.0.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty()
     }
 
     pub fn hit(&self) -> Option<Intersection<'scene>> {
