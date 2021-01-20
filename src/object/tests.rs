@@ -823,13 +823,14 @@ mod cone_tests {
         let cone = Object::double_napped_cone();
 
         vec![
-            (Point3D::ORIGIN, Vector3D::new(0.0, 0.0, 0.0)),
-            (Point3D::new(1.0, 1.0, 1.0), Vector3D::new(1.0, -SQRT_2, 1.0)),
-            (Point3D::new(-1.0, -1.0, 0.0), Vector3D::new(-1.0, 1.0, 0.0)),
+            ("Middle point", Point3D::ORIGIN, Vector3D::new(0.0, 0.0, 0.0)),
+            ("Positive y", Point3D::new(1.0, 1.0, 1.0), Vector3D::new(1.0, -SQRT_2, 1.0)),
+            ("Negative y", Point3D::new(-1.0, -1.0, 0.0), Vector3D::new(-1.0, 1.0, 0.0)),
         ]
         .into_iter()
-        .for_each(|(point, normal)| {
-            assert_eq!(cone.normal_at(point), normal);
+        .for_each(|(scenario, point, normal)| {
+            // the book examples aren't normalised
+            assert_eq!(cone.normal_at(point), normal.normalised(), "{}", scenario);
         })
     }
 }

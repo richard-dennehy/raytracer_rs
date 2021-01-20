@@ -105,6 +105,19 @@ mod unit_tests {
         );
     }
 
+    /// this isn't mathematically correct, but given the options of:
+    ///  - return a Vector with `NaN` components (division by 0)
+    ///  - return another zero vector (which means `normalised` doesn't always return a unit vector)
+    ///  - return `None` for zero vectors (and make the return type optional)
+    ///  - returning an arbitrary unit vector
+    /// returning a zero vector seems "least worst" for the time being
+    #[test]
+    fn normalising_a_zero_vector_should_produce_a_zero_vector() {
+        let vector = Vector3D::new(0.0, 0.0, 0.0);
+
+        assert_eq!(vector.normalised(), Vector3D::new(0.0, 0.0, 0.0));
+    }
+
     #[test]
     fn dot_product_of_two_vectors_should_multiply_same_components_and_sum() {
         let v1 = Vector3D::new(1.0, 2.0, 3.0);

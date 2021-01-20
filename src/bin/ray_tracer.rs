@@ -17,73 +17,13 @@ fn main() {
     let mut world = World::empty();
     world.lights.push(PointLight::new(
         Colour::WHITE,
-        Point3D::new(-3.0, 12.0, -10.0),
+        Point3D::new(-10.0, 12.0, -10.0),
     ));
 
     {
-        let floor = Object::plane().with_material(Material {
-            pattern: Pattern::checkers(Colour::WHITE, Colour::BLACK)
-                .with_transform(Matrix4D::translation(0.1, 0.0, 0.0)),
-            reflective: 0.2,
-            ..Default::default()
-        });
-
-        world.objects.push(floor);
-    };
-
-    {
-        let mirror = Object::plane()
-            .with_transform(
-                Matrix4D::rotation_x(-PI / 2.0)
-                    .with_rotation_y(PI / 4.0)
-                    .with_translation(0.0, 0.0, 5.0),
-            )
-            .with_material(Material {
-                reflective: 1.0,
-                pattern: Pattern::solid(Colour::new(0.05, 0.05, 0.05)),
-                ..Default::default()
-            });
-
-        world.objects.push(mirror);
-    };
-
-    {
-        let wall = Object::plane()
-            .with_transform(
-                // Matrix4D::identity()
-                Matrix4D::rotation_x(-PI / 2.0)
-                    .with_rotation_y(-PI / 4.0)
-                    .with_translation(-1.0, 0.0, 5.0),
-            )
-            .with_material(Material {
-                pattern: Pattern::solid(Colour::new(0.8, 0.8, 0.8)),
-                ..Default::default()
-            });
-
-        world.objects.push(wall);
-    };
-
-    {
-        let cube = Object::cube()
-            .with_transform(Matrix4D::translation(-1.5, 1.0, 0.0))
-            .with_material(Material {
-                pattern: Pattern::checkers(Colour::BLUE, Colour::RED)
-                    .with_transform(Matrix4D::uniform_scaling(0.33)),
-                ..Default::default()
-            });
-
-        world.objects.push(cube);
-    };
-
-    {
-        let cylinder = Object::capped_cylinder(0.0, 2.0)
-            .with_transform(Matrix4D::translation(1.0, 0.0, 1.0))
-            .with_material(Material {
-                pattern: Pattern::solid(Colour::GREEN),
-                ..Default::default()
-            });
-
-        world.objects.push(cylinder);
+        let cone =
+            Object::double_napped_cone().with_transform(Matrix4D::translation(0.0, 0.0, 5.0));
+        world.objects.push(cone);
     };
 
     let camera = Camera::new(

@@ -33,7 +33,13 @@ impl Vector3D {
     }
 
     pub fn normalised(&self) -> Self {
-        self / self.magnitude()
+        let magnitude = self.magnitude();
+
+        if magnitude <= f64::EPSILON {
+            Vector3D::new(0.0, 0.0, 0.0)
+        } else {
+            self / self.magnitude()
+        }
     }
 
     pub fn dot(&self, other: &Vector3D) -> f64 {

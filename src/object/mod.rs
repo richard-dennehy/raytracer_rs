@@ -253,7 +253,7 @@ impl Shape {
         } else {
             let y = distance.sqrt();
 
-            if point.y() < 0.0 {
+            if point.y() > 0.0 {
                 Vector3D::new(point.x(), -y, point.z())
             } else {
                 Vector3D::new(point.x(), y, point.z())
