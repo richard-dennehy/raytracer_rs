@@ -31,52 +31,12 @@ impl Object {
         Self::new(Box::new(Cube))
     }
 
-    pub fn infinite_cylinder() -> Self {
-        Self::new(Box::new(Cylinder {
-            max_y: f64::INFINITY,
-            min_y: -f64::INFINITY,
-            capped: false,
-        }))
+    pub fn cylinder() -> CylinderBuilder {
+        CylinderBuilder::new()
     }
 
-    pub fn hollow_cylinder(min_y: f64, max_y: f64) -> Self {
-        Self::new(Box::new(Cylinder {
-            max_y,
-            min_y,
-            capped: false,
-        }))
-    }
-
-    pub fn capped_cylinder(min_y: f64, max_y: f64) -> Self {
-        Self::new(Box::new(Cylinder {
-            max_y,
-            min_y,
-            capped: true,
-        }))
-    }
-
-    pub fn double_napped_cone() -> Self {
-        Self::new(Box::new(Cone {
-            max_y: f64::INFINITY,
-            min_y: -f64::INFINITY,
-            capped: false,
-        }))
-    }
-
-    pub fn truncated_cone(min_y: f64, max_y: f64) -> Self {
-        Self::new(Box::new(Cone {
-            min_y,
-            max_y,
-            capped: false,
-        }))
-    }
-
-    pub fn capped_cone(min_y: f64, max_y: f64) -> Self {
-        Self::new(Box::new(Cone {
-            min_y,
-            max_y,
-            capped: true,
-        }))
+    pub fn cone() -> ConeBuilder {
+        ConeBuilder::new()
     }
 
     fn new(kind: Box<dyn Shape>) -> Self {
@@ -201,6 +161,84 @@ impl Object {
 
     pub fn id(&self) -> u32 {
         self.id
+    }
+}
+
+pub struct CylinderBuilder {
+    min_y: f64,
+    max_y: f64,
+    capped: bool,
+}
+
+impl CylinderBuilder {
+    fn new() -> Self {
+        CylinderBuilder {
+            min_y: -f64::INFINITY,
+            max_y: f64::INFINITY,
+            capped: false,
+        }
+    }
+
+    pub fn min_y(mut self, min_y: f64) -> Self {
+        self.min_y = min_y;
+        self
+    }
+
+    pub fn max_y(mut self, max_y: f64) -> Self {
+        self.max_y = max_y;
+        self
+    }
+
+    pub fn capped(mut self) -> Self {
+        self.capped = true;
+        self
+    }
+
+    pub fn build(self) -> Object {
+        Object::new(Box::new(Cylinder {
+            min_y: self.min_y,
+            max_y: self.max_y,
+            capped: self.capped,
+        }))
+    }
+}
+
+pub struct ConeBuilder {
+    min_y: f64,
+    max_y: f64,
+    capped: bool,
+}
+
+impl ConeBuilder {
+    fn new() -> Self {
+        ConeBuilder {
+            min_y: -f64::INFINITY,
+            max_y: f64::INFINITY,
+            capped: false,
+        }
+    }
+
+    pub fn min_y(mut self, min_y: f64) -> Self {
+        self.min_y = min_y;
+        self
+    }
+
+    pub fn max_y(mut self, max_y: f64) -> Self {
+        self.max_y = max_y;
+        self
+    }
+
+    pub fn capped(mut self) -> Self {
+        self.capped = true;
+        self
+    }
+
+    pub fn build(self) -> Object {
+        Object::new(Box::new(Cone {
+            min_y: self.min_y,
+            max_y: self.max_y,
+            capped: self.capped,
+        }))
     }
 }
 

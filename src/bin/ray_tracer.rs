@@ -21,8 +21,9 @@ fn main() {
     ));
 
     {
-        let cone =
-            Object::double_napped_cone().with_transform(Matrix4D::translation(0.0, 0.0, 5.0));
+        let cone = Object::cone()
+            .build()
+            .with_transform(Matrix4D::translation(0.0, 0.0, 5.0));
         world.objects.push(cone);
     };
 

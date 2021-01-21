@@ -12,12 +12,11 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="refactor Shape to trait instead of enum">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="replace random id generation with atomic counter">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/point/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/point/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -244,14 +243,7 @@
       <workItem from="1611000107292" duration="2950000" />
       <workItem from="1611086686224" duration="2314000" />
       <workItem from="1611172862042" duration="3731000" />
-      <workItem from="1611258918129" duration="772000" />
-    </task>
-    <task id="LOCAL-00003" summary="implemented basic Canvas operations">
-      <created>1607357098915</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1607357098915</updated>
+      <workItem from="1611258918129" duration="1696000" />
     </task>
     <task id="LOCAL-00004" summary="implemented basic PPM writer">
       <created>1607459051934</created>
@@ -589,7 +581,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611176595534</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="replace random id generation with atomic counter">
+      <created>1611259732907</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1611259732907</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -605,7 +604,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="ray casting through camera and canvas" />
     <MESSAGE value="add renderer" />
     <MESSAGE value="ray tracer example with multiple objects" />
     <MESSAGE value="implement shadows" />
@@ -630,7 +628,8 @@
     <MESSAGE value="WIP cone normals" />
     <MESSAGE value="implemented cones" />
     <MESSAGE value="refactor Shape to trait instead of enum" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor Shape to trait instead of enum" />
+    <MESSAGE value="replace random id generation with atomic counter" />
+    <option name="LAST_COMMIT_MESSAGE" value="replace random id generation with atomic counter" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

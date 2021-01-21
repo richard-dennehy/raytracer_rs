@@ -551,7 +551,7 @@ mod cylinder_tests {
 
     #[test]
     fn a_ray_that_misses_an_infinite_cylinder_should_not_intersect() {
-        let cylinder = Object::infinite_cylinder();
+        let cylinder = Object::cylinder().build();
 
         vec![
             Ray::new(Point3D::new(1.0, 0.0, 0.0), Vector3D::new(0.0, 1.0, 0.0)),
@@ -567,7 +567,7 @@ mod cylinder_tests {
 
     #[test]
     fn a_ray_that_hits_an_infinite_cylinder_should_intersect_twice() {
-        let cylinder = Object::infinite_cylinder();
+        let cylinder = Object::cylinder().build();
 
         vec![
             (
@@ -604,7 +604,7 @@ mod cylinder_tests {
 
     #[test]
     fn the_normal_of_an_infinite_cylinder_should_have_0_y() {
-        let cylinder = Object::infinite_cylinder();
+        let cylinder = Object::cylinder().build();
 
         vec![
             (Point3D::new(1.0, 0.0, 0.0), Vector3D::new(1.0, 0.0, 0.0)),
@@ -620,7 +620,7 @@ mod cylinder_tests {
 
     #[test]
     fn rays_that_miss_a_finite_hollow_cylinder_should_not_intersect() {
-        let cylinder = Object::hollow_cylinder(1.0, 2.0);
+        let cylinder = Object::cylinder().min_y(1.0).max_y(2.0).build();
 
         vec![
             (
@@ -659,7 +659,7 @@ mod cylinder_tests {
 
     #[test]
     fn a_ray_that_passes_through_a_hollow_finite_cylinder_intersects_twice() {
-        let cylinder = Object::hollow_cylinder(1.0, 2.0);
+        let cylinder = Object::cylinder().min_y(1.0).max_y(2.0).build();
 
         let ray = Ray::new(Point3D::new(0.0, 1.5, -2.0), Vector3D::new(0.0, 0.0, 1.0));
         let intersections = cylinder.intersect(&ray);
@@ -670,7 +670,7 @@ mod cylinder_tests {
 
     #[test]
     fn a_ray_passing_through_the_caps_of_a_capped_cylinder_should_intersect_twice() {
-        let cylinder = Object::capped_cylinder(1.0, 2.0);
+        let cylinder = Object::cylinder().min_y(1.0).max_y(2.0).capped().build();
 
         vec![
             (
@@ -709,7 +709,7 @@ mod cylinder_tests {
 
     #[test]
     fn the_normal_vector_on_a_cap_should_either_be_pos_y_axis_or_neg_y_axis() {
-        let cylinder = Object::capped_cylinder(1.0, 2.0);
+        let cylinder = Object::cylinder().min_y(1.0).max_y(2.0).capped().build();
 
         vec![
             (Point3D::new(0.0, 1.0, 0.0), Vector3D::new(0.0, -1.0, 0.0)),
@@ -732,7 +732,7 @@ mod cone_tests {
 
     #[test]
     fn a_ray_that_passes_through_a_double_napped_cone_should_intersect_twice() {
-        let cone = Object::double_napped_cone();
+        let cone = Object::cone().build();
 
         vec![
             (
@@ -770,7 +770,7 @@ mod cone_tests {
 
     #[test]
     fn a_ray_parallel_to_one_half_of_a_double_napped_cone_should_intersect_once() {
-        let cone = Object::double_napped_cone();
+        let cone = Object::cone().build();
 
         let ray = Ray::new(
             Point3D::new(0.0, 0.0, -1.0),
@@ -784,7 +784,7 @@ mod cone_tests {
 
     #[test]
     fn a_ray_should_be_able_to_intersect_the_caps_of_a_capped_cone() {
-        let cone = Object::capped_cone(-0.5, 0.5);
+        let cone = Object::cone().min_y(-0.5).max_y(0.5).capped().build();
 
         vec![
             (
@@ -818,7 +818,7 @@ mod cone_tests {
     #[test]
     #[rustfmt::skip]
     fn should_be_able_to_calculate_the_normal_of_any_point_on_a_double_napped_cone() {
-        let cone = Object::double_napped_cone();
+        let cone = Object::cone().build();
 
         vec![
             ("Middle point", Point3D::ORIGIN, Vector3D::new(0.0, 0.0, 0.0)),
