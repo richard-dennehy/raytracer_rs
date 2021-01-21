@@ -32,8 +32,6 @@ mod unit_tests {
 }
 
 mod property_tests {
-    extern crate quickcheck;
-
     use super::*;
 
     #[quickcheck]

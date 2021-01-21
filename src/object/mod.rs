@@ -1,8 +1,8 @@
 use crate::{
     Colour, Intersection, Intersections, Material, Matrix4D, Point3D, PointLight, Ray, Vector3D,
 };
-use rand::Rng;
 use std::fmt::Debug;
+use std::sync::atomic::{AtomicU32, Ordering};
 
 #[cfg(test)]
 mod tests;
@@ -12,8 +12,11 @@ pub struct Object {
     pub transform: Matrix4D,
     pub material: Material,
     kind: Box<dyn Shape>,
-    id: u32, // TODO check this is random enough
+    id: u32,
 }
+
+// if you need more than 4 billion objects, you've got bigger problems than integer overflow
+static NEXT_ID: AtomicU32 = AtomicU32::new(0);
 
 impl Object {
     pub fn sphere() -> Self {
@@ -81,7 +84,7 @@ impl Object {
             transform: Matrix4D::identity(),
             material: Material::default(),
             kind,
-            id: rand::thread_rng().gen(),
+            id: NEXT_ID.fetch_add(1, Ordering::SeqCst),
         }
     }
 
