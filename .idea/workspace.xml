@@ -12,11 +12,10 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="use builder pattern for shapes with parameters">
-      <change afterPath="$PROJECT_DIR$/src/object/cone.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/object/cylinder.rs" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="move cone and cylinder to submodules">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,11 +80,6 @@
     </option>
   </component>
   <component name="RunManager" selected="Cargo.test">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -243,14 +237,8 @@
       <workItem from="1611000107292" duration="2950000" />
       <workItem from="1611086686224" duration="2314000" />
       <workItem from="1611172862042" duration="3731000" />
-      <workItem from="1611258918129" duration="1973000" />
-    </task>
-    <task id="LOCAL-00005" summary="basic example program to test canvas output">
-      <created>1607543329596</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1607543329597</updated>
+      <workItem from="1611258918129" duration="2121000" />
+      <workItem from="1611346684286" duration="900000" />
     </task>
     <task id="LOCAL-00006" summary="initial matrix 4D, 3D, and 2D data structures">
       <created>1607544822380</created>
@@ -588,7 +576,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611260640856</updated>
     </task>
-    <option name="localTasksCounter" value="54" />
+    <task id="LOCAL-00054" summary="move cone and cylinder to submodules">
+      <created>1611261024033</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1611261024033</updated>
+    </task>
+    <option name="localTasksCounter" value="55" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -604,7 +599,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="ray tracer example with multiple objects" />
     <MESSAGE value="implement shadows" />
     <MESSAGE value="refactor to be able to introduce new shape types" />
     <MESSAGE value="added plane shape" />
@@ -629,7 +623,8 @@
     <MESSAGE value="refactor Shape to trait instead of enum" />
     <MESSAGE value="replace random id generation with atomic counter" />
     <MESSAGE value="use builder pattern for shapes with parameters" />
-    <option name="LAST_COMMIT_MESSAGE" value="use builder pattern for shapes with parameters" />
+    <MESSAGE value="move cone and cylinder to submodules" />
+    <option name="LAST_COMMIT_MESSAGE" value="move cone and cylinder to submodules" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

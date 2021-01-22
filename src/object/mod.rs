@@ -15,8 +15,8 @@ pub use cone::ConeBuilder;
 
 #[derive(Debug)]
 pub struct Object {
-    pub transform: Matrix4D,
     pub material: Material,
+    transform: Matrix4D,
     kind: Box<dyn Shape>,
     id: u32,
 }

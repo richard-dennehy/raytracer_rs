@@ -32,8 +32,7 @@ mod shape_tests {
     #[test]
     fn lighting_with_the_light_at_a_45_degree_angle_to_the_surface_normal_should_have_no_specular_and_less_diffuse(
     ) {
-        let mut sphere = Object::sphere();
-        sphere.transform = Matrix4D::translation(0.0, 0.0, 1.0);
+        let sphere = Object::sphere().with_transform(Matrix4D::translation(0.0, 0.0, 1.0));
         let point = Point3D::new(0.0, 0.0, 0.0);
 
         let eye_vector = Vector3D::new(0.0, 0.0, -1.0);
@@ -49,8 +48,7 @@ mod shape_tests {
     #[test]
     fn lighting_with_the_light_at_45_deg_and_the_eye_at_neg_45_deg_to_the_surface_normal_should_have_less_diffuse(
     ) {
-        let mut sphere = Object::sphere();
-        sphere.transform = Matrix4D::translation(0.0, 0.0, 1.0);
+        let sphere = Object::sphere().with_transform(Matrix4D::translation(0.0, 0.0, 1.0));
         let point = Point3D::new(0.0, 0.0, 0.0);
 
         let eye_vector = Vector3D::new(0.0, -2.0_f64.sqrt() / 2.0, -2.0_f64.sqrt() / 2.0);
@@ -181,8 +179,7 @@ mod sphere_tests {
     fn should_be_able_to_calculate_a_surface_normal_on_a_translated_sphere() {
         use std::f64::consts::FRAC_1_SQRT_2;
 
-        let mut sphere = Object::sphere();
-        sphere.transform = Matrix4D::translation(0.0, 1.0, 0.0);
+        let sphere = Object::sphere().with_transform(Matrix4D::translation(0.0, 1.0, 0.0));
 
         let normal = sphere.normal_at(Point3D::new(0.0, 1.0 + FRAC_1_SQRT_2, -FRAC_1_SQRT_2));
         assert!(approx_eq!(
@@ -197,8 +194,7 @@ mod sphere_tests {
         use std::f64::consts::PI;
 
         let transform = Matrix4D::scaling(1.0, 0.5, 1.0) * Matrix4D::rotation_z(PI / 5.0);
-        let mut sphere = Object::sphere();
-        sphere.transform = transform;
+        let sphere = Object::sphere().with_transform(transform);
 
         let normal = sphere.normal_at(Point3D::new(
             0.0,
@@ -272,9 +268,7 @@ mod sphere_tests {
     #[test]
     fn a_ray_should_intersect_a_scaled_sphere() {
         let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
-        let scale = Matrix4D::scaling(2.0, 2.0, 2.0);
-        let mut sphere = Object::sphere();
-        sphere.transform = scale;
+        let sphere = Object::sphere().with_transform(Matrix4D::uniform_scaling(2.0));
 
         let intersections = sphere.intersect(&ray);
         assert_eq!(intersections.len(), 2);
@@ -287,8 +281,7 @@ mod sphere_tests {
     fn a_ray_should_not_intersect_a_sphere_translated_away_from_it() {
         let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
         let translation = Matrix4D::translation(5.0, 0.0, 0.0);
-        let mut sphere = Object::sphere();
-        sphere.transform = translation;
+        let sphere = Object::sphere().with_transform(translation);
 
         let intersections = sphere.intersect(&ray);
         assert!(intersections.underlying().is_empty())
