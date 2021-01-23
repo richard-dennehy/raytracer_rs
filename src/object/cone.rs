@@ -128,7 +128,7 @@ impl ConeBuilder {
     }
 
     pub fn build(self) -> Object {
-        Object::new(Box::new(Cone {
+        Object::shape(Box::new(Cone {
             min_y: self.min_y,
             max_y: self.max_y,
             capped: self.capped,

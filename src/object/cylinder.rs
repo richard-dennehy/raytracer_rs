@@ -117,7 +117,7 @@ impl CylinderBuilder {
     }
 
     pub fn build(self) -> Object {
-        Object::new(Box::new(Cylinder {
+        Object::shape(Box::new(Cylinder {
             min_y: self.min_y,
             max_y: self.max_y,
             capped: self.capped,

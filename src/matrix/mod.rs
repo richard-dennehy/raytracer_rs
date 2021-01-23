@@ -1,10 +1,10 @@
 use crate::{Point3D, Vector3D};
-use std::ops::Mul;
+use std::ops::{Mul, MulAssign};
 
 #[cfg(test)]
 mod tests;
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub struct Matrix4D {
     underlying: [[f64; 4]; 4],
 }
@@ -338,81 +338,86 @@ impl Matrix4D {
 impl Mul<Matrix4D> for Matrix4D {
     type Output = Matrix4D;
 
-    fn mul(self, rhs: Matrix4D) -> Self::Output {
-        Matrix4D::new(
-            [
-                self.m00() * rhs.m00()
-                    + self.m01() * rhs.m10()
-                    + self.m02() * rhs.m20()
-                    + self.m03() * rhs.m30(),
-                self.m00() * rhs.m01()
-                    + self.m01() * rhs.m11()
-                    + self.m02() * rhs.m21()
-                    + self.m03() * rhs.m31(),
-                self.m00() * rhs.m02()
-                    + self.m01() * rhs.m12()
-                    + self.m02() * rhs.m22()
-                    + self.m03() * rhs.m32(),
-                self.m00() * rhs.m03()
-                    + self.m01() * rhs.m13()
-                    + self.m02() * rhs.m23()
-                    + self.m03() * rhs.m33(),
-            ],
-            [
-                self.m10() * rhs.m00()
-                    + self.m11() * rhs.m10()
-                    + self.m12() * rhs.m20()
-                    + self.m13() * rhs.m30(),
-                self.m10() * rhs.m01()
-                    + self.m11() * rhs.m11()
-                    + self.m12() * rhs.m21()
-                    + self.m13() * rhs.m31(),
-                self.m10() * rhs.m02()
-                    + self.m11() * rhs.m12()
-                    + self.m12() * rhs.m22()
-                    + self.m13() * rhs.m32(),
-                self.m10() * rhs.m03()
-                    + self.m11() * rhs.m13()
-                    + self.m12() * rhs.m23()
-                    + self.m13() * rhs.m33(),
-            ],
-            [
-                self.m20() * rhs.m00()
-                    + self.m21() * rhs.m10()
-                    + self.m22() * rhs.m20()
-                    + self.m23() * rhs.m30(),
-                self.m20() * rhs.m01()
-                    + self.m21() * rhs.m11()
-                    + self.m22() * rhs.m21()
-                    + self.m23() * rhs.m31(),
-                self.m20() * rhs.m02()
-                    + self.m21() * rhs.m12()
-                    + self.m22() * rhs.m22()
-                    + self.m23() * rhs.m32(),
-                self.m20() * rhs.m03()
-                    + self.m21() * rhs.m13()
-                    + self.m22() * rhs.m23()
-                    + self.m23() * rhs.m33(),
-            ],
-            [
-                self.m30() * rhs.m00()
-                    + self.m31() * rhs.m10()
-                    + self.m32() * rhs.m20()
-                    + self.m33() * rhs.m30(),
-                self.m30() * rhs.m01()
-                    + self.m31() * rhs.m11()
-                    + self.m32() * rhs.m21()
-                    + self.m33() * rhs.m31(),
-                self.m30() * rhs.m02()
-                    + self.m31() * rhs.m12()
-                    + self.m32() * rhs.m22()
-                    + self.m33() * rhs.m32(),
-                self.m30() * rhs.m03()
-                    + self.m31() * rhs.m13()
-                    + self.m32() * rhs.m23()
-                    + self.m33() * rhs.m33(),
-            ],
-        )
+    fn mul(mut self, rhs: Matrix4D) -> Self::Output {
+        self *= rhs;
+        self
+    }
+}
+
+impl MulAssign<Matrix4D> for Matrix4D {
+    fn mul_assign(&mut self, rhs: Matrix4D) {
+        self.underlying[0] = [
+            self.m00() * rhs.m00()
+                + self.m01() * rhs.m10()
+                + self.m02() * rhs.m20()
+                + self.m03() * rhs.m30(),
+            self.m00() * rhs.m01()
+                + self.m01() * rhs.m11()
+                + self.m02() * rhs.m21()
+                + self.m03() * rhs.m31(),
+            self.m00() * rhs.m02()
+                + self.m01() * rhs.m12()
+                + self.m02() * rhs.m22()
+                + self.m03() * rhs.m32(),
+            self.m00() * rhs.m03()
+                + self.m01() * rhs.m13()
+                + self.m02() * rhs.m23()
+                + self.m03() * rhs.m33(),
+        ];
+        self.underlying[1] = [
+            self.m10() * rhs.m00()
+                + self.m11() * rhs.m10()
+                + self.m12() * rhs.m20()
+                + self.m13() * rhs.m30(),
+            self.m10() * rhs.m01()
+                + self.m11() * rhs.m11()
+                + self.m12() * rhs.m21()
+                + self.m13() * rhs.m31(),
+            self.m10() * rhs.m02()
+                + self.m11() * rhs.m12()
+                + self.m12() * rhs.m22()
+                + self.m13() * rhs.m32(),
+            self.m10() * rhs.m03()
+                + self.m11() * rhs.m13()
+                + self.m12() * rhs.m23()
+                + self.m13() * rhs.m33(),
+        ];
+        self.underlying[2] = [
+            self.m20() * rhs.m00()
+                + self.m21() * rhs.m10()
+                + self.m22() * rhs.m20()
+                + self.m23() * rhs.m30(),
+            self.m20() * rhs.m01()
+                + self.m21() * rhs.m11()
+                + self.m22() * rhs.m21()
+                + self.m23() * rhs.m31(),
+            self.m20() * rhs.m02()
+                + self.m21() * rhs.m12()
+                + self.m22() * rhs.m22()
+                + self.m23() * rhs.m32(),
+            self.m20() * rhs.m03()
+                + self.m21() * rhs.m13()
+                + self.m22() * rhs.m23()
+                + self.m23() * rhs.m33(),
+        ];
+        self.underlying[3] = [
+            self.m30() * rhs.m00()
+                + self.m31() * rhs.m10()
+                + self.m32() * rhs.m20()
+                + self.m33() * rhs.m30(),
+            self.m30() * rhs.m01()
+                + self.m31() * rhs.m11()
+                + self.m32() * rhs.m21()
+                + self.m33() * rhs.m31(),
+            self.m30() * rhs.m02()
+                + self.m31() * rhs.m12()
+                + self.m32() * rhs.m22()
+                + self.m33() * rhs.m32(),
+            self.m30() * rhs.m03()
+                + self.m31() * rhs.m13()
+                + self.m32() * rhs.m23()
+                + self.m33() * rhs.m33(),
+        ]
     }
 }
 

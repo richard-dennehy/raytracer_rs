@@ -15,10 +15,18 @@ pub use cone::ConeBuilder;
 
 #[derive(Debug)]
 pub struct Object {
+    // FIXME material makes no sense on groups - move into `Shape`
     pub material: Material,
     transform: Matrix4D,
-    kind: Box<dyn Shape>,
+    kind: ObjectKind,
+    // FIXME id arguably makes no sense on groups - move into `Shape`
     id: u32,
+}
+
+#[derive(Debug)]
+enum ObjectKind {
+    Shape(Box<dyn Shape>),
+    Group(Vec<Object>),
 }
 
 // if you need more than 4 billion objects, you've got bigger problems than integer overflow
@@ -26,15 +34,15 @@ static NEXT_ID: AtomicU32 = AtomicU32::new(0);
 
 impl Object {
     pub fn sphere() -> Self {
-        Self::new(Box::new(Sphere))
+        Self::shape(Box::new(Sphere))
     }
 
     pub fn plane() -> Self {
-        Self::new(Box::new(Plane))
+        Self::shape(Box::new(Plane))
     }
 
     pub fn cube() -> Self {
-        Self::new(Box::new(Cube))
+        Self::shape(Box::new(Cube))
     }
 
     pub fn cylinder() -> CylinderBuilder {
@@ -45,11 +53,20 @@ impl Object {
         ConeBuilder::new()
     }
 
-    fn new(kind: Box<dyn Shape>) -> Self {
+    pub fn group(children: Vec<Object>) -> Self {
         Object {
             transform: Matrix4D::identity(),
             material: Material::default(),
-            kind,
+            kind: ObjectKind::Group(children),
+            id: NEXT_ID.fetch_add(1, Ordering::SeqCst),
+        }
+    }
+
+    fn shape(shape: Box<dyn Shape>) -> Self {
+        Object {
+            transform: Matrix4D::identity(),
+            material: Material::default(),
+            kind: ObjectKind::Shape(shape),
             id: NEXT_ID.fetch_add(1, Ordering::SeqCst),
         }
     }
@@ -64,7 +81,10 @@ impl Object {
 
         debug_assert!(w == 1.0, "Point transformation did not return a point");
         let object_point = Point3D::new(x, y, z);
-        let object_normal = self.kind.object_normal_at(object_point);
+        let object_normal = match &self.kind {
+            ObjectKind::Shape(shape) => shape.object_normal_at(object_point),
+            ObjectKind::Group(_) => panic!("should never need to calculate normals on Group object as rays should only intersect Shapes")
+        };
 
         // deliberately ignoring `w` as a translation Matrix may affect `w` so it's no longer 0
         let (x, y, z, _) = inverted_transform.transpose() * object_normal;
@@ -139,20 +159,28 @@ impl Object {
             )
         );
 
-        let ray_transform = self
-            .transform
-            .inverse()
-            .expect("A translation matrix should be invertible");
+        match &self.kind {
+            ObjectKind::Shape(shape) => {
+                let ray_transform = self
+                    .transform
+                    .inverse()
+                    .expect("A translation matrix should be invertible");
 
-        let transformed = with.transformed(&ray_transform);
+                let transformed = with.transformed(&ray_transform);
 
-        let ts = self.kind.object_intersect(transformed);
-        let intersections = ts
-            .into_iter()
-            .map(|t| Intersection::new(t, &self))
-            .collect();
+                let ts = shape.object_intersect(transformed);
+                let intersections = ts
+                    .into_iter()
+                    .map(|t| Intersection::new(t, &self))
+                    .collect();
 
-        Intersections::of(intersections)
+                Intersections::of(intersections)
+            }
+            ObjectKind::Group(children) => children
+                .iter()
+                .map(|child| child.intersect(with))
+                .fold(Intersections::empty(), |acc, next| acc.join(next)),
+        }
     }
 
     pub fn with_material(mut self, material: Material) -> Self {
@@ -162,7 +190,25 @@ impl Object {
 
     pub fn with_transform(mut self, transform: Matrix4D) -> Self {
         self.transform = transform;
+
+        if let ObjectKind::Group(children) = &mut self.kind {
+            children
+                .iter_mut()
+                .for_each(|child| child.apply_transform(transform))
+        };
+
         self
+    }
+
+    /// allows a parent `Group` to push transforms applied to the group down to its children
+    fn apply_transform(&mut self, transform: Matrix4D) {
+        if let ObjectKind::Group(children) = &mut self.kind {
+            children
+                .iter_mut()
+                .for_each(|child| child.apply_transform(transform))
+        }
+
+        self.transform = transform * self.transform;
     }
 
     pub fn id(&self) -> u32 {

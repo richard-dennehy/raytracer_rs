@@ -825,3 +825,82 @@ mod cone_tests {
         })
     }
 }
+
+mod group_tests {
+    use super::*;
+    use std::f64::consts::PI;
+
+    #[test]
+    fn a_ray_should_not_intersect_an_empty_group() {
+        let group = Object::group(vec![]);
+        let ray = Ray::new(Point3D::ORIGIN, Vector3D::new(0.0, 0.0, 1.0));
+
+        assert!(group.intersect(&ray).is_empty());
+    }
+
+    #[test]
+    fn a_ray_should_intersect_all_children_in_a_non_empty_group_in_the_path_of_the_ray() {
+        let first = Object::sphere();
+        let first_id = first.id();
+
+        let second = Object::sphere().with_transform(Matrix4D::translation(0.0, 0.0, -3.0));
+        let second_id = second.id();
+
+        let group = Object::group(vec![
+            first,
+            second,
+            Object::sphere().with_transform(Matrix4D::translation(5.0, 0.0, 0.0)),
+        ]);
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+
+        let intersections = group.intersect(&ray);
+        assert_eq!(intersections.len(), 4);
+        assert_eq!(intersections.underlying()[0].with.id(), second_id);
+        assert_eq!(intersections.underlying()[1].with.id(), second_id);
+        assert_eq!(intersections.underlying()[2].with.id(), first_id);
+        assert_eq!(intersections.underlying()[3].with.id(), first_id);
+    }
+
+    #[test]
+    fn a_ray_should_intersect_the_children_of_a_transformed_group() {
+        let group = Object::group(vec![
+            Object::sphere().with_transform(Matrix4D::translation(5.0, 0.0, 0.0))
+        ])
+        .with_transform(Matrix4D::uniform_scaling(2.0));
+
+        let ray = Ray::new(Point3D::new(10.0, 0.0, -10.0), Vector3D::new(0.0, 0.0, 1.0));
+        let intersections = group.intersect(&ray);
+        assert_eq!(intersections.len(), 2);
+    }
+
+    #[test]
+    fn group_transforms_should_apply_to_child_normals() {
+        let object_transform = Matrix4D::translation(5.0, 0.0, 0.0);
+        let inner_group_transform = Matrix4D::scaling(1.0, 2.0, 3.0);
+        let outer_group_transform = Matrix4D::rotation_y(PI / 2.0);
+
+        let group = Object::group(vec![Object::group(vec![
+            Object::sphere().with_transform(object_transform)
+        ])
+        .with_transform(inner_group_transform)])
+        .with_transform(outer_group_transform);
+
+        // rust makes getting the reference back to the child sphere awkward, and the book doesn't explain where the point comes from
+        // (otherwise it'd be easier to cast a ray to get an Intersection with the sphere)
+        let sphere_ref = match &group.kind {
+            ObjectKind::Group(children) => match children.first() {
+                Some(group) => match &group.kind {
+                    ObjectKind::Group(children) => children.first().unwrap(),
+                    _ => unreachable!(),
+                },
+                _ => unreachable!(),
+            },
+            _ => unreachable!(),
+        };
+
+        assert_eq!(
+            sphere_ref.normal_at(Point3D::new(1.7321, 1.1547, -5.5774)),
+            Vector3D::new(0.28570368184140726, 0.428543151781141, -0.8571605294481017)
+        );
+    }
+}
