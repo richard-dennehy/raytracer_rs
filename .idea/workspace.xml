@@ -12,9 +12,16 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP implemented groups">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="example: use groups to construct hexagon from spheres and cylinders">
+      <change afterPath="$PROJECT_DIR$/src/object/triangle.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/matrix/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/vector/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/vector/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/vector/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/vector/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/world/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,7 +85,12 @@
       <command value="cargo run --release" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.run (release)">
+  <component name="RunManager" selected="Cargo.test">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -173,9 +185,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.Test object::tests::group_tests::group_transforms_should_apply_to_child_normals" />
-        <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.Test object::tests::cone_tests::should_be_able_to_calculate_the_normal_of_any_point_on_a_double_napped_cone" />
         <item itemvalue="Cargo.Test object::tests::cone_tests::a_ray_should_be_able_to_intersect_the_caps_of_a_capped_cone" />
       </list>
@@ -247,14 +259,7 @@
       <workItem from="1611258918129" duration="2121000" />
       <workItem from="1611346684286" duration="1267000" />
       <workItem from="1611407290956" duration="6038000" />
-      <workItem from="1611488797547" duration="898000" />
-    </task>
-    <task id="LOCAL-00008" summary="matrix determinant algorithms">
-      <created>1607719934222</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1607719934222</updated>
+      <workItem from="1611488797547" duration="3061000" />
     </task>
     <task id="LOCAL-00009" summary="implement matrix inversion">
       <created>1607785920214</created>
@@ -592,7 +597,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611413334851</updated>
     </task>
-    <option name="localTasksCounter" value="57" />
+    <task id="LOCAL-00057" summary="example: use groups to construct hexagon from spheres and cylinders">
+      <created>1611489792886</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1611489792887</updated>
+    </task>
+    <option name="localTasksCounter" value="58" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -608,7 +620,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added plane shape" />
     <MESSAGE value="implemented basic patterns" />
     <MESSAGE value="added tests for stripes and applying patterns to objects, and implemented gradient pattern" />
     <MESSAGE value="checkers and ring patterns" />
@@ -633,7 +644,8 @@
     <MESSAGE value="move cone and cylinder to submodules" />
     <MESSAGE value="make object transform private" />
     <MESSAGE value="WIP implemented groups" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP implemented groups" />
+    <MESSAGE value="example: use groups to construct hexagon from spheres and cylinders" />
+    <option name="LAST_COMMIT_MESSAGE" value="example: use groups to construct hexagon from spheres and cylinders" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -650,7 +662,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/object/mod.rs</url>
-          <line>89</line>
+          <line>96</line>
           <option name="timeStamp" value="16" />
         </line-breakpoint>
       </breakpoints>

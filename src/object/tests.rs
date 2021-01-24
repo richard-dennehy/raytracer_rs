@@ -904,3 +904,89 @@ mod group_tests {
         );
     }
 }
+
+mod triangle_tests {
+    use super::*;
+
+    #[test]
+    fn the_normal_of_a_triangle_should_be_constant() {
+        let triangle = Object::triangle(
+            Point3D::new(0.0, 1.0, 0.0),
+            Point3D::new(-1.0, 0.0, 0.0),
+            Point3D::new(1.0, 0.0, 0.0),
+        );
+
+        let normal = Vector3D::new(0.0, 0.0, -1.0);
+
+        assert_eq!(triangle.normal_at(Point3D::new(0.0, 0.5, 0.0)), normal);
+        assert_eq!(triangle.normal_at(Point3D::new(-0.5, 0.75, 0.0)), normal);
+        assert_eq!(triangle.normal_at(Point3D::new(0.5, 0.25, 0.0)), normal);
+    }
+
+    #[test]
+    fn a_ray_parallel_to_a_triangle_should_not_intersect() {
+        let triangle = Object::triangle(
+            Point3D::new(0.0, 1.0, 0.0),
+            Point3D::new(-1.0, 0.0, 0.0),
+            Point3D::new(1.0, 0.0, 0.0),
+        );
+
+        let ray = Ray::new(Point3D::new(0.0, -1.0, -2.0), Vector3D::new(0.0, 1.0, 0.0));
+
+        assert!(triangle.intersect(&ray).is_empty())
+    }
+
+    #[test]
+    fn a_ray_outside_the_p1_p3_edge_should_not_intersect() {
+        let triangle = Object::triangle(
+            Point3D::new(0.0, 1.0, 0.0),
+            Point3D::new(-1.0, 0.0, 0.0),
+            Point3D::new(1.0, 0.0, 0.0),
+        );
+
+        let ray = Ray::new(Point3D::new(1.0, -1.0, -2.0), Vector3D::new(0.0, 0.0, 1.0));
+
+        assert!(triangle.intersect(&ray).is_empty())
+    }
+
+    #[test]
+    fn a_ray_outside_the_p1_p2_edge_should_not_intersect() {
+        let triangle = Object::triangle(
+            Point3D::new(0.0, 1.0, 0.0),
+            Point3D::new(-1.0, 0.0, 0.0),
+            Point3D::new(1.0, 0.0, 0.0),
+        );
+
+        let ray = Ray::new(Point3D::new(-1.0, 1.0, -2.0), Vector3D::new(0.0, 0.0, 1.0));
+
+        assert!(triangle.intersect(&ray).is_empty())
+    }
+
+    #[test]
+    fn a_ray_outside_the_p2_p3_edge_should_not_intersect() {
+        let triangle = Object::triangle(
+            Point3D::new(0.0, 1.0, 0.0),
+            Point3D::new(-1.0, 0.0, 0.0),
+            Point3D::new(1.0, 0.0, 0.0),
+        );
+
+        let ray = Ray::new(Point3D::new(0.0, -1.0, -2.0), Vector3D::new(0.0, 0.0, 1.0));
+
+        assert!(triangle.intersect(&ray).is_empty())
+    }
+
+    #[test]
+    fn a_ray_inside_the_edges_of_a_triangle_should_intersect_once() {
+        let triangle = Object::triangle(
+            Point3D::new(0.0, 1.0, 0.0),
+            Point3D::new(-1.0, 0.0, 0.0),
+            Point3D::new(1.0, 0.0, 0.0),
+        );
+
+        let ray = Ray::new(Point3D::new(0.0, 0.5, -2.0), Vector3D::new(0.0, 0.0, 1.0));
+
+        let intersections = triangle.intersect(&ray);
+        assert_eq!(intersections.len(), 1);
+        assert_eq!(intersections.underlying()[0].t, 2.0);
+    }
+}

@@ -321,8 +321,8 @@ impl Matrix4D {
     pub fn view_transform(from: Point3D, to: Point3D, up: Vector3D) -> Self {
         let up = up.normalised();
         let forward = (to - from).normalised();
-        let left = forward.cross(&up);
-        let true_up = left.cross(&forward);
+        let left = forward.cross(up);
+        let true_up = left.cross(forward);
 
         let orientation = Matrix4D::new(
             [left.x(), left.y(), left.z(), 0.0],

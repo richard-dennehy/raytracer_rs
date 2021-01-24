@@ -67,7 +67,7 @@ impl<'obj> HitData<'obj> {
         let eye = -ray.direction;
         let normal = intersection.with.normal_at(point);
 
-        let inside = normal.dot(&eye) < 0.0;
+        let inside = normal.dot(eye) < 0.0;
 
         let normal = if inside { -normal } else { normal };
         let offset = normal * (f32::EPSILON as f64); // f64 epsilon isn't sufficient to compensate for rounding errors
@@ -131,7 +131,7 @@ impl<'obj> HitData<'obj> {
 
     /// `shlick` approximation of fresnel
     pub fn reflectance(&self) -> f64 {
-        let mut cos = self.eye.dot(&self.normal);
+        let mut cos = self.eye.dot(self.normal);
 
         if self.entered_refractive > self.exited_refractive {
             // FIXME duplicated total internal reflection logic

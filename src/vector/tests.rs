@@ -123,7 +123,7 @@ mod unit_tests {
         let v1 = Vector3D::new(1.0, 2.0, 3.0);
         let v2 = Vector3D::new(2.0, 3.0, 4.0);
 
-        assert_eq!(v1.dot(&v2), 20.0);
+        assert_eq!(v1.dot(v2), 20.0);
     }
 
     #[test]
@@ -131,8 +131,8 @@ mod unit_tests {
         let v1 = Vector3D::new(1.0, 2.0, 3.0);
         let v2 = Vector3D::new(2.0, 3.0, 4.0);
 
-        assert_eq!(v1.cross(&v2), Vector3D::new(-1.0, 2.0, -1.0));
-        assert_eq!(v2.cross(&v1), Vector3D::new(1.0, -2.0, 1.0));
+        assert_eq!(v1.cross(v2), Vector3D::new(-1.0, 2.0, -1.0));
+        assert_eq!(v2.cross(v1), Vector3D::new(1.0, -2.0, 1.0));
     }
 
     #[test]
@@ -288,7 +288,7 @@ mod property_tests {
 
     #[quickcheck]
     fn dot_product_is_commutative(v1: Vector3D, v2: Vector3D) {
-        assert_eq!(v1.dot(&v2), v2.dot(&v1));
+        assert_eq!(v1.dot(v2), v2.dot(v1));
     }
 
     #[quickcheck]
@@ -296,7 +296,7 @@ mod property_tests {
         v1: Vector3D,
         v2: Vector3D,
     ) {
-        let dot = v1.normalised().dot(&v2.normalised());
+        let dot = v1.normalised().dot(v2.normalised());
 
         assert!(dot >= -1.0 && dot <= 1.0)
     }
@@ -304,16 +304,16 @@ mod property_tests {
     #[quickcheck]
     fn dot_product_of_same_direction_unit_vectors_is_always_1(vector: Vector3D) {
         // rounding errors _really_ accumulate
-        assert!(vector.normalised().dot(&vector.normalised()) - 1.0 <= f32::EPSILON as _)
+        assert!(vector.normalised().dot(vector.normalised()) - 1.0 <= f32::EPSILON as _)
     }
 
     #[quickcheck]
     fn dot_product_of_opposite_direction_unit_vectors_is_always_negative_1(vector: Vector3D) {
-        assert!(vector.normalised().dot(&-(vector.normalised())) - 1.0 <= f32::EPSILON as _)
+        assert!(vector.normalised().dot(-(vector.normalised())) - 1.0 <= f32::EPSILON as _)
     }
 
     #[quickcheck]
     fn cross_product_is_anti_commutative(v1: Vector3D, v2: Vector3D) {
-        assert_eq!(v1.cross(&v2), -(v2.cross(&v1)))
+        assert_eq!(v1.cross(v2), -(v2.cross(v1)))
     }
 }

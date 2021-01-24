@@ -42,11 +42,11 @@ impl Vector3D {
         }
     }
 
-    pub fn dot(&self, other: &Vector3D) -> f64 {
+    pub fn dot(&self, other: Vector3D) -> f64 {
         self.0 * other.x() + self.1 * other.y() + self.2 * other.z() // self.w + other.w is always 0
     }
 
-    pub fn cross(&self, other: &Vector3D) -> Self {
+    pub fn cross(&self, other: Vector3D) -> Self {
         Vector3D(
             (self.y() * other.z()) - (self.z() * other.y()),
             (self.z() * other.x()) - (self.x() * other.z()),
@@ -55,7 +55,7 @@ impl Vector3D {
     }
 
     pub fn reflect_through(&self, normal: Vector3D) -> Self {
-        *self - (normal * 2.0 * self.dot(&normal))
+        *self - (normal * 2.0 * self.dot(normal))
     }
 }
 

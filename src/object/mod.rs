@@ -13,6 +13,9 @@ pub use cylinder::CylinderBuilder;
 mod cone;
 pub use cone::ConeBuilder;
 
+mod triangle;
+use triangle::Triangle;
+
 #[derive(Debug)]
 pub struct Object {
     // FIXME material makes no sense on groups - move into `Shape`
@@ -51,6 +54,10 @@ impl Object {
 
     pub fn cone() -> ConeBuilder {
         ConeBuilder::new()
+    }
+
+    pub fn triangle(point1: Point3D, point2: Point3D, point3: Point3D) -> Self {
+        Self::shape(Box::new(Triangle::new(point1, point2, point3)))
     }
 
     pub fn group(children: Vec<Object>) -> Self {
@@ -121,7 +128,7 @@ impl Object {
         // FIXME calculating inverse multiple times
         let surface_normal = self.normal_at(point);
 
-        let light_dot_normal = light_vector.dot(&surface_normal);
+        let light_dot_normal = light_vector.dot(surface_normal);
         // if dot product is <= 0, the light is behind the surface
         if light_dot_normal.is_sign_negative() {
             return ambient;
@@ -130,7 +137,7 @@ impl Object {
         let diffuse = colour * material.diffuse * light_dot_normal;
         let reflected = (-light_vector).reflect_through(surface_normal);
 
-        let reflect_dot_eye = reflected.dot(&eye_vector);
+        let reflect_dot_eye = reflected.dot(eye_vector);
         // if dot product is <= 0, the reflected light cannot reach the eye
         if reflect_dot_eye.is_sign_negative() {
             return ambient + diffuse;
@@ -230,9 +237,9 @@ impl Shape for Sphere {
 
     fn object_intersect(&self, with: Ray) -> Vec<f64> {
         let sphere_to_ray = with.origin - Point3D::ORIGIN;
-        let a = with.direction.dot(&with.direction);
-        let b = 2.0 * with.direction.dot(&sphere_to_ray);
-        let c = sphere_to_ray.dot(&sphere_to_ray) - 1.0;
+        let a = with.direction.dot(with.direction);
+        let b = 2.0 * with.direction.dot(sphere_to_ray);
+        let c = sphere_to_ray.dot(sphere_to_ray) - 1.0;
 
         if let Some((first, second)) = crate::util::quadratic(a, b, c) {
             vec![first, second]

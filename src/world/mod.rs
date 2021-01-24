@@ -59,7 +59,7 @@ impl World {
                 } else {
                     // check for total internal reflection
                     let ratio = hit_data.entered_refractive / hit_data.exited_refractive;
-                    let cos_i = hit_data.eye.dot(&hit_data.normal);
+                    let cos_i = hit_data.eye.dot(hit_data.normal);
                     let sin2_t = ratio.powi(2) * (1.0 - cos_i.powi(2));
 
                     if sin2_t > 1.0 {
