@@ -20,12 +20,35 @@ fn main() {
         Point3D::new(-10.0, 12.0, -10.0),
     ));
 
-    {
-        let cone = Object::cone()
+    fn hexagon_corner() -> Object {
+        Object::sphere()
+            .with_transform(Matrix4D::uniform_scaling(0.25).with_translation(0.0, 0.0, -1.0))
+    }
+
+    fn hexagon_edge() -> Object {
+        Object::cylinder()
+            .min_y(0.0)
+            .max_y(1.0)
             .build()
-            .with_transform(Matrix4D::translation(0.0, 0.0, 5.0));
-        world.objects.push(cone);
-    };
+            .with_transform(
+                Matrix4D::scaling(0.25, 1.0, 0.25)
+                    .with_rotation_z(-PI / 2.0)
+                    .with_rotation_y(-PI / 6.0)
+                    .with_translation(0.0, 0.0, -1.0),
+            )
+    }
+
+    fn hexagon_side() -> Object {
+        Object::group(vec![hexagon_corner(), hexagon_edge()])
+    }
+
+    let hexagon_parts = (0..6)
+        .into_iter()
+        .map(|i| hexagon_side().with_transform(Matrix4D::rotation_y(i as f64 * PI / 3.0)))
+        .collect();
+    let hexagon = Object::group(hexagon_parts);
+
+    world.objects.push(hexagon);
 
     let camera = Camera::new(
         CAMERA_WIDTH,
@@ -33,7 +56,7 @@ fn main() {
         PI / 3.0,
         Matrix4D::view_transform(
             Point3D::new(0.0, 2.5, -6.0),
-            Point3D::new(0.0, 1.0, 0.0),
+            Point3D::new(0.0, 0.0, 0.0),
             Vector3D::new(0.0, 1.0, 0.0),
         ),
     );
