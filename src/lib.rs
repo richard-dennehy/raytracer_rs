@@ -47,6 +47,8 @@ pub use pattern::Pattern;
 
 pub mod image_writer;
 
+pub mod obj_parser;
+
 pub mod util {
     pub fn quadratic(a: f64, b: f64, c: f64) -> Option<(f64, f64)> {
         let discriminant = b.powi(2) - 4.0 * a * c;
