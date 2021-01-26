@@ -223,9 +223,29 @@ impl Object {
     }
 }
 
+#[cfg(test)]
+impl Object {
+    pub fn children(&self) -> &Vec<Object> {
+        if let ObjectKind::Group(children) = &self.kind {
+            children
+        } else {
+            panic!("Object is not a group and has no children")
+        }
+    }
+
+    pub fn vertices(&self) -> Vec<Point3D> {
+        match &self.kind {
+            ObjectKind::Shape(shape) => shape.vertices(),
+            _ => todo!("Group vertices not implemented"),
+        }
+    }
+}
+
 pub trait Shape: Debug {
     fn object_normal_at(&self, point: Point3D) -> Vector3D;
     fn object_intersect(&self, with: Ray) -> Vec<f64>;
+    #[cfg(test)]
+    fn vertices(&self) -> Vec<Point3D>;
 }
 
 #[derive(Debug)]
