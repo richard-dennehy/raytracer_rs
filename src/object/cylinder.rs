@@ -84,6 +84,11 @@ impl Shape for Cylinder {
 
         ts
     }
+
+    #[cfg(test)]
+    fn vertices(&self) -> Vec<Point3D> {
+        unimplemented!()
+    }
 }
 
 pub struct CylinderBuilder {

@@ -95,6 +95,11 @@ impl Shape for Cone {
 
         ts
     }
+
+    #[cfg(test)]
+    fn vertices(&self) -> Vec<Point3D> {
+        unimplemented!()
+    }
 }
 
 pub struct ConeBuilder {

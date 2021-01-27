@@ -59,4 +59,9 @@ impl Shape for Triangle {
 
         vec![f * self.edge2.dot(origin_cross_e1)]
     }
+
+    #[cfg(test)]
+    fn vertices(&self) -> Vec<Point3D> {
+        vec![self.p1, self.p2, self.p3]
+    }
 }

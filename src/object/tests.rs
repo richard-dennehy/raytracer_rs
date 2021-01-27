@@ -887,16 +887,13 @@ mod group_tests {
 
         // rust makes getting the reference back to the child sphere awkward, and the book doesn't explain where the point comes from
         // (otherwise it'd be easier to cast a ray to get an Intersection with the sphere)
-        let sphere_ref = match &group.kind {
-            ObjectKind::Group(children) => match children.first() {
-                Some(group) => match &group.kind {
-                    ObjectKind::Group(children) => children.first().unwrap(),
-                    _ => unreachable!(),
-                },
-                _ => unreachable!(),
-            },
-            _ => unreachable!(),
-        };
+        let sphere_ref = group
+            .children()
+            .first()
+            .unwrap()
+            .children()
+            .first()
+            .unwrap();
 
         assert_eq!(
             sphere_ref.normal_at(Point3D::new(1.7321, 1.1547, -5.5774)),

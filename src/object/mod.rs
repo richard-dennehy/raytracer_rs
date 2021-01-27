@@ -267,6 +267,11 @@ impl Shape for Sphere {
             vec![]
         }
     }
+
+    #[cfg(test)]
+    fn vertices(&self) -> Vec<Point3D> {
+        unimplemented!()
+    }
 }
 
 #[derive(Debug)]
@@ -282,6 +287,11 @@ impl Shape for Plane {
         }
 
         vec![-with.origin.y() / with.direction.y()]
+    }
+
+    #[cfg(test)]
+    fn vertices(&self) -> Vec<Point3D> {
+        unimplemented!()
     }
 }
 
@@ -325,5 +335,10 @@ impl Shape for Cube {
         } else {
             vec![t_min, t_max]
         }
+    }
+
+    #[cfg(test)]
+    fn vertices(&self) -> Vec<Point3D> {
+        unimplemented!()
     }
 }

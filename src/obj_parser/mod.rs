@@ -45,29 +45,30 @@ fn parse_vertex(line: &str) -> Point3D {
     Point3D::new(get_float(1), get_float(2), get_float(3))
 }
 
-fn parse_face(line: &str) -> (usize, usize, usize) {
+fn parse_face(line: &str) -> Vec<usize> {
     let parts = line.split(' ').collect::<Vec<_>>();
 
-    assert_eq!(
-        parts.len(),
-        4,
-        "unparseable face data (expected 4 parts)\n{}",
+    assert!(
+        parts.len() >= 4,
+        "unparseable face data (expected at least 4 parts)\n{}",
         line
     );
 
-    let get_index = |index: usize| {
-        parts[index].parse::<usize>().expect(&format!(
-            "unparseable vertex data (cannot parse component as f64)\n{}",
-            line
-        ))
-    };
-
-    (get_index(1), get_index(2), get_index(3))
+    parts
+        .into_iter()
+        .skip(1)
+        .map(|index| {
+            index.parse::<usize>().expect(&format!(
+                "unparseable vertex data (cannot parse component as f64)\n{}",
+                line
+            ))
+        })
+        .collect()
 }
 
 pub struct ObjData {
     vertices: Vec<Point3D>,
-    faces: Vec<(usize, usize, usize)>,
+    faces: Vec<Vec<usize>>,
     ignored_lines: usize,
 }
 
@@ -80,25 +81,44 @@ impl ObjData {
 impl TryFrom<ObjData> for Object {
     type Error = String;
 
-    fn try_from(value: ObjData) -> Result<Self, Self::Error> {
-        let faces = value
+    fn try_from(obj_data: ObjData) -> Result<Self, Self::Error> {
+        fn triangulate(faces: &Vec<usize>) -> Vec<[usize; 3]> {
+            let mut out = vec![];
+
+            for i in 2..faces.len() {
+                out.push([faces[0], faces[i - 1], faces[i]]);
+            }
+
+            out
+        }
+
+        let faces = obj_data
             .faces
             .iter()
-            .copied()
-            .map(|(v1, v2, v3)| {
+            .flat_map(|verts| {
                 let get_vertex = |index: usize| {
-                    value
+                    obj_data
                         .vertex(index)
                         .ok_or_else(|| format!("face references invalid vertex {}", index))
                 };
 
-                get_vertex(v1).and_then(|v1| {
-                    get_vertex(v2).and_then(|v2| get_vertex(v3).map(|v3| (v1, v2, v3)))
-                })
+                triangulate(verts)
+                    .iter()
+                    .map(|tris| {
+                        tris.iter()
+                            .copied()
+                            .map(get_vertex)
+                            .collect::<Result<Vec<_>, _>>()
+                    })
+                    .map(|result| result.map(|tris| (tris[0], tris[1], tris[2])))
+                    .collect::<Vec<_>>()
             })
             .collect::<Result<Vec<_>, _>>()?;
 
-        let tris = faces.into_iter().map(Object::triangle).collect();
+        let tris = faces
+            .into_iter()
+            .map(|(v1, v2, v3)| Object::triangle(v1, v2, v3))
+            .collect();
         Ok(Object::group(tris))
     }
 }

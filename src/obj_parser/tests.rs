@@ -41,8 +41,22 @@ and came back the previous night.";
         f 1 3 4";
 
         let out = parse(input);
-        assert_eq!(out.faces[0], (1, 2, 3));
-        assert_eq!(out.faces[1], (1, 3, 4));
+        assert_eq!(out.faces[0], vec![1, 2, 3]);
+        assert_eq!(out.faces[1], vec![1, 3, 4]);
+    }
+
+    #[test]
+    fn parser_should_parse_polygons_with_more_than_3_vertices() {
+        let input = "v -1 1 0
+v -1 0 0
+v 1 0 0
+v 1 1 0
+v 0 2 0
+
+f 1 2 3 4 5";
+
+        let out = parse(input);
+        assert_eq!(out.faces[0], vec![1, 2, 3, 4, 5]);
     }
 
     #[test]
@@ -59,5 +73,86 @@ and came back the previous night.";
         let object: Result<Object, _> = out.try_into();
         assert!(object.is_ok(), object.unwrap_err());
         let object = object.unwrap();
+
+        assert_eq!(
+            object.children()[0].vertices()[0],
+            Point3D::new(-1.0, 1.0, 0.0)
+        );
+        assert_eq!(
+            object.children()[0].vertices()[1],
+            Point3D::new(1.0, 0.0, 0.0)
+        );
+        assert_eq!(
+            object.children()[0].vertices()[2],
+            Point3D::new(1.0, 0.0, 0.0)
+        );
+
+        assert_eq!(
+            object.children()[1].vertices()[0],
+            Point3D::new(-1.0, 1.0, 0.0)
+        );
+        assert_eq!(
+            object.children()[1].vertices()[1],
+            Point3D::new(1.0, 0.0, 0.0)
+        );
+        assert_eq!(
+            object.children()[1].vertices()[2],
+            Point3D::new(1.0, 1.0, 0.0)
+        );
+    }
+
+    #[test]
+    fn converting_to_group_should_triangulate_polygon_faces() {
+        let input = "v -1 1 0
+v -1 0 0
+v 1 0 0
+v 1 1 0
+v 0 2 0
+
+f 1 2 3 4 5";
+
+        let out = parse(input);
+        let object: Result<Object, _> = out.try_into();
+        assert!(object.is_ok(), object.unwrap_err());
+        let object = object.unwrap();
+
+        assert_eq!(
+            object.children()[0].vertices()[0],
+            Point3D::new(-1.0, 1.0, 0.0)
+        );
+        assert_eq!(
+            object.children()[0].vertices()[1],
+            Point3D::new(-1.0, 0.0, 0.0)
+        );
+        assert_eq!(
+            object.children()[0].vertices()[2],
+            Point3D::new(1.0, 0.0, 0.0)
+        );
+
+        assert_eq!(
+            object.children()[1].vertices()[0],
+            Point3D::new(-1.0, 1.0, 0.0)
+        );
+        assert_eq!(
+            object.children()[1].vertices()[1],
+            Point3D::new(1.0, 0.0, 0.0)
+        );
+        assert_eq!(
+            object.children()[1].vertices()[2],
+            Point3D::new(1.0, 1.0, 0.0)
+        );
+
+        assert_eq!(
+            object.children()[2].vertices()[0],
+            Point3D::new(-1.0, 1.0, 0.0)
+        );
+        assert_eq!(
+            object.children()[2].vertices()[1],
+            Point3D::new(1.0, 1.0, 0.0)
+        );
+        assert_eq!(
+            object.children()[2].vertices()[2],
+            Point3D::new(0.0, 2.0, 0.0)
+        );
     }
 }
