@@ -41,8 +41,8 @@ and came back the previous night.";
         f 1 3 4";
 
         let out = parse(input);
-        assert_eq!(out.faces[0], vec![1, 2, 3]);
-        assert_eq!(out.faces[1], vec![1, 3, 4]);
+        assert_eq!(out.groups[0][0], vec![1, 2, 3]);
+        assert_eq!(out.groups[0][1], vec![1, 3, 4]);
     }
 
     #[test]
@@ -56,7 +56,7 @@ v 0 2 0
 f 1 2 3 4 5";
 
         let out = parse(input);
-        assert_eq!(out.faces[0], vec![1, 2, 3, 4, 5]);
+        assert_eq!(out.groups[0][0], vec![1, 2, 3, 4, 5]);
     }
 
     #[test]
@@ -154,5 +154,44 @@ f 1 2 3 4 5";
             object.children()[2].vertices()[2],
             Point3D::new(0.0, 2.0, 0.0)
         );
+    }
+
+    #[test]
+    fn obj_parser_should_preserve_named_groups() {
+        let input = "v -1 1 0
+        v -1 0 0
+        v 1 0 0
+        v 1 1 0
+        
+        g FirstGroup
+        f 1 2 3
+        g SecondGroup
+        f 1 3 4";
+
+        let output = parse(input);
+        assert_eq!(output.groups[0][0], vec![1, 2, 3]);
+        assert_eq!(output.groups[1][0], vec![1, 3, 4]);
+    }
+
+    #[test]
+    fn converting_obj_data_with_multiple_groups_should_create_a_group_with_subgroups() {
+        let input = "v -1 1 0
+        v -1 0 0
+        v 1 0 0
+        v 1 1 0
+        
+        g FirstGroup
+        f 1 2 3
+        g SecondGroup
+        f 1 3 4";
+
+        let output = parse(input);
+        let object: Result<Object, _> = output.try_into();
+        assert!(object.is_ok(), object.unwrap_err());
+        let object = object.unwrap();
+
+        assert_eq!(object.children().len(), 2);
+        assert_eq!(object.children()[0].children().len(), 1);
+        assert_eq!(object.children()[1].children().len(), 1);
     }
 }

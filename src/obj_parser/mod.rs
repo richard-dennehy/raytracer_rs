@@ -1,4 +1,5 @@
 use crate::{Object, Point3D};
+use std::borrow::Borrow;
 use std::convert::TryFrom;
 
 #[cfg(test)]
@@ -6,7 +7,8 @@ mod tests;
 
 pub fn parse(input: &str) -> ObjData {
     let mut vertices = vec![];
-    let mut faces = vec![];
+    let mut polys = vec![];
+    let mut groups = vec![];
     let mut ignored_lines = 0;
 
     input
@@ -14,13 +16,23 @@ pub fn parse(input: &str) -> ObjData {
         .map(|line| line.trim())
         .for_each(|line| match line.chars().next() {
             Some('v') => vertices.push(parse_vertex(line)),
-            Some('f') => faces.push(parse_face(line)),
+            Some('f') => polys.push(parse_polygon(line)),
+            Some('g') => {
+                if !polys.is_empty() {
+                    let polys = std::mem::replace(&mut polys, vec![]);
+                    groups.push(polys);
+                }
+            }
             _ => ignored_lines += 1,
         });
 
+    if !polys.is_empty() {
+        groups.push(polys)
+    }
+
     ObjData {
         vertices,
-        faces,
+        groups,
         ignored_lines,
     }
 }
@@ -45,7 +57,7 @@ fn parse_vertex(line: &str) -> Point3D {
     Point3D::new(get_float(1), get_float(2), get_float(3))
 }
 
-fn parse_face(line: &str) -> Vec<usize> {
+fn parse_polygon(line: &str) -> Polygon {
     let parts = line.split(' ').collect::<Vec<_>>();
 
     assert!(
@@ -66,9 +78,12 @@ fn parse_face(line: &str) -> Vec<usize> {
         .collect()
 }
 
+type Polygon = Vec<usize>;
+type Group = Vec<Polygon>;
+
 pub struct ObjData {
     vertices: Vec<Point3D>,
-    faces: Vec<Vec<usize>>,
+    groups: Vec<Group>,
     ignored_lines: usize,
 }
 
@@ -82,43 +97,52 @@ impl TryFrom<ObjData> for Object {
     type Error = String;
 
     fn try_from(obj_data: ObjData) -> Result<Self, Self::Error> {
-        fn triangulate(faces: &Vec<usize>) -> Vec<[usize; 3]> {
-            let mut out = vec![];
+        let convert_group = |group: &Group| {
+            let mut triangles = vec![];
 
-            for i in 2..faces.len() {
-                out.push([faces[0], faces[i - 1], faces[i]]);
+            for polygon in group {
+                for face in triangulate(polygon) {
+                    let mut vertices = Vec::with_capacity(3);
+
+                    for &vert_index in face.iter() {
+                        if let Some(vertex) = obj_data.vertex(vert_index) {
+                            vertices.push(vertex)
+                        } else {
+                            return Err(format!(
+                                "invalid vertex reference {} in face {:?}",
+                                vert_index, polygon
+                            ));
+                        }
+                    }
+
+                    triangles.push(Object::triangle(vertices[0], vertices[1], vertices[2]))
+                }
             }
 
-            out
+            Ok(Object::group(triangles))
+        };
+
+        if obj_data.groups.len() == 1 {
+            convert_group(&obj_data.groups[0])
+        } else {
+            let children = obj_data
+                .groups
+                .iter()
+                .map(Borrow::borrow)
+                .map(convert_group)
+                .collect::<Result<Vec<_>, _>>()?;
+
+            Ok(Object::group(children))
         }
-
-        let faces = obj_data
-            .faces
-            .iter()
-            .flat_map(|verts| {
-                let get_vertex = |index: usize| {
-                    obj_data
-                        .vertex(index)
-                        .ok_or_else(|| format!("face references invalid vertex {}", index))
-                };
-
-                triangulate(verts)
-                    .iter()
-                    .map(|tris| {
-                        tris.iter()
-                            .copied()
-                            .map(get_vertex)
-                            .collect::<Result<Vec<_>, _>>()
-                    })
-                    .map(|result| result.map(|tris| (tris[0], tris[1], tris[2])))
-                    .collect::<Vec<_>>()
-            })
-            .collect::<Result<Vec<_>, _>>()?;
-
-        let tris = faces
-            .into_iter()
-            .map(|(v1, v2, v3)| Object::triangle(v1, v2, v3))
-            .collect();
-        Ok(Object::group(tris))
     }
+}
+
+fn triangulate(face: &Polygon) -> Vec<[usize; 3]> {
+    let mut out = vec![];
+
+    for i in 2..face.len() {
+        out.push([face[0], face[i - 1], face[i]]);
+    }
+
+    out
 }
