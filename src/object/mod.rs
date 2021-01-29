@@ -16,6 +16,9 @@ pub use cone::ConeBuilder;
 mod triangle;
 use triangle::Triangle;
 
+mod smooth_triangle;
+use smooth_triangle::SmoothTriangle;
+
 #[derive(Debug)]
 pub struct Object {
     // FIXME material makes no sense on groups - move into `Shape`
@@ -58,6 +61,19 @@ impl Object {
 
     pub fn triangle(point1: Point3D, point2: Point3D, point3: Point3D) -> Self {
         Self::shape(Box::new(Triangle::new(point1, point2, point3)))
+    }
+
+    pub fn smooth_triangle(
+        point1: Point3D,
+        point2: Point3D,
+        point3: Point3D,
+        normal1: Vector3D,
+        normal2: Vector3D,
+        normal3: Vector3D,
+    ) -> Self {
+        Self::shape(Box::new(SmoothTriangle::new(
+            point1, point2, point3, normal1, normal2, normal3,
+        )))
     }
 
     pub fn group(children: Vec<Object>) -> Self {
@@ -174,12 +190,7 @@ impl Object {
                     .expect("A translation matrix should be invertible");
 
                 let transformed = with.transformed(&ray_transform);
-
-                let ts = shape.object_intersect(transformed);
-                let intersections = ts
-                    .into_iter()
-                    .map(|t| Intersection::new(t, &self))
-                    .collect();
+                let intersections = shape.object_intersect(&self, transformed);
 
                 Intersections::of(intersections)
             }
@@ -243,7 +254,11 @@ impl Object {
 
 pub trait Shape: Debug {
     fn object_normal_at(&self, point: Point3D) -> Vector3D;
-    fn object_intersect(&self, with: Ray) -> Vec<f64>;
+    fn object_intersect<'parent>(
+        &self,
+        parent: &'parent Object,
+        with: Ray,
+    ) -> Vec<Intersection<'parent>>;
     #[cfg(test)]
     fn vertices(&self) -> Vec<Point3D>;
 }
@@ -255,14 +270,21 @@ impl Shape for Sphere {
         point - Point3D::ORIGIN
     }
 
-    fn object_intersect(&self, with: Ray) -> Vec<f64> {
+    fn object_intersect<'parent>(
+        &self,
+        parent: &'parent Object,
+        with: Ray,
+    ) -> Vec<Intersection<'parent>> {
         let sphere_to_ray = with.origin - Point3D::ORIGIN;
         let a = with.direction.dot(with.direction);
         let b = 2.0 * with.direction.dot(sphere_to_ray);
         let c = sphere_to_ray.dot(sphere_to_ray) - 1.0;
 
         if let Some((first, second)) = crate::util::quadratic(a, b, c) {
-            vec![first, second]
+            vec![
+                Intersection::new(first, parent),
+                Intersection::new(second, parent),
+            ]
         } else {
             vec![]
         }
@@ -281,12 +303,17 @@ impl Shape for Plane {
         Vector3D::new(0.0, 1.0, 0.0)
     }
 
-    fn object_intersect(&self, with: Ray) -> Vec<f64> {
+    fn object_intersect<'parent>(
+        &self,
+        parent: &'parent Object,
+        with: Ray,
+    ) -> Vec<Intersection<'parent>> {
         if with.direction.y().abs() <= f32::EPSILON as f64 {
             return Vec::new();
         }
 
-        vec![-with.origin.y() / with.direction.y()]
+        let t = -with.origin.y() / with.direction.y();
+        vec![Intersection::new(t, parent)]
     }
 
     #[cfg(test)]
@@ -308,7 +335,11 @@ impl Shape for Cube {
         }
     }
 
-    fn object_intersect(&self, with: Ray) -> Vec<f64> {
+    fn object_intersect<'parent>(
+        &self,
+        parent: &'parent Object,
+        with: Ray,
+    ) -> Vec<Intersection<'parent>> {
         fn check_axis(origin: f64, direction: f64) -> (f64, f64) {
             let t_min_numerator = -1.0 - origin;
             let t_max_numerator = 1.0 - origin;
@@ -333,7 +364,10 @@ impl Shape for Cube {
         if t_min > t_max {
             vec![]
         } else {
-            vec![t_min, t_max]
+            vec![
+                Intersection::new(t_min, parent),
+                Intersection::new(t_max, parent),
+            ]
         }
     }
 

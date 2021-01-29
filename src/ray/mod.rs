@@ -35,11 +35,20 @@ impl Ray {
 pub struct Intersection<'with> {
     pub t: f64,
     pub with: &'with Object,
+    pub uv: Option<(f64, f64)>,
 }
 
 impl<'with> Intersection<'with> {
     pub fn new(t: f64, with: &'with Object) -> Intersection {
-        Intersection { t, with }
+        Intersection { t, with, uv: None }
+    }
+
+    pub fn with_uv(t: f64, with: &'with Object, u: f64, v: f64) -> Intersection {
+        Intersection {
+            t,
+            with,
+            uv: Some((u, v)),
+        }
     }
 }
 

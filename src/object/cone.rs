@@ -1,5 +1,5 @@
 use crate::object::Shape;
-use crate::{Object, Point3D, Ray, Vector3D};
+use crate::{Intersection, Object, Point3D, Ray, Vector3D};
 
 #[derive(Debug, PartialEq)]
 pub struct Cone {
@@ -26,7 +26,11 @@ impl Shape for Cone {
         }
     }
 
-    fn object_intersect(&self, with: Ray) -> Vec<f64> {
+    fn object_intersect<'parent>(
+        &self,
+        parent: &'parent Object,
+        with: Ray,
+    ) -> Vec<Intersection<'parent>> {
         let intersects_cap = |t: f64| {
             let x = with.origin.x() + t * with.direction.x();
             let y = with.origin.y() + t * with.direction.y();
@@ -41,14 +45,14 @@ impl Shape for Cone {
             let t = (self.min_y - with.origin.y()) / with.direction.y();
 
             if intersects_cap(t) {
-                ts.push(t);
+                ts.push(Intersection::new(t, parent));
             }
 
             // check top cap
             let t = (self.max_y - with.origin.y()) / with.direction.y();
 
             if intersects_cap(t) {
-                ts.push(t);
+                ts.push(Intersection::new(t, parent));
             }
 
             ts
@@ -69,7 +73,8 @@ impl Shape for Cone {
         };
 
         if a.abs() <= f64::EPSILON {
-            cap_intersections.push(-c / (2.0 * b));
+            let t = -c / (2.0 * b);
+            cap_intersections.push(Intersection::new(t, parent));
             return cap_intersections;
         };
 
@@ -78,12 +83,12 @@ impl Shape for Cone {
 
             let y_first = with.origin.y() + with.direction.y() * first;
             if y_first > self.min_y && y_first < self.max_y {
-                ts.push(first);
+                ts.push(Intersection::new(first, parent));
             }
 
             let y_second = with.origin.y() + with.direction.y() * second;
             if y_second > self.min_y && y_second < self.max_y {
-                ts.push(second);
+                ts.push(Intersection::new(second, parent));
             }
 
             ts

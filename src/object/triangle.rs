@@ -1,5 +1,5 @@
 use crate::object::Shape;
-use crate::{Point3D, Ray, Vector3D};
+use crate::{Intersection, Object, Point3D, Ray, Vector3D};
 
 #[derive(Debug)]
 pub struct Triangle {
@@ -35,7 +35,11 @@ impl Shape for Triangle {
     }
 
     /// Möller–Trumbore algorithm
-    fn object_intersect(&self, with: Ray) -> Vec<f64> {
+    fn object_intersect<'parent>(
+        &self,
+        parent: &'parent Object,
+        with: Ray,
+    ) -> Vec<Intersection<'parent>> {
         let dir_cross_e2 = with.direction.cross(self.edge2);
         let determinant = self.edge1.dot(dir_cross_e2);
 
@@ -57,7 +61,8 @@ impl Shape for Triangle {
             return vec![];
         };
 
-        vec![f * self.edge2.dot(origin_cross_e1)]
+        let t = f * self.edge2.dot(origin_cross_e1);
+        vec![Intersection::with_uv(t, parent, u, v)]
     }
 
     #[cfg(test)]

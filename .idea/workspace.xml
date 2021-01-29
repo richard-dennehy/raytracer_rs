@@ -12,10 +12,14 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP triangulate obj file polygons">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="basic obj file parser">
+      <change afterPath="$PROJECT_DIR$/src/object/smooth_triangle.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/obj_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/obj_parser/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/obj_parser/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/obj_parser/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/cone.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cone.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/cylinder.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cylinder.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/triangle.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,17 +78,12 @@
   </component>
   <component name="RunAnythingCache">
     <option name="myCommands">
-      <command value="cargo test" />
       <command value="cargo clippy" />
       <command value="cargo run --release" />
+      <command value="cargo test" />
     </option>
   </component>
   <component name="RunManager" selected="Cargo.test">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -180,10 +179,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.Test object::tests::group_tests::group_transforms_should_apply_to_child_normals" />
         <item itemvalue="Cargo.Test object::tests::cone_tests::should_be_able_to_calculate_the_normal_of_any_point_on_a_double_napped_cone" />
-        <item itemvalue="Cargo.Test object::tests::cone_tests::a_ray_should_be_able_to_intersect_the_caps_of_a_capped_cone" />
       </list>
     </recent_temporary>
   </component>
@@ -257,14 +256,8 @@
       <workItem from="1611605033124" duration="2081000" />
       <workItem from="1611687828242" duration="2676000" />
       <workItem from="1611777617881" duration="3125000" />
-      <workItem from="1611865056188" duration="2355000" />
-    </task>
-    <task id="LOCAL-00013" summary="refactor to `lib.rs` based project structure">
-      <created>1608062741893</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1608062741893</updated>
+      <workItem from="1611865056188" duration="2408000" />
+      <workItem from="1611945793796" duration="2523000" />
     </task>
     <task id="LOCAL-00014" summary="probably finally done moving files around">
       <created>1608063080798</created>
@@ -602,7 +595,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611780721242</updated>
     </task>
-    <option name="localTasksCounter" value="62" />
+    <task id="LOCAL-00062" summary="basic obj file parser">
+      <created>1611867464392</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1611867464392</updated>
+    </task>
+    <option name="localTasksCounter" value="63" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -618,7 +618,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="implement reflectivity" />
     <MESSAGE value="WIP implemented refraction; missing tests" />
     <MESSAGE value="implemented tests for refraction; missing fresnel" />
     <MESSAGE value="implement fresnel effect" />
@@ -643,7 +642,8 @@
     <MESSAGE value="WIP obj file parser" />
     <MESSAGE value="WIP parse faces from obj file" />
     <MESSAGE value="WIP triangulate obj file polygons" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP triangulate obj file polygons" />
+    <MESSAGE value="basic obj file parser" />
+    <option name="LAST_COMMIT_MESSAGE" value="basic obj file parser" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -660,7 +660,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/object/mod.rs</url>
-          <line>96</line>
+          <line>112</line>
           <option name="timeStamp" value="16" />
         </line-breakpoint>
       </breakpoints>
