@@ -12,12 +12,13 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="basic obj file parser">
-      <change afterPath="$PROJECT_DIR$/src/object/smooth_triangle.rs" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP add UV coordinates to intersections">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/cone.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cone.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/cylinder.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cylinder.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/smooth_triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/smooth_triangle.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/triangle.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
     </list>
@@ -98,36 +99,36 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test object::tests::cone_tests::a_ray_should_be_able_to_intersect_the_caps_of_a_capped_cone" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib object::tests::cone_tests::a_ray_should_be_able_to_intersect_the_caps_of_a_capped_cone -- --exact" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <option name="channel" value="DEFAULT" />
-      <option name="allFeatures" value="false" />
-      <option name="emulateTerminal" value="false" />
-      <option name="backtrace" value="SHORT" />
-      <envs />
-      <option name="isRedirectInput" value="false" />
-      <option name="redirectInputPath" value="" />
-      <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Test object::tests::cone_tests::should_be_able_to_calculate_the_normal_of_any_point_on_a_double_napped_cone" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib object::tests::cone_tests::should_be_able_to_calculate_the_normal_of_any_point_on_a_double_napped_cone -- --exact" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <option name="channel" value="DEFAULT" />
-      <option name="allFeatures" value="false" />
-      <option name="emulateTerminal" value="false" />
-      <option name="backtrace" value="SHORT" />
-      <envs />
-      <option name="isRedirectInput" value="false" />
-      <option name="redirectInputPath" value="" />
-      <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Test object::tests::group_tests::group_transforms_should_apply_to_child_normals" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="command" value="test --package ray_tracer --lib object::tests::group_tests::group_transforms_should_apply_to_child_normals -- --exact" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test object::tests::smooth_triangles::intersecting_a_smooth_triangle_should_populate_uv" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib object::tests::smooth_triangles::intersecting_a_smooth_triangle_should_populate_uv -- --exact" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test object::tests::smooth_triangles::the_normal_of_a_smooth_triangle_should_be_based_off_the_uv_of_the_intersection" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib object::tests::smooth_triangles::the_normal_of_a_smooth_triangle_should_be_based_off_the_uv_of_the_intersection -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="allFeatures" value="false" />
@@ -168,21 +169,26 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.run (release)" />
       <item itemvalue="Cargo.test" />
-      <item itemvalue="Cargo.Test object::tests::cone_tests::a_ray_should_be_able_to_intersect_the_caps_of_a_capped_cone" />
-      <item itemvalue="Cargo.Test object::tests::cone_tests::should_be_able_to_calculate_the_normal_of_any_point_on_a_double_napped_cone" />
       <item itemvalue="Cargo.Test object::tests::group_tests::group_transforms_should_apply_to_child_normals" />
+      <item itemvalue="Cargo.Test object::tests::smooth_triangles::intersecting_a_smooth_triangle_should_populate_uv" />
+      <item itemvalue="Cargo.Test object::tests::smooth_triangles::the_normal_of_a_smooth_triangle_should_be_based_off_the_uv_of_the_intersection" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.Test object::tests::smooth_triangles::the_normal_of_a_smooth_triangle_should_be_based_off_the_uv_of_the_intersection" />
+        <item itemvalue="Cargo.Test object::tests::smooth_triangles::intersecting_a_smooth_triangle_should_populate_uv" />
         <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.run (release)" />
-        <item itemvalue="Cargo.Test object::tests::group_tests::group_transforms_should_apply_to_child_normals" />
-        <item itemvalue="Cargo.Test object::tests::cone_tests::should_be_able_to_calculate_the_normal_of_any_point_on_a_double_napped_cone" />
       </list>
     </recent_temporary>
   </component>
@@ -257,14 +263,8 @@
       <workItem from="1611687828242" duration="2676000" />
       <workItem from="1611777617881" duration="3125000" />
       <workItem from="1611865056188" duration="2408000" />
-      <workItem from="1611945793796" duration="2523000" />
-    </task>
-    <task id="LOCAL-00014" summary="probably finally done moving files around">
-      <created>1608063080798</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1608063080798</updated>
+      <workItem from="1611945793796" duration="2655000" />
+      <workItem from="1612012194141" duration="3235000" />
     </task>
     <task id="LOCAL-00015" summary="implemented ray intersection">
       <created>1608064751153</created>
@@ -602,7 +602,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611867464392</updated>
     </task>
-    <option name="localTasksCounter" value="63" />
+    <task id="LOCAL-00063" summary="WIP add UV coordinates to intersections">
+      <created>1611948691668</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1611948691669</updated>
+    </task>
+    <option name="localTasksCounter" value="64" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -618,7 +625,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP implemented refraction; missing tests" />
     <MESSAGE value="implemented tests for refraction; missing fresnel" />
     <MESSAGE value="implement fresnel effect" />
     <MESSAGE value="implement cubes" />
@@ -643,7 +649,8 @@
     <MESSAGE value="WIP parse faces from obj file" />
     <MESSAGE value="WIP triangulate obj file polygons" />
     <MESSAGE value="basic obj file parser" />
-    <option name="LAST_COMMIT_MESSAGE" value="basic obj file parser" />
+    <MESSAGE value="WIP add UV coordinates to intersections" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP add UV coordinates to intersections" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -662,6 +669,11 @@
           <url>file://$PROJECT_DIR$/src/object/mod.rs</url>
           <line>112</line>
           <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/object/smooth_triangle.rs</url>
+          <line>55</line>
+          <option name="timeStamp" value="17" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

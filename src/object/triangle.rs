@@ -30,7 +30,7 @@ impl Triangle {
 }
 
 impl Shape for Triangle {
-    fn object_normal_at(&self, _: Point3D) -> Vector3D {
+    fn object_normal_at(&self, _: Point3D, _uv: Option<(f64, f64)>) -> Vector3D {
         self.normal
     }
 

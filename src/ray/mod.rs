@@ -64,6 +64,7 @@ pub struct HitData<'obj> {
     pub reflection: Vector3D,
     pub entered_refractive: f64,
     pub exited_refractive: f64,
+    pub uv: Option<(f64, f64)>,
 }
 
 impl<'obj> HitData<'obj> {
@@ -74,7 +75,7 @@ impl<'obj> HitData<'obj> {
     ) -> Self {
         let point = ray.position(intersection.t);
         let eye = -ray.direction;
-        let normal = intersection.with.normal_at(point);
+        let normal = intersection.with.normal_at(point, intersection.uv);
 
         let inside = normal.dot(eye) < 0.0;
 
@@ -130,12 +131,13 @@ impl<'obj> HitData<'obj> {
             reflection,
             entered_refractive,
             exited_refractive,
+            uv: intersection.uv,
         }
     }
 
     pub fn colour(&self, light: &PointLight, in_shadow: bool) -> Colour {
         self.object
-            .colour_at(self.point, light, self.eye, in_shadow)
+            .colour_at(self.point, light, self.eye, self.uv, in_shadow)
     }
 
     /// `shlick` approximation of fresnel

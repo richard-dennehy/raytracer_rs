@@ -272,6 +272,27 @@ mod ray_unit_tests {
     }
 
     #[test]
+    fn the_hit_data_for_a_smooth_triangle_intersection_should_contain_an_interpolated_normal() {
+        let triangle = Object::smooth_triangle(
+            Point3D::new(0.0, 1.0, 0.0),
+            Point3D::new(-1.0, 0.0, 0.0),
+            Point3D::new(1.0, 0.0, 0.0),
+            Vector3D::new(0.0, 1.0, 0.0),
+            Vector3D::new(-1.0, 0.0, 0.0),
+            Vector3D::new(1.0, 0.0, 0.0),
+        );
+        let ray = Ray::new(Point3D::new(-0.2, 0.3, -2.0), Vector3D::new(0.0, 0.0, 1.0));
+        let intersections = triangle.intersect(&ray);
+        let intersection = intersections.hit();
+        assert!(intersection.is_some());
+        let hit = HitData::from(&ray, intersection.unwrap(), intersections);
+        assert_eq!(
+            hit.normal,
+            Vector3D::new(-0.554700196225229, 0.8320502943378437, 0.0)
+        );
+    }
+
+    #[test]
     fn the_reflectance_under_total_internal_reflection_should_be_1() {
         let shape = Object::sphere().with_material(Material {
             transparency: 1.0,

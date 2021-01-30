@@ -94,7 +94,7 @@ impl Object {
         }
     }
 
-    pub fn normal_at(&self, point: Point3D) -> Vector3D {
+    pub fn normal_at(&self, point: Point3D, uv: Option<(f64, f64)>) -> Vector3D {
         let inverted_transform = self
             .transform
             .inverse()
@@ -105,7 +105,7 @@ impl Object {
         debug_assert!(w == 1.0, "Point transformation did not return a point");
         let object_point = Point3D::new(x, y, z);
         let object_normal = match &self.kind {
-            ObjectKind::Shape(shape) => shape.object_normal_at(object_point),
+            ObjectKind::Shape(shape) => shape.object_normal_at(object_point, uv),
             ObjectKind::Group(_) => panic!("should never need to calculate normals on Group object as rays should only intersect Shapes")
         };
 
@@ -120,6 +120,7 @@ impl Object {
         point: Point3D,
         light: &PointLight,
         eye_vector: Vector3D,
+        uv: Option<(f64, f64)>,
         in_shadow: bool,
     ) -> Colour {
         let material = &self.material;
@@ -142,7 +143,7 @@ impl Object {
 
         let light_vector = (light.position - point).normalised();
         // FIXME calculating inverse multiple times
-        let surface_normal = self.normal_at(point);
+        let surface_normal = self.normal_at(point, uv);
 
         let light_dot_normal = light_vector.dot(surface_normal);
         // if dot product is <= 0, the light is behind the surface
@@ -253,7 +254,7 @@ impl Object {
 }
 
 pub trait Shape: Debug {
-    fn object_normal_at(&self, point: Point3D) -> Vector3D;
+    fn object_normal_at(&self, point: Point3D, uv: Option<(f64, f64)>) -> Vector3D;
     fn object_intersect<'parent>(
         &self,
         parent: &'parent Object,
@@ -266,7 +267,7 @@ pub trait Shape: Debug {
 #[derive(Debug)]
 struct Sphere;
 impl Shape for Sphere {
-    fn object_normal_at(&self, point: Point3D) -> Vector3D {
+    fn object_normal_at(&self, point: Point3D, _uv: Option<(f64, f64)>) -> Vector3D {
         point - Point3D::ORIGIN
     }
 
@@ -299,7 +300,7 @@ impl Shape for Sphere {
 #[derive(Debug)]
 struct Plane;
 impl Shape for Plane {
-    fn object_normal_at(&self, _: Point3D) -> Vector3D {
+    fn object_normal_at(&self, _: Point3D, _uv: Option<(f64, f64)>) -> Vector3D {
         Vector3D::new(0.0, 1.0, 0.0)
     }
 
@@ -325,7 +326,7 @@ impl Shape for Plane {
 #[derive(Debug)]
 struct Cube;
 impl Shape for Cube {
-    fn object_normal_at(&self, point: Point3D) -> Vector3D {
+    fn object_normal_at(&self, point: Point3D, _uv: Option<(f64, f64)>) -> Vector3D {
         if point.x().abs() >= point.y().abs() && point.x().abs() >= point.z().abs() {
             Vector3D::new(point.x(), 0.0, 0.0)
         } else if point.y().abs() >= point.x().abs() && point.y().abs() >= point.z().abs() {
