@@ -4,6 +4,10 @@ mod unit_tests {
     use super::*;
     use std::convert::TryInto;
 
+    fn vertices(polygons: &Vec<PolygonData>) -> Vec<usize> {
+        polygons.iter().map(|p| p.vertex).collect::<Vec<_>>()
+    }
+
     #[test]
     fn parser_should_ignore_unrecognised_lines() {
         let invalid_obj_file = "There was a young lady named Bright
@@ -41,8 +45,8 @@ and came back the previous night.";
         f 1 3 4";
 
         let out = parse(input);
-        assert_eq!(out.groups[0][0], vec![1, 2, 3]);
-        assert_eq!(out.groups[0][1], vec![1, 3, 4]);
+        assert_eq!(vertices(&out.groups[0][0]), vec![1, 2, 3]);
+        assert_eq!(vertices(&out.groups[0][1]), vec![1, 3, 4]);
     }
 
     #[test]
@@ -56,7 +60,7 @@ v 0 2 0
 f 1 2 3 4 5";
 
         let out = parse(input);
-        assert_eq!(out.groups[0][0], vec![1, 2, 3, 4, 5]);
+        assert_eq!(vertices(&out.groups[0][0]), vec![1, 2, 3, 4, 5]);
     }
 
     #[test]
@@ -169,8 +173,8 @@ f 1 2 3 4 5";
         f 1 3 4";
 
         let output = parse(input);
-        assert_eq!(output.groups[0][0], vec![1, 2, 3]);
-        assert_eq!(output.groups[1][0], vec![1, 3, 4]);
+        assert_eq!(vertices(&output.groups[0][0]), vec![1, 2, 3]);
+        assert_eq!(vertices(&output.groups[1][0]), vec![1, 3, 4]);
     }
 
     #[test]
@@ -193,5 +197,82 @@ f 1 2 3 4 5";
         assert_eq!(object.children().len(), 2);
         assert_eq!(object.children()[0].children().len(), 1);
         assert_eq!(object.children()[1].children().len(), 1);
+    }
+
+    #[test]
+    fn obj_parser_should_parse_vertex_normals() {
+        let input = "vn 0 0 1
+        vn 0.707 0 -0.707
+        vn 1 2 3";
+
+        let output = parse(input);
+        assert_eq!(output.normals[0], Vector3D::new(0.0, 0.0, 1.0));
+        assert_eq!(output.normals[1], Vector3D::new(0.707, 0.0, -0.707));
+        assert_eq!(output.normals[2], Vector3D::new(1.0, 2.0, 3.0));
+    }
+
+    #[test]
+    fn obj_parser_should_parse_faces_with_texture_and_normal_indexes() {
+        let input = "v 0 1 0
+        v -1 0 0
+        v 1 0 0
+        
+        vn -1 0 0
+        vn 1 0 0
+        vn 0 1 0
+        
+        f 1//3 2//1 3//2
+        f 1/0/3 2/102/1 3/14/2";
+
+        let output = parse(input);
+        assert_eq!(
+            output.groups[0][0][0],
+            PolygonData {
+                vertex: 1,
+                texture_vertex: None,
+                normal: Some(3)
+            }
+        );
+        assert_eq!(
+            output.groups[0][0][1],
+            PolygonData {
+                vertex: 2,
+                texture_vertex: None,
+                normal: Some(1)
+            }
+        );
+        assert_eq!(
+            output.groups[0][0][2],
+            PolygonData {
+                vertex: 3,
+                texture_vertex: None,
+                normal: Some(2)
+            }
+        );
+
+        assert_eq!(
+            output.groups[0][1][0],
+            PolygonData {
+                vertex: 1,
+                texture_vertex: Some(0),
+                normal: Some(3)
+            }
+        );
+        assert_eq!(
+            output.groups[0][1][1],
+            PolygonData {
+                vertex: 2,
+                texture_vertex: Some(102),
+                normal: Some(1)
+            }
+        );
+        assert_eq!(
+            output.groups[0][1][2],
+            PolygonData {
+                vertex: 3,
+                texture_vertex: Some(14),
+                normal: Some(2)
+            }
+        );
     }
 }

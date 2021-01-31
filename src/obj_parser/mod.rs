@@ -1,30 +1,34 @@
-use crate::{Object, Point3D};
+use crate::{Object, Point3D, Vector3D};
 use std::borrow::Borrow;
 use std::convert::TryFrom;
+use std::str::SplitWhitespace;
 
 #[cfg(test)]
 mod tests;
 
 pub fn parse(input: &str) -> ObjData {
     let mut vertices = vec![];
+    let mut normals = vec![];
     let mut polys = vec![];
     let mut groups = vec![];
     let mut ignored_lines = 0;
 
-    input
-        .lines()
-        .map(|line| line.trim())
-        .for_each(|line| match line.chars().next() {
-            Some('v') => vertices.push(parse_vertex(line)),
-            Some('f') => polys.push(parse_polygon(line)),
-            Some('g') => {
+    input.lines().map(|line| line.trim()).for_each(|line| {
+        let mut parts = line.split_whitespace();
+
+        match parts.next() {
+            Some("v") => vertices.push(parse_vertex(parts)),
+            Some("f") => polys.push(parse_polygon(parts)),
+            Some("vn") => normals.push(parse_normal(parts)),
+            Some("g") => {
                 if !polys.is_empty() {
                     let polys = std::mem::replace(&mut polys, vec![]);
                     groups.push(polys);
                 }
             }
             _ => ignored_lines += 1,
-        });
+        }
+    });
 
     if !polys.is_empty() {
         groups.push(polys)
@@ -32,59 +36,82 @@ pub fn parse(input: &str) -> ObjData {
 
     ObjData {
         vertices,
+        normals,
         groups,
         ignored_lines,
     }
 }
 
-fn parse_vertex(line: &str) -> Point3D {
-    let parts = line.split(' ').collect::<Vec<_>>();
-
-    assert_eq!(
-        parts.len(),
-        4,
-        "unparseable vertex data (expected 4 parts)\n{}",
-        line
-    );
-
-    let get_float = |index: usize| {
-        parts[index].parse::<f64>().expect(&format!(
+fn parse_vertex(mut line_parts: SplitWhitespace) -> Point3D {
+    let mut next = || {
+        let part = line_parts.next().expect("missing line part");
+        part.parse::<f64>().expect(&format!(
             "unparseable vertex data (cannot parse component as f64)\n{}",
-            line
+            part
         ))
     };
 
-    Point3D::new(get_float(1), get_float(2), get_float(3))
+    Point3D::new(next(), next(), next())
 }
 
-fn parse_polygon(line: &str) -> Polygon {
-    let parts = line.split(' ').collect::<Vec<_>>();
+fn parse_polygon(line_parts: SplitWhitespace) -> Polygon {
+    fn parse_usize(s: &str) -> usize {
+        s.parse::<usize>().expect(&format!(
+            "Unparseable polygon data (cannot parse component as integer): {}",
+            s
+        ))
+    }
 
-    assert!(
-        parts.len() >= 4,
-        "unparseable face data (expected at least 4 parts)\n{}",
-        line
-    );
+    line_parts
+        .map(|part| {
+            let mut parts = part.split('/');
+            let vertex = parts
+                .next()
+                .expect(&format!("Invalid polygon data: {}", part));
+            let vertex = parse_usize(vertex);
 
-    parts
-        .into_iter()
-        .skip(1)
-        .map(|index| {
-            index.parse::<usize>().expect(&format!(
-                "unparseable vertex data (cannot parse component as f64)\n{}",
-                line
-            ))
+            let mut next = || parts.next().filter(|&s| !s.is_empty()).map(parse_usize);
+
+            let texture_vertex = next();
+            let normal = next();
+
+            PolygonData {
+                vertex,
+                texture_vertex,
+                normal,
+            }
         })
         .collect()
 }
 
-type Polygon = Vec<usize>;
+fn parse_normal(mut line_parts: SplitWhitespace) -> Vector3D {
+    let mut next = || {
+        let part = line_parts.next().expect("missing line part");
+        part.parse::<f64>().expect(&format!(
+            "unparseable normal data (cannot parse component as f64)\n{}",
+            part
+        ))
+    };
+
+    Vector3D::new(next(), next(), next())
+}
+
+type Polygon = Vec<PolygonData>;
 type Group = Vec<Polygon>;
+
+#[allow(unused)]
+#[derive(Debug, Eq, PartialEq)]
+struct PolygonData {
+    vertex: usize,
+    texture_vertex: Option<usize>,
+    normal: Option<usize>,
+}
 
 pub struct ObjData {
     vertices: Vec<Point3D>,
+    normals: Vec<Vector3D>,
     groups: Vec<Group>,
-    ignored_lines: usize,
+    pub ignored_lines: usize,
 }
 
 impl ObjData {
@@ -141,7 +168,7 @@ fn triangulate(face: &Polygon) -> Vec<[usize; 3]> {
     let mut out = vec![];
 
     for i in 2..face.len() {
-        out.push([face[0], face[i - 1], face[i]]);
+        out.push([face[0].vertex, face[i - 1].vertex, face[i].vertex]);
     }
 
     out
