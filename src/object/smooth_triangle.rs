@@ -1,7 +1,7 @@
 use crate::object::Shape;
 use crate::{Intersection, Object, Point3D, Ray, Vector3D};
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct SmoothTriangle {
     point1: Point3D,
     point2: Point3D,
@@ -80,6 +80,11 @@ impl Shape for SmoothTriangle {
 
     #[cfg(test)]
     fn vertices(&self) -> Vec<Point3D> {
-        unimplemented!()
+        vec![self.point1, self.point2, self.point3]
+    }
+
+    #[cfg(test)]
+    fn is_smoothed(&self) -> bool {
+        true
     }
 }

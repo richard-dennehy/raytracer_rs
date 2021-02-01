@@ -118,6 +118,9 @@ impl ObjData {
     fn vertex(&self, index: usize) -> Option<Point3D> {
         self.vertices.get(index - 1).copied()
     }
+    fn normal(&self, index: usize) -> Option<Vector3D> {
+        self.normals.get(index - 1).copied()
+    }
 }
 
 impl TryFrom<ObjData> for Object {
@@ -130,8 +133,9 @@ impl TryFrom<ObjData> for Object {
             for polygon in group {
                 for face in triangulate(polygon) {
                     let mut vertices = Vec::with_capacity(3);
+                    let mut normals = Vec::with_capacity(3);
 
-                    for &vert_index in face.iter() {
+                    for &(vert_index, normal_index) in face.iter() {
                         if let Some(vertex) = obj_data.vertex(vert_index) {
                             vertices.push(vertex)
                         } else {
@@ -140,9 +144,36 @@ impl TryFrom<ObjData> for Object {
                                 vert_index, polygon
                             ));
                         }
+
+                        if let Some(normal_index) = normal_index {
+                            if let Some(normal) = obj_data.normal(normal_index) {
+                                normals.push(normal)
+                            } else {
+                                return Err(format!(
+                                    "invalid normal reference {} in face {:?}",
+                                    normal_index, polygon
+                                ));
+                            }
+                        }
                     }
 
-                    triangles.push(Object::triangle(vertices[0], vertices[1], vertices[2]))
+                    if normals.is_empty() {
+                        triangles.push(Object::triangle(vertices[0], vertices[1], vertices[2]))
+                    } else if normals.len() == 3 {
+                        triangles.push(Object::smooth_triangle(
+                            vertices[0],
+                            vertices[1],
+                            vertices[2],
+                            normals[0],
+                            normals[1],
+                            normals[2],
+                        ))
+                    } else {
+                        return Err(format!(
+                            "Face {:?} must either have normals for all faces or no faces",
+                            polygon
+                        ));
+                    }
                 }
             }
 
@@ -164,11 +195,15 @@ impl TryFrom<ObjData> for Object {
     }
 }
 
-fn triangulate(face: &Polygon) -> Vec<[usize; 3]> {
+fn triangulate(face: &Polygon) -> Vec<[(usize, Option<usize>); 3]> {
     let mut out = vec![];
 
     for i in 2..face.len() {
-        out.push([face[0].vertex, face[i - 1].vertex, face[i].vertex]);
+        out.push([
+            (face[0].vertex, face[0].normal),
+            (face[i - 1].vertex, face[i - 1].normal),
+            (face[i].vertex, face[i].normal),
+        ]);
     }
 
     out

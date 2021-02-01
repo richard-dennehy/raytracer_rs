@@ -21,11 +21,9 @@ use smooth_triangle::SmoothTriangle;
 
 #[derive(Debug)]
 pub struct Object {
-    // FIXME material makes no sense on groups - move into `Shape`
     pub material: Material,
     transform: Matrix4D,
     kind: ObjectKind,
-    // FIXME id arguably makes no sense on groups - move into `Shape`
     id: u32,
 }
 
@@ -251,6 +249,13 @@ impl Object {
             _ => todo!("Group vertices not implemented"),
         }
     }
+
+    pub fn is_smoothed(&self) -> bool {
+        match &self.kind {
+            ObjectKind::Shape(shape) => shape.is_smoothed(),
+            _ => false,
+        }
+    }
 }
 
 pub trait Shape: Debug {
@@ -262,9 +267,13 @@ pub trait Shape: Debug {
     ) -> Vec<Intersection<'parent>>;
     #[cfg(test)]
     fn vertices(&self) -> Vec<Point3D>;
+    #[cfg(test)]
+    fn is_smoothed(&self) -> bool {
+        false
+    }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 struct Sphere;
 impl Shape for Sphere {
     fn object_normal_at(&self, point: Point3D, _uv: Option<(f64, f64)>) -> Vector3D {
@@ -297,7 +306,7 @@ impl Shape for Sphere {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 struct Plane;
 impl Shape for Plane {
     fn object_normal_at(&self, _: Point3D, _uv: Option<(f64, f64)>) -> Vector3D {
@@ -323,7 +332,7 @@ impl Shape for Plane {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 struct Cube;
 impl Shape for Cube {
     fn object_normal_at(&self, point: Point3D, _uv: Option<(f64, f64)>) -> Vector3D {

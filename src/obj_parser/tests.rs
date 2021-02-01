@@ -275,4 +275,35 @@ f 1 2 3 4 5";
             }
         );
     }
+
+    #[test]
+    fn converting_obj_data_should_convert_faces_with_normals_into_smooth_triangles() {
+        let input = "v 0 1 0
+        v -1 0 0
+        v 1 0 0
+        
+        vn -1 0 0
+        vn 1 0 0
+        vn 0 1 0
+        
+        f 1//3 2//1 3//2
+        f 1/0/3 2/102/1 3/14/2";
+
+        let output = parse(input);
+        let object: Result<Object, _> = output.try_into();
+        assert!(object.is_ok(), object.unwrap_err());
+        let object = object.unwrap();
+
+        assert!(object.children()[0].is_smoothed());
+        assert!(object.children()[1].is_smoothed());
+
+        assert_eq!(
+            object.children()[0].vertices(),
+            vec![
+                Point3D::new(0.0, 1.0, 0.0),
+                Point3D::new(-1.0, 0.0, 0.0),
+                Point3D::new(1.0, 0.0, 0.0)
+            ]
+        );
+    }
 }

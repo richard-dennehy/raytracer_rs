@@ -1,7 +1,7 @@
 use crate::object::Shape;
 use crate::{Intersection, Object, Point3D, Ray, Vector3D};
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Triangle {
     p1: Point3D,
     p2: Point3D,
