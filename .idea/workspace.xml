@@ -12,9 +12,15 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="convert faces with normals into smooth triangles">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="example rendering wavefront file">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/obj_parser/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/obj_parser/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/cone.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cone.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/cylinder.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cylinder.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/smooth_triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/smooth_triangle.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/triangle.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,7 +84,12 @@
       <command value="cargo test" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.run (release)">
+  <component name="RunManager" selected="Cargo.test">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -169,11 +180,6 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.Test object::tests::group_tests::group_transforms_should_apply_to_child_normals" />
@@ -184,8 +190,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.Test object::tests::smooth_triangles::the_normal_of_a_smooth_triangle_should_be_based_off_the_uv_of_the_intersection" />
         <item itemvalue="Cargo.Test object::tests::smooth_triangles::intersecting_a_smooth_triangle_should_populate_uv" />
         <item itemvalue="Cargo.Test object::tests::group_tests::group_transforms_should_apply_to_child_normals" />
@@ -268,14 +274,8 @@
       <workItem from="1612093882676" duration="3510000" />
       <workItem from="1612182756872" duration="2362000" />
       <workItem from="1612290960762" duration="11000" />
-      <workItem from="1612290985363" duration="1508000" />
-    </task>
-    <task id="LOCAL-00018" summary="ray casting example">
-      <created>1608237624969</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1608237624969</updated>
+      <workItem from="1612290985363" duration="1805000" />
+      <workItem from="1612292805840" duration="2082000" />
     </task>
     <task id="LOCAL-00019" summary="updated ray casting example">
       <created>1608381210214</created>
@@ -613,7 +613,14 @@
       <option name="project" value="LOCAL" />
       <updated>1612185117235</updated>
     </task>
-    <option name="localTasksCounter" value="67" />
+    <task id="LOCAL-00067" summary="example rendering wavefront file">
+      <created>1612292509389</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1612292509389</updated>
+    </task>
+    <option name="localTasksCounter" value="68" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -629,7 +636,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP implement cylinders" />
     <MESSAGE value="WIP test cylinders" />
     <MESSAGE value="implemented cylinders" />
     <MESSAGE value="example scene with capped cylinder and cube" />
@@ -654,7 +660,8 @@
     <MESSAGE value="interpolate smooth triangle normals" />
     <MESSAGE value="parse faces with texture and normal data" />
     <MESSAGE value="convert faces with normals into smooth triangles" />
-    <option name="LAST_COMMIT_MESSAGE" value="convert faces with normals into smooth triangles" />
+    <MESSAGE value="example rendering wavefront file" />
+    <option name="LAST_COMMIT_MESSAGE" value="example rendering wavefront file" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

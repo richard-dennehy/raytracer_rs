@@ -64,9 +64,4 @@ impl Shape for Triangle {
         let t = f * self.edge2.dot(origin_cross_e1);
         vec![Intersection::with_uv(t, parent, u, v)]
     }
-
-    #[cfg(test)]
-    fn vertices(&self) -> Vec<Point3D> {
-        vec![self.p1, self.p2, self.p3]
-    }
 }

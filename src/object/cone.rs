@@ -100,11 +100,6 @@ impl Shape for Cone {
 
         ts
     }
-
-    #[cfg(test)]
-    fn vertices(&self) -> Vec<Point3D> {
-        unimplemented!()
-    }
 }
 
 pub struct ConeBuilder {
@@ -138,7 +133,7 @@ impl ConeBuilder {
     }
 
     pub fn build(self) -> Object {
-        Object::shape(Box::new(Cone {
+        Object::from_shape(Box::new(Cone {
             min_y: self.min_y,
             max_y: self.max_y,
             capped: self.capped,

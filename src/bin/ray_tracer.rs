@@ -10,8 +10,8 @@ use std::fs;
 use std::num::NonZeroU16;
 use std::time::Instant;
 
-const CAMERA_WIDTH: NonZeroU16 = nonzero!(400u16);
-const CAMERA_HEIGHT: NonZeroU16 = nonzero!(300u16);
+const CAMERA_WIDTH: NonZeroU16 = nonzero!(800u16);
+const CAMERA_HEIGHT: NonZeroU16 = nonzero!(600u16);
 
 fn main() -> Result<(), String> {
     let timer = Instant::now();
@@ -24,6 +24,8 @@ fn main() -> Result<(), String> {
 
     let wavefront_file = fs::read_to_string("susan.obj").map_err(|e| e.to_string())?;
     let susan: Object = obj_parser::parse(&wavefront_file).try_into()?;
+    println!("Imported wavefront in {:.2?}", timer.elapsed());
+
     let susan = susan.with_transform(
         Matrix4D::rotation_x(PI / 2.0)
             .with_rotation_z(PI)

@@ -4,8 +4,14 @@ mod unit_tests {
     use super::*;
     use std::convert::TryInto;
 
-    fn vertices(polygons: &Vec<PolygonData>) -> Vec<usize> {
-        polygons.iter().map(|p| p.vertex).collect::<Vec<_>>()
+    trait VerticesExt {
+        fn vertices(&self) -> Vec<usize>;
+    }
+
+    impl VerticesExt for Vec<PolygonData> {
+        fn vertices(&self) -> Vec<usize> {
+            self.iter().map(|p| p.vertex).collect::<Vec<_>>()
+        }
     }
 
     #[test]
@@ -45,8 +51,8 @@ and came back the previous night.";
         f 1 3 4";
 
         let out = parse(input);
-        assert_eq!(vertices(&out.groups[0][0]), vec![1, 2, 3]);
-        assert_eq!(vertices(&out.groups[0][1]), vec![1, 3, 4]);
+        assert_eq!(out.groups[0][0].vertices(), vec![1, 2, 3]);
+        assert_eq!(out.groups[0][1].vertices(), vec![1, 3, 4]);
     }
 
     #[test]
@@ -60,7 +66,7 @@ v 0 2 0
 f 1 2 3 4 5";
 
         let out = parse(input);
-        assert_eq!(vertices(&out.groups[0][0]), vec![1, 2, 3, 4, 5]);
+        assert_eq!(out.groups[0][0].vertices(), vec![1, 2, 3, 4, 5]);
     }
 
     #[test]
@@ -78,30 +84,31 @@ f 1 2 3 4 5";
         assert!(object.is_ok(), object.unwrap_err());
         let object = object.unwrap();
 
+        // this is moderately disgusting, but Shapes are totally opaque at runtime, so this seems to be the least worst way to introspect the fields
         assert_eq!(
-            object.children()[0].vertices()[0],
-            Point3D::new(-1.0, 1.0, 0.0)
-        );
-        assert_eq!(
-            object.children()[0].vertices()[1],
-            Point3D::new(1.0, 0.0, 0.0)
-        );
-        assert_eq!(
-            object.children()[0].vertices()[2],
-            Point3D::new(1.0, 0.0, 0.0)
+            format!("{:?}", object.children()[0].shape()),
+            "Triangle { \
+            p1: Point3D(-1.0, 1.0, 0.0), \
+            p2: Point3D(1.0, 0.0, 0.0), \
+            p3: Point3D(1.0, 0.0, 0.0), \
+            edge1: Vector3D(2.0, -1.0, 0.0), \
+            edge2: Vector3D(0.0, 0.0, 0.0), \
+            normal: Vector3D(0.0, 0.0, 0.0) \
+            }"
+            .to_string()
         );
 
         assert_eq!(
-            object.children()[1].vertices()[0],
-            Point3D::new(-1.0, 1.0, 0.0)
-        );
-        assert_eq!(
-            object.children()[1].vertices()[1],
-            Point3D::new(1.0, 0.0, 0.0)
-        );
-        assert_eq!(
-            object.children()[1].vertices()[2],
-            Point3D::new(1.0, 1.0, 0.0)
+            format!("{:?}", object.children()[1].shape()),
+            "Triangle { \
+            p1: Point3D(-1.0, 1.0, 0.0), \
+            p2: Point3D(1.0, 0.0, 0.0), \
+            p3: Point3D(1.0, 1.0, 0.0), \
+            edge1: Vector3D(2.0, -1.0, 0.0), \
+            edge2: Vector3D(0.0, 1.0, 0.0), \
+            normal: Vector3D(0.0, 0.0, -1.0) \
+            }"
+            .to_string()
         );
     }
 
@@ -121,42 +128,42 @@ f 1 2 3 4 5";
         let object = object.unwrap();
 
         assert_eq!(
-            object.children()[0].vertices()[0],
-            Point3D::new(-1.0, 1.0, 0.0)
-        );
-        assert_eq!(
-            object.children()[0].vertices()[1],
-            Point3D::new(-1.0, 0.0, 0.0)
-        );
-        assert_eq!(
-            object.children()[0].vertices()[2],
-            Point3D::new(1.0, 0.0, 0.0)
-        );
-
-        assert_eq!(
-            object.children()[1].vertices()[0],
-            Point3D::new(-1.0, 1.0, 0.0)
-        );
-        assert_eq!(
-            object.children()[1].vertices()[1],
-            Point3D::new(1.0, 0.0, 0.0)
-        );
-        assert_eq!(
-            object.children()[1].vertices()[2],
-            Point3D::new(1.0, 1.0, 0.0)
+            format!("{:?}", object.children()[0].shape()),
+            "Triangle { \
+            p1: Point3D(-1.0, 1.0, 0.0), \
+            p2: Point3D(-1.0, 0.0, 0.0), \
+            p3: Point3D(1.0, 0.0, 0.0), \
+            edge1: Vector3D(0.0, -1.0, 0.0), \
+            edge2: Vector3D(2.0, 0.0, 0.0), \
+            normal: Vector3D(0.0, 0.0, -1.0) \
+            }"
+            .to_string()
         );
 
         assert_eq!(
-            object.children()[2].vertices()[0],
-            Point3D::new(-1.0, 1.0, 0.0)
+            format!("{:?}", object.children()[1].shape()),
+            "Triangle { \
+            p1: Point3D(-1.0, 1.0, 0.0), \
+            p2: Point3D(1.0, 0.0, 0.0), \
+            p3: Point3D(1.0, 1.0, 0.0), \
+            edge1: Vector3D(2.0, -1.0, 0.0), \
+            edge2: Vector3D(0.0, 1.0, 0.0), \
+            normal: Vector3D(0.0, 0.0, -1.0) \
+            }"
+            .to_string()
         );
+
         assert_eq!(
-            object.children()[2].vertices()[1],
-            Point3D::new(1.0, 1.0, 0.0)
-        );
-        assert_eq!(
-            object.children()[2].vertices()[2],
-            Point3D::new(0.0, 2.0, 0.0)
+            format!("{:?}", object.children()[2].shape()),
+            "Triangle { \
+             p1: Point3D(-1.0, 1.0, 0.0), \
+             p2: Point3D(1.0, 1.0, 0.0), \
+             p3: Point3D(0.0, 2.0, 0.0), \
+             edge1: Vector3D(2.0, 0.0, 0.0), \
+             edge2: Vector3D(-1.0, 1.0, 0.0), \
+             normal: Vector3D(0.0, 0.0, -1.0) \
+             }"
+            .to_string()
         );
     }
 
@@ -173,8 +180,8 @@ f 1 2 3 4 5";
         f 1 3 4";
 
         let output = parse(input);
-        assert_eq!(vertices(&output.groups[0][0]), vec![1, 2, 3]);
-        assert_eq!(vertices(&output.groups[1][0]), vec![1, 3, 4]);
+        assert_eq!(output.groups[0][0].vertices(), vec![1, 2, 3]);
+        assert_eq!(output.groups[1][0].vertices(), vec![1, 3, 4]);
     }
 
     #[test]
@@ -294,16 +301,34 @@ f 1 2 3 4 5";
         assert!(object.is_ok(), object.unwrap_err());
         let object = object.unwrap();
 
-        assert!(object.children()[0].is_smoothed());
-        assert!(object.children()[1].is_smoothed());
+        assert_eq!(
+            format!("{:?}", object.children()[0].shape()),
+            "SmoothTriangle { \
+            point1: Point3D(0.0, 1.0, 0.0), \
+            point2: Point3D(-1.0, 0.0, 0.0), \
+            point3: Point3D(1.0, 0.0, 0.0), \
+            normal1: Vector3D(0.0, 1.0, 0.0), \
+            normal2: Vector3D(-1.0, 0.0, 0.0), \
+            normal3: Vector3D(1.0, 0.0, 0.0), \
+            edge1: Vector3D(-1.0, -1.0, 0.0), \
+            edge2: Vector3D(1.0, -1.0, 0.0) \
+            }"
+            .to_string()
+        );
 
         assert_eq!(
-            object.children()[0].vertices(),
-            vec![
-                Point3D::new(0.0, 1.0, 0.0),
-                Point3D::new(-1.0, 0.0, 0.0),
-                Point3D::new(1.0, 0.0, 0.0)
-            ]
+            format!("{:?}", object.children()[1].shape()),
+            "SmoothTriangle { \
+            point1: Point3D(0.0, 1.0, 0.0), \
+            point2: Point3D(-1.0, 0.0, 0.0), \
+            point3: Point3D(1.0, 0.0, 0.0), \
+            normal1: Vector3D(0.0, 1.0, 0.0), \
+            normal2: Vector3D(-1.0, 0.0, 0.0), \
+            normal3: Vector3D(1.0, 0.0, 0.0), \
+            edge1: Vector3D(-1.0, -1.0, 0.0), \
+            edge2: Vector3D(1.0, -1.0, 0.0) \
+            }"
+            .to_string()
         );
     }
 }

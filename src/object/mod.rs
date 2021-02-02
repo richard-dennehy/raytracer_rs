@@ -38,15 +38,15 @@ static NEXT_ID: AtomicU32 = AtomicU32::new(0);
 
 impl Object {
     pub fn sphere() -> Self {
-        Self::shape(Box::new(Sphere))
+        Self::from_shape(Box::new(Sphere))
     }
 
     pub fn plane() -> Self {
-        Self::shape(Box::new(Plane))
+        Self::from_shape(Box::new(Plane))
     }
 
     pub fn cube() -> Self {
-        Self::shape(Box::new(Cube))
+        Self::from_shape(Box::new(Cube))
     }
 
     pub fn cylinder() -> CylinderBuilder {
@@ -58,7 +58,7 @@ impl Object {
     }
 
     pub fn triangle(point1: Point3D, point2: Point3D, point3: Point3D) -> Self {
-        Self::shape(Box::new(Triangle::new(point1, point2, point3)))
+        Self::from_shape(Box::new(Triangle::new(point1, point2, point3)))
     }
 
     pub fn smooth_triangle(
@@ -69,7 +69,7 @@ impl Object {
         normal2: Vector3D,
         normal3: Vector3D,
     ) -> Self {
-        Self::shape(Box::new(SmoothTriangle::new(
+        Self::from_shape(Box::new(SmoothTriangle::new(
             point1, point2, point3, normal1, normal2, normal3,
         )))
     }
@@ -83,7 +83,7 @@ impl Object {
         }
     }
 
-    fn shape(shape: Box<dyn Shape>) -> Self {
+    fn from_shape(shape: Box<dyn Shape>) -> Self {
         Object {
             transform: Matrix4D::identity(),
             material: Material::default(),
@@ -243,17 +243,11 @@ impl Object {
         }
     }
 
-    pub fn vertices(&self) -> Vec<Point3D> {
-        match &self.kind {
-            ObjectKind::Shape(shape) => shape.vertices(),
-            _ => todo!("Group vertices not implemented"),
-        }
-    }
-
-    pub fn is_smoothed(&self) -> bool {
-        match &self.kind {
-            ObjectKind::Shape(shape) => shape.is_smoothed(),
-            _ => false,
+    pub fn shape(&self) -> &Box<dyn Shape> {
+        if let ObjectKind::Shape(shape) = &self.kind {
+            shape
+        } else {
+            panic!("Object is a group, not a shape")
         }
     }
 }
@@ -265,12 +259,6 @@ pub trait Shape: Debug {
         parent: &'parent Object,
         with: Ray,
     ) -> Vec<Intersection<'parent>>;
-    #[cfg(test)]
-    fn vertices(&self) -> Vec<Point3D>;
-    #[cfg(test)]
-    fn is_smoothed(&self) -> bool {
-        false
-    }
 }
 
 #[derive(Debug, PartialEq)]
@@ -299,11 +287,6 @@ impl Shape for Sphere {
             vec![]
         }
     }
-
-    #[cfg(test)]
-    fn vertices(&self) -> Vec<Point3D> {
-        unimplemented!()
-    }
 }
 
 #[derive(Debug, PartialEq)]
@@ -324,11 +307,6 @@ impl Shape for Plane {
 
         let t = -with.origin.y() / with.direction.y();
         vec![Intersection::new(t, parent)]
-    }
-
-    #[cfg(test)]
-    fn vertices(&self) -> Vec<Point3D> {
-        unimplemented!()
     }
 }
 
@@ -379,10 +357,5 @@ impl Shape for Cube {
                 Intersection::new(t_max, parent),
             ]
         }
-    }
-
-    #[cfg(test)]
-    fn vertices(&self) -> Vec<Point3D> {
-        unimplemented!()
     }
 }

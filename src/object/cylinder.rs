@@ -88,11 +88,6 @@ impl Shape for Cylinder {
 
         ts
     }
-
-    #[cfg(test)]
-    fn vertices(&self) -> Vec<Point3D> {
-        unimplemented!()
-    }
 }
 
 pub struct CylinderBuilder {
@@ -126,7 +121,7 @@ impl CylinderBuilder {
     }
 
     pub fn build(self) -> Object {
-        Object::shape(Box::new(Cylinder {
+        Object::from_shape(Box::new(Cylinder {
             min_y: self.min_y,
             max_y: self.max_y,
             capped: self.capped,

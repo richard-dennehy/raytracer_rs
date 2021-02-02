@@ -77,14 +77,4 @@ impl Shape for SmoothTriangle {
         let t = f * self.edge2.dot(origin_cross_e1);
         vec![Intersection::with_uv(t, parent, u, v)]
     }
-
-    #[cfg(test)]
-    fn vertices(&self) -> Vec<Point3D> {
-        vec![self.point1, self.point2, self.point3]
-    }
-
-    #[cfg(test)]
-    fn is_smoothed(&self) -> bool {
-        true
-    }
 }
