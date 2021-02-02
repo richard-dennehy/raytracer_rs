@@ -12,13 +12,9 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="parse faces with texture and normal data">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="convert faces with normals into smooth triangles">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/obj_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/obj_parser/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/obj_parser/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/obj_parser/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/smooth_triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/smooth_triangle.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/triangle.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,11 +78,12 @@
       <command value="cargo test" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.test">
+  <component name="RunManager" selected="Cargo.run (release)">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
       <option name="allFeatures" value="false" />
       <option name="emulateTerminal" value="false" />
       <option name="backtrace" value="SHORT" />
@@ -101,6 +98,7 @@
       <option name="command" value="test --package ray_tracer --lib object::tests::group_tests::group_transforms_should_apply_to_child_normals -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
       <option name="allFeatures" value="false" />
       <option name="emulateTerminal" value="false" />
       <option name="backtrace" value="SHORT" />
@@ -115,6 +113,7 @@
       <option name="command" value="test --package ray_tracer --lib object::tests::smooth_triangles::intersecting_a_smooth_triangle_should_populate_uv -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
       <option name="allFeatures" value="false" />
       <option name="emulateTerminal" value="false" />
       <option name="backtrace" value="SHORT" />
@@ -129,6 +128,7 @@
       <option name="command" value="test --package ray_tracer --lib object::tests::smooth_triangles::the_normal_of_a_smooth_triangle_should_be_based_off_the_uv_of_the_intersection -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
       <option name="allFeatures" value="false" />
       <option name="emulateTerminal" value="false" />
       <option name="backtrace" value="SHORT" />
@@ -143,6 +143,7 @@
       <option name="command" value="run --release" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
       <option name="allFeatures" value="false" />
       <option name="emulateTerminal" value="false" />
       <option name="backtrace" value="SHORT" />
@@ -157,6 +158,7 @@
       <option name="command" value="test" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
       <option name="allFeatures" value="false" />
       <option name="emulateTerminal" value="false" />
       <option name="backtrace" value="SHORT" />
@@ -174,19 +176,19 @@
     </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
-      <item itemvalue="Cargo.run (release)" />
-      <item itemvalue="Cargo.test" />
       <item itemvalue="Cargo.Test object::tests::group_tests::group_transforms_should_apply_to_child_normals" />
       <item itemvalue="Cargo.Test object::tests::smooth_triangles::intersecting_a_smooth_triangle_should_populate_uv" />
       <item itemvalue="Cargo.Test object::tests::smooth_triangles::the_normal_of_a_smooth_triangle_should_be_based_off_the_uv_of_the_intersection" />
+      <item itemvalue="Cargo.run (release)" />
+      <item itemvalue="Cargo.test" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.Test object::tests::smooth_triangles::the_normal_of_a_smooth_triangle_should_be_based_off_the_uv_of_the_intersection" />
         <item itemvalue="Cargo.Test object::tests::smooth_triangles::intersecting_a_smooth_triangle_should_populate_uv" />
-        <item itemvalue="Cargo.test" />
-        <item itemvalue="Cargo.run (release)" />
+        <item itemvalue="Cargo.Test object::tests::group_tests::group_transforms_should_apply_to_child_normals" />
       </list>
     </recent_temporary>
   </component>
@@ -264,14 +266,9 @@
       <workItem from="1611945793796" duration="2655000" />
       <workItem from="1612012194141" duration="3408000" />
       <workItem from="1612093882676" duration="3510000" />
-      <workItem from="1612182756872" duration="2287000" />
-    </task>
-    <task id="LOCAL-00017" summary="add ray and sphere translations">
-      <created>1608236606026</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1608236606026</updated>
+      <workItem from="1612182756872" duration="2362000" />
+      <workItem from="1612290960762" duration="11000" />
+      <workItem from="1612290985363" duration="1508000" />
     </task>
     <task id="LOCAL-00018" summary="ray casting example">
       <created>1608237624969</created>
@@ -609,7 +606,14 @@
       <option name="project" value="LOCAL" />
       <updated>1612097700219</updated>
     </task>
-    <option name="localTasksCounter" value="66" />
+    <task id="LOCAL-00066" summary="convert faces with normals into smooth triangles">
+      <created>1612185117234</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1612185117235</updated>
+    </task>
+    <option name="localTasksCounter" value="67" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -625,7 +629,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="implement cubes" />
     <MESSAGE value="WIP implement cylinders" />
     <MESSAGE value="WIP test cylinders" />
     <MESSAGE value="implemented cylinders" />
@@ -650,7 +653,8 @@
     <MESSAGE value="WIP add UV coordinates to intersections" />
     <MESSAGE value="interpolate smooth triangle normals" />
     <MESSAGE value="parse faces with texture and normal data" />
-    <option name="LAST_COMMIT_MESSAGE" value="parse faces with texture and normal data" />
+    <MESSAGE value="convert faces with normals into smooth triangles" />
+    <option name="LAST_COMMIT_MESSAGE" value="convert faces with normals into smooth triangles" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
