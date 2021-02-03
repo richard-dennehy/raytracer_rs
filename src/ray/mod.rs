@@ -1,4 +1,5 @@
 use crate::{Colour, Matrix4D, Object, Point3D, PointLight, Vector3D};
+use std::vec::IntoIter;
 
 #[cfg(test)]
 mod tests;
@@ -220,7 +221,11 @@ impl<'scene> Intersections<'scene> {
         self.0.get(index)
     }
 
-    pub fn sort(&mut self) {
+    pub fn into_iter(self) -> IntoIter<Intersection<'scene>> {
+        self.0.into_iter()
+    }
+
+    fn sort(&mut self) {
         self.0.sort_unstable_by(|first, second| {
             f64::partial_cmp(&first.t, &second.t).expect("a `t` value should never be NaN")
         })

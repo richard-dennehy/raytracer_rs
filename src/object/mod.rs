@@ -31,6 +31,30 @@ pub struct Object {
 enum ObjectKind {
     Shape(Box<dyn Shape>),
     Group(Vec<Object>),
+    Csg {
+        left: Box<Object>,
+        right: Box<Object>,
+        operator: CsgOperator,
+    },
+}
+
+#[derive(Debug, Copy, Clone)]
+enum CsgOperator {
+    Intersection,
+    Union,
+}
+
+impl CsgOperator {
+    fn is_intersection(&self, intersected_left: bool, in_left: bool, in_right: bool) -> bool {
+        match self {
+            CsgOperator::Intersection => {
+                (intersected_left && in_right) || (!intersected_left && in_left)
+            }
+            CsgOperator::Union => {
+                (intersected_left && !in_right) || (!intersected_left && !in_left)
+            }
+        }
+    }
 }
 
 // if you need more than 4 billion objects, you've got bigger problems than integer overflow
@@ -104,7 +128,8 @@ impl Object {
         let object_point = Point3D::new(x, y, z);
         let object_normal = match &self.kind {
             ObjectKind::Shape(shape) => shape.object_normal_at(object_point, uv),
-            ObjectKind::Group(_) => panic!("should never need to calculate normals on Group object as rays should only intersect Shapes")
+            ObjectKind::Group(_) => unreachable!("should never need to calculate normals on Group object as rays should only intersect Shapes"),
+            ObjectKind::Csg { .. } => unreachable!("Rays cannot intersect CSGs directly")
         };
 
         // deliberately ignoring `w` as a translation Matrix may affect `w` so it's no longer 0
@@ -197,6 +222,35 @@ impl Object {
                 .iter()
                 .map(|child| child.intersect(with))
                 .fold(Intersections::empty(), |acc, next| acc.join(next)),
+            ObjectKind::Csg {
+                left,
+                right,
+                operator,
+            } => {
+                let left_intersections = left.intersect(&with);
+                let right_intersections = right.intersect(&with);
+
+                let intersections = left_intersections.join(right_intersections);
+
+                let (mut in_left, mut in_right) = (false, false);
+                let mut out = Intersections::empty();
+
+                for intersection in intersections.into_iter() {
+                    let left_hit = left.contains(intersection.with.id);
+
+                    if operator.is_intersection(left_hit, in_left, in_right) {
+                        out.push(intersection)
+                    }
+
+                    if left_hit {
+                        in_left = !in_left;
+                    } else {
+                        in_right = !in_right;
+                    }
+                }
+
+                out
+            }
         }
     }
 
@@ -230,6 +284,14 @@ impl Object {
 
     pub fn id(&self) -> u32 {
         self.id
+    }
+
+    fn contains(&self, id: u32) -> bool {
+        match &self.kind {
+            ObjectKind::Shape(_) => self.id == id,
+            ObjectKind::Group(children) => children.iter().any(|child| child.contains(id)),
+            ObjectKind::Csg { left, right, .. } => left.contains(id) || right.contains(id),
+        }
     }
 }
 

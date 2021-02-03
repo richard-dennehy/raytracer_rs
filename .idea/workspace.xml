@@ -12,15 +12,10 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="example rendering wavefront file">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="remove test functions from shape trait">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/obj_parser/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/obj_parser/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/cone.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cone.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/cylinder.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cylinder.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/smooth_triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/smooth_triangle.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/triangle.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,11 +80,6 @@
     </option>
   </component>
   <component name="RunManager" selected="Cargo.test">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -275,21 +265,8 @@
       <workItem from="1612182756872" duration="2362000" />
       <workItem from="1612290960762" duration="11000" />
       <workItem from="1612290985363" duration="1805000" />
-      <workItem from="1612292805840" duration="2082000" />
-    </task>
-    <task id="LOCAL-00019" summary="updated ray casting example">
-      <created>1608381210214</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1608381210214</updated>
-    </task>
-    <task id="LOCAL-00020" summary="sphere normals">
-      <created>1608383171613</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1608383171613</updated>
+      <workItem from="1612292805840" duration="2167000" />
+      <workItem from="1612380143574" duration="3485000" />
     </task>
     <task id="LOCAL-00021" summary="material lighting">
       <created>1608391833695</created>
@@ -620,7 +597,21 @@
       <option name="project" value="LOCAL" />
       <updated>1612292509389</updated>
     </task>
-    <option name="localTasksCounter" value="68" />
+    <task id="LOCAL-00068" summary="remove test functions from shape trait">
+      <created>1612295324443</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1612295324443</updated>
+    </task>
+    <task id="LOCAL-00069" summary="remove test functions from shape trait">
+      <created>1612295385066</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1612295385066</updated>
+    </task>
+    <option name="localTasksCounter" value="70" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -636,7 +627,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP test cylinders" />
     <MESSAGE value="implemented cylinders" />
     <MESSAGE value="example scene with capped cylinder and cube" />
     <MESSAGE value="output PNG file instead of PPM" />
@@ -661,7 +651,8 @@
     <MESSAGE value="parse faces with texture and normal data" />
     <MESSAGE value="convert faces with normals into smooth triangles" />
     <MESSAGE value="example rendering wavefront file" />
-    <option name="LAST_COMMIT_MESSAGE" value="example rendering wavefront file" />
+    <MESSAGE value="remove test functions from shape trait" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove test functions from shape trait" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -678,7 +669,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/object/mod.rs</url>
-          <line>110</line>
+          <line>117</line>
           <option name="timeStamp" value="16" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
