@@ -41,17 +41,26 @@ enum ObjectKind {
 #[derive(Debug, Copy, Clone)]
 enum CsgOperator {
     Intersection,
+    Subtract,
     Union,
 }
 
 impl CsgOperator {
-    fn is_intersection(&self, intersected_left: bool, in_left: bool, in_right: bool) -> bool {
+    fn is_intersection(
+        &self,
+        intersected_left: bool,
+        inside_left: bool,
+        inside_right: bool,
+    ) -> bool {
         match self {
             CsgOperator::Intersection => {
-                (intersected_left && in_right) || (!intersected_left && in_left)
+                (intersected_left && inside_right) || (!intersected_left && inside_left)
             }
             CsgOperator::Union => {
-                (intersected_left && !in_right) || (!intersected_left && !in_left)
+                (intersected_left && !inside_right) || (!intersected_left && !inside_left)
+            }
+            CsgOperator::Subtract => {
+                (intersected_left && !inside_right) || (!intersected_left && inside_left)
             }
         }
     }
@@ -103,6 +112,45 @@ impl Object {
             transform: Matrix4D::identity(),
             material: Material::default(),
             kind: ObjectKind::Group(children),
+            id: NEXT_ID.fetch_add(1, Ordering::SeqCst),
+        }
+    }
+
+    pub fn csg_union(left: Object, right: Object) -> Self {
+        Object {
+            transform: Matrix4D::identity(),
+            material: Material::default(),
+            kind: ObjectKind::Csg {
+                left: Box::new(left),
+                right: Box::new(right),
+                operator: CsgOperator::Union,
+            },
+            id: NEXT_ID.fetch_add(1, Ordering::SeqCst),
+        }
+    }
+
+    pub fn csg_intersection(left: Object, right: Object) -> Self {
+        Object {
+            transform: Matrix4D::identity(),
+            material: Material::default(),
+            kind: ObjectKind::Csg {
+                left: Box::new(left),
+                right: Box::new(right),
+                operator: CsgOperator::Intersection,
+            },
+            id: NEXT_ID.fetch_add(1, Ordering::SeqCst),
+        }
+    }
+
+    pub fn csg_difference(left: Object, right: Object) -> Self {
+        Object {
+            transform: Matrix4D::identity(),
+            material: Material::default(),
+            kind: ObjectKind::Csg {
+                left: Box::new(left),
+                right: Box::new(right),
+                operator: CsgOperator::Subtract,
+            },
             id: NEXT_ID.fetch_add(1, Ordering::SeqCst),
         }
     }

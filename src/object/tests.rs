@@ -1046,3 +1046,81 @@ mod smooth_triangles {
         );
     }
 }
+
+mod constructive_solid_geometry {
+    use super::*;
+
+    #[test]
+    fn a_ray_that_misses_both_objects_in_a_csg_should_not_intersect() {
+        let csg = Object::csg_union(Object::sphere(), Object::cube());
+        let ray = Ray::new(Point3D::new(0.0, 2.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+
+        assert!(csg.intersect(&ray).is_empty());
+    }
+
+    #[test]
+    fn a_ray_that_intersects_overlapping_objects_in_a_csg_union_should_intersect_at_the_edge_of_each_object(
+    ) {
+        let left = Object::sphere();
+        let right = Object::sphere().with_transform(Matrix4D::translation(0.0, 0.0, 0.5));
+
+        let left_id = left.id();
+        let right_id = right.id();
+
+        let csg = Object::csg_union(left, right);
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+
+        let intersections = csg.intersect(&ray);
+        assert_eq!(intersections.len(), 2);
+
+        assert_eq!(intersections.underlying()[0].t, 4.0);
+        assert_eq!(intersections.underlying()[0].with.id, left_id);
+
+        assert_eq!(intersections.underlying()[1].t, 6.5);
+        assert_eq!(intersections.underlying()[1].with.id, right_id);
+    }
+
+    #[test]
+    fn a_ray_that_intersects_overlapping_objects_in_a_csg_intersection_should_intersect_at_the_edges_of_the_overlap(
+    ) {
+        let left = Object::sphere();
+        let right = Object::sphere().with_transform(Matrix4D::translation(0.0, 0.0, 0.5));
+
+        let left_id = left.id();
+        let right_id = right.id();
+
+        let csg = Object::csg_intersection(left, right);
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+
+        let intersections = csg.intersect(&ray);
+        assert_eq!(intersections.len(), 2);
+
+        assert_eq!(intersections.underlying()[0].t, 4.5);
+        assert_eq!(intersections.underlying()[0].with.id, right_id);
+
+        assert_eq!(intersections.underlying()[1].t, 6.0);
+        assert_eq!(intersections.underlying()[1].with.id, left_id);
+    }
+
+    #[test]
+    fn a_ray_that_intersects_overlapping_objects_in_a_csg_subtraction_should_intersect_exclusively_inside_the_left_object(
+    ) {
+        let left = Object::sphere();
+        let right = Object::sphere().with_transform(Matrix4D::translation(0.0, 0.0, 0.5));
+
+        let left_id = left.id();
+        let right_id = right.id();
+
+        let csg = Object::csg_difference(left, right);
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+
+        let intersections = csg.intersect(&ray);
+        assert_eq!(intersections.len(), 2);
+
+        assert_eq!(intersections.underlying()[0].t, 4.0);
+        assert_eq!(intersections.underlying()[0].with.id, left_id);
+
+        assert_eq!(intersections.underlying()[1].t, 4.5);
+        assert_eq!(intersections.underlying()[1].with.id, right_id);
+    }
+}
