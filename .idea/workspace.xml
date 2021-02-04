@@ -12,7 +12,7 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP CSG">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="CSG Union, Intersection, and Difference operations">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
@@ -272,14 +272,7 @@
       <workItem from="1612290985363" duration="1805000" />
       <workItem from="1612292805840" duration="2167000" />
       <workItem from="1612380143574" duration="3491000" />
-      <workItem from="1612468770544" duration="1748000" />
-    </task>
-    <task id="LOCAL-00022" summary="updated example to use lighting">
-      <created>1608471154947</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1608471154947</updated>
+      <workItem from="1612468770544" duration="3672000" />
     </task>
     <task id="LOCAL-00023" summary="moved apply lighting function to sphere">
       <created>1608471861280</created>
@@ -617,7 +610,14 @@
       <option name="project" value="LOCAL" />
       <updated>1612385654988</updated>
     </task>
-    <option name="localTasksCounter" value="71" />
+    <task id="LOCAL-00071" summary="CSG Union, Intersection, and Difference operations">
+      <created>1612470541350</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1612470541351</updated>
+    </task>
+    <option name="localTasksCounter" value="72" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -633,7 +633,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="example scene with capped cylinder and cube" />
     <MESSAGE value="output PNG file instead of PPM" />
     <MESSAGE value="tweaked example lighting setup" />
     <MESSAGE value="WIP double-napped cones" />
@@ -658,7 +657,8 @@
     <MESSAGE value="example rendering wavefront file" />
     <MESSAGE value="remove test functions from shape trait" />
     <MESSAGE value="WIP CSG" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP CSG" />
+    <MESSAGE value="CSG Union, Intersection, and Difference operations" />
+    <option name="LAST_COMMIT_MESSAGE" value="CSG Union, Intersection, and Difference operations" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -1123,4 +1123,34 @@ mod constructive_solid_geometry {
         assert_eq!(intersections.underlying()[1].t, 4.5);
         assert_eq!(intersections.underlying()[1].with.id, right_id);
     }
+
+    // a naive implementation would compare intersection IDs with the IDs of its direct children, but this wouldn't work with Groups and other CSGs
+    // this test ensures the implementation isn't that naive
+    #[test]
+    fn a_csg_comprising_groups_should_correctly_detect_intersections_on_the_children_of_children() {
+        let first = Object::sphere().with_transform(Matrix4D::translation(0.0, 0.0, -3.0));
+
+        let second = Object::sphere().with_transform(Matrix4D::translation(0.0, 0.0, -0.75));
+        let second_id = second.id();
+
+        let third = Object::sphere();
+        let third_id = third.id();
+
+        let fourth = Object::sphere().with_transform(Matrix4D::translation(0.0, 0.0, 1.5));
+
+        let csg = Object::csg_intersection(
+            Object::group(vec![first, second]),
+            Object::csg_difference(third, fourth),
+        );
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+
+        let intersections = csg.intersect(&ray);
+        assert_eq!(intersections.len(), 2);
+
+        assert_eq!(intersections.underlying()[0].t, 4.0);
+        assert_eq!(intersections.underlying()[0].with.id, third_id);
+
+        assert_eq!(intersections.underlying()[1].t, 5.25);
+        assert_eq!(intersections.underlying()[1].with.id, second_id);
+    }
 }

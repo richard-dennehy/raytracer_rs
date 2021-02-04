@@ -372,6 +372,7 @@ pub trait Shape: Debug {
 }
 
 #[derive(Debug, PartialEq)]
+/// A unit sphere, with the centre at the origin, and a radius of 1
 struct Sphere;
 impl Shape for Sphere {
     fn object_normal_at(&self, point: Point3D, _uv: Option<(f64, f64)>) -> Vector3D {
