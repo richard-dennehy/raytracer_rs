@@ -10,6 +10,7 @@ pub struct Material {
     pub reflective: f64,
     pub transparency: f64,
     pub refractive: f64,
+    pub casts_shadow: bool,
 }
 
 impl Default for Material {
@@ -23,6 +24,7 @@ impl Default for Material {
             reflective: 0.0,
             transparency: 0.0,
             refractive: 1.0,
+            casts_shadow: true,
         }
     }
 }

@@ -113,7 +113,7 @@ impl World {
         let light_vector = light_vector.normalised();
 
         let ray = Ray::new(point, light_vector);
-        if let Some(hit) = self.intersect(&ray).hit() {
+        if let Some(hit) = self.intersect(&ray).shadow_hit() {
             hit.t < light_distance
         } else {
             false

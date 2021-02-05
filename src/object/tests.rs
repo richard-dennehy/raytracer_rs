@@ -10,10 +10,11 @@ mod shape_tests {
         let sphere = Object::sphere();
         let point = Point3D::new(0.0, 0.0, -1.0);
 
+        let normal = sphere.normal_at(point, None);
         let eye_vector = Vector3D::new(0.0, 0.0, -1.0);
         let light = PointLight::new(Colour::WHITE, Point3D::new(0.0, 0.0, -10.0));
 
-        let lit_material = sphere.colour_at(point, &light, eye_vector, None, false);
+        let lit_material = sphere.colour_at(point, &light, eye_vector, normal, false);
         assert_eq!(lit_material, Colour::new(1.9, 1.9, 1.9));
     }
 
@@ -22,10 +23,11 @@ mod shape_tests {
         let sphere = Object::sphere();
         let point = Point3D::new(0.0, 0.0, -1.0);
 
+        let normal = sphere.normal_at(point, None);
         let eye_vector = Vector3D::new(0.0, 2.0_f64.sqrt() / 2.0, -2.0_f64.sqrt() / 2.0);
         let light = PointLight::new(Colour::WHITE, Point3D::new(0.0, 0.0, -10.0));
 
-        let lit_material = sphere.colour_at(point, &light, eye_vector, None, false);
+        let lit_material = sphere.colour_at(point, &light, eye_vector, normal, false);
         assert_eq!(lit_material, Colour::new(1.0, 1.0, 1.0));
     }
 
@@ -35,10 +37,11 @@ mod shape_tests {
         let sphere = Object::sphere().with_transform(Matrix4D::translation(0.0, 0.0, 1.0));
         let point = Point3D::new(0.0, 0.0, 0.0);
 
+        let normal = sphere.normal_at(point, None);
         let eye_vector = Vector3D::new(0.0, 0.0, -1.0);
         let light = PointLight::new(Colour::WHITE, Point3D::new(0.0, 10.0, -10.0));
 
-        let lit_material = sphere.colour_at(point, &light, eye_vector, None, false);
+        let lit_material = sphere.colour_at(point, &light, eye_vector, normal, false);
         assert_eq!(
             lit_material,
             Colour::new(0.7363961030678927, 0.7363961030678927, 0.7363961030678927)
@@ -51,10 +54,11 @@ mod shape_tests {
         let sphere = Object::sphere().with_transform(Matrix4D::translation(0.0, 0.0, 1.0));
         let point = Point3D::new(0.0, 0.0, 0.0);
 
+        let normal = sphere.normal_at(point, None);
         let eye_vector = Vector3D::new(0.0, -2.0_f64.sqrt() / 2.0, -2.0_f64.sqrt() / 2.0);
         let light = PointLight::new(Colour::WHITE, Point3D::new(0.0, 10.0, -10.0));
 
-        let lit_material = sphere.colour_at(point, &light, eye_vector, None, false);
+        let lit_material = sphere.colour_at(point, &light, eye_vector, normal, false);
         assert_eq!(
             lit_material,
             Colour::new(1.6363961030678928, 1.6363961030678928, 1.6363961030678928)
@@ -66,10 +70,11 @@ mod shape_tests {
         let sphere = Object::sphere();
         let point = Point3D::new(0.0, 0.0, -1.0);
 
+        let normal = sphere.normal_at(point, None);
         let eye_vector = Vector3D::new(0.0, 0.0, -1.0);
         let light = PointLight::new(Colour::WHITE, Point3D::new(0.0, 0.0, 10.0));
 
-        let lit_material = sphere.colour_at(point, &light, eye_vector, None, false);
+        let lit_material = sphere.colour_at(point, &light, eye_vector, normal, false);
         assert_eq!(lit_material, Colour::new(0.1, 0.1, 0.1));
     }
 
@@ -78,10 +83,11 @@ mod shape_tests {
         let sphere = Object::sphere();
         let point = Point3D::new(0.0, 0.0, -1.0);
 
+        let normal = sphere.normal_at(point, None);
         let eye_vector = Vector3D::new(0.0, 0.0, -1.0);
         let light = PointLight::new(Colour::WHITE, Point3D::new(0.0, 0.0, -10.0));
 
-        let lit_material = sphere.colour_at(point, &light, eye_vector, None, true);
+        let lit_material = sphere.colour_at(point, &light, eye_vector, normal, true);
         assert_eq!(lit_material, Colour::new(0.1, 0.1, 0.1));
     }
 
@@ -96,13 +102,16 @@ mod shape_tests {
                 specular: 0.0,
                 ..Default::default()
             });
+        let point = Point3D::new(0.5, 0.0, 0.0);
+
+        let normal = sphere.normal_at(point, None);
 
         assert_eq!(
             sphere.colour_at(
-                Point3D::new(0.5, 0.0, 0.0),
+                point,
                 &PointLight::new(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0)),
                 Vector3D::new(-1.0, 0.0, 0.0),
-                None,
+                normal,
                 false
             ),
             Colour::BLACK
@@ -121,12 +130,15 @@ mod shape_tests {
                 ..Default::default()
             });
 
+        let point = Point3D::new(-0.5, 0.0, 0.0);
+        let normal = sphere.normal_at(point, None);
+
         assert_eq!(
             sphere.colour_at(
-                Point3D::new(-0.5, 0.0, 0.0),
+                point,
                 &PointLight::new(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0)),
                 Vector3D::new(-1.0, 0.0, 0.0),
-                None,
+                normal,
                 false
             ),
             Colour::WHITE
@@ -302,12 +314,15 @@ mod sphere_tests {
             ..Default::default()
         });
 
+        let point = Point3D::new(-0.5, 0.0, 0.0);
+        let normal = sphere.normal_at(point, None);
+
         assert_eq!(
             sphere.colour_at(
-                Point3D::new(-0.5, 0.0, 0.0),
+                point,
                 &PointLight::new(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0)),
                 Vector3D::new(-1.0, 0.0, 0.0),
-                None,
+                normal,
                 false
             ),
             Colour::BLACK
@@ -325,12 +340,15 @@ mod sphere_tests {
             ..Default::default()
         });
 
+        let point = Point3D::new(0.5, 0.0, 0.0);
+        let normal = sphere.normal_at(point, None);
+
         assert_eq!(
             sphere.colour_at(
-                Point3D::new(0.5, 0.0, 0.0),
+                point,
                 &PointLight::new(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0)),
                 Vector3D::new(-1.0, 0.0, 0.0),
-                None,
+                normal,
                 false
             ),
             Colour::WHITE

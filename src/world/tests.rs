@@ -65,7 +65,10 @@ mod unit_tests {
         let hit_data = HitData::from(&ray, intersection, intersections);
         let colour = world.shade_hit(&hit_data);
 
-        assert_eq!(colour, Colour::new(0.1, 0.1, 0.1));
+        assert_eq!(
+            colour,
+            Colour::new(0.9049844720832575, 0.9049844720832575, 0.9049844720832575)
+        );
     }
 
     #[test]
@@ -397,6 +400,40 @@ mod unit_tests {
         assert_eq!(
             world.colour_at(ray),
             Colour::new(0.03598076211353316, 0.03598076211353316, 1.690826949711632)
+        );
+    }
+
+    #[test]
+    fn a_hit_on_a_face_exposed_by_a_csg_subtraction_should_be_lit_as_external() {
+        let mut world = World::empty();
+        world
+            .lights
+            .push(PointLight::new(Colour::WHITE, Point3D::new(2.0, 7.0, -4.0)));
+
+        let csg = Object::csg_difference(
+            Object::cube().with_material(Material {
+                pattern: Pattern::solid(Colour::new(0.9, 0.9, 0.0)),
+                ..Default::default()
+            }),
+            Object::sphere()
+                .with_transform(Matrix4D::translation(0.5, 0.5, -0.5))
+                .with_material(Material {
+                    pattern: Pattern::solid(Colour::WHITE),
+                    ambient: 0.01,
+                    ..Default::default()
+                }),
+        )
+        .with_transform(Matrix4D::translation(0.0, 1.0, 0.0).with_rotation_y(PI / 4.0));
+
+        world.objects.push(csg);
+
+        let ray = Ray::new(Point3D::new(0.0, 2.0, -6.0), Vector3D::new(0.0, 0.0, 1.0));
+        // note: if the ray misses, the colour will be black;
+        // if the ray hits, but the colour is shaded incorrectly, the colour will be very dark;
+        // if the ray hits and the colour is shaded correctly, the colour will be light
+        assert_eq!(
+            world.colour_at(ray),
+            Colour::new(0.1557279290614545, 0.1557279290614545, 0.1557279290614545)
         );
     }
 }

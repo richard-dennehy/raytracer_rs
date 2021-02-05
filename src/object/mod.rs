@@ -142,7 +142,9 @@ impl Object {
         }
     }
 
-    pub fn csg_difference(left: Object, right: Object) -> Self {
+    pub fn csg_difference(left: Object, mut right: Object) -> Self {
+        right.material.casts_shadow = false;
+
         Object {
             transform: Matrix4D::identity(),
             material: Material::default(),
@@ -191,7 +193,7 @@ impl Object {
         point: Point3D,
         light: &PointLight,
         eye_vector: Vector3D,
-        uv: Option<(f64, f64)>,
+        surface_normal: Vector3D,
         in_shadow: bool,
     ) -> Colour {
         let material = &self.material;
@@ -213,8 +215,6 @@ impl Object {
         }
 
         let light_vector = (light.position - point).normalised();
-        // FIXME calculating inverse multiple times
-        let surface_normal = self.normal_at(point, uv);
 
         let light_dot_normal = light_vector.dot(surface_normal);
         // if dot product is <= 0, the light is behind the surface
@@ -307,24 +307,35 @@ impl Object {
         self
     }
 
+    // TODO test that applying transforms to parents (i.e. CSG/Groups) affects children
     pub fn with_transform(mut self, transform: Matrix4D) -> Self {
         self.transform = transform;
 
-        if let ObjectKind::Group(children) = &mut self.kind {
-            children
+        match &mut self.kind {
+            ObjectKind::Group(children) => children
                 .iter_mut()
-                .for_each(|child| child.apply_transform(transform))
-        };
+                .for_each(|child| child.apply_transform(transform)),
+            ObjectKind::Csg { left, right, .. } => {
+                left.apply_transform(transform);
+                right.apply_transform(transform);
+            }
+            _ => (),
+        }
 
         self
     }
 
-    /// allows a parent `Group` to push transforms applied to the group down to its children
+    /// allows a parent to push transforms applied to the group down to its children
     fn apply_transform(&mut self, transform: Matrix4D) {
-        if let ObjectKind::Group(children) = &mut self.kind {
-            children
+        match &mut self.kind {
+            ObjectKind::Group(children) => children
                 .iter_mut()
-                .for_each(|child| child.apply_transform(transform))
+                .for_each(|child| child.apply_transform(transform)),
+            ObjectKind::Csg { left, right, .. } => {
+                left.apply_transform(transform);
+                right.apply_transform(transform);
+            }
+            _ => (),
         }
 
         self.transform = transform * self.transform;

@@ -137,8 +137,9 @@ impl<'obj> HitData<'obj> {
     }
 
     pub fn colour(&self, light: &PointLight, in_shadow: bool) -> Colour {
+        // TODO using `point` instead of `over_point` causes severe acne on e.g. checkered planes - write a test for this somehow
         self.object
-            .colour_at(self.point, light, self.eye, self.uv, in_shadow)
+            .colour_at(self.over_point, light, self.eye, self.normal, in_shadow)
     }
 
     /// `shlick` approximation of fresnel
@@ -210,6 +211,13 @@ impl<'scene> Intersections<'scene> {
 
     pub fn hit(&self) -> Option<Intersection<'scene>> {
         self.0.iter().find(|&intersect| intersect.t >= 0.0).cloned()
+    }
+
+    pub fn shadow_hit(&self) -> Option<Intersection<'scene>> {
+        self.0
+            .iter()
+            .find(|&intersect| intersect.t >= 0.0 && intersect.with.material.casts_shadow)
+            .cloned()
     }
 
     pub fn append(&mut self, mut other: Intersections<'scene>) {
