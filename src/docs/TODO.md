@@ -1,0 +1,19 @@
+- YAML parser/scene builder
+- Set up benchmarks
+- Check disabling shadows does anything meaningful
+- Add test for checkers pattern acne fix
+- Check if matrix transforms preserve point/vector `w`
+- Check if `HitData::inside` needs to be saved
+- Parallelise tracer
+- Enforce all matrices are invertible
+- Prevent un-invertible shear matrices
+- Eagerly calculate matrix inverses to save recalculating repeatedly
+- Enforce Ray Vectors are Normalised
+- Distinct type for Normalised Vectors
+- Handle cone centre intersections (currently returns Zero vector)
+- Try inlining maths operations
+- Use `copy` as much as possible
+- Remove references where possible
+- Handle obj parser errors more gracefully
+- Use `Settings` struct in World instead of hardcoded magic values (e.g. recursion depth, skybox colour)
+- Maybe performance: replace partial comparison + expect with total comparison when sorting `Intersections`

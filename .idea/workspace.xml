@@ -12,15 +12,10 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="CSG example and pattern/internal lighting fixes">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="combined flat and smooth triangles into the same struct">
+      <change afterPath="$PROJECT_DIR$/src/docs/TODO.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/colour/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/colour/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/obj_parser/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/obj_parser/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/smooth_triangle.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/triangle.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/world/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -280,14 +275,7 @@
       <workItem from="1612468770544" duration="3688000" />
       <workItem from="1612554494166" duration="3064000" />
       <workItem from="1612612256711" duration="4114000" />
-      <workItem from="1612697244487" duration="2193000" />
-    </task>
-    <task id="LOCAL-00027" summary="add renderer">
-      <created>1609417279478</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1609417279478</updated>
+      <workItem from="1612697244487" duration="4580000" />
     </task>
     <task id="LOCAL-00028" summary="ray tracer example with multiple objects">
       <created>1609502231940</created>
@@ -625,7 +613,14 @@
       <option name="project" value="LOCAL" />
       <updated>1612616372438</updated>
     </task>
-    <option name="localTasksCounter" value="76" />
+    <task id="LOCAL-00076" summary="combined flat and smooth triangles into the same struct">
+      <created>1612699529428</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1612699529428</updated>
+    </task>
+    <option name="localTasksCounter" value="77" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -641,7 +636,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="implemented cones" />
     <MESSAGE value="refactor Shape to trait instead of enum" />
     <MESSAGE value="replace random id generation with atomic counter" />
     <MESSAGE value="use builder pattern for shapes with parameters" />
@@ -666,7 +660,8 @@
     <MESSAGE value="basic CSG example" />
     <MESSAGE value="WIP basic CSG example" />
     <MESSAGE value="CSG example and pattern/internal lighting fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="CSG example and pattern/internal lighting fixes" />
+    <MESSAGE value="combined flat and smooth triangles into the same struct" />
+    <option name="LAST_COMMIT_MESSAGE" value="combined flat and smooth triangles into the same struct" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

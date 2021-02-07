@@ -19,6 +19,10 @@ impl Colour {
         Colour(r, g, b)
     }
 
+    pub const fn greyscale(c: f64) -> Self {
+        Colour(c, c, c)
+    }
+
     pub const fn red(&self) -> f64 {
         self.0
     }
