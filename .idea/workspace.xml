@@ -12,14 +12,14 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP basic CSG example">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="CSG example and pattern/internal lighting fixes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/material/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/material/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/colour/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/colour/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/obj_parser/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/obj_parser/tests.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/world/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/smooth_triangle.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/triangle.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tests.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/world/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -84,7 +84,12 @@
       <command value="cargo test" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.run (release)">
+  <component name="RunManager" selected="Cargo.test">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -175,11 +180,6 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.Test object::tests::smooth_triangles::intersecting_a_smooth_triangle_should_populate_uv" />
@@ -190,8 +190,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.Test world::tests::unit_tests::a_hit_on_a_face_exposed_by_a_csg_subtraction_should_be_lit_as_external" />
         <item itemvalue="Cargo.Test object::tests::smooth_triangles::the_normal_of_a_smooth_triangle_should_be_based_off_the_uv_of_the_intersection" />
         <item itemvalue="Cargo.Test object::tests::smooth_triangles::intersecting_a_smooth_triangle_should_populate_uv" />
@@ -279,14 +279,8 @@
       <workItem from="1612380143574" duration="3491000" />
       <workItem from="1612468770544" duration="3688000" />
       <workItem from="1612554494166" duration="3064000" />
-      <workItem from="1612612256711" duration="4065000" />
-    </task>
-    <task id="LOCAL-00026" summary="ray casting through camera and canvas">
-      <created>1609416499051</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1609416499051</updated>
+      <workItem from="1612612256711" duration="4114000" />
+      <workItem from="1612697244487" duration="2193000" />
     </task>
     <task id="LOCAL-00027" summary="add renderer">
       <created>1609417279478</created>
@@ -624,7 +618,14 @@
       <option name="project" value="LOCAL" />
       <updated>1612558228421</updated>
     </task>
-    <option name="localTasksCounter" value="75" />
+    <task id="LOCAL-00075" summary="CSG example and pattern/internal lighting fixes">
+      <created>1612616372438</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1612616372438</updated>
+    </task>
+    <option name="localTasksCounter" value="76" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -640,7 +641,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP cone normals" />
     <MESSAGE value="implemented cones" />
     <MESSAGE value="refactor Shape to trait instead of enum" />
     <MESSAGE value="replace random id generation with atomic counter" />
@@ -665,7 +665,8 @@
     <MESSAGE value="added test for CSGs containing groups and other csgs" />
     <MESSAGE value="basic CSG example" />
     <MESSAGE value="WIP basic CSG example" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP basic CSG example" />
+    <MESSAGE value="CSG example and pattern/internal lighting fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="CSG example and pattern/internal lighting fixes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -681,13 +682,8 @@
           <option name="timeStamp" value="15" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/object/smooth_triangle.rs</url>
-          <line>55</line>
-          <option name="timeStamp" value="17" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/object/mod.rs</url>
-          <line>212</line>
+          <line>199</line>
           <option name="timeStamp" value="20" />
         </line-breakpoint>
       </breakpoints>

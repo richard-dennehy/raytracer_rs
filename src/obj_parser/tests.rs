@@ -93,7 +93,7 @@ f 1 2 3 4 5";
             p3: Point3D(1.0, 0.0, 0.0), \
             edge1: Vector3D(2.0, -1.0, 0.0), \
             edge2: Vector3D(0.0, 0.0, 0.0), \
-            normal: Vector3D(0.0, 0.0, 0.0) \
+            kind: Uniform(Vector3D(0.0, 0.0, 0.0)) \
             }"
             .to_string()
         );
@@ -106,7 +106,7 @@ f 1 2 3 4 5";
             p3: Point3D(1.0, 1.0, 0.0), \
             edge1: Vector3D(2.0, -1.0, 0.0), \
             edge2: Vector3D(0.0, 1.0, 0.0), \
-            normal: Vector3D(0.0, 0.0, -1.0) \
+            kind: Uniform(Vector3D(0.0, 0.0, -1.0)) \
             }"
             .to_string()
         );
@@ -135,7 +135,7 @@ f 1 2 3 4 5";
             p3: Point3D(1.0, 0.0, 0.0), \
             edge1: Vector3D(0.0, -1.0, 0.0), \
             edge2: Vector3D(2.0, 0.0, 0.0), \
-            normal: Vector3D(0.0, 0.0, -1.0) \
+            kind: Uniform(Vector3D(0.0, 0.0, -1.0)) \
             }"
             .to_string()
         );
@@ -148,7 +148,7 @@ f 1 2 3 4 5";
             p3: Point3D(1.0, 1.0, 0.0), \
             edge1: Vector3D(2.0, -1.0, 0.0), \
             edge2: Vector3D(0.0, 1.0, 0.0), \
-            normal: Vector3D(0.0, 0.0, -1.0) \
+            kind: Uniform(Vector3D(0.0, 0.0, -1.0)) \
             }"
             .to_string()
         );
@@ -161,7 +161,7 @@ f 1 2 3 4 5";
              p3: Point3D(0.0, 2.0, 0.0), \
              edge1: Vector3D(2.0, 0.0, 0.0), \
              edge2: Vector3D(-1.0, 1.0, 0.0), \
-             normal: Vector3D(0.0, 0.0, -1.0) \
+             kind: Uniform(Vector3D(0.0, 0.0, -1.0)) \
              }"
             .to_string()
         );
@@ -303,30 +303,34 @@ f 1 2 3 4 5";
 
         assert_eq!(
             format!("{:?}", object.children()[0].shape()),
-            "SmoothTriangle { \
-            point1: Point3D(0.0, 1.0, 0.0), \
-            point2: Point3D(-1.0, 0.0, 0.0), \
-            point3: Point3D(1.0, 0.0, 0.0), \
+            "Triangle { \
+            p1: Point3D(0.0, 1.0, 0.0), \
+            p2: Point3D(-1.0, 0.0, 0.0), \
+            p3: Point3D(1.0, 0.0, 0.0), \
+            edge1: Vector3D(-1.0, -1.0, 0.0), \
+            edge2: Vector3D(1.0, -1.0, 0.0), \
+            kind: Smooth { \
             normal1: Vector3D(0.0, 1.0, 0.0), \
             normal2: Vector3D(-1.0, 0.0, 0.0), \
-            normal3: Vector3D(1.0, 0.0, 0.0), \
-            edge1: Vector3D(-1.0, -1.0, 0.0), \
-            edge2: Vector3D(1.0, -1.0, 0.0) \
+            normal3: Vector3D(1.0, 0.0, 0.0) \
+            } \
             }"
             .to_string()
         );
 
         assert_eq!(
             format!("{:?}", object.children()[1].shape()),
-            "SmoothTriangle { \
-            point1: Point3D(0.0, 1.0, 0.0), \
-            point2: Point3D(-1.0, 0.0, 0.0), \
-            point3: Point3D(1.0, 0.0, 0.0), \
+            "Triangle { \
+            p1: Point3D(0.0, 1.0, 0.0), \
+            p2: Point3D(-1.0, 0.0, 0.0), \
+            p3: Point3D(1.0, 0.0, 0.0), \
+            edge1: Vector3D(-1.0, -1.0, 0.0), \
+            edge2: Vector3D(1.0, -1.0, 0.0), \
+            kind: Smooth { \
             normal1: Vector3D(0.0, 1.0, 0.0), \
             normal2: Vector3D(-1.0, 0.0, 0.0), \
-            normal3: Vector3D(1.0, 0.0, 0.0), \
-            edge1: Vector3D(-1.0, -1.0, 0.0), \
-            edge2: Vector3D(1.0, -1.0, 0.0) \
+            normal3: Vector3D(1.0, 0.0, 0.0) \
+            } \
             }"
             .to_string()
         );

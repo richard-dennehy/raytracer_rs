@@ -81,3 +81,24 @@ impl Sum for Colour {
         iter.fold(Colour::BLACK, |acc, next| acc + next)
     }
 }
+
+#[cfg(test)]
+pub use test_utils::*;
+
+#[cfg(test)]
+mod test_utils {
+    use crate::Colour;
+    use float_cmp::{ApproxEq, F64Margin};
+
+    impl ApproxEq for Colour {
+        type Margin = F64Margin;
+
+        fn approx_eq<M: Into<Self::Margin>>(self, other: Self, margin: M) -> bool {
+            let margin = margin.into();
+
+            self.0.approx_eq(other.0, margin)
+                && self.1.approx_eq(other.1, margin)
+                && self.2.approx_eq(other.2, margin)
+        }
+    }
+}

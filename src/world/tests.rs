@@ -36,14 +36,16 @@ mod unit_tests {
         let hit_data = HitData::from(&ray, intersection, intersections);
         let colour = world.shade_hit(&hit_data);
 
-        assert_eq!(
+        assert!(approx_eq!(
+            Colour,
             colour,
             Colour::new(
                 0.38066119308103435,
                 0.47582649135129296,
                 0.28549589481077575
-            )
-        );
+            ),
+            epsilon = f32::EPSILON as f64
+        ));
     }
 
     #[test]
@@ -65,10 +67,12 @@ mod unit_tests {
         let hit_data = HitData::from(&ray, intersection, intersections);
         let colour = world.shade_hit(&hit_data);
 
-        assert_eq!(
+        assert!(approx_eq!(
+            Colour,
             colour,
-            Colour::new(0.9049844720832575, 0.9049844720832575, 0.9049844720832575)
-        );
+            Colour::new(0.9049844720832575, 0.9049844720832575, 0.9049844720832575),
+            epsilon = f32::EPSILON as f64
+        ));
     }
 
     #[test]
@@ -84,14 +88,16 @@ mod unit_tests {
         let world = World::default();
         let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
 
-        assert_eq!(
+        assert!(approx_eq!(
+            Colour,
             world.colour_at(ray),
             Colour::new(
                 0.38066119308103435,
                 0.47582649135129296,
                 0.28549589481077575
-            )
-        );
+            ),
+            epsilon = f32::EPSILON as f64
+        ));
     }
 
     #[test]
@@ -165,13 +171,15 @@ mod unit_tests {
             world.objects.push(reflective_plane);
         };
 
-        assert_eq!(
+        assert!(approx_eq!(
+            Colour,
             world.colour_at(Ray::new(
                 Point3D::new(0.0, 0.0, -3.0),
                 Vector3D::new(0.0, -SQRT_2 / 2.0, SQRT_2 / 2.0),
             )),
-            Colour::new(0.8767560060717737, 0.9243386603443418, 0.8291733517992057)
-        );
+            Colour::new(0.8767560060717737, 0.9243386603443418, 0.8291733517992057),
+            epsilon = f32::EPSILON as f64
+        ));
     }
 
     #[test]
@@ -202,10 +210,12 @@ mod unit_tests {
             .lights
             .push(PointLight::new(Colour::WHITE, Point3D::new(0.0, 0.0, 0.0)));
 
-        assert_eq!(
+        assert!(approx_eq!(
+            Colour,
             world.colour_at(Ray::new(Point3D::ORIGIN, Vector3D::new(0.0, 1.0, 0.0))),
-            Colour::WHITE
-        );
+            Colour::WHITE,
+            epsilon = f32::EPSILON as f64
+        ));
     }
 
     #[test]
@@ -318,10 +328,12 @@ mod unit_tests {
             Vector3D::new(0.0, -SQRT_2 / 2.0, SQRT_2 / 2.0),
         );
 
-        assert_eq!(
+        assert!(approx_eq!(
+            Colour,
             world.colour_at(ray),
-            Colour::new(0.9364253889815014, 0.6864253889815014, 0.6864253889815014)
-        );
+            Colour::new(0.9364253889815014, 0.6864253889815014, 0.6864253889815014),
+            epsilon = f32::EPSILON as f64
+        ));
     }
 
     #[test]
@@ -357,10 +369,12 @@ mod unit_tests {
             Vector3D::new(0.0, -SQRT_2 / 2.0, SQRT_2 / 2.0),
         );
 
-        assert_eq!(
+        assert!(approx_eq!(
+            Colour,
             world.colour_at(ray),
-            Colour::new(0.9339151414147093, 0.6964342273743777, 0.6924306920172272)
-        );
+            Colour::new(0.9339151414147093, 0.6964342273743777, 0.6924306920172272),
+            epsilon = f32::EPSILON as f64
+        ));
     }
 
     #[test]
@@ -397,10 +411,12 @@ mod unit_tests {
 
         let ray = Ray::new(Point3D::ORIGIN, Vector3D::new(0.0, 0.0, 1.0));
 
-        assert_eq!(
+        assert!(approx_eq!(
+            Colour,
             world.colour_at(ray),
-            Colour::new(0.03598076211353316, 0.03598076211353316, 1.690826949711632)
-        );
+            Colour::new(0.03598076211353316, 0.03598076211353316, 1.690826949711632),
+            epsilon = f32::EPSILON as f64
+        ));
     }
 
     #[test]
@@ -431,9 +447,11 @@ mod unit_tests {
         // note: if the ray misses, the colour will be black;
         // if the ray hits, but the colour is shaded incorrectly, the colour will be very dark;
         // if the ray hits and the colour is shaded correctly, the colour will be light
-        assert_eq!(
+        assert!(approx_eq!(
+            Colour,
             world.colour_at(ray),
-            Colour::new(0.1557279290614545, 0.1557279290614545, 0.1557279290614545)
-        );
+            Colour::new(0.1557279290614545, 0.1557279290614545, 0.1557279290614545),
+            epsilon = f32::EPSILON as f64
+        ));
     }
 }

@@ -16,9 +16,6 @@ pub use cone::ConeBuilder;
 mod triangle;
 use triangle::Triangle;
 
-mod smooth_triangle;
-use smooth_triangle::SmoothTriangle;
-
 #[derive(Debug)]
 pub struct Object {
     pub material: Material,
@@ -102,7 +99,7 @@ impl Object {
         normal2: Vector3D,
         normal3: Vector3D,
     ) -> Self {
-        Self::from_shape(Box::new(SmoothTriangle::new(
+        Self::from_shape(Box::new(Triangle::smooth(
             point1, point2, point3, normal1, normal2, normal3,
         )))
     }
@@ -112,48 +109,34 @@ impl Object {
             transform: Matrix4D::identity(),
             material: Material::default(),
             kind: ObjectKind::Group(children),
-            id: NEXT_ID.fetch_add(1, Ordering::SeqCst),
+            id: Self::next_id(),
         }
     }
 
     pub fn csg_union(left: Object, right: Object) -> Self {
-        Object {
-            transform: Matrix4D::identity(),
-            material: Material::default(),
-            kind: ObjectKind::Csg {
-                left: Box::new(left),
-                right: Box::new(right),
-                operator: CsgOperator::Union,
-            },
-            id: NEXT_ID.fetch_add(1, Ordering::SeqCst),
-        }
+        Self::csg(left, right, CsgOperator::Union)
     }
 
     pub fn csg_intersection(left: Object, right: Object) -> Self {
-        Object {
-            transform: Matrix4D::identity(),
-            material: Material::default(),
-            kind: ObjectKind::Csg {
-                left: Box::new(left),
-                right: Box::new(right),
-                operator: CsgOperator::Intersection,
-            },
-            id: NEXT_ID.fetch_add(1, Ordering::SeqCst),
-        }
+        Self::csg(left, right, CsgOperator::Intersection)
     }
 
     pub fn csg_difference(left: Object, mut right: Object) -> Self {
         right.material.casts_shadow = false;
 
+        Self::csg(left, right, CsgOperator::Subtract)
+    }
+
+    fn csg(left: Object, right: Object, operator: CsgOperator) -> Self {
         Object {
             transform: Matrix4D::identity(),
             material: Material::default(),
             kind: ObjectKind::Csg {
                 left: Box::new(left),
                 right: Box::new(right),
-                operator: CsgOperator::Subtract,
+                operator,
             },
-            id: NEXT_ID.fetch_add(1, Ordering::SeqCst),
+            id: Self::next_id(),
         }
     }
 
@@ -162,8 +145,12 @@ impl Object {
             transform: Matrix4D::identity(),
             material: Material::default(),
             kind: ObjectKind::Shape(shape),
-            id: NEXT_ID.fetch_add(1, Ordering::SeqCst),
+            id: Self::next_id(),
         }
+    }
+
+    fn next_id() -> u32 {
+        NEXT_ID.fetch_add(1, Ordering::SeqCst)
     }
 
     pub fn normal_at(&self, point: Point3D, uv: Option<(f64, f64)>) -> Vector3D {

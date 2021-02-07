@@ -8,7 +8,7 @@ pub struct Triangle {
     p3: Point3D,
     edge1: Vector3D,
     edge2: Vector3D,
-    normal: Vector3D,
+    kind: NormalKind,
 }
 
 impl Triangle {
@@ -24,14 +24,62 @@ impl Triangle {
             p3: point3,
             edge1,
             edge2,
-            normal,
+            kind: NormalKind::Uniform(normal),
+        }
+    }
+
+    pub fn smooth(
+        point1: Point3D,
+        point2: Point3D,
+        point3: Point3D,
+        normal1: Vector3D,
+        normal2: Vector3D,
+        normal3: Vector3D,
+    ) -> Self {
+        let edge1 = point2 - point1;
+        let edge2 = point3 - point1;
+
+        Triangle {
+            p1: point1,
+            p2: point2,
+            p3: point3,
+            edge1,
+            edge2,
+            kind: NormalKind::Smooth {
+                normal1,
+                normal2,
+                normal3,
+            },
         }
     }
 }
 
+#[derive(Debug, PartialEq)]
+enum NormalKind {
+    Smooth {
+        normal1: Vector3D,
+        normal2: Vector3D,
+        normal3: Vector3D,
+    },
+    Uniform(Vector3D),
+}
+
 impl Shape for Triangle {
-    fn object_normal_at(&self, _: Point3D, _uv: Option<(f64, f64)>) -> Vector3D {
-        self.normal
+    fn object_normal_at(&self, _: Point3D, uv: Option<(f64, f64)>) -> Vector3D {
+        match self.kind {
+            NormalKind::Smooth {
+                normal1,
+                normal2,
+                normal3,
+            } => {
+                if let Some((u, v)) = uv {
+                    normal2 * u + normal3 * v + normal1 * (1.0 - u - v)
+                } else {
+                    panic!("Smooth triangle intersection did not set uv coordinates")
+                }
+            }
+            NormalKind::Uniform(normal) => normal,
+        }
     }
 
     /// Möller–Trumbore algorithm
@@ -62,6 +110,10 @@ impl Shape for Triangle {
         };
 
         let t = f * self.edge2.dot(origin_cross_e1);
-        vec![Intersection::with_uv(t, parent, u, v)]
+        if let NormalKind::Smooth { .. } = self.kind {
+            vec![Intersection::with_uv(t, parent, u, v)]
+        } else {
+            vec![Intersection::new(t, parent)]
+        }
     }
 }

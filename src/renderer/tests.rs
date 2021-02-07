@@ -21,13 +21,15 @@ mod unit_tests {
         );
 
         let canvas = render(World::default(), camera);
-        assert_eq!(
+        assert!(approx_eq!(
+            Colour,
             canvas.get(5, 5),
             Colour::new(
                 0.38066119308103435,
                 0.47582649135129296,
                 0.28549589481077575
-            )
-        );
+            ),
+            epsilon = f32::EPSILON as f64
+        ));
     }
 }
