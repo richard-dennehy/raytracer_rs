@@ -12,10 +12,13 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="combined flat and smooth triangles into the same struct">
-      <change afterPath="$PROJECT_DIR$/src/docs/TODO.md" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="document TODO items">
+      <change afterPath="$PROJECT_DIR$/src/yaml_parser/mod.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/yaml_parser/tests.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/colour/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/colour/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,12 +82,7 @@
       <command value="cargo test" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.test">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="Cargo.Test unit_tests">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -100,8 +98,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test object::tests::smooth_triangles::intersecting_a_smooth_triangle_should_populate_uv" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib object::tests::smooth_triangles::intersecting_a_smooth_triangle_should_populate_uv -- --exact" />
+    <configuration name="Test object::tests::smooth_triangles::the_normal_of_a_smooth_triangle_should_be_based_off_the_uv_of_the_intersection" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib object::tests::smooth_triangles::the_normal_of_a_smooth_triangle_should_be_based_off_the_uv_of_the_intersection -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -115,8 +113,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test object::tests::smooth_triangles::the_normal_of_a_smooth_triangle_should_be_based_off_the_uv_of_the_intersection" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib object::tests::smooth_triangles::the_normal_of_a_smooth_triangle_should_be_based_off_the_uv_of_the_intersection -- --exact" />
+    <configuration name="Test unit_tests" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib yaml_parser::tests::unit_tests" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -175,21 +173,26 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
-      <item itemvalue="Cargo.Test object::tests::smooth_triangles::intersecting_a_smooth_triangle_should_populate_uv" />
       <item itemvalue="Cargo.Test object::tests::smooth_triangles::the_normal_of_a_smooth_triangle_should_be_based_off_the_uv_of_the_intersection" />
       <item itemvalue="Cargo.run (release)" />
       <item itemvalue="Cargo.test" />
       <item itemvalue="Cargo.Test world::tests::unit_tests::a_hit_on_a_face_exposed_by_a_csg_subtraction_should_be_lit_as_external" />
+      <item itemvalue="Cargo.Test unit_tests" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.Test unit_tests" />
         <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.Test world::tests::unit_tests::a_hit_on_a_face_exposed_by_a_csg_subtraction_should_be_lit_as_external" />
         <item itemvalue="Cargo.Test object::tests::smooth_triangles::the_normal_of_a_smooth_triangle_should_be_based_off_the_uv_of_the_intersection" />
-        <item itemvalue="Cargo.Test object::tests::smooth_triangles::intersecting_a_smooth_triangle_should_populate_uv" />
       </list>
     </recent_temporary>
   </component>
@@ -275,14 +278,8 @@
       <workItem from="1612468770544" duration="3688000" />
       <workItem from="1612554494166" duration="3064000" />
       <workItem from="1612612256711" duration="4114000" />
-      <workItem from="1612697244487" duration="4580000" />
-    </task>
-    <task id="LOCAL-00028" summary="ray tracer example with multiple objects">
-      <created>1609502231940</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1609502231940</updated>
+      <workItem from="1612697244487" duration="4588000" />
+      <workItem from="1612789694457" duration="4273000" />
     </task>
     <task id="LOCAL-00029" summary="implement shadows">
       <created>1609505320561</created>
@@ -620,7 +617,14 @@
       <option name="project" value="LOCAL" />
       <updated>1612699529428</updated>
     </task>
-    <option name="localTasksCounter" value="77" />
+    <task id="LOCAL-00077" summary="document TODO items">
+      <created>1612705354313</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1612705354313</updated>
+    </task>
+    <option name="localTasksCounter" value="78" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -636,7 +640,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="refactor Shape to trait instead of enum" />
     <MESSAGE value="replace random id generation with atomic counter" />
     <MESSAGE value="use builder pattern for shapes with parameters" />
     <MESSAGE value="move cone and cylinder to submodules" />
@@ -661,7 +664,8 @@
     <MESSAGE value="WIP basic CSG example" />
     <MESSAGE value="CSG example and pattern/internal lighting fixes" />
     <MESSAGE value="combined flat and smooth triangles into the same struct" />
-    <option name="LAST_COMMIT_MESSAGE" value="combined flat and smooth triangles into the same struct" />
+    <MESSAGE value="document TODO items" />
+    <option name="LAST_COMMIT_MESSAGE" value="document TODO items" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
