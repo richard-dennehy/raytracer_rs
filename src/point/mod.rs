@@ -31,6 +31,12 @@ impl Point3D {
     }
 }
 
+impl From<(f64, f64, f64)> for Point3D {
+    fn from((x, y, z): (f64, f64, f64)) -> Self {
+        Point3D(x, y, z)
+    }
+}
+
 impl Add<Vector3D> for Point3D {
     type Output = Point3D;
 

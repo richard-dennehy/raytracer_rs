@@ -59,6 +59,12 @@ impl Vector3D {
     }
 }
 
+impl From<(f64, f64, f64)> for Vector3D {
+    fn from((x, y, z): (f64, f64, f64)) -> Self {
+        Vector3D(x, y, z)
+    }
+}
+
 impl Add<Vector3D> for Vector3D {
     type Output = Vector3D;
 

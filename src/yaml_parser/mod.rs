@@ -9,10 +9,14 @@ pub fn parse(input: &str) -> Result<CameraDescription, String> {
         Ok(yaml) => {
             let mut camera = None;
 
-            for item in yaml[0] {
-                if let Some("camera") = item["add"].as_str() {
-                    camera = Some(parse_camera(&item)?);
+            if let Some(items) = yaml[0].as_vec() {
+                for item in items {
+                    if let Some("camera") = item["add"].as_str() {
+                        camera = Some(parse_camera(&item)?);
+                    }
                 }
+            } else {
+                return Err("Expected a list of directives".to_string());
             }
 
             camera.ok_or("No `add: camera` directive found".to_string())
@@ -24,16 +28,38 @@ pub fn parse(input: &str) -> Result<CameraDescription, String> {
 fn parse_camera(yaml: &Yaml) -> Result<CameraDescription, String> {
     let width = parse_usize(yaml, "width")?;
     let height = parse_usize(yaml, "height")?;
-    let field_of_view = parse_f64(yaml, "field_of_view")?;
+    let field_of_view = parse_f64(yaml, "field-of-view")?;
+    let from = parse_tuple(yaml, "from")?.into();
+    let to = parse_tuple(yaml, "to")?.into();
+    let up = parse_tuple(yaml, "up")?.into();
 
     Ok(CameraDescription {
         width,
         height,
         field_of_view,
-        from: Point3D::ORIGIN,
-        to: Point3D::ORIGIN,
-        up: Vector3D::new(1.0, 0.0, 0.0),
+        from,
+        to,
+        up,
     })
+}
+
+fn parse_tuple(yaml: &Yaml, key: &str) -> Result<(f64, f64, f64), String> {
+    if let Some(components) = yaml[key].as_vec() {
+        if components.len() != 3 {
+            return Err(format!("Expected an array of exactly 3 numbers at {}", key));
+        } else {
+            let x = to_f64_lenient(&components[0])
+                .map_err(|_| format!("Invalid `x` component of {}; expected number", key))?;
+            let y = to_f64_lenient(&components[1])
+                .map_err(|_| format!("Invalid `x` component of {}; expected number", key))?;
+            let z = to_f64_lenient(&components[2])
+                .map_err(|_| format!("Invalid `x` component of {}; expected number", key))?;
+
+            Ok((x, y, z))
+        }
+    } else {
+        Err(format!("Expected an array of exactly 3 numbers at {}", key))
+    }
 }
 
 fn parse_usize(yaml: &Yaml, key: &str) -> Result<usize, String> {
@@ -53,6 +79,15 @@ fn parse_f64(yaml: &Yaml, key: &str) -> Result<f64, String> {
     yaml[key]
         .as_f64()
         .ok_or(format!("Cannot parse required field {:?}", key))
+}
+
+fn to_f64_lenient(yaml: &Yaml) -> Result<f64, String> {
+    match &yaml {
+        // parsing can't actually fail here, the underlying YAML parser just converts lazily
+        Yaml::Real(float) => Ok(float.parse::<f64>().unwrap()),
+        Yaml::Integer(int) => Ok(*int as f64),
+        _ => Err("Cannot parse as floating point".to_string()),
+    }
 }
 
 #[derive(PartialEq, Debug)]
