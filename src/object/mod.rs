@@ -1,5 +1,5 @@
 use crate::{
-    Colour, Intersection, Intersections, Material, Matrix4D, Point3D, PointLight, Ray, Vector3D,
+    Colour, Intersection, Intersections, Light, Material, Matrix4D, Point3D, Ray, Vector3D,
 };
 use std::fmt::Debug;
 use std::sync::atomic::{AtomicU32, Ordering};
@@ -178,7 +178,7 @@ impl Object {
     pub fn colour_at(
         &self,
         point: Point3D,
-        light: &PointLight,
+        light: &Light,
         eye_vector: Vector3D,
         surface_normal: Vector3D,
         in_shadow: bool,
@@ -194,14 +194,14 @@ impl Object {
             Point3D::new(x, y, z)
         };
 
-        let colour = material.pattern.colour_at(object_point) * light.intensity;
+        let colour = material.pattern.colour_at(object_point) * light.colour();
         let ambient = colour * material.ambient;
 
         if in_shadow {
             return ambient;
         }
 
-        let light_vector = (light.position - point).normalised();
+        let light_vector = (light.position() - point).normalised();
 
         let light_dot_normal = light_vector.dot(surface_normal);
         // if dot product is <= 0, the light is behind the surface
@@ -219,7 +219,7 @@ impl Object {
         }
 
         let specular_factor = reflect_dot_eye.powf(material.shininess);
-        let specular = light.intensity * material.specular * specular_factor;
+        let specular = light.colour() * material.specular * specular_factor;
 
         ambient + diffuse + specular
     }

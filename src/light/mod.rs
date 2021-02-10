@@ -1,15 +1,24 @@
 use crate::{Colour, Point3D};
 
-pub struct PointLight {
-    pub intensity: Colour,
-    pub position: Point3D,
+#[derive(Debug, PartialEq)]
+pub enum Light {
+    Point { colour: Colour, position: Point3D },
 }
 
-impl PointLight {
-    pub fn new(intensity: Colour, position: Point3D) -> Self {
-        PointLight {
-            intensity,
-            position,
+impl Light {
+    pub fn point(colour: Colour, position: Point3D) -> Self {
+        Light::Point { colour, position }
+    }
+
+    pub fn colour(&self) -> Colour {
+        match &self {
+            Light::Point { colour, .. } => *colour,
+        }
+    }
+
+    pub fn position(&self) -> Point3D {
+        match &self {
+            Light::Point { position, .. } => *position,
         }
     }
 }

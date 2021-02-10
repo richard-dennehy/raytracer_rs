@@ -36,6 +36,12 @@ impl Colour {
     }
 }
 
+impl From<(f64, f64, f64)> for Colour {
+    fn from((r, g, b): (f64, f64, f64)) -> Self {
+        Colour(r, g, b)
+    }
+}
+
 impl Add<Colour> for Colour {
     type Output = Colour;
 

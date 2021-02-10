@@ -1,4 +1,4 @@
-use crate::{Colour, Matrix4D, Object, Point3D, PointLight, Vector3D};
+use crate::{Colour, Light, Matrix4D, Object, Point3D, Vector3D};
 use std::vec::IntoIter;
 
 #[cfg(test)]
@@ -136,7 +136,7 @@ impl<'obj> HitData<'obj> {
         }
     }
 
-    pub fn colour(&self, light: &PointLight, in_shadow: bool) -> Colour {
+    pub fn colour(&self, light: &Light, in_shadow: bool) -> Colour {
         // TODO using `point` instead of `over_point` causes severe acne on e.g. checkered planes - write a test for this somehow
         self.object
             .colour_at(self.over_point, light, self.eye, self.normal, in_shadow)

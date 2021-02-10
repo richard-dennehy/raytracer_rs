@@ -1,12 +1,12 @@
 use crate::ray::HitData;
-use crate::{Colour, Intersections, Material, Matrix4D, Object, Pattern, Point3D, PointLight, Ray};
+use crate::{Colour, Intersections, Light, Material, Matrix4D, Object, Pattern, Point3D, Ray};
 
 #[cfg(test)]
 mod tests;
 
 pub struct World {
     pub objects: Vec<Object>,
-    pub lights: Vec<PointLight>,
+    pub lights: Vec<Light>,
 }
 
 impl World {
@@ -29,7 +29,7 @@ impl World {
                 }),
                 Object::sphere().with_transform(Matrix4D::uniform_scaling(0.5)),
             ],
-            lights: vec![PointLight::new(
+            lights: vec![Light::point(
                 Colour::WHITE,
                 Point3D::new(-10.0, 10.0, -10.0),
             )],
@@ -107,8 +107,8 @@ impl World {
             .sum()
     }
 
-    fn is_in_shadow(&self, point: Point3D, light: &PointLight) -> bool {
-        let light_vector = light.position - point;
+    fn is_in_shadow(&self, point: Point3D, light: &Light) -> bool {
+        let light_vector = light.position() - point;
         let light_distance = light_vector.magnitude();
         let light_vector = light_vector.normalised();
 

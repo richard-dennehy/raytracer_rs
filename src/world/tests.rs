@@ -51,7 +51,7 @@ mod unit_tests {
     #[test]
     fn should_correctly_shade_an_internal_hit() {
         let mut world = World::default();
-        world.lights = vec![PointLight::new(Colour::WHITE, Point3D::new(0.0, 0.25, 0.0))];
+        world.lights = vec![Light::point(Colour::WHITE, Point3D::new(0.0, 0.25, 0.0))];
 
         let ray = Ray::new(Point3D::new(0.0, 0.0, 0.0), Vector3D::new(0.0, 0.0, 1.0));
         let sphere = world
@@ -208,7 +208,7 @@ mod unit_tests {
         };
         world
             .lights
-            .push(PointLight::new(Colour::WHITE, Point3D::new(0.0, 0.0, 0.0)));
+            .push(Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, 0.0)));
 
         assert!(approx_eq!(
             Colour,
@@ -250,7 +250,7 @@ mod unit_tests {
 
         world
             .lights
-            .push(PointLight::new(Colour::WHITE, Point3D::ORIGIN));
+            .push(Light::point(Colour::WHITE, Point3D::ORIGIN));
 
         let ray = Ray::new(Point3D::new(0.0, 0.0, -1.0), Vector3D::new(0.0, 0.0, 1.0));
         assert_eq!(world.colour_at(ray), Colour::new(0.1, 0.1, 0.1));
@@ -290,7 +290,7 @@ mod unit_tests {
 
         world
             .lights
-            .push(PointLight::new(Colour::WHITE, Point3D::new(0.0, 0.0, 0.5)));
+            .push(Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, 0.5)));
 
         let ray = Ray::new(Point3D::new(0.0, 0.0, -1.0), Vector3D::new(0.0, 0.0, 1.0));
         assert_eq!(world.colour_at(ray), Colour::GREEN);
@@ -380,7 +380,7 @@ mod unit_tests {
     #[test]
     fn a_transparent_sphere_should_include_the_colour_of_objects_behind_it() {
         let mut world = World::empty();
-        world.lights.push(PointLight::new(
+        world.lights.push(Light::point(
             Colour::WHITE,
             Point3D::new(-10.0, 10.0, -10.0),
         ));
@@ -424,7 +424,7 @@ mod unit_tests {
         let mut world = World::empty();
         world
             .lights
-            .push(PointLight::new(Colour::WHITE, Point3D::new(2.0, 7.0, -4.0)));
+            .push(Light::point(Colour::WHITE, Point3D::new(2.0, 7.0, -4.0)));
 
         let csg = Object::csg_difference(
             Object::cube().with_material(Material {

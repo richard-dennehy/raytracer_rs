@@ -23,7 +23,7 @@ fn main() -> Result<(), String> {
     let mut world = World::empty();
     world
         .lights
-        .push(PointLight::new(Colour::WHITE, Point3D::new(2.0, 7.0, -4.0)));
+        .push(Light::point(Colour::WHITE, Point3D::new(2.0, 7.0, -4.0)));
 
     let plane = || {
         Object::plane().with_material(Material {

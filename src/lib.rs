@@ -26,7 +26,7 @@ mod ray;
 pub use ray::{Intersection, Intersections, Ray};
 
 mod light;
-pub use light::PointLight;
+pub use light::Light;
 
 mod material;
 pub use material::Material;

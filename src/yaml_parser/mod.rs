@@ -1,25 +1,37 @@
-use crate::{Point3D, Vector3D};
+use crate::{Light, Point3D, Vector3D};
 use yaml_rust::{Yaml, YamlLoader};
 
 #[cfg(test)]
 mod tests;
 
-pub fn parse(input: &str) -> Result<CameraDescription, String> {
+pub fn parse(input: &str) -> Result<SceneDescription, String> {
     match YamlLoader::load_from_str(input) {
         Ok(yaml) => {
             let mut camera = None;
+            let mut lights = vec![];
 
             if let Some(items) = yaml[0].as_vec() {
                 for item in items {
-                    if let Some("camera") = item["add"].as_str() {
-                        camera = Some(parse_camera(&item)?);
+                    match item["add"].as_str() {
+                        Some("camera") => {
+                            camera = Some(parse_camera(&item)?);
+                            continue;
+                        }
+                        Some("light") => {
+                            lights.push(parse_light(&item)?);
+                            continue;
+                        }
+                        Some(add) => todo!("add {}", add),
+                        None => (),
                     }
                 }
             } else {
                 return Err("Expected a list of directives".to_string());
             }
 
-            camera.ok_or("No `add: camera` directive found".to_string())
+            let camera = camera.ok_or("No `add: camera` directive found".to_string())?;
+
+            Ok(SceneDescription { camera, lights })
         }
         Err(error) => Err(error.to_string()),
     }
@@ -41,6 +53,13 @@ fn parse_camera(yaml: &Yaml) -> Result<CameraDescription, String> {
         to,
         up,
     })
+}
+
+fn parse_light(yaml: &Yaml) -> Result<Light, String> {
+    let colour = parse_tuple(&yaml, "intensity")?.into();
+    let position = parse_tuple(&yaml, "at")?.into();
+
+    Ok(Light::point(colour, position))
 }
 
 fn parse_tuple(yaml: &Yaml, key: &str) -> Result<(f64, f64, f64), String> {
@@ -88,6 +107,12 @@ fn to_f64_lenient(yaml: &Yaml) -> Result<f64, String> {
         Yaml::Integer(int) => Ok(*int as f64),
         _ => Err("Cannot parse as floating point".to_string()),
     }
+}
+
+#[derive(Debug, PartialEq)]
+pub struct SceneDescription {
+    pub camera: CameraDescription,
+    pub lights: Vec<Light>,
 }
 
 #[derive(PartialEq, Debug)]
