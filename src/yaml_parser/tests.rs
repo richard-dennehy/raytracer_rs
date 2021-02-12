@@ -71,6 +71,73 @@ intensity: [ 0.2, 0.2, 0.2 ]
     }
 
     #[test]
+    fn should_parse_basic_material_define() {
+        let input = "\
+define: white-material
+value:
+  color: [ 1, 1, 1 ]
+  diffuse: 0.7
+  ambient: 0.1
+  specular: 0.0
+  reflective: 0.1";
+
+        let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+        let define = parse_define(yaml, "white-material");
+        assert!(define.is_ok(), define.unwrap_err());
+        let define = define.unwrap();
+
+        assert_eq!(
+            define,
+            Define {
+                name: "white-material".into(),
+                extends: None,
+                value: Value::Material {
+                    colour: Some(Colour::WHITE),
+                    diffuse: Some(0.7),
+                    ambient: Some(0.1),
+                    specular: Some(0.0),
+                    shininess: None,
+                    reflective: Some(0.1),
+                    transparency: None,
+                    refractive: None
+                }
+            }
+        );
+    }
+
+    #[test]
+    fn should_parse_a_material_extending_another_material() {
+        let input = "\
+define: blue-material
+extend: white-material
+value:
+  color: [ 0.537, 0.831, 0.914 ]";
+
+        let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+        let define = parse_define(yaml, "blue-material");
+        assert!(define.is_ok(), define.unwrap_err());
+        let define = define.unwrap();
+
+        assert_eq!(
+            define,
+            Define {
+                name: "blue-material".into(),
+                extends: Some("white-material".into()),
+                value: Value::Material {
+                    colour: Some(Colour::new(0.537, 0.831, 0.914)),
+                    diffuse: None,
+                    ambient: None,
+                    specular: None,
+                    shininess: None,
+                    reflective: None,
+                    transparency: None,
+                    refractive: None
+                }
+            }
+        )
+    }
+
+    #[test]
     fn should_parse_scene_description() {
         let scene = include_str!(concat!(
             env!("CARGO_MANIFEST_DIR"),

@@ -36,6 +36,12 @@ impl Colour {
     }
 }
 
+impl Default for Colour {
+    fn default() -> Self {
+        Colour::WHITE
+    }
+}
+
 impl From<(f64, f64, f64)> for Colour {
     fn from((r, g, b): (f64, f64, f64)) -> Self {
         Colour(r, g, b)

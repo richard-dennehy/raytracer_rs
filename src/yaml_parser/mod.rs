@@ -1,4 +1,4 @@
-use crate::{Light, Point3D, Vector3D};
+use crate::{Colour, Light, Point3D, Vector3D};
 use yaml_rust::{Yaml, YamlLoader};
 
 #[cfg(test)]
@@ -9,6 +9,7 @@ pub fn parse(input: &str) -> Result<SceneDescription, String> {
         Ok(yaml) => {
             let mut camera = None;
             let mut lights = vec![];
+            let mut defines = vec![];
 
             if let Some(items) = yaml[0].as_vec() {
                 for item in items {
@@ -24,6 +25,11 @@ pub fn parse(input: &str) -> Result<SceneDescription, String> {
                         Some(add) => todo!("add {}", add),
                         None => (),
                     }
+
+                    if let Some(name) = item["define"].as_str() {
+                        defines.push(parse_define(item, name)?);
+                        continue;
+                    }
                 }
             } else {
                 return Err("Expected a list of directives".to_string());
@@ -31,7 +37,11 @@ pub fn parse(input: &str) -> Result<SceneDescription, String> {
 
             let camera = camera.ok_or("No `add: camera` directive found".to_string())?;
 
-            Ok(SceneDescription { camera, lights })
+            Ok(SceneDescription {
+                camera,
+                lights,
+                defines,
+            })
         }
         Err(error) => Err(error.to_string()),
     }
@@ -60,6 +70,47 @@ fn parse_light(yaml: &Yaml) -> Result<Light, String> {
     let position = parse_tuple(&yaml, "at")?.into();
 
     Ok(Light::point(colour, position))
+}
+
+fn parse_define(yaml: &Yaml, name: &str) -> Result<Define, String> {
+    let name = name.to_string();
+
+    let value = &yaml["value"];
+    let value = if matches!(value, Yaml::Hash(_)) {
+        parse_material(value)?
+    } else {
+        return Err(format!("cannot parse define at {}", name));
+    };
+
+    let extends = yaml["extend"].as_str().map(Into::into);
+
+    Ok(Define {
+        name,
+        extends,
+        value,
+    })
+}
+
+fn parse_material(yaml: &Yaml) -> Result<Value, String> {
+    let colour = parse_tuple(&yaml, "color").ok().map(Into::into);
+    let diffuse = parse_f64(&yaml, "diffuse").ok();
+    let ambient = parse_f64(&yaml, "ambient").ok();
+    let specular = parse_f64(&yaml, "specular").ok();
+    let shininess = parse_f64(&yaml, "shininess").ok();
+    let reflective = parse_f64(&yaml, "reflective").ok();
+    let transparency = parse_f64(&yaml, "transparency").ok();
+    let refractive = parse_f64(&yaml, "refractive").ok();
+
+    Ok(Value::Material {
+        colour,
+        diffuse,
+        ambient,
+        specular,
+        shininess,
+        reflective,
+        transparency,
+        refractive,
+    })
 }
 
 fn parse_tuple(yaml: &Yaml, key: &str) -> Result<(f64, f64, f64), String> {
@@ -113,6 +164,7 @@ fn to_f64_lenient(yaml: &Yaml) -> Result<f64, String> {
 pub struct SceneDescription {
     pub camera: CameraDescription,
     pub lights: Vec<Light>,
+    pub defines: Vec<Define>,
 }
 
 #[derive(PartialEq, Debug)]
@@ -123,4 +175,25 @@ pub struct CameraDescription {
     from: Point3D,
     to: Point3D,
     up: Vector3D,
+}
+
+#[derive(PartialEq, Debug)]
+pub struct Define {
+    name: String,
+    extends: Option<String>,
+    value: Value,
+}
+
+#[derive(PartialEq, Debug)]
+pub enum Value {
+    Material {
+        colour: Option<Colour>,
+        diffuse: Option<f64>,
+        ambient: Option<f64>,
+        specular: Option<f64>,
+        shininess: Option<f64>,
+        reflective: Option<f64>,
+        transparency: Option<f64>,
+        refractive: Option<f64>,
+    },
 }
