@@ -75,11 +75,12 @@ fn parse_light(yaml: &Yaml) -> Result<Light, String> {
 fn parse_define(yaml: &Yaml, name: &str) -> Result<Define, String> {
     let name = name.to_string();
 
-    let value = &yaml["value"];
-    let value = if matches!(value, Yaml::Hash(_)) {
-        parse_material(value)?
-    } else {
-        return Err(format!("cannot parse define at {}", name));
+    let value_node = &yaml["value"];
+    // this is awfully brittle, but the awkward format doesn't make this easy to parse
+    let value = match value_node {
+        &Yaml::Hash(_) => parse_material(value_node)?,
+        &Yaml::Array(_) => parse_transform(value_node)?,
+        _ => return Err(format!("cannot parse define at {}", name)),
     };
 
     let extends = yaml["extend"].as_str().map(Into::into);
@@ -111,6 +112,61 @@ fn parse_material(yaml: &Yaml) -> Result<Value, String> {
         transparency,
         refractive,
     })
+}
+
+fn parse_transform(yaml: &Yaml) -> Result<Value, String> {
+    let array = match &yaml {
+        &Yaml::Array(array) => array,
+        _ => unreachable!(),
+    };
+
+    let mut transforms = Vec::with_capacity(array.len());
+
+    use Transform::*;
+
+    for item in array.iter() {
+        let transform = match item {
+            Yaml::Array(transform) => transform,
+            Yaml::String(reference) => {
+                transforms.push(Transform::Reference(reference.clone()));
+                continue
+            },
+            _ => return Err(format!("Expected an Array describing a transform, or a String referencing a Define, at {:?}", item))
+        };
+
+        let parsed = match transform.get(0).and_then(Yaml::as_str) {
+            Some("translate") => {
+                assert_eq!(transform.len(), 4, "Expected translate to contain exactly 4 elements (including `translate`) at {:?}", transform);
+                let x = to_f64_lenient(&transform[1])?;
+                let y = to_f64_lenient(&transform[2])?;
+                let z = to_f64_lenient(&transform[3])?;
+                Translate { x, y, z }
+            }
+            Some("scale") => {
+                assert_eq!(
+                    transform.len(),
+                    4,
+                    "Expected scale to contain exactly 4 elements (including `scale`) at {:?}",
+                    transform
+                );
+                let x = to_f64_lenient(&transform[1])?;
+                let y = to_f64_lenient(&transform[2])?;
+                let z = to_f64_lenient(&transform[3])?;
+                Scale { x, y, z }
+            }
+            Some(t) => todo!("transform {}", t),
+            None => {
+                return Err(format!(
+                    "Expected transform array first element to be a transformation name at {:?}",
+                    transform
+                ))
+            }
+        };
+
+        transforms.push(parsed)
+    }
+
+    Ok(Value::Transforms(transforms))
 }
 
 fn parse_tuple(yaml: &Yaml, key: &str) -> Result<(f64, f64, f64), String> {
@@ -196,4 +252,17 @@ pub enum Value {
         transparency: Option<f64>,
         refractive: Option<f64>,
     },
+    Transforms(Vec<Transform>),
+}
+
+#[derive(PartialEq, Debug)]
+pub enum Transform {
+    Translate { x: f64, y: f64, z: f64 },
+    Scale { x: f64, y: f64, z: f64 },
+    RotationX(f64),
+    RotationY(f64),
+    RotationZ(f64),
+    // for some reason, combining transforms is defined inline, rather than using `extend`, like materials
+    Reference(String),
+    // TODO shear
 }

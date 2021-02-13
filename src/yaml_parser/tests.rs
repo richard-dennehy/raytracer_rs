@@ -138,6 +138,70 @@ value:
     }
 
     #[test]
+    fn should_parse_a_transform_define() {
+        let input = "\
+define: standard-transform
+value:
+  - [ translate, 1, -1, 1 ]
+  - [ scale, 0.5, 0.5, 0.5 ]";
+
+        let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+        let define = parse_define(&yaml, "standard-transform");
+        assert!(define.is_ok(), define.unwrap_err());
+        let define = define.unwrap();
+
+        assert_eq!(
+            define,
+            Define {
+                name: "standard-transform".into(),
+                extends: None,
+                value: Value::Transforms(vec![
+                    Transform::Translate {
+                        x: 1.0,
+                        y: -1.0,
+                        z: 1.0
+                    },
+                    Transform::Scale {
+                        x: 0.5,
+                        y: 0.5,
+                        z: 0.5
+                    }
+                ])
+            }
+        );
+    }
+
+    #[test]
+    fn should_parse_a_transform_referencing_another_transform() {
+        let input = "\
+define: large-object
+value:
+  - standard-transform
+  - [ scale, 3.5, 3.5, 3.5 ]";
+
+        let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+        let define = parse_define(&yaml, "large-object");
+        assert!(define.is_ok(), define.unwrap_err());
+        let define = define.unwrap();
+
+        assert_eq!(
+            define,
+            Define {
+                name: "large-object".into(),
+                extends: None,
+                value: Value::Transforms(vec![
+                    Transform::Reference("standard-transform".into()),
+                    Transform::Scale {
+                        x: 3.5,
+                        y: 3.5,
+                        z: 3.5
+                    }
+                ])
+            }
+        );
+    }
+
+    #[test]
     fn should_parse_scene_description() {
         let scene = include_str!(concat!(
             env!("CARGO_MANIFEST_DIR"),
@@ -167,7 +231,8 @@ value:
                         colour: Colour::greyscale(0.2),
                         position: Point3D::new(-400.0, 50.0, -10.0)
                     },
-                ]
+                ],
+                defines: vec![]
             }
         );
     }
