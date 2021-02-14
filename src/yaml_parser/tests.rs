@@ -1,6 +1,6 @@
 use super::*;
 
-mod unit_tests {
+mod basic_parsing {
     use super::*;
     use crate::{Colour, Vector3D};
 
@@ -88,10 +88,10 @@ value:
 
         assert_eq!(
             define,
-            Define {
+            Define::Material {
                 name: "white-material".into(),
                 extends: None,
-                value: Value::Material {
+                value: MaterialDescription {
                     colour: Some(Colour::WHITE),
                     diffuse: Some(0.7),
                     ambient: Some(0.1),
@@ -120,18 +120,12 @@ value:
 
         assert_eq!(
             define,
-            Define {
+            Define::Material {
                 name: "blue-material".into(),
                 extends: Some("white-material".into()),
-                value: Value::Material {
+                value: MaterialDescription {
                     colour: Some(Colour::new(0.537, 0.831, 0.914)),
-                    diffuse: None,
-                    ambient: None,
-                    specular: None,
-                    shininess: None,
-                    reflective: None,
-                    transparency: None,
-                    refractive: None
+                    ..Default::default()
                 }
             }
         )
@@ -152,10 +146,9 @@ value:
 
         assert_eq!(
             define,
-            Define {
+            Define::Transform {
                 name: "standard-transform".into(),
-                extends: None,
-                value: Value::Transforms(vec![
+                value: TransformDescription(vec![
                     Transform::Translate {
                         x: 1.0,
                         y: -1.0,
@@ -186,15 +179,127 @@ value:
 
         assert_eq!(
             define,
-            Define {
+            Define::Transform {
                 name: "large-object".into(),
-                extends: None,
-                value: Value::Transforms(vec![
+                value: TransformDescription(vec![
                     Transform::Reference("standard-transform".into()),
                     Transform::Scale {
                         x: 3.5,
                         y: 3.5,
                         z: 3.5
+                    }
+                ])
+            }
+        );
+    }
+
+    #[test]
+    #[clippy::allow("approx_constant")] // it's no good comparing to PI/2 constant because it won't match
+    fn should_parse_simple_plane_description() {
+        let input = "\
+add: plane
+material:
+  color: [ 1, 1, 1 ]
+  ambient: 1
+  diffuse: 0
+  specular: 0
+transform:
+  - [ rotate-x, 1.5707963267948966 ] # pi/2
+  - [ translate, 0, 0, 500 ]";
+
+        let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+        let object = parse_object(&yaml, "plane");
+        assert!(object.is_ok(), object.unwrap_err());
+        let object = object.unwrap();
+
+        assert_eq!(
+            object,
+            ObjectDescription {
+                kind: ObjectKind::Plane,
+                material: Right(MaterialDescription {
+                    colour: Some(Colour::WHITE),
+                    ambient: Some(1.0),
+                    diffuse: Some(0.0),
+                    specular: Some(0.0),
+                    ..Default::default()
+                }),
+                transform: TransformDescription(vec![
+                    Transform::RotationX(1.5707963267948966),
+                    Transform::Translate {
+                        x: 0.0,
+                        y: 0.0,
+                        z: 500.0
+                    }
+                ])
+            }
+        );
+    }
+
+    #[test]
+    fn should_parse_simple_sphere_description() {
+        let input = "\
+add: sphere
+material:
+  color: [ 0.373, 0.404, 0.550 ]
+  diffuse: 0.2
+  ambient: 0.0
+  specular: 1.0
+  shininess: 200
+  reflective: 0.7
+  transparency: 0.7
+  refractive-index: 1.5
+transform:
+  - large-object";
+
+        let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+        let object = parse_object(&yaml, "sphere");
+        assert!(object.is_ok(), object.unwrap_err());
+        let object = object.unwrap();
+
+        assert_eq!(
+            object,
+            ObjectDescription {
+                kind: ObjectKind::Sphere,
+                material: Right(MaterialDescription {
+                    colour: Some(Colour::new(0.373, 0.404, 0.550)),
+                    diffuse: Some(0.2),
+                    ambient: Some(0.0),
+                    specular: Some(1.0),
+                    shininess: Some(200.0),
+                    reflective: Some(0.7),
+                    transparency: Some(0.7),
+                    refractive: Some(1.5),
+                }),
+                transform: TransformDescription(vec![Transform::Reference("large-object".into())])
+            }
+        );
+    }
+
+    #[test]
+    fn should_parse_a_cube_referencing_a_material_define() {
+        let input = "\
+add: cube
+material: white-material
+transform:
+  - medium-object
+  - [ translate, 4, 0, 0 ]";
+
+        let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+        let object = parse_object(&yaml, "cube");
+        assert!(object.is_ok(), object.unwrap_err());
+        let object = object.unwrap();
+
+        assert_eq!(
+            object,
+            ObjectDescription {
+                kind: ObjectKind::Cube,
+                material: Left("white-material".into()),
+                transform: TransformDescription(vec![
+                    Transform::Reference("medium-object".into()),
+                    Transform::Translate {
+                        x: 4.0,
+                        y: 0.0,
+                        z: 0.0
                     }
                 ])
             }
@@ -232,7 +337,8 @@ value:
                         position: Point3D::new(-400.0, 50.0, -10.0)
                     },
                 ],
-                defines: vec![]
+                defines: vec![],
+                objects: vec![],
             }
         );
     }

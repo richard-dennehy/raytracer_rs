@@ -1,4 +1,6 @@
 use crate::{Colour, Light, Point3D, Vector3D};
+use either::Either;
+use either::Either::{Left, Right};
 use yaml_rust::{Yaml, YamlLoader};
 
 #[cfg(test)]
@@ -10,6 +12,7 @@ pub fn parse(input: &str) -> Result<SceneDescription, String> {
             let mut camera = None;
             let mut lights = vec![];
             let mut defines = vec![];
+            let mut objects = vec![];
 
             if let Some(items) = yaml[0].as_vec() {
                 for item in items {
@@ -22,7 +25,10 @@ pub fn parse(input: &str) -> Result<SceneDescription, String> {
                             lights.push(parse_light(&item)?);
                             continue;
                         }
-                        Some(add) => todo!("add {}", add),
+                        Some(object_type) => {
+                            objects.push(parse_object(&item, object_type)?);
+                            continue;
+                        }
                         None => (),
                     }
 
@@ -41,6 +47,7 @@ pub fn parse(input: &str) -> Result<SceneDescription, String> {
                 camera,
                 lights,
                 defines,
+                objects,
             })
         }
         Err(error) => Err(error.to_string()),
@@ -77,32 +84,40 @@ fn parse_define(yaml: &Yaml, name: &str) -> Result<Define, String> {
 
     let value_node = &yaml["value"];
     // this is awfully brittle, but the awkward format doesn't make this easy to parse
-    let value = match value_node {
-        &Yaml::Hash(_) => parse_material(value_node)?,
-        &Yaml::Array(_) => parse_transform(value_node)?,
-        _ => return Err(format!("cannot parse define at {}", name)),
-    };
+    match value_node {
+        &Yaml::Hash(_) => {
+            let extends = yaml["extend"].as_str().map(Into::into);
+            let material = parse_material(value_node)?;
 
-    let extends = yaml["extend"].as_str().map(Into::into);
-
-    Ok(Define {
-        name,
-        extends,
-        value,
-    })
+            Ok(Define::Material {
+                name,
+                extends,
+                value: material,
+            })
+        }
+        &Yaml::Array(_) => {
+            let transform = parse_transform(value_node)?;
+            Ok(Define::Transform {
+                name,
+                value: transform,
+            })
+        }
+        _ => Err(format!("cannot parse define at {}", name)),
+    }
 }
 
-fn parse_material(yaml: &Yaml) -> Result<Value, String> {
+fn parse_material(yaml: &Yaml) -> Result<MaterialDescription, String> {
+    // FIXME can't distinguish between missing optional properties and invalid values
     let colour = parse_tuple(&yaml, "color").ok().map(Into::into);
-    let diffuse = parse_f64(&yaml, "diffuse").ok();
-    let ambient = parse_f64(&yaml, "ambient").ok();
-    let specular = parse_f64(&yaml, "specular").ok();
-    let shininess = parse_f64(&yaml, "shininess").ok();
-    let reflective = parse_f64(&yaml, "reflective").ok();
-    let transparency = parse_f64(&yaml, "transparency").ok();
-    let refractive = parse_f64(&yaml, "refractive").ok();
+    let diffuse = to_f64_lenient(&yaml["diffuse"]).ok();
+    let ambient = to_f64_lenient(&yaml["ambient"]).ok();
+    let specular = to_f64_lenient(&yaml["specular"]).ok();
+    let shininess = to_f64_lenient(&yaml["shininess"]).ok();
+    let reflective = to_f64_lenient(&yaml["reflective"]).ok();
+    let transparency = to_f64_lenient(&yaml["transparency"]).ok();
+    let refractive = to_f64_lenient(&yaml["refractive-index"]).ok();
 
-    Ok(Value::Material {
+    Ok(MaterialDescription {
         colour,
         diffuse,
         ambient,
@@ -114,7 +129,7 @@ fn parse_material(yaml: &Yaml) -> Result<Value, String> {
     })
 }
 
-fn parse_transform(yaml: &Yaml) -> Result<Value, String> {
+fn parse_transform(yaml: &Yaml) -> Result<TransformDescription, String> {
     let array = match &yaml {
         &Yaml::Array(array) => array,
         _ => unreachable!(),
@@ -154,6 +169,33 @@ fn parse_transform(yaml: &Yaml) -> Result<Value, String> {
                 let z = to_f64_lenient(&transform[3])?;
                 Scale { x, y, z }
             }
+            Some("rotate-x") => {
+                assert_eq!(
+                    transform.len(),
+                    2,
+                    "Expected rotate to contain a single value, in radians"
+                );
+                let rotation = to_f64_lenient(&transform[1])?;
+                RotationX(rotation)
+            }
+            Some("rotate-y") => {
+                assert_eq!(
+                    transform.len(),
+                    2,
+                    "Expected rotate to contain a single value, in radians"
+                );
+                let rotation = to_f64_lenient(&transform[1])?;
+                RotationY(rotation)
+            }
+            Some("rotate-z") => {
+                assert_eq!(
+                    transform.len(),
+                    2,
+                    "Expected rotate to contain a single value, in radians"
+                );
+                let rotation = to_f64_lenient(&transform[1])?;
+                RotationZ(rotation)
+            }
             Some(t) => todo!("transform {}", t),
             None => {
                 return Err(format!(
@@ -166,7 +208,35 @@ fn parse_transform(yaml: &Yaml) -> Result<Value, String> {
         transforms.push(parsed)
     }
 
-    Ok(Value::Transforms(transforms))
+    Ok(TransformDescription(transforms))
+}
+
+fn parse_object(yaml: &Yaml, kind: &str) -> Result<ObjectDescription, String> {
+    let kind = match kind {
+        "plane" => ObjectKind::Plane,
+        "sphere" => ObjectKind::Sphere,
+        "cube" => ObjectKind::Cube,
+        _ => {
+            return Err(format!(
+                "cannot parse `{}` as Object (note: only primitives are supported)",
+                kind
+            ))
+        }
+    };
+
+    let material = match &yaml["material"] {
+        Yaml::String(reference) => Left(reference.to_owned()),
+        description @ Yaml::Hash(_) => Right(parse_material(description)?),
+        other => return Err(format!("cannot parse object material; expected an Object describing the material, or a String referencing a defined material, at {:?}", other))
+    };
+
+    let transform = parse_transform(&yaml["transform"])?;
+
+    Ok(ObjectDescription {
+        kind,
+        material,
+        transform,
+    })
 }
 
 fn parse_tuple(yaml: &Yaml, key: &str) -> Result<(f64, f64, f64), String> {
@@ -221,6 +291,7 @@ pub struct SceneDescription {
     pub camera: CameraDescription,
     pub lights: Vec<Light>,
     pub defines: Vec<Define>,
+    pub objects: Vec<ObjectDescription>,
 }
 
 #[derive(PartialEq, Debug)]
@@ -234,26 +305,41 @@ pub struct CameraDescription {
 }
 
 #[derive(PartialEq, Debug)]
-pub struct Define {
-    name: String,
-    extends: Option<String>,
-    value: Value,
+pub enum Define {
+    Material {
+        name: String,
+        extends: Option<String>,
+        value: MaterialDescription,
+    },
+    Transform {
+        name: String,
+        value: TransformDescription,
+    },
+}
+
+impl Define {
+    pub fn name(&self) -> &str {
+        match &self {
+            Define::Material { name, .. } => name.as_str(),
+            Define::Transform { name, .. } => name.as_str(),
+        }
+    }
+}
+
+#[derive(PartialEq, Debug, Default)]
+pub struct MaterialDescription {
+    colour: Option<Colour>,
+    diffuse: Option<f64>,
+    ambient: Option<f64>,
+    specular: Option<f64>,
+    shininess: Option<f64>,
+    reflective: Option<f64>,
+    transparency: Option<f64>,
+    refractive: Option<f64>,
 }
 
 #[derive(PartialEq, Debug)]
-pub enum Value {
-    Material {
-        colour: Option<Colour>,
-        diffuse: Option<f64>,
-        ambient: Option<f64>,
-        specular: Option<f64>,
-        shininess: Option<f64>,
-        reflective: Option<f64>,
-        transparency: Option<f64>,
-        refractive: Option<f64>,
-    },
-    Transforms(Vec<Transform>),
-}
+pub struct TransformDescription(Vec<Transform>);
 
 #[derive(PartialEq, Debug)]
 pub enum Transform {
@@ -265,4 +351,18 @@ pub enum Transform {
     // for some reason, combining transforms is defined inline, rather than using `extend`, like materials
     Reference(String),
     // TODO shear
+}
+
+#[derive(PartialEq, Debug)]
+pub struct ObjectDescription {
+    kind: ObjectKind,
+    material: Either<String, MaterialDescription>,
+    transform: TransformDescription,
+}
+
+#[derive(PartialEq, Debug)]
+pub enum ObjectKind {
+    Plane,
+    Sphere,
+    Cube,
 }
