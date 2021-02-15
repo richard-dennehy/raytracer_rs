@@ -307,6 +307,7 @@ transform:
     }
 
     #[test]
+    #[clippy::allow("approx_constant")] // approximation of PI/2 matches the file
     fn should_parse_scene_description() {
         let scene = include_str!(concat!(
             env!("CARGO_MANIFEST_DIR"),
@@ -337,8 +338,332 @@ transform:
                         position: Point3D::new(-400.0, 50.0, -10.0)
                     },
                 ],
-                defines: vec![],
-                objects: vec![],
+                defines: vec![
+                    Define::Material {
+                        name: "white-material".into(),
+                        extends: None,
+                        value: MaterialDescription {
+                            colour: Some(Colour::WHITE),
+                            diffuse: Some(0.7),
+                            ambient: Some(0.1),
+                            specular: Some(0.0),
+                            reflective: Some(0.1),
+                            ..Default::default()
+                        }
+                    },
+                    Define::Material {
+                        name: "blue-material".into(),
+                        extends: Some("white-material".into()),
+                        value: MaterialDescription {
+                            colour: Some(Colour::new(0.537, 0.831, 0.914)),
+                            ..Default::default()
+                        }
+                    },
+                    Define::Material {
+                        name: "red-material".into(),
+                        extends: Some("white-material".into()),
+                        value: MaterialDescription {
+                            colour: Some(Colour::new(0.941, 0.322, 0.388)),
+                            ..Default::default()
+                        }
+                    },
+                    Define::Material {
+                        name: "purple-material".into(),
+                        extends: Some("white-material".into()),
+                        value: MaterialDescription {
+                            colour: Some(Colour::new(0.373, 0.404, 0.550)),
+                            ..Default::default()
+                        }
+                    },
+                    Define::Transform {
+                        name: "standard-transform".into(),
+                        value: TransformDescription(vec![
+                            Transform::Translate {
+                                x: 1.0,
+                                y: -1.0,
+                                z: 1.0
+                            },
+                            Transform::Scale {
+                                x: 0.5,
+                                y: 0.5,
+                                z: 0.5
+                            }
+                        ])
+                    },
+                    Define::Transform {
+                        name: "large-object".into(),
+                        value: TransformDescription(vec![
+                            Transform::Reference("standard-transform".into()),
+                            Transform::Scale {
+                                x: 3.5,
+                                y: 3.5,
+                                z: 3.5
+                            }
+                        ])
+                    },
+                    Define::Transform {
+                        name: "medium-object".into(),
+                        value: TransformDescription(vec![
+                            Transform::Reference("standard-transform".into()),
+                            Transform::Scale {
+                                x: 3.0,
+                                y: 3.0,
+                                z: 3.0
+                            }
+                        ])
+                    },
+                    Define::Transform {
+                        name: "small-object".into(),
+                        value: TransformDescription(vec![
+                            Transform::Reference("standard-transform".into()),
+                            Transform::Scale {
+                                x: 2.0,
+                                y: 2.0,
+                                z: 2.0
+                            }
+                        ])
+                    },
+                ],
+                objects: vec![
+                    ObjectDescription {
+                        kind: ObjectKind::Plane,
+                        material: Right(MaterialDescription {
+                            colour: Some(Colour::WHITE),
+                            ambient: Some(1.0),
+                            diffuse: Some(0.0),
+                            specular: Some(0.0),
+                            ..Default::default()
+                        }),
+                        transform: TransformDescription(vec![
+                            Transform::RotationX(1.5707963267948966),
+                            Transform::Translate {
+                                x: 0.0,
+                                y: 0.0,
+                                z: 500.0
+                            }
+                        ])
+                    },
+                    ObjectDescription {
+                        kind: ObjectKind::Sphere,
+                        material: Right(MaterialDescription {
+                            colour: Some(Colour::new(0.373, 0.404, 0.550)),
+                            diffuse: Some(0.2),
+                            ambient: Some(0.0),
+                            specular: Some(1.0),
+                            shininess: Some(200.0),
+                            reflective: Some(0.7),
+                            transparency: Some(0.7),
+                            refractive: Some(1.5),
+                        }),
+                        transform: TransformDescription(vec![Transform::Reference(
+                            "large-object".into()
+                        )])
+                    },
+                    ObjectDescription {
+                        kind: ObjectKind::Cube,
+                        material: Left("white-material".into()),
+                        transform: TransformDescription(vec![
+                            Transform::Reference("medium-object".into()),
+                            Transform::Translate {
+                                x: 4.0,
+                                y: 0.0,
+                                z: 0.0
+                            }
+                        ])
+                    },
+                    ObjectDescription {
+                        kind: ObjectKind::Cube,
+                        material: Left("blue-material".into()),
+                        transform: TransformDescription(vec![
+                            Transform::Reference("large-object".into()),
+                            Transform::Translate {
+                                x: 8.5,
+                                y: 1.5,
+                                z: -0.5
+                            }
+                        ])
+                    },
+                    ObjectDescription {
+                        kind: ObjectKind::Cube,
+                        material: Left("red-material".into()),
+                        transform: TransformDescription(vec![
+                            Transform::Reference("large-object".into()),
+                            Transform::Translate {
+                                x: 0.0,
+                                y: 0.0,
+                                z: 4.0,
+                            }
+                        ])
+                    },
+                    ObjectDescription {
+                        kind: ObjectKind::Cube,
+                        material: Left("white-material".into()),
+                        transform: TransformDescription(vec![
+                            Transform::Reference("small-object".into()),
+                            Transform::Translate {
+                                x: 4.0,
+                                y: 0.0,
+                                z: 4.0,
+                            }
+                        ])
+                    },
+                    ObjectDescription {
+                        kind: ObjectKind::Cube,
+                        material: Left("purple-material".into()),
+                        transform: TransformDescription(vec![
+                            Transform::Reference("medium-object".into()),
+                            Transform::Translate {
+                                x: 7.5,
+                                y: 0.5,
+                                z: 4.0,
+                            }
+                        ])
+                    },
+                    ObjectDescription {
+                        kind: ObjectKind::Cube,
+                        material: Left("white-material".into()),
+                        transform: TransformDescription(vec![
+                            Transform::Reference("medium-object".into()),
+                            Transform::Translate {
+                                x: -0.25,
+                                y: 0.25,
+                                z: 8.0,
+                            }
+                        ])
+                    },
+                    ObjectDescription {
+                        kind: ObjectKind::Cube,
+                        material: Left("blue-material".into()),
+                        transform: TransformDescription(vec![
+                            Transform::Reference("large-object".into()),
+                            Transform::Translate {
+                                x: 4.0,
+                                y: 1.0,
+                                z: 7.5,
+                            }
+                        ])
+                    },
+                    ObjectDescription {
+                        kind: ObjectKind::Cube,
+                        material: Left("red-material".into()),
+                        transform: TransformDescription(vec![
+                            Transform::Reference("medium-object".into()),
+                            Transform::Translate {
+                                x: 10.0,
+                                y: 2.0,
+                                z: 7.5,
+                            }
+                        ])
+                    },
+                    ObjectDescription {
+                        kind: ObjectKind::Cube,
+                        material: Left("white-material".into()),
+                        transform: TransformDescription(vec![
+                            Transform::Reference("small-object".into()),
+                            Transform::Translate {
+                                x: 8.0,
+                                y: 2.0,
+                                z: 12.0,
+                            }
+                        ])
+                    },
+                    ObjectDescription {
+                        kind: ObjectKind::Cube,
+                        material: Left("white-material".into()),
+                        transform: TransformDescription(vec![
+                            Transform::Reference("small-object".into()),
+                            Transform::Translate {
+                                x: 20.0,
+                                y: 1.0,
+                                z: 9.0,
+                            }
+                        ])
+                    },
+                    ObjectDescription {
+                        kind: ObjectKind::Cube,
+                        material: Left("blue-material".into()),
+                        transform: TransformDescription(vec![
+                            Transform::Reference("large-object".into()),
+                            Transform::Translate {
+                                x: -0.5,
+                                y: -5.0,
+                                z: 0.25,
+                            }
+                        ])
+                    },
+                    ObjectDescription {
+                        kind: ObjectKind::Cube,
+                        material: Left("red-material".into()),
+                        transform: TransformDescription(vec![
+                            Transform::Reference("large-object".into()),
+                            Transform::Translate {
+                                x: 4.0,
+                                y: -4.0,
+                                z: 0.0,
+                            }
+                        ])
+                    },
+                    ObjectDescription {
+                        kind: ObjectKind::Cube,
+                        material: Left("white-material".into()),
+                        transform: TransformDescription(vec![
+                            Transform::Reference("large-object".into()),
+                            Transform::Translate {
+                                x: 8.5,
+                                y: -4.0,
+                                z: 0.0,
+                            }
+                        ])
+                    },
+                    ObjectDescription {
+                        kind: ObjectKind::Cube,
+                        material: Left("white-material".into()),
+                        transform: TransformDescription(vec![
+                            Transform::Reference("large-object".into()),
+                            Transform::Translate {
+                                x: 0.0,
+                                y: -4.0,
+                                z: 4.0,
+                            }
+                        ])
+                    },
+                    ObjectDescription {
+                        kind: ObjectKind::Cube,
+                        material: Left("purple-material".into()),
+                        transform: TransformDescription(vec![
+                            Transform::Reference("large-object".into()),
+                            Transform::Translate {
+                                x: -0.5,
+                                y: -4.5,
+                                z: 8.0,
+                            }
+                        ])
+                    },
+                    ObjectDescription {
+                        kind: ObjectKind::Cube,
+                        material: Left("white-material".into()),
+                        transform: TransformDescription(vec![
+                            Transform::Reference("large-object".into()),
+                            Transform::Translate {
+                                x: 0.0,
+                                y: -8.0,
+                                z: 4.0,
+                            }
+                        ])
+                    },
+                    ObjectDescription {
+                        kind: ObjectKind::Cube,
+                        material: Left("white-material".into()),
+                        transform: TransformDescription(vec![
+                            Transform::Reference("large-object".into()),
+                            Transform::Translate {
+                                x: -0.5,
+                                y: -8.5,
+                                z: 8.0,
+                            }
+                        ])
+                    },
+                ],
             }
         );
     }

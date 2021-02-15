@@ -15,12 +15,8 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="very WIP YAML parser&#10;&#10;- implemented transform define parser">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP YAML parser&#10;&#10;- implemented object description parser">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/colour/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/colour/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -85,7 +81,12 @@
       <command value="cargo test" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.Test unit_tests">
+  <component name="RunManager" selected="Cargo.Test basic_parsing">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -101,8 +102,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test unit_tests" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib yaml_parser::tests::unit_tests" />
+    <configuration name="Test basic_parsing" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib yaml_parser::tests::basic_parsing" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -116,8 +117,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test world::tests::unit_tests::a_hit_on_a_face_exposed_by_a_csg_subtraction_should_be_lit_as_external" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib world::tests::unit_tests::a_hit_on_a_face_exposed_by_a_csg_subtraction_should_be_lit_as_external -- --exact" />
+    <configuration name="Test unit_tests" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib yaml_parser::tests::unit_tests" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -176,26 +177,21 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.run (release)" />
       <item itemvalue="Cargo.test" />
-      <item itemvalue="Cargo.Test world::tests::unit_tests::a_hit_on_a_face_exposed_by_a_csg_subtraction_should_be_lit_as_external" />
       <item itemvalue="Cargo.Test unit_tests" />
       <item itemvalue="Cargo.Test yaml_parser::tests::unit_tests::should_parse_simple_object_description" />
+      <item itemvalue="Cargo.Test basic_parsing" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.Test basic_parsing" />
         <item itemvalue="Cargo.Test unit_tests" />
         <item itemvalue="Cargo.Test yaml_parser::tests::unit_tests::should_parse_simple_object_description" />
         <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.run (release)" />
-        <item itemvalue="Cargo.Test world::tests::unit_tests::a_hit_on_a_face_exposed_by_a_csg_subtraction_should_be_lit_as_external" />
       </list>
     </recent_temporary>
   </component>
@@ -288,14 +284,8 @@
       <workItem from="1613155880170" duration="52000" />
       <workItem from="1613158043174" duration="2475000" />
       <workItem from="1613217993583" duration="3594000" />
-      <workItem from="1613305078968" duration="3585000" />
-    </task>
-    <task id="LOCAL-00034" summary="checkers and ring patterns">
-      <created>1610050499105</created>
-      <option name="number" value="00034" />
-      <option name="presentableId" value="LOCAL-00034" />
-      <option name="project" value="LOCAL" />
-      <updated>1610050499105</updated>
+      <workItem from="1613305078968" duration="3653000" />
+      <workItem from="1613390694257" duration="1408000" />
     </task>
     <task id="LOCAL-00035" summary="add reflective component to materials">
       <created>1610051840314</created>
@@ -633,7 +623,14 @@
       <option name="project" value="LOCAL" />
       <updated>1613221300484</updated>
     </task>
-    <option name="localTasksCounter" value="83" />
+    <task id="LOCAL-00083" summary="WIP YAML parser&#10;&#10;- implemented object description parser">
+      <created>1613308728937</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1613308728938</updated>
+    </task>
+    <option name="localTasksCounter" value="84" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -649,7 +646,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="example: use groups to construct hexagon from spheres and cylinders" />
     <MESSAGE value="implement triangles" />
     <MESSAGE value="WIP obj file parser" />
     <MESSAGE value="WIP parse faces from obj file" />
@@ -674,7 +670,8 @@
     <MESSAGE value="very WIP YAML parser&#10;&#10;- implemented light description parser" />
     <MESSAGE value="very WIP YAML parser&#10;&#10;- implemented colour define parser, including extends" />
     <MESSAGE value="very WIP YAML parser&#10;&#10;- implemented transform define parser" />
-    <option name="LAST_COMMIT_MESSAGE" value="very WIP YAML parser&#10;&#10;- implemented transform define parser" />
+    <MESSAGE value="WIP YAML parser&#10;&#10;- implemented object description parser" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP YAML parser&#10;&#10;- implemented object description parser" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
