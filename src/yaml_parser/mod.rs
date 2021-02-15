@@ -1,10 +1,12 @@
-use crate::{Colour, Light, Point3D, Vector3D};
-use either::Either;
+use crate::{Light, Point3D};
 use either::Either::{Left, Right};
 use yaml_rust::{Yaml, YamlLoader};
 
 #[cfg(test)]
 mod tests;
+
+mod model;
+use model::*;
 
 pub fn parse(input: &str) -> Result<SceneDescription, String> {
     match YamlLoader::load_from_str(input) {
@@ -129,7 +131,7 @@ fn parse_material(yaml: &Yaml) -> Result<MaterialDescription, String> {
     })
 }
 
-fn parse_transform(yaml: &Yaml) -> Result<TransformDescription, String> {
+fn parse_transform(yaml: &Yaml) -> Result<Vec<Transform>, String> {
     let array = match &yaml {
         &Yaml::Array(array) => array,
         _ => unreachable!(),
@@ -208,7 +210,7 @@ fn parse_transform(yaml: &Yaml) -> Result<TransformDescription, String> {
         transforms.push(parsed)
     }
 
-    Ok(TransformDescription(transforms))
+    Ok(transforms)
 }
 
 fn parse_object(yaml: &Yaml, kind: &str) -> Result<ObjectDescription, String> {
@@ -284,85 +286,4 @@ fn to_f64_lenient(yaml: &Yaml) -> Result<f64, String> {
         Yaml::Integer(int) => Ok(*int as f64),
         _ => Err("Cannot parse as floating point".to_string()),
     }
-}
-
-#[derive(Debug, PartialEq)]
-pub struct SceneDescription {
-    pub camera: CameraDescription,
-    pub lights: Vec<Light>,
-    pub defines: Vec<Define>,
-    pub objects: Vec<ObjectDescription>,
-}
-
-#[derive(PartialEq, Debug)]
-pub struct CameraDescription {
-    width: usize,
-    height: usize,
-    field_of_view: f64,
-    from: Point3D,
-    to: Point3D,
-    up: Vector3D,
-}
-
-#[derive(PartialEq, Debug)]
-pub enum Define {
-    Material {
-        name: String,
-        extends: Option<String>,
-        value: MaterialDescription,
-    },
-    Transform {
-        name: String,
-        value: TransformDescription,
-    },
-}
-
-impl Define {
-    pub fn name(&self) -> &str {
-        match &self {
-            Define::Material { name, .. } => name.as_str(),
-            Define::Transform { name, .. } => name.as_str(),
-        }
-    }
-}
-
-#[derive(PartialEq, Debug, Default)]
-pub struct MaterialDescription {
-    colour: Option<Colour>,
-    diffuse: Option<f64>,
-    ambient: Option<f64>,
-    specular: Option<f64>,
-    shininess: Option<f64>,
-    reflective: Option<f64>,
-    transparency: Option<f64>,
-    refractive: Option<f64>,
-}
-
-#[derive(PartialEq, Debug)]
-pub struct TransformDescription(Vec<Transform>);
-
-#[derive(PartialEq, Debug)]
-pub enum Transform {
-    Translate { x: f64, y: f64, z: f64 },
-    Scale { x: f64, y: f64, z: f64 },
-    RotationX(f64),
-    RotationY(f64),
-    RotationZ(f64),
-    // for some reason, combining transforms is defined inline, rather than using `extend`, like materials
-    Reference(String),
-    // TODO shear
-}
-
-#[derive(PartialEq, Debug)]
-pub struct ObjectDescription {
-    kind: ObjectKind,
-    material: Either<String, MaterialDescription>,
-    transform: TransformDescription,
-}
-
-#[derive(PartialEq, Debug)]
-pub enum ObjectKind {
-    Plane,
-    Sphere,
-    Cube,
 }
