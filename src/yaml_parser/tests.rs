@@ -16,7 +16,7 @@ to: [ 6, 0, 6 ]
 up: [ -0.45, 1, 0 ]";
 
         let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-        let output = parse_camera(&yaml);
+        let output = yaml.parse::<CameraDescription>();
         assert!(output.is_ok(), output.unwrap_err());
         let output = output.unwrap();
 
@@ -41,7 +41,7 @@ at: [ 50, 100, -50 ]
 intensity: [ 1, 1, 1 ]";
 
         let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-        let output = parse_light(&yaml);
+        let output = yaml.parse::<Light>();
         assert!(output.is_ok(), output.unwrap_err());
         let output = output.unwrap();
 
@@ -60,7 +60,7 @@ intensity: [ 0.2, 0.2, 0.2 ]
 ";
 
         let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-        let output = parse_light(&yaml);
+        let output = yaml.parse::<Light>();
         assert!(output.is_ok(), output.unwrap_err());
         let output = output.unwrap();
 
@@ -82,7 +82,7 @@ value:
   reflective: 0.1";
 
         let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-        let define = parse_define(yaml, "white-material");
+        let define = yaml.parse::<Define>();
         assert!(define.is_ok(), define.unwrap_err());
         let define = define.unwrap();
 
@@ -114,7 +114,7 @@ value:
   color: [ 0.537, 0.831, 0.914 ]";
 
         let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-        let define = parse_define(yaml, "blue-material");
+        let define = yaml.parse::<Define>();
         assert!(define.is_ok(), define.unwrap_err());
         let define = define.unwrap();
 
@@ -140,7 +140,7 @@ value:
   - [ scale, 0.5, 0.5, 0.5 ]";
 
         let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-        let define = parse_define(&yaml, "standard-transform");
+        let define = yaml.parse::<Define>();
         assert!(define.is_ok(), define.unwrap_err());
         let define = define.unwrap();
 
@@ -173,7 +173,7 @@ value:
   - [ scale, 3.5, 3.5, 3.5 ]";
 
         let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-        let define = parse_define(&yaml, "large-object");
+        let define = yaml.parse::<Define>();
         assert!(define.is_ok(), define.unwrap_err());
         let define = define.unwrap();
 
@@ -208,7 +208,7 @@ transform:
   - [ translate, 0, 0, 500 ]";
 
         let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-        let object = parse_object(&yaml, "plane");
+        let object = yaml.parse::<ObjectDescription>();
         assert!(object.is_ok(), object.unwrap_err());
         let object = object.unwrap();
 
@@ -252,7 +252,7 @@ transform:
   - large-object";
 
         let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-        let object = parse_object(&yaml, "sphere");
+        let object = yaml.parse::<ObjectDescription>();
         assert!(object.is_ok(), object.unwrap_err());
         let object = object.unwrap();
 
@@ -285,7 +285,7 @@ transform:
   - [ translate, 4, 0, 0 ]";
 
         let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-        let object = parse_object(&yaml, "cube");
+        let object = yaml.parse::<ObjectDescription>();
         assert!(object.is_ok(), object.unwrap_err());
         let object = object.unwrap();
 

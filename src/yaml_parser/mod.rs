@@ -1,4 +1,4 @@
-use crate::{Light, Point3D};
+use crate::{Colour, Light, Point3D, Vector3D};
 use either::Either::{Left, Right};
 use yaml_rust::{Yaml, YamlLoader};
 
@@ -20,22 +20,22 @@ pub fn parse(input: &str) -> Result<SceneDescription, String> {
                 for item in items {
                     match item["add"].as_str() {
                         Some("camera") => {
-                            camera = Some(parse_camera(&item)?);
+                            camera = Some(item.parse()?);
                             continue;
                         }
                         Some("light") => {
-                            lights.push(parse_light(&item)?);
+                            lights.push(item.parse()?);
                             continue;
                         }
-                        Some(object_type) => {
-                            objects.push(parse_object(&item, object_type)?);
+                        Some(_) => {
+                            objects.push(item.parse()?);
                             continue;
                         }
                         None => (),
                     }
 
-                    if let Some(name) = item["define"].as_str() {
-                        defines.push(parse_define(item, name)?);
+                    if item["define"].as_str().is_some() {
+                        defines.push(item.parse()?);
                         continue;
                     }
                 }
@@ -56,107 +56,152 @@ pub fn parse(input: &str) -> Result<SceneDescription, String> {
     }
 }
 
-fn parse_camera(yaml: &Yaml) -> Result<CameraDescription, String> {
-    let width = parse_usize(yaml, "width")?;
-    let height = parse_usize(yaml, "height")?;
-    let field_of_view = parse_f64(yaml, "field-of-view")?;
-    let from = parse_tuple(yaml, "from")?.into();
-    let to = parse_tuple(yaml, "to")?.into();
-    let up = parse_tuple(yaml, "up")?.into();
-
-    Ok(CameraDescription {
-        width,
-        height,
-        field_of_view,
-        from,
-        to,
-        up,
-    })
+trait YamlExt {
+    fn parse<T: FromYaml>(&self) -> Result<T, String>;
 }
 
-fn parse_light(yaml: &Yaml) -> Result<Light, String> {
-    let colour = parse_tuple(&yaml, "intensity")?.into();
-    let position = parse_tuple(&yaml, "at")?.into();
-
-    Ok(Light::point(colour, position))
-}
-
-fn parse_define(yaml: &Yaml, name: &str) -> Result<Define, String> {
-    let name = name.to_string();
-
-    let value_node = &yaml["value"];
-    // this is awfully brittle, but the awkward format doesn't make this easy to parse
-    match value_node {
-        &Yaml::Hash(_) => {
-            let extends = yaml["extend"].as_str().map(Into::into);
-            let material = parse_material(value_node)?;
-
-            Ok(Define::Material {
-                name,
-                extends,
-                value: material,
-            })
-        }
-        &Yaml::Array(_) => {
-            let transform = parse_transform(value_node)?;
-            Ok(Define::Transform {
-                name,
-                value: transform,
-            })
-        }
-        _ => Err(format!("cannot parse define at {}", name)),
+impl YamlExt for Yaml {
+    fn parse<T: FromYaml>(&self) -> Result<T, String> {
+        T::from_yaml(&self)
     }
 }
 
-fn parse_material(yaml: &Yaml) -> Result<MaterialDescription, String> {
-    // FIXME can't distinguish between missing optional properties and invalid values
-    let colour = parse_tuple(&yaml, "color").ok().map(Into::into);
-    let diffuse = to_f64_lenient(&yaml["diffuse"]).ok();
-    let ambient = to_f64_lenient(&yaml["ambient"]).ok();
-    let specular = to_f64_lenient(&yaml["specular"]).ok();
-    let shininess = to_f64_lenient(&yaml["shininess"]).ok();
-    let reflective = to_f64_lenient(&yaml["reflective"]).ok();
-    let transparency = to_f64_lenient(&yaml["transparency"]).ok();
-    let refractive = to_f64_lenient(&yaml["refractive-index"]).ok();
-
-    Ok(MaterialDescription {
-        colour,
-        diffuse,
-        ambient,
-        specular,
-        shininess,
-        reflective,
-        transparency,
-        refractive,
-    })
+trait FromYaml: Sized {
+    fn from_yaml(yaml: &Yaml) -> Result<Self, String>;
 }
 
-fn parse_transform(yaml: &Yaml) -> Result<Vec<Transform>, String> {
-    let array = match &yaml {
-        &Yaml::Array(array) => array,
-        _ => unreachable!(),
-    };
+impl FromYaml for f64 {
+    fn from_yaml(yaml: &Yaml) -> Result<Self, String> {
+        match &yaml {
+            // yaml lib f64 parsing is lazy - this can't fail
+            Yaml::Real(real) => Ok(real.parse().unwrap()),
+            Yaml::Integer(integer) => Ok(*integer as f64),
+            Yaml::BadValue => Err("value is undefined".into()),
+            _ => Err(format!("cannot parse {:?} as floating point", yaml)),
+        }
+    }
+}
 
-    let mut transforms = Vec::with_capacity(array.len());
+impl FromYaml for usize {
+    fn from_yaml(yaml: &Yaml) -> Result<Self, String> {
+        match &yaml {
+            Yaml::Integer(integer) if *integer >= 0 => Ok(*integer as usize),
+            Yaml::Integer(_) => Err("value must not be negative".into()),
+            Yaml::BadValue => Err("value is undefined".into()),
+            _ => Err(format!("cannot parse {:?} as an integer", yaml)),
+        }
+    }
+}
 
-    use Transform::*;
+impl FromYaml for (f64, f64, f64) {
+    fn from_yaml(yaml: &Yaml) -> Result<Self, String> {
+        if let Some(components) = yaml.as_vec() {
+            if components.len() != 3 {
+                return Err("Expected an array of exactly 3 numbers".into());
+            } else {
+                let x = components[0]
+                    .parse()
+                    .map_err(|_| "cannot parse `x` component as floating point".to_string())?;
+                let y = components[1]
+                    .parse()
+                    .map_err(|_| "cannot parse `y` component as floating point".to_string())?;
+                let z = components[2]
+                    .parse()
+                    .map_err(|_| "cannot parse `z` component as floating point".to_string())?;
 
-    for item in array.iter() {
-        let transform = match item {
+                Ok((x, y, z))
+            }
+        } else {
+            Err("Expected an array of exactly 3 numbers".into())
+        }
+    }
+}
+
+impl FromYaml for Define {
+    fn from_yaml(yaml: &Yaml) -> Result<Self, String> {
+        let name = yaml["define"]
+            .as_str()
+            .ok_or_else(|| "unreachable: define doesn't include a `define`".to_string())?
+            .to_owned();
+
+        let value_node = &yaml["value"];
+        // this is awfully brittle, but the awkward format doesn't make this easy to parse
+        match value_node {
+            &Yaml::Hash(_) => {
+                let extends = yaml["extend"].as_str().map(Into::into);
+                let material = value_node.parse()?;
+
+                Ok(Define::Material {
+                    name,
+                    extends,
+                    value: material,
+                })
+            }
+            &Yaml::Array(_) => {
+                let transform = value_node.parse()?;
+                Ok(Define::Transform {
+                    name,
+                    value: transform,
+                })
+            }
+            _ => Err(format!("cannot parse define at {}", name)),
+        }
+    }
+}
+
+impl FromYaml for ObjectDescription {
+    fn from_yaml(yaml: &Yaml) -> Result<Self, String> {
+        let add = yaml["add"].as_str().ok_or_else(|| {
+            "unreachable: should not be parsing yaml as ObjectDescription if there is no `add`"
+                .to_string()
+        })?;
+
+        let kind = match add {
+            "plane" => ObjectKind::Plane,
+            "sphere" => ObjectKind::Sphere,
+            "cube" => ObjectKind::Cube,
+            _ => {
+                return Err(format!(
+                    "cannot parse `{}` as Object (note: only primitives are supported)",
+                    add
+                ))
+            }
+        };
+
+        let material = match &yaml["material"] {
+            Yaml::String(reference) => Left(reference.to_owned()),
+            description @ Yaml::Hash(_) => Right(description.parse()?),
+            other => return Err(format!("cannot parse object material; expected an Object describing the material, or a String referencing a defined material, at {:?}", other))
+        };
+
+        let transform = yaml["transform"].parse()?;
+
+        Ok(ObjectDescription {
+            kind,
+            material,
+            transform,
+        })
+    }
+}
+
+impl FromYaml for Transform {
+    fn from_yaml(yaml: &Yaml) -> Result<Self, String> {
+        use Transform::*;
+
+        let transform = match yaml {
             Yaml::Array(transform) => transform,
             Yaml::String(reference) => {
-                transforms.push(Transform::Reference(reference.clone()));
-                continue
+                return Ok(Transform::Reference(reference.clone()))
             },
-            _ => return Err(format!("Expected an Array describing a transform, or a String referencing a Define, at {:?}", item))
+            _ => return Err(format!("Expected an Array describing a transform, or a String referencing a Define, at {:?}", yaml))
         };
 
         let parsed = match transform.get(0).and_then(Yaml::as_str) {
             Some("translate") => {
                 assert_eq!(transform.len(), 4, "Expected translate to contain exactly 4 elements (including `translate`) at {:?}", transform);
-                let x = to_f64_lenient(&transform[1])?;
-                let y = to_f64_lenient(&transform[2])?;
-                let z = to_f64_lenient(&transform[3])?;
+                let x = transform[1].parse()?;
+                let y = transform[2].parse()?;
+                let z = transform[3].parse()?;
                 Translate { x, y, z }
             }
             Some("scale") => {
@@ -166,9 +211,9 @@ fn parse_transform(yaml: &Yaml) -> Result<Vec<Transform>, String> {
                     "Expected scale to contain exactly 4 elements (including `scale`) at {:?}",
                     transform
                 );
-                let x = to_f64_lenient(&transform[1])?;
-                let y = to_f64_lenient(&transform[2])?;
-                let z = to_f64_lenient(&transform[3])?;
+                let x = transform[1].parse()?;
+                let y = transform[2].parse()?;
+                let z = transform[3].parse()?;
                 Scale { x, y, z }
             }
             Some("rotate-x") => {
@@ -177,7 +222,7 @@ fn parse_transform(yaml: &Yaml) -> Result<Vec<Transform>, String> {
                     2,
                     "Expected rotate to contain a single value, in radians"
                 );
-                let rotation = to_f64_lenient(&transform[1])?;
+                let rotation = transform[1].parse()?;
                 RotationX(rotation)
             }
             Some("rotate-y") => {
@@ -186,7 +231,7 @@ fn parse_transform(yaml: &Yaml) -> Result<Vec<Transform>, String> {
                     2,
                     "Expected rotate to contain a single value, in radians"
                 );
-                let rotation = to_f64_lenient(&transform[1])?;
+                let rotation = transform[1].parse()?;
                 RotationY(rotation)
             }
             Some("rotate-z") => {
@@ -195,7 +240,7 @@ fn parse_transform(yaml: &Yaml) -> Result<Vec<Transform>, String> {
                     2,
                     "Expected rotate to contain a single value, in radians"
                 );
-                let rotation = to_f64_lenient(&transform[1])?;
+                let rotation = transform[1].parse()?;
                 RotationZ(rotation)
             }
             Some(t) => todo!("transform {}", t),
@@ -207,83 +252,104 @@ fn parse_transform(yaml: &Yaml) -> Result<Vec<Transform>, String> {
             }
         };
 
-        transforms.push(parsed)
-    }
-
-    Ok(transforms)
-}
-
-fn parse_object(yaml: &Yaml, kind: &str) -> Result<ObjectDescription, String> {
-    let kind = match kind {
-        "plane" => ObjectKind::Plane,
-        "sphere" => ObjectKind::Sphere,
-        "cube" => ObjectKind::Cube,
-        _ => {
-            return Err(format!(
-                "cannot parse `{}` as Object (note: only primitives are supported)",
-                kind
-            ))
-        }
-    };
-
-    let material = match &yaml["material"] {
-        Yaml::String(reference) => Left(reference.to_owned()),
-        description @ Yaml::Hash(_) => Right(parse_material(description)?),
-        other => return Err(format!("cannot parse object material; expected an Object describing the material, or a String referencing a defined material, at {:?}", other))
-    };
-
-    let transform = parse_transform(&yaml["transform"])?;
-
-    Ok(ObjectDescription {
-        kind,
-        material,
-        transform,
-    })
-}
-
-fn parse_tuple(yaml: &Yaml, key: &str) -> Result<(f64, f64, f64), String> {
-    if let Some(components) = yaml[key].as_vec() {
-        if components.len() != 3 {
-            return Err(format!("Expected an array of exactly 3 numbers at {}", key));
-        } else {
-            let x = to_f64_lenient(&components[0])
-                .map_err(|_| format!("Invalid `x` component of {}; expected number", key))?;
-            let y = to_f64_lenient(&components[1])
-                .map_err(|_| format!("Invalid `x` component of {}; expected number", key))?;
-            let z = to_f64_lenient(&components[2])
-                .map_err(|_| format!("Invalid `x` component of {}; expected number", key))?;
-
-            Ok((x, y, z))
-        }
-    } else {
-        Err(format!("Expected an array of exactly 3 numbers at {}", key))
+        Ok(parsed)
     }
 }
 
-fn parse_usize(yaml: &Yaml, key: &str) -> Result<usize, String> {
-    yaml[key]
-        .as_i64()
-        .ok_or(format!("Cannot parse required field {:?}", key))
-        .and_then(|signed| {
-            if signed < 0 {
-                Err(format!("Field {:?} must not be negative", key))
-            } else {
-                Ok(signed as usize)
-            }
+impl FromYaml for MaterialDescription {
+    fn from_yaml(yaml: &Yaml) -> Result<Self, String> {
+        let colour = yaml["color"].parse()?;
+        let diffuse = yaml["diffuse"].parse()?;
+        let ambient = yaml["ambient"].parse()?;
+        let specular = yaml["specular"].parse()?;
+        let shininess = yaml["shininess"].parse()?;
+        let reflective = yaml["reflective"].parse()?;
+        let transparency = yaml["transparency"].parse()?;
+        let refractive = yaml["refractive-index"].parse()?;
+
+        Ok(MaterialDescription {
+            colour,
+            diffuse,
+            ambient,
+            specular,
+            shininess,
+            reflective,
+            transparency,
+            refractive,
         })
+    }
 }
 
-fn parse_f64(yaml: &Yaml, key: &str) -> Result<f64, String> {
-    yaml[key]
-        .as_f64()
-        .ok_or(format!("Cannot parse required field {:?}", key))
+impl FromYaml for CameraDescription {
+    fn from_yaml(yaml: &Yaml) -> Result<Self, String> {
+        let width = yaml["width"].parse()?;
+        let height = yaml["height"].parse()?;
+        let field_of_view = yaml["field-of-view"].parse()?;
+        let from = yaml["from"].parse()?;
+        let to = yaml["to"].parse()?;
+        let up = yaml["up"].parse()?;
+
+        Ok(CameraDescription {
+            width,
+            height,
+            field_of_view,
+            from,
+            to,
+            up,
+        })
+    }
 }
 
-fn to_f64_lenient(yaml: &Yaml) -> Result<f64, String> {
-    match &yaml {
-        // parsing can't actually fail here, the underlying YAML parser just converts lazily
-        Yaml::Real(float) => Ok(float.parse::<f64>().unwrap()),
-        Yaml::Integer(int) => Ok(*int as f64),
-        _ => Err("Cannot parse as floating point".to_string()),
+impl FromYaml for Light {
+    fn from_yaml(yaml: &Yaml) -> Result<Self, String> {
+        let colour = yaml["intensity"].parse()?;
+        let position = yaml["at"].parse()?;
+
+        Ok(Light::point(colour, position))
+    }
+}
+
+// there's no way of implementing these generically without conflicting with Option, as that _also_
+// defines From<(f64, f64, f64)> (or at least, From<T>)
+impl FromYaml for Colour {
+    fn from_yaml(yaml: &Yaml) -> Result<Self, String> {
+        yaml.parse().map(|(r, g, b)| Self::new(r, g, b))
+    }
+}
+
+impl FromYaml for Point3D {
+    fn from_yaml(yaml: &Yaml) -> Result<Self, String> {
+        yaml.parse().map(|(x, y, z)| Self::new(x, y, z))
+    }
+}
+
+impl FromYaml for Vector3D {
+    fn from_yaml(yaml: &Yaml) -> Result<Self, String> {
+        yaml.parse().map(|(x, y, z)| Self::new(x, y, z))
+    }
+}
+
+impl<T> FromYaml for Option<T>
+where
+    T: FromYaml,
+{
+    fn from_yaml(yaml: &Yaml) -> Result<Self, String> {
+        if yaml.is_badvalue() {
+            Ok(None)
+        } else {
+            T::from_yaml(&yaml).map(Some)
+        }
+    }
+}
+
+impl<T> FromYaml for Vec<T>
+where
+    T: FromYaml,
+{
+    fn from_yaml(yaml: &Yaml) -> Result<Self, String> {
+        match &yaml {
+            Yaml::Array(array) => array.iter().map(T::from_yaml).collect(),
+            _ => Err(format!("expected array, got {:?}", yaml)),
+        }
     }
 }
