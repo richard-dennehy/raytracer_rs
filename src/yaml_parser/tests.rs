@@ -666,3 +666,43 @@ transform:
         );
     }
 }
+
+mod creating_a_scene {
+    use super::*;
+    use crate::{Camera, Matrix4D, Vector3D};
+    use nonzero_ext::nonzero;
+
+    #[test]
+    fn should_be_able_to_create_a_camera_from_a_valid_file() {
+        let input = "\
+- add: camera
+  width: 100
+  height: 100
+  field-of-view: 0.785
+  from: [ -6, 6, -10 ]
+  to: [ 6, 0, 6 ]
+  up: [ -0.45, 1, 0 ]";
+
+        let scene = parse(input);
+        assert!(scene.is_ok(), scene.unwrap_err());
+        let scene = scene.unwrap();
+
+        let camera = scene.camera();
+        assert!(camera.is_ok(), camera.unwrap_err());
+        let camera = camera.unwrap();
+
+        assert_eq!(
+            camera,
+            Camera::new(
+                nonzero!(100_u16),
+                nonzero!(100_u16),
+                0.785,
+                Matrix4D::view_transform(
+                    Point3D::new(-6.0, 6.0, -10.0),
+                    Point3D::new(6.0, 0.0, 6.0),
+                    Vector3D::new(-0.45, 1.0, 0.0)
+                )
+            )
+        );
+    }
+}

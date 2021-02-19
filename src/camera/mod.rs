@@ -4,6 +4,7 @@ use std::num::NonZeroU16;
 #[cfg(test)]
 mod tests;
 
+#[derive(Debug, PartialEq)]
 pub struct Camera {
     width: NonZeroU16,
     height: NonZeroU16,

@@ -15,9 +15,14 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="refactoring YAML parser to use extension trait &amp; typeclass">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="added documentation for parser assumptions">
+      <change afterPath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/camera/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/camera/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/light/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/light/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,7 +86,7 @@
       <command value="cargo test" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.Test basic_parsing">
+  <component name="RunManager" selected="Cargo.Test creating_a_scene">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -112,8 +117,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test unit_tests" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib yaml_parser::tests::unit_tests" />
+    <configuration name="Test creating_a_scene" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib yaml_parser::tests::creating_a_scene" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -172,21 +177,26 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.Test basic_parsing" />
-      <item itemvalue="Cargo.Test unit_tests" />
       <item itemvalue="Cargo.Test yaml_parser::tests::unit_tests::should_parse_simple_object_description" />
       <item itemvalue="Cargo.run (release)" />
       <item itemvalue="Cargo.test" />
+      <item itemvalue="Cargo.Test creating_a_scene" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.Test creating_a_scene" />
         <item itemvalue="Cargo.Test basic_parsing" />
         <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.Test yaml_parser::tests::unit_tests::should_parse_simple_object_description" />
-        <item itemvalue="Cargo.Test unit_tests" />
       </list>
     </recent_temporary>
   </component>
@@ -284,14 +294,8 @@
       <workItem from="1613505797773" duration="20000" />
       <workItem from="1613505830596" duration="3478000" />
       <workItem from="1613591856225" duration="2375000" />
-      <workItem from="1613679349536" duration="3043000" />
-    </task>
-    <task id="LOCAL-00039" summary="implement fresnel effect">
-      <created>1610484214057</created>
-      <option name="number" value="00039" />
-      <option name="presentableId" value="LOCAL-00039" />
-      <option name="project" value="LOCAL" />
-      <updated>1610484214057</updated>
+      <workItem from="1613679349536" duration="3063000" />
+      <workItem from="1613763477496" duration="2443000" />
     </task>
     <task id="LOCAL-00040" summary="implement cubes">
       <created>1610570703269</created>
@@ -629,7 +633,14 @@
       <option name="project" value="LOCAL" />
       <updated>1613594215800</updated>
     </task>
-    <option name="localTasksCounter" value="88" />
+    <task id="LOCAL-00088" summary="added documentation for parser assumptions">
+      <created>1613682412211</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1613682412212</updated>
+    </task>
+    <option name="localTasksCounter" value="89" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -645,7 +656,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP triangulate obj file polygons" />
     <MESSAGE value="basic obj file parser" />
     <MESSAGE value="WIP add UV coordinates to intersections" />
     <MESSAGE value="interpolate smooth triangle normals" />
@@ -670,7 +680,8 @@
     <MESSAGE value="implemented basic scene YAML parser" />
     <MESSAGE value="migrated YAML parsing models to separate module" />
     <MESSAGE value="refactoring YAML parser to use extension trait &amp; typeclass" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactoring YAML parser to use extension trait &amp; typeclass" />
+    <MESSAGE value="added documentation for parser assumptions" />
+    <option name="LAST_COMMIT_MESSAGE" value="added documentation for parser assumptions" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

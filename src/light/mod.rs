@@ -1,6 +1,6 @@
 use crate::{Colour, Point3D};
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Light {
     Point { colour: Colour, position: Point3D },
 }
