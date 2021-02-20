@@ -80,7 +80,7 @@ impl FromYaml for Define {
                 let extends = yaml["extend"].as_str().map(Into::into);
                 let material = value_node.parse()?;
 
-                Ok(Define::Material {
+                Ok(Define::MaterialDef {
                     name,
                     extends,
                     value: material,

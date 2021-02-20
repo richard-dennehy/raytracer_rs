@@ -45,50 +45,89 @@ impl SceneDescription {
                 };
 
                 let material_description = match &desc.material {
-                    Either::Left(reference) => {
-                        let define = self
-                            .defines
-                            .iter()
-                            .find(|def| def.name() == reference.as_str())
-                            .ok_or_else(|| {
-                                format!("referenced material has not been defined: {}", reference)
-                            });
-
-                        define.and_then(|def| match def {
-                            Define::Material { value, .. } => Ok(value),
-                            Define::Transform { .. } => {
-                                Err(format!("{} is a transform, not a material", def.name()))
-                            }
-                        })
-                    }
-                    Either::Right(desc) => Ok(desc),
+                    Either::Left(reference) => self.resolve_material(reference.as_str()),
+                    Either::Right(desc) => Ok(desc.clone()),
                 };
 
-                let mut material = crate::Material::default();
-                match material_description {
-                    Ok(desc) => {
-                        desc.colour
-                            .map(|colour| material.pattern = Pattern::solid(colour));
-                        desc.diffuse.map(|diffuse| material.diffuse = diffuse);
-                        desc.ambient.map(|ambient| material.ambient = ambient);
-                        desc.specular.map(|specular| material.specular = specular);
-                        desc.shininess
-                            .map(|shininess| material.shininess = shininess);
-                        desc.reflective
-                            .map(|reflective| material.reflective = reflective);
-                        desc.transparency
-                            .map(|transparency| material.transparency = transparency);
-                        desc.refractive
-                            .map(|refractive| material.refractive = refractive);
-                    }
-                    Err(_) => (),
-                }
+                let material = material_description.map(|d| d.to_material());
 
-                let transform = Matrix4D::identity();
+                let transform = desc
+                    .transform
+                    .iter()
+                    .map(|tf| match tf {
+                        Transform::Translate { x, y, z } => Ok(Matrix4D::translation(*x, *y, *z)),
+                        Transform::Scale { x, y, z } => Ok(Matrix4D::scaling(*x, *y, *z)),
+                        Transform::RotationX(rads) => Ok(Matrix4D::rotation_x(*rads)),
+                        Transform::RotationY(rads) => Ok(Matrix4D::rotation_y(*rads)),
+                        Transform::RotationZ(rads) => Ok(Matrix4D::rotation_z(*rads)),
+                        Transform::Reference(name) => self.resolve_transform(name.as_str()),
+                    })
+                    .fold(Ok(Matrix4D::identity()), |acc, next| {
+                        acc.and_then(|lhs| next.map(|rhs| lhs * rhs))
+                    });
 
-                Ok(object.with_transform(transform).with_material(material))
+                material.and_then(|mat| {
+                    transform.map(|tf| object.with_material(mat).with_transform(tf))
+                })
             })
             .collect()
+    }
+
+    fn resolve_material(&self, name: &str) -> Result<MaterialDescription, String> {
+        self.defines
+            .iter()
+            .find(|def| def.name() == name)
+            .ok_or_else(|| format!("referenced material has not been defined: {}", name))
+            .and_then(|def| match def {
+                Define::MaterialDef {
+                    value,
+                    extends: Some(extends),
+                    ..
+                } => {
+                    let parent = self.resolve_material(extends);
+                    parent.map(|p| MaterialDescription {
+                        colour: value.colour.or(p.colour),
+                        diffuse: value.diffuse.or(p.diffuse),
+                        ambient: value.ambient.or(p.ambient),
+                        specular: value.specular.or(p.specular),
+                        shininess: value.shininess.or(p.shininess),
+                        reflective: value.reflective.or(p.reflective),
+                        transparency: value.transparency.or(p.transparency),
+                        refractive: value.refractive.or(p.refractive),
+                    })
+                }
+                Define::MaterialDef { value, .. } => Ok(value.clone()),
+                Define::Transform { .. } => {
+                    Err(format!("{} is a transform, not a material", def.name()))
+                }
+            })
+    }
+
+    fn resolve_transform(&self, name: &str) -> Result<Matrix4D, String> {
+        self.defines
+            .iter()
+            .find(|def| def.name() == name)
+            .ok_or_else(|| format!("referenced transform has not been defined: {}", name))
+            .and_then(|def| match def {
+                Define::MaterialDef { .. } => {
+                    Err(format!("{} is a material, not a transform", name))
+                }
+                Define::Transform { value, .. } => Ok(value),
+            })
+            .and_then(|tfs| {
+                tfs.iter()
+                    .map(|tf| match tf {
+                        Transform::Translate { x, y, z } => Ok(Matrix4D::translation(*x, *y, *z)),
+                        Transform::Scale { x, y, z } => Ok(Matrix4D::scaling(*x, *y, *z)),
+                        Transform::RotationX(rads) => Ok(Matrix4D::rotation_x(*rads)),
+                        Transform::RotationY(rads) => Ok(Matrix4D::rotation_y(*rads)),
+                        Transform::RotationZ(rads) => Ok(Matrix4D::rotation_z(*rads)),
+                        Transform::Reference(name) => self.resolve_transform(name.as_str()),
+                    })
+                    .fold(Ok(Matrix4D::identity()), |acc, next| {
+                        acc.and_then(|lhs| next.map(|rhs| lhs * rhs))
+                    })
+            })
     }
 }
 
@@ -104,13 +143,14 @@ pub struct CameraDescription {
 
 #[derive(PartialEq, Debug)]
 pub enum Define {
-    Material {
+    MaterialDef {
         name: String,
         extends: Option<String>,
         value: MaterialDescription,
     },
     Transform {
         name: String,
+        // FIXME change this to Vec<Either<Transform, String>>
         value: Vec<Transform>,
     },
 }
@@ -118,14 +158,15 @@ pub enum Define {
 impl Define {
     pub fn name(&self) -> &str {
         match &self {
-            Define::Material { name, .. } => name.as_str(),
+            Define::MaterialDef { name, .. } => name.as_str(),
             Define::Transform { name, .. } => name.as_str(),
         }
     }
 }
 
-#[derive(PartialEq, Debug, Default)]
+#[derive(PartialEq, Debug, Default, Clone)]
 pub struct MaterialDescription {
+    // FIXME support pattern definitions
     pub(crate) colour: Option<Colour>,
     pub(crate) diffuse: Option<f64>,
     pub(crate) ambient: Option<f64>,
@@ -136,6 +177,29 @@ pub struct MaterialDescription {
     pub(crate) refractive: Option<f64>,
 }
 
+impl MaterialDescription {
+    fn to_material(&self) -> crate::Material {
+        let mut material = crate::Material::default();
+
+        self.colour
+            .map(|colour| material.pattern = Pattern::solid(colour));
+        self.diffuse.map(|diffuse| material.diffuse = diffuse);
+        self.ambient.map(|ambient| material.ambient = ambient);
+        self.specular.map(|specular| material.specular = specular);
+        self.shininess
+            .map(|shininess| material.shininess = shininess);
+        self.reflective
+            .map(|reflective| material.reflective = reflective);
+        self.transparency
+            .map(|transparency| material.transparency = transparency);
+        self.refractive
+            .map(|refractive| material.refractive = refractive);
+
+        material
+    }
+}
+
+// TODO impl to_matrix for Vec<Transform>
 #[derive(PartialEq, Debug)]
 pub enum Transform {
     Translate { x: f64, y: f64, z: f64 },

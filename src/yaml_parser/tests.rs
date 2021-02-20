@@ -88,7 +88,7 @@ value:
 
         assert_eq!(
             define,
-            Define::Material {
+            Define::MaterialDef {
                 name: "white-material".into(),
                 extends: None,
                 value: MaterialDescription {
@@ -120,7 +120,7 @@ value:
 
         assert_eq!(
             define,
-            Define::Material {
+            Define::MaterialDef {
                 name: "blue-material".into(),
                 extends: Some("white-material".into()),
                 value: MaterialDescription {
@@ -339,7 +339,7 @@ transform:
                     },
                 ],
                 defines: vec![
-                    Define::Material {
+                    Define::MaterialDef {
                         name: "white-material".into(),
                         extends: None,
                         value: MaterialDescription {
@@ -351,7 +351,7 @@ transform:
                             ..Default::default()
                         }
                     },
-                    Define::Material {
+                    Define::MaterialDef {
                         name: "blue-material".into(),
                         extends: Some("white-material".into()),
                         value: MaterialDescription {
@@ -359,7 +359,7 @@ transform:
                             ..Default::default()
                         }
                     },
-                    Define::Material {
+                    Define::MaterialDef {
                         name: "red-material".into(),
                         extends: Some("white-material".into()),
                         value: MaterialDescription {
@@ -367,7 +367,7 @@ transform:
                             ..Default::default()
                         }
                     },
-                    Define::Material {
+                    Define::MaterialDef {
                         name: "purple-material".into(),
                         extends: Some("white-material".into()),
                         value: MaterialDescription {
@@ -669,21 +669,30 @@ transform:
 
 mod creating_a_scene {
     use super::*;
-    use crate::{Camera, Matrix4D, Vector3D};
+    use crate::{Camera, Colour, Material, Matrix4D, Pattern, Vector3D};
     use nonzero_ext::nonzero;
 
-    #[test]
-    fn should_be_able_to_create_a_camera_from_a_valid_file() {
-        let input = "\
+    fn with_camera_description(rest: &str) -> String {
+        format!(
+            "\
 - add: camera
   width: 100
   height: 100
   field-of-view: 0.785
   from: [ -6, 6, -10 ]
   to: [ 6, 0, 6 ]
-  up: [ -0.45, 1, 0 ]";
+  up: [ -0.45, 1, 0 ]
 
-        let scene = parse(input);
+{}",
+            rest
+        )
+    }
+
+    #[test]
+    fn should_be_able_to_create_a_camera_from_a_valid_file() {
+        let input = with_camera_description("");
+
+        let scene = parse(&input);
         assert!(scene.is_ok(), scene.unwrap_err());
         let scene = scene.unwrap();
 
@@ -704,5 +713,35 @@ mod creating_a_scene {
                 )
             )
         );
+    }
+
+    #[test]
+    fn should_be_able_to_create_a_simple_object_with_a_colour_and_no_transforms() {
+        let input = with_camera_description(
+            "\
+- add: sphere
+  material:
+    color: [ 0.373, 0.404, 0.550 ]
+  transform: []",
+        );
+
+        let scene = parse(&input);
+        assert!(scene.is_ok(), scene.unwrap_err());
+        let scene = scene.unwrap();
+
+        let objects = scene.objects();
+        assert!(objects.is_ok(), objects.unwrap_err());
+        let objects = objects.unwrap();
+
+        assert_eq!(objects.len(), 1);
+        assert_eq!(format!("{:?}", objects[0].shape()), "Sphere");
+        assert_eq!(
+            objects[0].material,
+            Material {
+                pattern: Pattern::solid(Colour::new(0.373, 0.404, 0.55)),
+                ..Default::default()
+            }
+        );
+        assert_eq!(objects[0].transform(), Matrix4D::identity());
     }
 }

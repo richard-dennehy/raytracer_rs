@@ -15,13 +15,14 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="added documentation for parser assumptions">
-      <change afterPath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP convert scene description into scene objects">
+      <change afterPath="$PROJECT_DIR$/scene_descriptions/reflect-refract.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/camera/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/camera/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/light/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/light/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scene_descriptions/cover.yml" beforeDir="false" afterPath="$PROJECT_DIR$/scene_descriptions/cover.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -87,6 +88,11 @@
     </option>
   </component>
   <component name="RunManager" selected="Cargo.Test creating_a_scene">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -175,11 +181,6 @@
       <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <list>
@@ -295,14 +296,8 @@
       <workItem from="1613505830596" duration="3478000" />
       <workItem from="1613591856225" duration="2375000" />
       <workItem from="1613679349536" duration="3063000" />
-      <workItem from="1613763477496" duration="2443000" />
-    </task>
-    <task id="LOCAL-00040" summary="implement cubes">
-      <created>1610570703269</created>
-      <option name="number" value="00040" />
-      <option name="presentableId" value="LOCAL-00040" />
-      <option name="project" value="LOCAL" />
-      <updated>1610570703269</updated>
+      <workItem from="1613763477496" duration="2661000" />
+      <workItem from="1613822471281" duration="3676000" />
     </task>
     <task id="LOCAL-00041" summary="WIP implement cylinders">
       <created>1610650354772</created>
@@ -640,7 +635,14 @@
       <option name="project" value="LOCAL" />
       <updated>1613682412212</updated>
     </task>
-    <option name="localTasksCounter" value="89" />
+    <task id="LOCAL-00089" summary="WIP convert scene description into scene objects">
+      <created>1613766137097</created>
+      <option name="number" value="00089" />
+      <option name="presentableId" value="LOCAL-00089" />
+      <option name="project" value="LOCAL" />
+      <updated>1613766137098</updated>
+    </task>
+    <option name="localTasksCounter" value="90" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -656,7 +658,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="basic obj file parser" />
     <MESSAGE value="WIP add UV coordinates to intersections" />
     <MESSAGE value="interpolate smooth triangle normals" />
     <MESSAGE value="parse faces with texture and normal data" />
@@ -681,7 +682,8 @@
     <MESSAGE value="migrated YAML parsing models to separate module" />
     <MESSAGE value="refactoring YAML parser to use extension trait &amp; typeclass" />
     <MESSAGE value="added documentation for parser assumptions" />
-    <option name="LAST_COMMIT_MESSAGE" value="added documentation for parser assumptions" />
+    <MESSAGE value="WIP convert scene description into scene objects" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP convert scene description into scene objects" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

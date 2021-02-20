@@ -358,6 +358,10 @@ impl Object {
             panic!("Object is a group, not a shape")
         }
     }
+
+    pub fn transform(&self) -> Matrix4D {
+        self.transform
+    }
 }
 
 pub trait Shape: Debug {
