@@ -73,6 +73,7 @@ impl SceneDescription {
             .collect()
     }
 
+    // FIXME circular `extend` will infinitely loop
     fn resolve_material(&self, name: &str) -> Result<MaterialDescription, String> {
         self.defines
             .iter()
@@ -103,6 +104,7 @@ impl SceneDescription {
             })
     }
 
+    // FIXME can infinite loop
     fn resolve_transform(&self, name: &str) -> Result<Matrix4D, String> {
         self.defines
             .iter()
