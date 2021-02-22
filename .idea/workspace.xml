@@ -15,10 +15,12 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="still WIP convert scene description into scene objects">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="still WIP add tests for scene creation from YAML">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scene_descriptions/cover.yml" beforeDir="false" afterPath="$PROJECT_DIR$/scene_descriptions/cover.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,7 +84,7 @@
       <command value="cargo test" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.Test creating_a_scene">
+  <component name="RunManager" selected="Cargo.run (release)">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -173,11 +175,6 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.Test basic_parsing" />
@@ -188,10 +185,10 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.Test creating_a_scene" />
         <item itemvalue="Cargo.Test basic_parsing" />
         <item itemvalue="Cargo.test" />
-        <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.Test yaml_parser::tests::unit_tests::should_parse_simple_object_description" />
       </list>
     </recent_temporary>
@@ -293,14 +290,8 @@
       <workItem from="1613679349536" duration="3063000" />
       <workItem from="1613763477496" duration="2661000" />
       <workItem from="1613822471281" duration="3704000" />
-      <workItem from="1613918725186" duration="3235000" />
-    </task>
-    <task id="LOCAL-00042" summary="WIP test cylinders">
-      <created>1610743226649</created>
-      <option name="number" value="00042" />
-      <option name="presentableId" value="LOCAL-00042" />
-      <option name="project" value="LOCAL" />
-      <updated>1610743226649</updated>
+      <workItem from="1613918725186" duration="3393000" />
+      <workItem from="1613997787900" duration="606000" />
     </task>
     <task id="LOCAL-00043" summary="implemented cylinders">
       <created>1610805210784</created>
@@ -638,7 +629,14 @@
       <option name="project" value="LOCAL" />
       <updated>1613826294308</updated>
     </task>
-    <option name="localTasksCounter" value="91" />
+    <task id="LOCAL-00091" summary="still WIP add tests for scene creation from YAML">
+      <created>1613922414956</created>
+      <option name="number" value="00091" />
+      <option name="presentableId" value="LOCAL-00091" />
+      <option name="project" value="LOCAL" />
+      <updated>1613922414956</updated>
+    </task>
+    <option name="localTasksCounter" value="92" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -654,7 +652,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="interpolate smooth triangle normals" />
     <MESSAGE value="parse faces with texture and normal data" />
     <MESSAGE value="convert faces with normals into smooth triangles" />
     <MESSAGE value="example rendering wavefront file" />
@@ -679,7 +676,8 @@
     <MESSAGE value="added documentation for parser assumptions" />
     <MESSAGE value="WIP convert scene description into scene objects" />
     <MESSAGE value="still WIP convert scene description into scene objects" />
-    <option name="LAST_COMMIT_MESSAGE" value="still WIP convert scene description into scene objects" />
+    <MESSAGE value="still WIP add tests for scene creation from YAML" />
+    <option name="LAST_COMMIT_MESSAGE" value="still WIP add tests for scene creation from YAML" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

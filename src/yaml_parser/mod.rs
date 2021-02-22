@@ -1,10 +1,7 @@
-use either::Either::{Left, Right};
 use yaml_rust::YamlLoader;
 
 use model::*;
 use parsers::*;
-
-use crate::{Light, Point3D};
 
 #[cfg(test)]
 mod tests;
@@ -56,9 +53,12 @@ mod parsers;
 ///     - `z` in proportion to `y`
 /// - Note: the identity value for a shear is 0
 /// - Note: a shear with a non-zero e.g. x to y and y to x is not invertible, and therefore cannot be used
-/// - Transforms must be described in reverse order, e.g. to rotate then translate, the translation must be described _first_
-///     - this is because naive matrix multiplication effectively creates a matrix that applies the right operand, then the left
-///     - therefore to use another `define`d transform, it must either be the first element of the array, to apply the child transforms _then_ the `define`d transform; or the last element to apply the `define`d transform first
+/// - Lists of transforms are combined into a single transform which effectively applies each transform in sequence, i.e.:
+///     ```yaml
+///       - [ translate, 1, -1, 1 ]
+///       - [ scale, 0.5, 0.5, 0.5 ]        
+///     ```
+///   will translate, then scale
 /// - Objects may be added to the scene using an `add` - the object added depends on the value of `add`
 /// - Objects that may be added are `plane`, `cube`, `sphere`, `cylinder`, and `cone` - triangles are not supported
 /// - An object must have a `material` and a `transform`

@@ -63,7 +63,7 @@ impl SceneDescription {
                         Transform::Reference(name) => self.resolve_transform(name.as_str()),
                     })
                     .fold(Ok(Matrix4D::identity()), |acc, next| {
-                        acc.and_then(|lhs| next.map(|rhs| lhs * rhs))
+                        acc.and_then(|lhs| next.map(|rhs| rhs * lhs))
                     });
 
                 material.and_then(|mat| {
@@ -127,7 +127,7 @@ impl SceneDescription {
                         Transform::Reference(name) => self.resolve_transform(name.as_str()),
                     })
                     .fold(Ok(Matrix4D::identity()), |acc, next| {
-                        acc.and_then(|lhs| next.map(|rhs| lhs * rhs))
+                        acc.and_then(|lhs| next.map(|rhs| rhs * lhs))
                     })
             })
     }
