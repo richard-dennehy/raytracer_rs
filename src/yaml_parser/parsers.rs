@@ -2,6 +2,7 @@ use crate::yaml_parser::model::{
     CameraDescription, Define, MaterialDescription, ObjectDescription, ObjectKind, Transform,
 };
 use crate::{Colour, Light, Point3D, Vector3D};
+use either::Either;
 use either::Either::{Left, Right};
 use yaml_rust::Yaml;
 
@@ -134,14 +135,14 @@ impl FromYaml for ObjectDescription {
     }
 }
 
-impl FromYaml for Transform {
+impl FromYaml for Either<String, Transform> {
     fn from_yaml(yaml: &Yaml) -> Result<Self, String> {
         use Transform::*;
 
         let transform = match yaml {
             Yaml::Array(transform) => transform,
             Yaml::String(reference) => {
-                return Ok(Transform::Reference(reference.clone()))
+                return Ok(Left(reference.clone()))
             },
             _ => return Err(format!("Expected an Array describing a transform, or a String referencing a Define, at {:?}", yaml))
         };
@@ -202,7 +203,7 @@ impl FromYaml for Transform {
             }
         };
 
-        Ok(parsed)
+        Ok(Right(parsed))
     }
 }
 

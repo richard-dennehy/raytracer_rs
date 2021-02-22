@@ -15,12 +15,12 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="still WIP add tests for scene creation from YAML">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="example: render cover image from YAML file">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scene_descriptions/cover.yml" beforeDir="false" afterPath="$PROJECT_DIR$/scene_descriptions/cover.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,7 +84,12 @@
       <command value="cargo test" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.run (release)">
+  <component name="RunManager" selected="Cargo.Test yaml_parser::tests">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -130,8 +135,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test yaml_parser::tests::unit_tests::should_parse_simple_object_description" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib yaml_parser::tests::unit_tests::should_parse_simple_object_description -- --exact" />
+    <configuration name="Test yaml_parser::tests" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib yaml_parser::tests" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -178,18 +183,18 @@
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.Test basic_parsing" />
-      <item itemvalue="Cargo.Test yaml_parser::tests::unit_tests::should_parse_simple_object_description" />
       <item itemvalue="Cargo.run (release)" />
       <item itemvalue="Cargo.test" />
       <item itemvalue="Cargo.Test creating_a_scene" />
+      <item itemvalue="Cargo.Test yaml_parser::tests" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.Test yaml_parser::tests" />
         <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.Test creating_a_scene" />
         <item itemvalue="Cargo.Test basic_parsing" />
         <item itemvalue="Cargo.test" />
-        <item itemvalue="Cargo.Test yaml_parser::tests::unit_tests::should_parse_simple_object_description" />
       </list>
     </recent_temporary>
   </component>
@@ -291,14 +296,7 @@
       <workItem from="1613763477496" duration="2661000" />
       <workItem from="1613822471281" duration="3704000" />
       <workItem from="1613918725186" duration="3393000" />
-      <workItem from="1613997787900" duration="606000" />
-    </task>
-    <task id="LOCAL-00043" summary="implemented cylinders">
-      <created>1610805210784</created>
-      <option name="number" value="00043" />
-      <option name="presentableId" value="LOCAL-00043" />
-      <option name="project" value="LOCAL" />
-      <updated>1610805210784</updated>
+      <workItem from="1613997787900" duration="2439000" />
     </task>
     <task id="LOCAL-00044" summary="example scene with capped cylinder and cube">
       <created>1610884876067</created>
@@ -636,7 +634,14 @@
       <option name="project" value="LOCAL" />
       <updated>1613922414956</updated>
     </task>
-    <option name="localTasksCounter" value="92" />
+    <task id="LOCAL-00092" summary="example: render cover image from YAML file">
+      <created>1613998684754</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1613998684754</updated>
+    </task>
+    <option name="localTasksCounter" value="93" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -652,7 +657,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="parse faces with texture and normal data" />
     <MESSAGE value="convert faces with normals into smooth triangles" />
     <MESSAGE value="example rendering wavefront file" />
     <MESSAGE value="remove test functions from shape trait" />
@@ -677,7 +681,8 @@
     <MESSAGE value="WIP convert scene description into scene objects" />
     <MESSAGE value="still WIP convert scene description into scene objects" />
     <MESSAGE value="still WIP add tests for scene creation from YAML" />
-    <option name="LAST_COMMIT_MESSAGE" value="still WIP add tests for scene creation from YAML" />
+    <MESSAGE value="example: render cover image from YAML file" />
+    <option name="LAST_COMMIT_MESSAGE" value="example: render cover image from YAML file" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

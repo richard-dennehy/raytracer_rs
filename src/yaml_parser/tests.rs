@@ -2,7 +2,8 @@ use super::*;
 
 mod basic_parsing {
     use super::*;
-    use crate::{Colour, Vector3D};
+    use crate::{Colour, Light, Point3D, Vector3D};
+    use either::Either::{Left, Right};
 
     #[test]
     fn should_parse_camera_description() {
@@ -149,16 +150,16 @@ value:
             Define::Transform {
                 name: "standard-transform".into(),
                 value: vec![
-                    Transform::Translate {
+                    Right(Transform::Translate {
                         x: 1.0,
                         y: -1.0,
                         z: 1.0
-                    },
-                    Transform::Scale {
+                    }),
+                    Right(Transform::Scale {
                         x: 0.5,
                         y: 0.5,
                         z: 0.5
-                    }
+                    })
                 ]
             }
         );
@@ -182,12 +183,12 @@ value:
             Define::Transform {
                 name: "large-object".into(),
                 value: vec![
-                    Transform::Reference("standard-transform".into()),
-                    Transform::Scale {
+                    Left("standard-transform".into()),
+                    Right(Transform::Scale {
                         x: 3.5,
                         y: 3.5,
                         z: 3.5
-                    }
+                    })
                 ]
             }
         );
@@ -224,12 +225,12 @@ transform:
                     ..Default::default()
                 }),
                 transform: vec![
-                    Transform::RotationX(1.5707963267948966),
-                    Transform::Translate {
+                    Right(Transform::RotationX(1.5707963267948966)),
+                    Right(Transform::Translate {
                         x: 0.0,
                         y: 0.0,
                         z: 500.0
-                    }
+                    })
                 ]
             }
         );
@@ -270,7 +271,7 @@ transform:
                     transparency: Some(0.7),
                     refractive: Some(1.5),
                 }),
-                transform: vec![Transform::Reference("large-object".into())]
+                transform: vec![Left("large-object".into())]
             }
         );
     }
@@ -295,12 +296,12 @@ transform:
                 kind: ObjectKind::Cube,
                 material: Left("white-material".into()),
                 transform: vec![
-                    Transform::Reference("medium-object".into()),
-                    Transform::Translate {
+                    Left("medium-object".into()),
+                    Right(Transform::Translate {
                         x: 4.0,
                         y: 0.0,
                         z: 0.0
-                    }
+                    })
                 ]
             }
         );
@@ -378,49 +379,49 @@ transform:
                     Define::Transform {
                         name: "standard-transform".into(),
                         value: vec![
-                            Transform::Translate {
+                            Right(Transform::Translate {
                                 x: 1.0,
                                 y: -1.0,
                                 z: 1.0
-                            },
-                            Transform::Scale {
+                            }),
+                            Right(Transform::Scale {
                                 x: 0.5,
                                 y: 0.5,
                                 z: 0.5
-                            }
+                            })
                         ]
                     },
                     Define::Transform {
                         name: "large-object".into(),
                         value: vec![
-                            Transform::Reference("standard-transform".into()),
-                            Transform::Scale {
+                            Left("standard-transform".into()),
+                            Right(Transform::Scale {
                                 x: 3.5,
                                 y: 3.5,
                                 z: 3.5
-                            }
+                            })
                         ]
                     },
                     Define::Transform {
                         name: "medium-object".into(),
                         value: vec![
-                            Transform::Reference("standard-transform".into()),
-                            Transform::Scale {
+                            Left("standard-transform".into()),
+                            Right(Transform::Scale {
                                 x: 3.0,
                                 y: 3.0,
                                 z: 3.0
-                            }
+                            })
                         ]
                     },
                     Define::Transform {
                         name: "small-object".into(),
                         value: vec![
-                            Transform::Reference("standard-transform".into()),
-                            Transform::Scale {
+                            Left("standard-transform".into()),
+                            Right(Transform::Scale {
                                 x: 2.0,
                                 y: 2.0,
                                 z: 2.0
-                            }
+                            })
                         ]
                     },
                 ],
@@ -435,12 +436,12 @@ transform:
                             ..Default::default()
                         }),
                         transform: vec![
-                            Transform::RotationX(1.5707963267948966),
-                            Transform::Translate {
+                            Right(Transform::RotationX(1.5707963267948966)),
+                            Right(Transform::Translate {
                                 x: 0.0,
                                 y: 0.0,
                                 z: 500.0
-                            }
+                            })
                         ]
                     },
                     ObjectDescription {
@@ -455,210 +456,210 @@ transform:
                             transparency: Some(0.7),
                             refractive: Some(1.5),
                         }),
-                        transform: vec![Transform::Reference("large-object".into())]
+                        transform: vec![Left("large-object".into())]
                     },
                     ObjectDescription {
                         kind: ObjectKind::Cube,
                         material: Left("white-material".into()),
                         transform: vec![
-                            Transform::Reference("medium-object".into()),
-                            Transform::Translate {
+                            Left("medium-object".into()),
+                            Right(Transform::Translate {
                                 x: 4.0,
                                 y: 0.0,
                                 z: 0.0
-                            }
+                            })
                         ]
                     },
                     ObjectDescription {
                         kind: ObjectKind::Cube,
                         material: Left("blue-material".into()),
                         transform: vec![
-                            Transform::Reference("large-object".into()),
-                            Transform::Translate {
+                            Left("large-object".into()),
+                            Right(Transform::Translate {
                                 x: 8.5,
                                 y: 1.5,
                                 z: -0.5
-                            }
+                            })
                         ]
                     },
                     ObjectDescription {
                         kind: ObjectKind::Cube,
                         material: Left("red-material".into()),
                         transform: vec![
-                            Transform::Reference("large-object".into()),
-                            Transform::Translate {
+                            Left("large-object".into()),
+                            Right(Transform::Translate {
                                 x: 0.0,
                                 y: 0.0,
                                 z: 4.0,
-                            }
+                            })
                         ]
                     },
                     ObjectDescription {
                         kind: ObjectKind::Cube,
                         material: Left("white-material".into()),
                         transform: vec![
-                            Transform::Reference("small-object".into()),
-                            Transform::Translate {
+                            Left("small-object".into()),
+                            Right(Transform::Translate {
                                 x: 4.0,
                                 y: 0.0,
                                 z: 4.0,
-                            }
+                            })
                         ]
                     },
                     ObjectDescription {
                         kind: ObjectKind::Cube,
                         material: Left("purple-material".into()),
                         transform: vec![
-                            Transform::Reference("medium-object".into()),
-                            Transform::Translate {
+                            Left("medium-object".into()),
+                            Right(Transform::Translate {
                                 x: 7.5,
                                 y: 0.5,
                                 z: 4.0,
-                            }
+                            })
                         ]
                     },
                     ObjectDescription {
                         kind: ObjectKind::Cube,
                         material: Left("white-material".into()),
                         transform: vec![
-                            Transform::Reference("medium-object".into()),
-                            Transform::Translate {
+                            Left("medium-object".into()),
+                            Right(Transform::Translate {
                                 x: -0.25,
                                 y: 0.25,
                                 z: 8.0,
-                            }
+                            })
                         ]
                     },
                     ObjectDescription {
                         kind: ObjectKind::Cube,
                         material: Left("blue-material".into()),
                         transform: vec![
-                            Transform::Reference("large-object".into()),
-                            Transform::Translate {
+                            Left("large-object".into()),
+                            Right(Transform::Translate {
                                 x: 4.0,
                                 y: 1.0,
                                 z: 7.5,
-                            }
+                            })
                         ]
                     },
                     ObjectDescription {
                         kind: ObjectKind::Cube,
                         material: Left("red-material".into()),
                         transform: vec![
-                            Transform::Reference("medium-object".into()),
-                            Transform::Translate {
+                            Left("medium-object".into()),
+                            Right(Transform::Translate {
                                 x: 10.0,
                                 y: 2.0,
                                 z: 7.5,
-                            }
+                            })
                         ]
                     },
                     ObjectDescription {
                         kind: ObjectKind::Cube,
                         material: Left("white-material".into()),
                         transform: vec![
-                            Transform::Reference("small-object".into()),
-                            Transform::Translate {
+                            Left("small-object".into()),
+                            Right(Transform::Translate {
                                 x: 8.0,
                                 y: 2.0,
                                 z: 12.0,
-                            }
+                            })
                         ]
                     },
                     ObjectDescription {
                         kind: ObjectKind::Cube,
                         material: Left("white-material".into()),
                         transform: vec![
-                            Transform::Reference("small-object".into()),
-                            Transform::Translate {
+                            Left("small-object".into()),
+                            Right(Transform::Translate {
                                 x: 20.0,
                                 y: 1.0,
                                 z: 9.0,
-                            }
+                            })
                         ]
                     },
                     ObjectDescription {
                         kind: ObjectKind::Cube,
                         material: Left("blue-material".into()),
                         transform: vec![
-                            Transform::Reference("large-object".into()),
-                            Transform::Translate {
+                            Left("large-object".into()),
+                            Right(Transform::Translate {
                                 x: -0.5,
                                 y: -5.0,
                                 z: 0.25,
-                            }
+                            })
                         ]
                     },
                     ObjectDescription {
                         kind: ObjectKind::Cube,
                         material: Left("red-material".into()),
                         transform: vec![
-                            Transform::Reference("large-object".into()),
-                            Transform::Translate {
+                            Left("large-object".into()),
+                            Right(Transform::Translate {
                                 x: 4.0,
                                 y: -4.0,
                                 z: 0.0,
-                            }
+                            })
                         ]
                     },
                     ObjectDescription {
                         kind: ObjectKind::Cube,
                         material: Left("white-material".into()),
                         transform: vec![
-                            Transform::Reference("large-object".into()),
-                            Transform::Translate {
+                            Left("large-object".into()),
+                            Right(Transform::Translate {
                                 x: 8.5,
                                 y: -4.0,
                                 z: 0.0,
-                            }
+                            })
                         ]
                     },
                     ObjectDescription {
                         kind: ObjectKind::Cube,
                         material: Left("white-material".into()),
                         transform: vec![
-                            Transform::Reference("large-object".into()),
-                            Transform::Translate {
+                            Left("large-object".into()),
+                            Right(Transform::Translate {
                                 x: 0.0,
                                 y: -4.0,
                                 z: 4.0,
-                            }
+                            })
                         ]
                     },
                     ObjectDescription {
                         kind: ObjectKind::Cube,
                         material: Left("purple-material".into()),
                         transform: vec![
-                            Transform::Reference("large-object".into()),
-                            Transform::Translate {
+                            Left("large-object".into()),
+                            Right(Transform::Translate {
                                 x: -0.5,
                                 y: -4.5,
                                 z: 8.0,
-                            }
+                            })
                         ]
                     },
                     ObjectDescription {
                         kind: ObjectKind::Cube,
                         material: Left("white-material".into()),
                         transform: vec![
-                            Transform::Reference("large-object".into()),
-                            Transform::Translate {
+                            Left("large-object".into()),
+                            Right(Transform::Translate {
                                 x: 0.0,
                                 y: -8.0,
                                 z: 4.0,
-                            }
+                            })
                         ]
                     },
                     ObjectDescription {
                         kind: ObjectKind::Cube,
                         material: Left("white-material".into()),
                         transform: vec![
-                            Transform::Reference("large-object".into()),
-                            Transform::Translate {
+                            Left("large-object".into()),
+                            Right(Transform::Translate {
                                 x: -0.5,
                                 y: -8.5,
                                 z: 8.0,
-                            }
+                            })
                         ]
                     },
                 ],
@@ -669,7 +670,7 @@ transform:
 
 mod creating_a_scene {
     use super::*;
-    use crate::{Camera, Colour, Material, Matrix4D, Pattern, Vector3D};
+    use crate::{Camera, Colour, Material, Matrix4D, Pattern, Point3D, Vector3D};
     use nonzero_ext::nonzero;
 
     fn with_camera_description(rest: &str) -> String {
@@ -985,7 +986,7 @@ mod creating_a_scene {
         );
         assert_eq!(
             objects[0].transform(),
-            Matrix4D::uniform_scaling(0.5).with_translation(1.0, -1.0, 1.0)
+            Matrix4D::translation(1.0, -1.0, 1.0).with_scaling(0.5, 0.5, 0.5)
         );
     }
 
@@ -1025,9 +1026,9 @@ mod creating_a_scene {
         );
         assert_eq!(
             objects[0].transform(),
-            Matrix4D::translation(4.0, 0.0, 0.0)
+            Matrix4D::translation(1.0, -1.0, 1.0)
                 .with_scaling(0.5, 0.5, 0.5)
-                .with_translation(1.0, -1.0, 1.0)
+                .with_translation(4.0, 0.0, 0.0)
         );
     }
 
@@ -1072,10 +1073,10 @@ mod creating_a_scene {
         );
         assert_eq!(
             objects[0].transform(),
-            Matrix4D::translation(4.0, 0.0, 0.0)
-                .with_scaling(3.0, 3.0, 3.0)
+            Matrix4D::translation(1.0, -1.0, 1.0)
                 .with_scaling(0.5, 0.5, 0.5)
-                .with_translation(1.0, -1.0, 1.0)
+                .with_scaling(3.0, 3.0, 3.0)
+                .with_translation(4.0, 0.0, 0.0)
         );
     }
 }

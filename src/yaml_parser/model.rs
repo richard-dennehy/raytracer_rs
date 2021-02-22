@@ -1,5 +1,6 @@
 use crate::{Camera, Colour, Light, Matrix4D, Object, Pattern, Point3D, Vector3D};
 use either::Either;
+use either::Either::{Left, Right};
 use std::num::NonZeroU16;
 
 #[derive(Debug, PartialEq)]
@@ -45,8 +46,8 @@ impl SceneDescription {
                 };
 
                 let material_description = match &desc.material {
-                    Either::Left(reference) => self.resolve_material(reference.as_str()),
-                    Either::Right(desc) => Ok(desc.clone()),
+                    Left(reference) => self.resolve_material(reference.as_str()),
+                    Right(desc) => Ok(desc.clone()),
                 };
 
                 let material = material_description.map(|d| d.to_material());
@@ -55,12 +56,14 @@ impl SceneDescription {
                     .transform
                     .iter()
                     .map(|tf| match tf {
-                        Transform::Translate { x, y, z } => Ok(Matrix4D::translation(*x, *y, *z)),
-                        Transform::Scale { x, y, z } => Ok(Matrix4D::scaling(*x, *y, *z)),
-                        Transform::RotationX(rads) => Ok(Matrix4D::rotation_x(*rads)),
-                        Transform::RotationY(rads) => Ok(Matrix4D::rotation_y(*rads)),
-                        Transform::RotationZ(rads) => Ok(Matrix4D::rotation_z(*rads)),
-                        Transform::Reference(name) => self.resolve_transform(name.as_str()),
+                        Right(Transform::Translate { x, y, z }) => {
+                            Ok(Matrix4D::translation(*x, *y, *z))
+                        }
+                        Right(Transform::Scale { x, y, z }) => Ok(Matrix4D::scaling(*x, *y, *z)),
+                        Right(Transform::RotationX(rads)) => Ok(Matrix4D::rotation_x(*rads)),
+                        Right(Transform::RotationY(rads)) => Ok(Matrix4D::rotation_y(*rads)),
+                        Right(Transform::RotationZ(rads)) => Ok(Matrix4D::rotation_z(*rads)),
+                        Left(name) => self.resolve_transform(name.as_str()),
                     })
                     .fold(Ok(Matrix4D::identity()), |acc, next| {
                         acc.and_then(|lhs| next.map(|rhs| rhs * lhs))
@@ -119,12 +122,14 @@ impl SceneDescription {
             .and_then(|tfs| {
                 tfs.iter()
                     .map(|tf| match tf {
-                        Transform::Translate { x, y, z } => Ok(Matrix4D::translation(*x, *y, *z)),
-                        Transform::Scale { x, y, z } => Ok(Matrix4D::scaling(*x, *y, *z)),
-                        Transform::RotationX(rads) => Ok(Matrix4D::rotation_x(*rads)),
-                        Transform::RotationY(rads) => Ok(Matrix4D::rotation_y(*rads)),
-                        Transform::RotationZ(rads) => Ok(Matrix4D::rotation_z(*rads)),
-                        Transform::Reference(name) => self.resolve_transform(name.as_str()),
+                        Right(Transform::Translate { x, y, z }) => {
+                            Ok(Matrix4D::translation(*x, *y, *z))
+                        }
+                        Right(Transform::Scale { x, y, z }) => Ok(Matrix4D::scaling(*x, *y, *z)),
+                        Right(Transform::RotationX(rads)) => Ok(Matrix4D::rotation_x(*rads)),
+                        Right(Transform::RotationY(rads)) => Ok(Matrix4D::rotation_y(*rads)),
+                        Right(Transform::RotationZ(rads)) => Ok(Matrix4D::rotation_z(*rads)),
+                        Left(name) => self.resolve_transform(name.as_str()),
                     })
                     .fold(Ok(Matrix4D::identity()), |acc, next| {
                         acc.and_then(|lhs| next.map(|rhs| rhs * lhs))
@@ -135,8 +140,14 @@ impl SceneDescription {
 
 #[derive(PartialEq, Debug)]
 pub struct CameraDescription {
-    pub(crate) width: usize,
-    pub(crate) height: usize,
+    // it's useful to be able to override these, as the default cover.yml has very low resolution,
+    // and it needs to be overridden to render properly.
+    // Additionally the benchmarks will likely want to render scenes at lower resolutions than most
+    // scene files will default to
+    // note that it's less convenient to do so after the `Camera` struct has been created,
+    // because it has invariants that need to be maintained
+    pub width: usize,
+    pub height: usize,
     pub(crate) field_of_view: f64,
     pub(crate) from: Point3D,
     pub(crate) to: Point3D,
@@ -152,8 +163,7 @@ pub enum Define {
     },
     Transform {
         name: String,
-        // FIXME change this to Vec<Either<Transform, String>>
-        value: Vec<Transform>,
+        value: Vec<Either<String, Transform>>,
     },
 }
 
@@ -209,8 +219,6 @@ pub enum Transform {
     RotationX(f64),
     RotationY(f64),
     RotationZ(f64),
-    // for some reason, combining transforms is defined inline, rather than using `extend`, like materials
-    Reference(String),
     // TODO shear
 }
 
@@ -218,7 +226,7 @@ pub enum Transform {
 pub struct ObjectDescription {
     pub kind: ObjectKind,
     pub material: Either<String, MaterialDescription>,
-    pub transform: Vec<Transform>,
+    pub transform: Vec<Either<String, Transform>>,
 }
 
 #[derive(PartialEq, Debug)]
