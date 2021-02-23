@@ -1,5 +1,6 @@
 use crate::yaml_parser::model::{
-    CameraDescription, Define, MaterialDescription, ObjectDescription, ObjectKind, Transform,
+    CameraDescription, Define, MaterialDescription, ObjectDescription, ObjectKind,
+    PatternDescription, PatternType, Transform,
 };
 use crate::{Colour, Light, Point3D, Vector3D};
 use either::Either;
@@ -209,7 +210,12 @@ impl FromYaml for Either<String, Transform> {
 
 impl FromYaml for MaterialDescription {
     fn from_yaml(yaml: &Yaml) -> Result<Self, String> {
-        let colour = yaml["color"].parse()?;
+        let pattern = if yaml["color"].as_vec().is_some() {
+            let colour = yaml["color"].parse()?;
+            Some(Left(colour))
+        } else {
+            yaml["pattern"].parse::<Option<_>>()?.map(Right)
+        };
         let diffuse = yaml["diffuse"].parse()?;
         let ambient = yaml["ambient"].parse()?;
         let specular = yaml["specular"].parse()?;
@@ -219,7 +225,7 @@ impl FromYaml for MaterialDescription {
         let refractive = yaml["refractive-index"].parse()?;
 
         Ok(MaterialDescription {
-            colour,
+            pattern,
             diffuse,
             ambient,
             specular,
@@ -257,6 +263,29 @@ impl FromYaml for Light {
         let position = yaml["at"].parse()?;
 
         Ok(Light::point(colour, position))
+    }
+}
+
+impl FromYaml for PatternDescription {
+    fn from_yaml(yaml: &Yaml) -> Result<Self, String> {
+        let pattern_type = match yaml["type"].as_str() {
+            Some("stripes") => PatternType::Stripes,
+            Some(other) => todo!("pattern {}", other),
+            None => return Err("pattern must have a `type`".to_string()),
+        };
+
+        let colours: Vec<Colour> = yaml["colors"].parse()?;
+        if colours.len() != 2 {
+            return Err("a pattern must have exactly 2 colours".to_string());
+        }
+        let colours = (colours[0], colours[1]);
+        let transforms = yaml["transform"].parse()?;
+
+        Ok(PatternDescription {
+            pattern_type,
+            colours,
+            transforms,
+        })
     }
 }
 

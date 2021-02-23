@@ -90,7 +90,7 @@ value:
             name: "white-material".into(),
             extends: None,
             value: MaterialDescription {
-                colour: Some(Colour::WHITE),
+                pattern: Some(Left(Colour::WHITE)),
                 diffuse: Some(0.7),
                 ambient: Some(0.1),
                 specular: Some(0.0),
@@ -122,7 +122,59 @@ value:
             name: "blue-material".into(),
             extends: Some("white-material".into()),
             value: MaterialDescription {
-                colour: Some(Colour::new(0.537, 0.831, 0.914)),
+                pattern: Some(Left(Colour::new(0.537, 0.831, 0.914))),
+                ..Default::default()
+            }
+        }
+    )
+}
+
+#[test]
+#[clippy::allow("approx_constant")]
+fn should_parse_a_material_define_using_a_stripes_pattern() {
+    let input = "\
+define: wall-material
+value:
+  pattern:
+    type: stripes
+    colors:
+      - [0.45, 0.45, 0.45]
+      - [0.55, 0.55, 0.55]
+    transform:
+      - [ scale, 0.25, 0.25, 0.25 ]
+      - [ rotate-y, 1.5708 ]
+  ambient: 0
+  diffuse: 0.4
+  specular: 0
+  reflective: 0.3";
+
+    let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+    let define = yaml.parse::<Define>();
+    assert!(define.is_ok(), define.unwrap_err());
+    let define = define.unwrap();
+
+    assert_eq!(
+        define,
+        Define::MaterialDef {
+            name: "wall-material".into(),
+            extends: None,
+            value: MaterialDescription {
+                pattern: Some(Right(PatternDescription {
+                    pattern_type: PatternType::Stripes,
+                    colours: (Colour::greyscale(0.45), Colour::greyscale(0.55)),
+                    transforms: vec![
+                        Right(Transform::Scale {
+                            x: 0.25,
+                            y: 0.25,
+                            z: 0.25
+                        }),
+                        Right(Transform::RotationY(1.5708))
+                    ]
+                })),
+                ambient: Some(0.0),
+                diffuse: Some(0.4),
+                specular: Some(0.0),
+                reflective: Some(0.3),
                 ..Default::default()
             }
         }
@@ -215,7 +267,7 @@ transform:
         ObjectDescription {
             kind: ObjectKind::Plane,
             material: Right(MaterialDescription {
-                colour: Some(Colour::WHITE),
+                pattern: Some(Left(Colour::WHITE)),
                 ambient: Some(1.0),
                 diffuse: Some(0.0),
                 specular: Some(0.0),
@@ -259,7 +311,7 @@ transform:
         ObjectDescription {
             kind: ObjectKind::Sphere,
             material: Right(MaterialDescription {
-                colour: Some(Colour::new(0.373, 0.404, 0.550)),
+                pattern: Some(Left(Colour::new(0.373, 0.404, 0.550))),
                 diffuse: Some(0.2),
                 ambient: Some(0.0),
                 specular: Some(1.0),
@@ -341,7 +393,7 @@ fn should_parse_scene_description() {
                     name: "white-material".into(),
                     extends: None,
                     value: MaterialDescription {
-                        colour: Some(Colour::WHITE),
+                        pattern: Some(Left(Colour::WHITE)),
                         diffuse: Some(0.7),
                         ambient: Some(0.1),
                         specular: Some(0.0),
@@ -353,7 +405,7 @@ fn should_parse_scene_description() {
                     name: "blue-material".into(),
                     extends: Some("white-material".into()),
                     value: MaterialDescription {
-                        colour: Some(Colour::new(0.537, 0.831, 0.914)),
+                        pattern: Some(Left(Colour::new(0.537, 0.831, 0.914))),
                         ..Default::default()
                     }
                 },
@@ -361,7 +413,7 @@ fn should_parse_scene_description() {
                     name: "red-material".into(),
                     extends: Some("white-material".into()),
                     value: MaterialDescription {
-                        colour: Some(Colour::new(0.941, 0.322, 0.388)),
+                        pattern: Some(Left(Colour::new(0.941, 0.322, 0.388))),
                         ..Default::default()
                     }
                 },
@@ -369,7 +421,7 @@ fn should_parse_scene_description() {
                     name: "purple-material".into(),
                     extends: Some("white-material".into()),
                     value: MaterialDescription {
-                        colour: Some(Colour::new(0.373, 0.404, 0.550)),
+                        pattern: Some(Left(Colour::new(0.373, 0.404, 0.550))),
                         ..Default::default()
                     }
                 },
@@ -426,7 +478,7 @@ fn should_parse_scene_description() {
                 ObjectDescription {
                     kind: ObjectKind::Plane,
                     material: Right(MaterialDescription {
-                        colour: Some(Colour::WHITE),
+                        pattern: Some(Left(Colour::WHITE)),
                         ambient: Some(1.0),
                         diffuse: Some(0.0),
                         specular: Some(0.0),
@@ -444,7 +496,7 @@ fn should_parse_scene_description() {
                 ObjectDescription {
                     kind: ObjectKind::Sphere,
                     material: Right(MaterialDescription {
-                        colour: Some(Colour::new(0.373, 0.404, 0.550)),
+                        pattern: Some(Left(Colour::new(0.373, 0.404, 0.550))),
                         diffuse: Some(0.2),
                         ambient: Some(0.0),
                         specular: Some(1.0),

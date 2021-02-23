@@ -90,7 +90,7 @@ impl SceneDescription {
                 } => {
                     let parent = self.resolve_material(extends);
                     parent.map(|p| MaterialDescription {
-                        colour: value.colour.or(p.colour),
+                        pattern: value.pattern.to_owned().or(p.pattern),
                         diffuse: value.diffuse.or(p.diffuse),
                         ambient: value.ambient.or(p.ambient),
                         specular: value.specular.or(p.specular),
@@ -163,9 +163,11 @@ pub enum Define {
     },
     Transform {
         name: String,
-        value: Vec<Either<String, Transform>>,
+        value: Transforms,
     },
 }
+
+pub type Transforms = Vec<Either<String, Transform>>;
 
 impl Define {
     pub fn name(&self) -> &str {
@@ -178,8 +180,7 @@ impl Define {
 
 #[derive(PartialEq, Debug, Default, Clone)]
 pub struct MaterialDescription {
-    // FIXME support pattern definitions
-    pub(crate) colour: Option<Colour>,
+    pub(crate) pattern: Option<Either<Colour, PatternDescription>>,
     pub(crate) diffuse: Option<f64>,
     pub(crate) ambient: Option<f64>,
     pub(crate) specular: Option<f64>,
@@ -193,8 +194,12 @@ impl MaterialDescription {
     fn to_material(&self) -> crate::Material {
         let mut material = crate::Material::default();
 
-        self.colour
-            .map(|colour| material.pattern = Pattern::solid(colour));
+        self.pattern
+            .to_owned()
+            .map(|pattern_desc| match pattern_desc {
+                Left(colour) => material.pattern = Pattern::solid(colour),
+                Right(pattern) => material.pattern = pattern.to_pattern(),
+            });
         self.diffuse.map(|diffuse| material.diffuse = diffuse);
         self.ambient.map(|ambient| material.ambient = ambient);
         self.specular.map(|specular| material.specular = specular);
@@ -211,8 +216,33 @@ impl MaterialDescription {
     }
 }
 
+#[derive(Debug, PartialEq, Clone)]
+pub struct PatternDescription {
+    pub(crate) pattern_type: PatternType,
+    pub(crate) colours: (Colour, Colour),
+    pub(crate) transforms: Transforms,
+}
+
+impl PatternDescription {
+    pub fn to_pattern(&self) -> Pattern {
+        match self.pattern_type {
+            PatternType::Stripes => {
+                let (primary, secondary) = self.colours;
+                Pattern::striped(primary, secondary)
+
+                // FIXME transforms
+            }
+        }
+    }
+}
+
+#[derive(Debug, PartialEq, Clone, Copy)]
+pub enum PatternType {
+    Stripes, // TODO rest
+}
+
 // TODO impl to_matrix for Vec<Transform>
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone, Copy)]
 pub enum Transform {
     Translate { x: f64, y: f64, z: f64 },
     Scale { x: f64, y: f64, z: f64 },
@@ -226,7 +256,7 @@ pub enum Transform {
 pub struct ObjectDescription {
     pub kind: ObjectKind,
     pub material: Either<String, MaterialDescription>,
-    pub transform: Vec<Either<String, Transform>>,
+    pub transform: Transforms,
 }
 
 #[derive(PartialEq, Debug)]
