@@ -1,11 +1,7 @@
 extern crate ray_tracer;
 
-#[macro_use]
-extern crate nonzero_ext;
-
 use ray_tracer::*;
 use std::fs;
-use std::num::NonZeroU16;
 use std::time::Instant;
 
 /// Notes on axes and rotation:
