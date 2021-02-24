@@ -15,7 +15,7 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="split yaml parser tests">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="YAML parser: add support for stripe patterns">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" afterDir="false" />
@@ -174,11 +174,6 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.Test basic_parsing" />
@@ -296,14 +291,8 @@
       <workItem from="1613822471281" duration="3704000" />
       <workItem from="1613918725186" duration="3393000" />
       <workItem from="1613997787900" duration="2474000" />
-      <workItem from="1614111420446" duration="3409000" />
-    </task>
-    <task id="LOCAL-00046" summary="output PNG file instead of PPM">
-      <created>1610885967903</created>
-      <option name="number" value="00046" />
-      <option name="presentableId" value="LOCAL-00046" />
-      <option name="project" value="LOCAL" />
-      <updated>1610885967903</updated>
+      <workItem from="1614111420446" duration="3424000" />
+      <workItem from="1614198955662" duration="1499000" />
     </task>
     <task id="LOCAL-00047" summary="tweaked example lighting setup">
       <created>1610887686024</created>
@@ -641,7 +630,14 @@
       <option name="project" value="LOCAL" />
       <updated>1614111965973</updated>
     </task>
-    <option name="localTasksCounter" value="95" />
+    <task id="LOCAL-00095" summary="YAML parser: add support for stripe patterns">
+      <created>1614114848170</created>
+      <option name="number" value="00095" />
+      <option name="presentableId" value="LOCAL-00095" />
+      <option name="project" value="LOCAL" />
+      <updated>1614114848170</updated>
+    </task>
+    <option name="localTasksCounter" value="96" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -657,7 +653,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="remove test functions from shape trait" />
     <MESSAGE value="WIP CSG" />
     <MESSAGE value="CSG Union, Intersection, and Difference operations" />
     <MESSAGE value="added test for CSGs containing groups and other csgs" />
@@ -682,7 +677,8 @@
     <MESSAGE value="example: render cover image from YAML file" />
     <MESSAGE value="yaml parser: replace Vec&lt;Transform&gt; with Vec&lt;Either&lt;String, Transform&gt;&gt; to handle define references" />
     <MESSAGE value="split yaml parser tests" />
-    <option name="LAST_COMMIT_MESSAGE" value="split yaml parser tests" />
+    <MESSAGE value="YAML parser: add support for stripe patterns" />
+    <option name="LAST_COMMIT_MESSAGE" value="YAML parser: add support for stripe patterns" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -162,19 +162,56 @@ value:
                 pattern: Some(Right(PatternDescription {
                     pattern_type: PatternType::Stripes,
                     colours: (Colour::greyscale(0.45), Colour::greyscale(0.55)),
-                    transforms: vec![
-                        Right(Transform::Scale {
+                    transforms: Some(vec![
+                        Transform::Scale {
                             x: 0.25,
                             y: 0.25,
                             z: 0.25
-                        }),
-                        Right(Transform::RotationY(1.5708))
-                    ]
+                        },
+                        Transform::RotationY(1.5708)
+                    ])
                 })),
                 ambient: Some(0.0),
                 diffuse: Some(0.4),
                 specular: Some(0.0),
                 reflective: Some(0.3),
+                ..Default::default()
+            }
+        }
+    )
+}
+
+#[test]
+fn should_parse_a_material_define_using_a_checker_pattern() {
+    let input = "\
+define: checkered-material
+value:
+  pattern:
+    type: checkers
+    colors:
+      - [0.35, 0.35, 0.35]
+      - [0.65, 0.65, 0.65]
+  specular: 0
+  reflective: 0.4";
+
+    let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+    let define = yaml.parse::<Define>();
+    assert!(define.is_ok(), define.unwrap_err());
+    let define = define.unwrap();
+
+    assert_eq!(
+        define,
+        Define::MaterialDef {
+            name: "checkered-material".into(),
+            extends: None,
+            value: MaterialDescription {
+                pattern: Some(Right(PatternDescription {
+                    pattern_type: PatternType::Checker,
+                    colours: (Colour::greyscale(0.35), Colour::greyscale(0.65)),
+                    transforms: None
+                })),
+                specular: Some(0.0),
+                reflective: Some(0.4),
                 ..Default::default()
             }
         }

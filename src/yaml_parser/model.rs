@@ -108,6 +108,7 @@ impl SceneDescription {
     }
 
     // FIXME can infinite loop
+    // FIXME more: try to create function Vec<Either<String, Transform>> -> Vec<Transform>, then use `to_matrix`
     fn resolve_transform(&self, name: &str) -> Result<Matrix4D, String> {
         self.defines
             .iter()
@@ -220,18 +221,22 @@ impl MaterialDescription {
 pub struct PatternDescription {
     pub(crate) pattern_type: PatternType,
     pub(crate) colours: (Colour, Colour),
-    pub(crate) transforms: Transforms,
+    pub(crate) transforms: Option<Vec<Transform>>,
 }
 
 impl PatternDescription {
     pub fn to_pattern(&self) -> Pattern {
-        match self.pattern_type {
-            PatternType::Stripes => {
-                let (primary, secondary) = self.colours;
-                Pattern::striped(primary, secondary)
+        let (primary, secondary) = self.colours;
 
-                // FIXME transforms
-            }
+        let pattern = match self.pattern_type {
+            PatternType::Stripes => Pattern::striped(primary, secondary),
+            PatternType::Checker => Pattern::checkers(primary, secondary),
+        };
+
+        if let Some(tfs) = &self.transforms {
+            pattern.with_transform(tfs.to_matrix())
+        } else {
+            pattern
         }
     }
 }
@@ -239,6 +244,7 @@ impl PatternDescription {
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum PatternType {
     Stripes, // TODO rest
+    Checker,
 }
 
 // TODO impl to_matrix for Vec<Transform>
@@ -250,6 +256,24 @@ pub enum Transform {
     RotationY(f64),
     RotationZ(f64),
     // TODO shear
+}
+
+trait ToMatrix {
+    fn to_matrix(&self) -> Matrix4D;
+}
+
+impl ToMatrix for Vec<Transform> {
+    fn to_matrix(&self) -> Matrix4D {
+        self.iter()
+            .map(|tf| match tf {
+                Transform::Translate { x, y, z } => Matrix4D::translation(*x, *y, *z),
+                Transform::Scale { x, y, z } => Matrix4D::scaling(*x, *y, *z),
+                Transform::RotationX(rads) => Matrix4D::rotation_x(*rads),
+                Transform::RotationY(rads) => Matrix4D::rotation_y(*rads),
+                Transform::RotationZ(rads) => Matrix4D::rotation_z(*rads),
+            })
+            .fold(Matrix4D::identity(), |acc, next| next * acc)
+    }
 }
 
 #[derive(PartialEq, Debug)]

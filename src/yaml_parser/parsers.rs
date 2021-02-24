@@ -138,15 +138,21 @@ impl FromYaml for ObjectDescription {
 
 impl FromYaml for Either<String, Transform> {
     fn from_yaml(yaml: &Yaml) -> Result<Self, String> {
+        match yaml {
+            Yaml::Array(_) => yaml.parse().map(Right),
+            Yaml::String(reference) => {
+                Ok(Left(reference.clone()))
+            },
+            _ => Err(format!("Expected an Array describing a transform, or a String referencing a Define, at {:?}", yaml))
+        }
+    }
+}
+
+impl FromYaml for Transform {
+    fn from_yaml(yaml: &Yaml) -> Result<Self, String> {
         use Transform::*;
 
-        let transform = match yaml {
-            Yaml::Array(transform) => transform,
-            Yaml::String(reference) => {
-                return Ok(Left(reference.clone()))
-            },
-            _ => return Err(format!("Expected an Array describing a transform, or a String referencing a Define, at {:?}", yaml))
-        };
+        let transform = yaml.as_vec().ok_or_else(|| "transforms must be an array")?;
 
         let parsed = match transform.get(0).and_then(Yaml::as_str) {
             Some("translate") => {
@@ -204,7 +210,7 @@ impl FromYaml for Either<String, Transform> {
             }
         };
 
-        Ok(Right(parsed))
+        Ok(parsed)
     }
 }
 
@@ -270,6 +276,7 @@ impl FromYaml for PatternDescription {
     fn from_yaml(yaml: &Yaml) -> Result<Self, String> {
         let pattern_type = match yaml["type"].as_str() {
             Some("stripes") => PatternType::Stripes,
+            Some("checkers") => PatternType::Checker,
             Some(other) => todo!("pattern {}", other),
             None => return Err("pattern must have a `type`".to_string()),
         };
