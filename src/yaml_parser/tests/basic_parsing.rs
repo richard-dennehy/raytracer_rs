@@ -281,7 +281,7 @@ value:
 }
 
 #[test]
-#[clippy::allow("approx_constant")] // it's no good comparing to PI/2 constant because it won't match
+#[clippy::allow("approx_constant")]
 fn should_parse_simple_plane_description() {
     let input = "\
 add: plane

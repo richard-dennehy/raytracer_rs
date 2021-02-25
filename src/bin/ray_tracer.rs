@@ -15,9 +15,10 @@ fn main() -> Result<(), String> {
 
     let mut world = World::empty();
 
-    let scene_yaml =
-        fs::read_to_string("scene_descriptions/cover.yml").map_err(|err| err.to_string())?;
-    let scene = yaml_parser::parse(&scene_yaml)?;
+    let scene_yaml = fs::read_to_string("scene_descriptions/reflect-refract.yml")
+        .map_err(|err| err.to_string())?;
+    let mut scene = yaml_parser::parse(&scene_yaml)?;
+    scene.override_resolution(800, 800);
 
     let mut objects = scene.objects()?;
     world.objects.append(&mut objects);

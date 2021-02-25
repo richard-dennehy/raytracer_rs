@@ -15,11 +15,10 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="YAML parser: add support for stripe patterns">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP extend yaml parser pattern support">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/creating_a_scene.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/creating_a_scene.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,7 +82,7 @@
       <command value="cargo test" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.test">
+  <component name="RunManager" selected="Cargo.run (release)">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -174,6 +173,11 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.Test basic_parsing" />
@@ -184,9 +188,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.Test yaml_parser::tests" />
-        <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.Test creating_a_scene" />
         <item itemvalue="Cargo.Test basic_parsing" />
       </list>
@@ -292,14 +296,8 @@
       <workItem from="1613918725186" duration="3393000" />
       <workItem from="1613997787900" duration="2474000" />
       <workItem from="1614111420446" duration="3424000" />
-      <workItem from="1614198955662" duration="1499000" />
-    </task>
-    <task id="LOCAL-00047" summary="tweaked example lighting setup">
-      <created>1610887686024</created>
-      <option name="number" value="00047" />
-      <option name="presentableId" value="LOCAL-00047" />
-      <option name="project" value="LOCAL" />
-      <updated>1610887686024</updated>
+      <workItem from="1614198955662" duration="1608000" />
+      <workItem from="1614283183664" duration="657000" />
     </task>
     <task id="LOCAL-00048" summary="WIP double-napped cones">
       <created>1611003180474</created>
@@ -637,7 +635,14 @@
       <option name="project" value="LOCAL" />
       <updated>1614114848170</updated>
     </task>
-    <option name="localTasksCounter" value="96" />
+    <task id="LOCAL-00096" summary="WIP extend yaml parser pattern support">
+      <created>1614200564075</created>
+      <option name="number" value="00096" />
+      <option name="presentableId" value="LOCAL-00096" />
+      <option name="project" value="LOCAL" />
+      <updated>1614200564075</updated>
+    </task>
+    <option name="localTasksCounter" value="97" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -653,7 +658,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP CSG" />
     <MESSAGE value="CSG Union, Intersection, and Difference operations" />
     <MESSAGE value="added test for CSGs containing groups and other csgs" />
     <MESSAGE value="basic CSG example" />
@@ -678,7 +682,8 @@
     <MESSAGE value="yaml parser: replace Vec&lt;Transform&gt; with Vec&lt;Either&lt;String, Transform&gt;&gt; to handle define references" />
     <MESSAGE value="split yaml parser tests" />
     <MESSAGE value="YAML parser: add support for stripe patterns" />
-    <option name="LAST_COMMIT_MESSAGE" value="YAML parser: add support for stripe patterns" />
+    <MESSAGE value="WIP extend yaml parser pattern support" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP extend yaml parser pattern support" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

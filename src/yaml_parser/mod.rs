@@ -32,9 +32,11 @@ mod parsers;
 /// - A `define` object with a `value` which is an array describes a sequence of transforms
 /// - A material `define` may `extend` another material define
 /// - A transform `define` may _reference_ another transform, but cannot `extend` one
-/// - Materials may have any of the following fields: `color`, `diffuse`, `ambient`, `specular`, `shininess`, `reflective`, `transparency`, and `refractive-index` (`refraction`)
+/// - Materials may have any of the following fields: `color` _or_ `pattern`, `diffuse`, `ambient`, `specular`, `shininess`, `reflective`, `transparency`, and `refractive-index` (`refraction`)
 /// - A material that `extend`s another material will inherit any values that are defined by the extended material, but not by the child material
 /// - Any missing fields on a material will be set to default values (see crate::material::Material)
+/// - A material `pattern` describes a combination of colours e.g. checkerboard, gradient, etc, and may be provided instead of a solid colour
+/// - A `pattern` must have the following: a `type` (one of "checkers" or "stripes") and, a `colors` array of exactly 2 colours, and _may_ have a `transforms` array, which may _not_ reference `define`d transforms
 /// - An entry in a transform `define` value array may either be a string referencing another transform define, or an array describing a transform
 /// - A transform array's first field describes the transform type, and must be either `translate`, `scale`, `rotate-x`, `rotate-y`, `rotate-z`, or `shearing`
 /// - A `translate` array must contain exactly 4 fields: `translate`, the `x` value, `y` value, and `z` value

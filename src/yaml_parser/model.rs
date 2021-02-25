@@ -12,6 +12,11 @@ pub struct SceneDescription {
 }
 
 impl SceneDescription {
+    pub fn override_resolution(&mut self, width: usize, height: usize) {
+        self.camera.width = width;
+        self.camera.height = height;
+    }
+
     pub fn camera(&self) -> Result<Camera, String> {
         fn validate_nonzero_u16(dimension: &str, value: usize) -> Result<NonZeroU16, String> {
             let value = if value > (u16::MAX as usize) {
@@ -141,14 +146,8 @@ impl SceneDescription {
 
 #[derive(PartialEq, Debug)]
 pub struct CameraDescription {
-    // it's useful to be able to override these, as the default cover.yml has very low resolution,
-    // and it needs to be overridden to render properly.
-    // Additionally the benchmarks will likely want to render scenes at lower resolutions than most
-    // scene files will default to
-    // note that it's less convenient to do so after the `Camera` struct has been created,
-    // because it has invariants that need to be maintained
-    pub width: usize,
-    pub height: usize,
+    pub(crate) width: usize,
+    pub(crate) height: usize,
     pub(crate) field_of_view: f64,
     pub(crate) from: Point3D,
     pub(crate) to: Point3D,

@@ -76,6 +76,91 @@ fn should_be_able_to_create_a_simple_object_with_a_colour_and_no_transforms() {
 }
 
 #[test]
+fn should_be_able_to_create_an_object_with_a_checker_pattern() {
+    let input = with_camera_description(
+        "\
+- add: plane
+  transform: []
+  material:
+    pattern:
+      type: checkers
+      colors:
+        - [0.35, 0.35, 0.35]
+        - [0.65, 0.65, 0.65]
+    specular: 0
+    reflective: 0.4",
+    );
+
+    let scene = parse(&input);
+    assert!(scene.is_ok(), scene.unwrap_err());
+    let scene = scene.unwrap();
+
+    let objects = scene.objects();
+    assert!(objects.is_ok(), objects.unwrap_err());
+    let objects = objects.unwrap();
+
+    assert_eq!(objects.len(), 1);
+    assert_eq!(format!("{:?}", objects[0].shape()), "Plane");
+    assert_eq!(
+        objects[0].material,
+        Material {
+            pattern: Pattern::checkers(Colour::greyscale(0.35), Colour::greyscale(0.65)),
+            specular: 0.0,
+            reflective: 0.4,
+            ..Default::default()
+        }
+    );
+    assert_eq!(objects[0].transform(), Matrix4D::identity());
+}
+
+#[test]
+#[clippy::allow("approx_constant")]
+fn should_be_able_to_create_an_object_with_a_pattern_with_a_transform() {
+    let input = with_camera_description(
+        "\
+- add: plane
+  transform: []
+  material:
+    pattern:
+      type: stripes
+      colors:
+        - [0.45, 0.45, 0.45]
+        - [0.55, 0.55, 0.55]
+      transform:
+        - [ scale, 0.25, 0.25, 0.25 ]
+        - [ rotate-y, 1.5708 ]
+    ambient: 0
+    diffuse: 0.4
+    specular: 0
+    reflective: 0.3",
+    );
+
+    let scene = parse(&input);
+    assert!(scene.is_ok(), scene.unwrap_err());
+    let scene = scene.unwrap();
+
+    let objects = scene.objects();
+    assert!(objects.is_ok(), objects.unwrap_err());
+    let objects = objects.unwrap();
+
+    assert_eq!(objects.len(), 1);
+    assert_eq!(format!("{:?}", objects[0].shape()), "Plane");
+    assert_eq!(
+        objects[0].material,
+        Material {
+            pattern: Pattern::striped(Colour::greyscale(0.45), Colour::greyscale(0.55))
+                .with_transform(Matrix4D::rotation_y(1.5708).with_scaling(0.25, 0.25, 0.25)),
+            ambient: 0.0,
+            diffuse: 0.4,
+            specular: 0.0,
+            reflective: 0.3,
+            ..Default::default()
+        }
+    );
+    assert_eq!(objects[0].transform(), Matrix4D::identity());
+}
+
+#[test]
 fn should_be_able_to_create_an_object_referencing_a_defined_material() {
     let input = with_camera_description(
         "\
