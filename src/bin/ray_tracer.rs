@@ -1,8 +1,11 @@
 extern crate ray_tracer;
 
 use ray_tracer::*;
-use std::fs;
+use std::f64::consts::PI;
 use std::time::Instant;
+
+#[macro_use]
+extern crate nonzero_ext;
 
 /// Notes on axes and rotation:
 /// X axis runs from left (negative values) to right (positive values) of default camera view
@@ -14,17 +17,24 @@ fn main() -> Result<(), String> {
     let timer = Instant::now();
 
     let mut world = World::empty();
+    world.lights.push(Light::point(
+        Colour::WHITE,
+        Point3D::new(-10.0, 10.0, -10.0),
+    ));
+    world
+        .objects
+        .push(Object::sphere().with_transform(Matrix4D::translation(0.0, 0.0, 0.5)));
 
-    let scene_yaml = fs::read_to_string("scene_descriptions/reflect-refract.yml")
-        .map_err(|err| err.to_string())?;
-    let mut scene = yaml_parser::parse(&scene_yaml)?;
-    scene.override_resolution(800, 800);
-
-    let mut objects = scene.objects()?;
-    world.objects.append(&mut objects);
-    world.lights.append(&mut scene.lights());
-
-    let camera = scene.camera()?;
+    let camera = Camera::new(
+        nonzero!(200u16),
+        nonzero!(200u16),
+        PI / 3.0,
+        Matrix4D::view_transform(
+            Point3D::new(0.0, 0.0, -5.0),
+            Point3D::new(0.0, 0.0, 0.0),
+            Vector3D::new(0.0, 1.0, 0.0),
+        ),
+    );
 
     let canvas = renderer::render(world, camera);
 
