@@ -15,11 +15,14 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add tests for yaml scene patterns">
-      <change afterPath="$PROJECT_DIR$/benches/trivial_scenes.rs" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="set up initial benchmarks">
+      <change afterPath="$PROJECT_DIR$/benches/bench_main.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/benches/benchmarks/mod.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benches/trivial_scenes.rs" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -73,6 +76,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Richard\CLionProjects\raytracer\benches\benchmarks" />
       <recent name="C:\Users\Richard\CLionProjects\raytracer\src" />
       <recent name="C:\Users\Richard\CLionProjects\raytracer\src\lib" />
     </key>
@@ -88,11 +92,6 @@
     </option>
   </component>
   <component name="RunManager" selected="Cargo.bench">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -181,6 +180,11 @@
       <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <list>
@@ -303,14 +307,8 @@
       <workItem from="1614111420446" duration="3424000" />
       <workItem from="1614198955662" duration="1608000" />
       <workItem from="1614283183664" duration="1567000" />
-      <workItem from="1614343539456" duration="5816000" />
-    </task>
-    <task id="LOCAL-00049" summary="WIP cone normals">
-      <created>1611089000490</created>
-      <option name="number" value="00049" />
-      <option name="presentableId" value="LOCAL-00049" />
-      <option name="project" value="LOCAL" />
-      <updated>1611089000490</updated>
+      <workItem from="1614343539456" duration="6026000" />
+      <workItem from="1614425629283" duration="3187000" />
     </task>
     <task id="LOCAL-00050" summary="implemented cones">
       <created>1611174270166</created>
@@ -648,7 +646,14 @@
       <option name="project" value="LOCAL" />
       <updated>1614284150948</updated>
     </task>
-    <option name="localTasksCounter" value="98" />
+    <task id="LOCAL-00098" summary="set up initial benchmarks">
+      <created>1614355257318</created>
+      <option name="number" value="00098" />
+      <option name="presentableId" value="LOCAL-00098" />
+      <option name="project" value="LOCAL" />
+      <updated>1614355257318</updated>
+    </task>
+    <option name="localTasksCounter" value="99" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -674,7 +679,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added test for CSGs containing groups and other csgs" />
     <MESSAGE value="basic CSG example" />
     <MESSAGE value="WIP basic CSG example" />
     <MESSAGE value="CSG example and pattern/internal lighting fixes" />
@@ -699,7 +703,8 @@
     <MESSAGE value="YAML parser: add support for stripe patterns" />
     <MESSAGE value="WIP extend yaml parser pattern support" />
     <MESSAGE value="add tests for yaml scene patterns" />
-    <option name="LAST_COMMIT_MESSAGE" value="add tests for yaml scene patterns" />
+    <MESSAGE value="set up initial benchmarks" />
+    <option name="LAST_COMMIT_MESSAGE" value="set up initial benchmarks" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

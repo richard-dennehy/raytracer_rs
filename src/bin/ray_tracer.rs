@@ -21,9 +21,7 @@ fn main() -> Result<(), String> {
         Colour::WHITE,
         Point3D::new(-10.0, 10.0, -10.0),
     ));
-    world
-        .objects
-        .push(Object::sphere().with_transform(Matrix4D::translation(0.0, 0.0, 0.5)));
+    world.objects.push(Object::plane());
 
     let camera = Camera::new(
         nonzero!(200u16),
