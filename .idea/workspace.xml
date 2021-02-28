@@ -15,14 +15,10 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="set up more complex benchmarks">
-      <change afterPath="$PROJECT_DIR$/docs/performance.md" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="parallelise rendering loop">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/bench_main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/bench_main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/performance.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/performance.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -308,14 +304,7 @@
       <workItem from="1614283183664" duration="1567000" />
       <workItem from="1614343539456" duration="6026000" />
       <workItem from="1614425629283" duration="3200000" />
-      <workItem from="1614518812322" duration="2702000" />
-    </task>
-    <task id="LOCAL-00051" summary="refactor Shape to trait instead of enum">
-      <created>1611176595534</created>
-      <option name="number" value="00051" />
-      <option name="presentableId" value="LOCAL-00051" />
-      <option name="project" value="LOCAL" />
-      <updated>1611176595534</updated>
+      <workItem from="1614518812322" duration="4657000" />
     </task>
     <task id="LOCAL-00052" summary="replace random id generation with atomic counter">
       <created>1611259732907</created>
@@ -653,7 +642,14 @@
       <option name="project" value="LOCAL" />
       <updated>1614428829248</updated>
     </task>
-    <option name="localTasksCounter" value="100" />
+    <task id="LOCAL-00100" summary="parallelise rendering loop">
+      <created>1614521529302</created>
+      <option name="number" value="00100" />
+      <option name="presentableId" value="LOCAL-00100" />
+      <option name="project" value="LOCAL" />
+      <updated>1614521529302</updated>
+    </task>
+    <option name="localTasksCounter" value="101" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -679,7 +675,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP basic CSG example" />
     <MESSAGE value="CSG example and pattern/internal lighting fixes" />
     <MESSAGE value="combined flat and smooth triangles into the same struct" />
     <MESSAGE value="document TODO items" />
@@ -704,7 +699,8 @@
     <MESSAGE value="add tests for yaml scene patterns" />
     <MESSAGE value="set up initial benchmarks" />
     <MESSAGE value="set up more complex benchmarks" />
-    <option name="LAST_COMMIT_MESSAGE" value="set up more complex benchmarks" />
+    <MESSAGE value="parallelise rendering loop" />
+    <option name="LAST_COMMIT_MESSAGE" value="parallelise rendering loop" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

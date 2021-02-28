@@ -13,3 +13,10 @@ Replace first renderer iterator with rayon `par_iter`
 
 - Effort: minimal - add import, change two `into_iter`s to `into_par_iter`, add `Sync` bound to `Shape` trait
 - Performance impact: reduced rendering time by 67 - 75%
+
+### Configure build flags
+Tweak build flags to potentially gain extra performance for free
+
+- Enabled LTO; Negligible performance impact
+- Abort on panics; Negligible performance impact
+- Use native target CPU (in `~/.cargo/config`); Slight performance improvement (2 - 7%)
