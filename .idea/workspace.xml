@@ -15,15 +15,14 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="set up initial benchmarks">
-      <change afterPath="$PROJECT_DIR$/benches/bench_main.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/benches/benchmarks/mod.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="set up more complex benchmarks">
+      <change afterPath="$PROJECT_DIR$/docs/performance.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/trivial_scenes.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benches/bench_main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/bench_main.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,30 +84,20 @@
     <option name="myCommands">
       <command value="cargo clippy" />
       <command value="cargo run --release" />
-      <command value="cargo test" />
       <command value="cargo clean" />
       <command value="cargo update" />
       <command value="cargo bench" />
+      <command value="cargo test" />
     </option>
   </component>
   <component name="RunManager" selected="Cargo.bench">
-    <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
-      <option name="command" value="run --package raytracer --bin raytracer" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <option name="channel" value="DEFAULT" />
-      <option name="requiredFeatures" value="true" />
-      <option name="allFeatures" value="false" />
-      <option name="emulateTerminal" value="false" />
-      <option name="backtrace" value="SHORT" />
-      <envs />
-      <option name="isRedirectInput" value="false" />
-      <option name="redirectInputPath" value="" />
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test yaml_parser::tests" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib yaml_parser::tests" />
+    <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -167,6 +156,21 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration name="test" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="update" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="command" value="update" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -182,26 +186,21 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.run (release)" />
-      <item itemvalue="Cargo.Test yaml_parser::tests" />
       <item itemvalue="Cargo.bench" />
       <item itemvalue="Cargo.clean" />
       <item itemvalue="Cargo.update" />
+      <item itemvalue="Cargo.test" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.bench" />
+        <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.update" />
         <item itemvalue="Cargo.bench" />
-        <item itemvalue="Cargo.clean" />
       </list>
     </recent_temporary>
   </component>
@@ -308,14 +307,8 @@
       <workItem from="1614198955662" duration="1608000" />
       <workItem from="1614283183664" duration="1567000" />
       <workItem from="1614343539456" duration="6026000" />
-      <workItem from="1614425629283" duration="3187000" />
-    </task>
-    <task id="LOCAL-00050" summary="implemented cones">
-      <created>1611174270166</created>
-      <option name="number" value="00050" />
-      <option name="presentableId" value="LOCAL-00050" />
-      <option name="project" value="LOCAL" />
-      <updated>1611174270166</updated>
+      <workItem from="1614425629283" duration="3200000" />
+      <workItem from="1614518812322" duration="2702000" />
     </task>
     <task id="LOCAL-00051" summary="refactor Shape to trait instead of enum">
       <created>1611176595534</created>
@@ -653,7 +646,14 @@
       <option name="project" value="LOCAL" />
       <updated>1614355257318</updated>
     </task>
-    <option name="localTasksCounter" value="99" />
+    <task id="LOCAL-00099" summary="set up more complex benchmarks">
+      <created>1614428829248</created>
+      <option name="number" value="00099" />
+      <option name="presentableId" value="LOCAL-00099" />
+      <option name="project" value="LOCAL" />
+      <updated>1614428829248</updated>
+    </task>
+    <option name="localTasksCounter" value="100" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -679,7 +679,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="basic CSG example" />
     <MESSAGE value="WIP basic CSG example" />
     <MESSAGE value="CSG example and pattern/internal lighting fixes" />
     <MESSAGE value="combined flat and smooth triangles into the same struct" />
@@ -704,7 +703,8 @@
     <MESSAGE value="WIP extend yaml parser pattern support" />
     <MESSAGE value="add tests for yaml scene patterns" />
     <MESSAGE value="set up initial benchmarks" />
-    <option name="LAST_COMMIT_MESSAGE" value="set up initial benchmarks" />
+    <MESSAGE value="set up more complex benchmarks" />
+    <option name="LAST_COMMIT_MESSAGE" value="set up more complex benchmarks" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

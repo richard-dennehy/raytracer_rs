@@ -364,7 +364,7 @@ impl Object {
     }
 }
 
-pub trait Shape: Debug {
+pub trait Shape: Debug + Sync {
     fn object_normal_at(&self, point: Point3D, uv: Option<(f64, f64)>) -> Vector3D;
     fn object_intersect<'parent>(
         &self,

@@ -619,6 +619,7 @@ dependencies = [
  "nonzero_ext",
  "quickcheck",
  "quickcheck_macros",
+ "rayon",
  "yaml-rust",
 ]
 
