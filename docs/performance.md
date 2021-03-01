@@ -20,3 +20,11 @@ Tweak build flags to potentially gain extra performance for free
 - Enabled LTO; Negligible performance impact
 - Abort on panics; Negligible performance impact
 - Use native target CPU (in `~/.cargo/config`); Slight performance improvement (2 - 7%)
+
+### Sequential generation of hot loop index pairs
+Generate (x, y) indexes of hot loop in sequence, then cast rays in parallel, as the overhead of forking and joining threads makes parallel iteration much slower.
+
+- Effort: slight - needed to collect into a `Vec` rather than parallelising sequential iterator
+- Performance impact: reduced loop iteration time by ~25%
+
+Note: ideally would avoid allocating 2 `Vec`s and looping 3 times, but switching to parallel iterator and back again makes this difficult to avoid

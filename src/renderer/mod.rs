@@ -8,18 +8,21 @@ pub fn render(world: World, camera: Camera) -> Canvas {
     let mut canvas =
         Canvas::new(camera.width(), camera.height()).expect("Camera dimensions are too large");
 
-    let colours = (0..camera.width().get())
+    let pixels = (0..camera.width().get())
+        .into_iter()
+        .flat_map(|x| (0..camera.height().get()).into_iter().map(move |y| (x, y)))
+        // apparently can't call e.g. `into_par_iter` here, so have to collect into Vec, then par_iter that
+        .collect::<Vec<_>>();
+
+    let colours = pixels
         .into_par_iter()
-        .flat_map(|x| {
-            (0..camera.height().get())
-                .into_par_iter()
-                .map(move |y| (x, y))
-        })
         .map(|(x, y)| {
             let ray = camera.ray_at(x, y);
             let colour = world.colour_at(ray);
             (x, y, colour)
         })
+        // need to join parallel iterators here, as the final step mutates the canvas
+        // although it's strictly safe to mutate in parallel, that's very difficult to statically prove
         .collect::<Vec<_>>();
 
     colours

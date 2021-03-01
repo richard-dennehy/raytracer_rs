@@ -15,10 +15,11 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="parallelise rendering loop">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="update build flags">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/performance.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/performance.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,18 +83,28 @@
       <command value="cargo run --release" />
       <command value="cargo clean" />
       <command value="cargo update" />
-      <command value="cargo bench" />
       <command value="cargo test" />
+      <command value="cargo bench" />
     </option>
   </component>
   <component name="RunManager" selected="Cargo.bench">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="bench loop" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <option name="command" value="bench -- empty" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -184,19 +195,20 @@
     </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
-      <item itemvalue="Cargo.run (release)" />
+      <item itemvalue="Cargo.bench loop" />
       <item itemvalue="Cargo.bench" />
       <item itemvalue="Cargo.clean" />
-      <item itemvalue="Cargo.update" />
+      <item itemvalue="Cargo.run (release)" />
       <item itemvalue="Cargo.test" />
+      <item itemvalue="Cargo.update" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.bench" />
+        <item itemvalue="Cargo.update" />
         <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.run (release)" />
-        <item itemvalue="Cargo.update" />
-        <item itemvalue="Cargo.bench" />
+        <item itemvalue="Cargo.clean" />
       </list>
     </recent_temporary>
   </component>
@@ -304,14 +316,9 @@
       <workItem from="1614283183664" duration="1567000" />
       <workItem from="1614343539456" duration="6026000" />
       <workItem from="1614425629283" duration="3200000" />
-      <workItem from="1614518812322" duration="4657000" />
-    </task>
-    <task id="LOCAL-00052" summary="replace random id generation with atomic counter">
-      <created>1611259732907</created>
-      <option name="number" value="00052" />
-      <option name="presentableId" value="LOCAL-00052" />
-      <option name="project" value="LOCAL" />
-      <updated>1611259732907</updated>
+      <workItem from="1614518812322" duration="4679000" />
+      <workItem from="1614628688370" duration="17000" />
+      <workItem from="1614628721378" duration="1898000" />
     </task>
     <task id="LOCAL-00053" summary="use builder pattern for shapes with parameters">
       <created>1611260640856</created>
@@ -649,7 +656,14 @@
       <option name="project" value="LOCAL" />
       <updated>1614521529302</updated>
     </task>
-    <option name="localTasksCounter" value="101" />
+    <task id="LOCAL-00101" summary="update build flags">
+      <created>1614523488420</created>
+      <option name="number" value="00101" />
+      <option name="presentableId" value="LOCAL-00101" />
+      <option name="project" value="LOCAL" />
+      <updated>1614523488421</updated>
+    </task>
+    <option name="localTasksCounter" value="102" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -675,7 +689,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="CSG example and pattern/internal lighting fixes" />
     <MESSAGE value="combined flat and smooth triangles into the same struct" />
     <MESSAGE value="document TODO items" />
     <MESSAGE value="very WIP YAML parser" />
@@ -700,7 +713,8 @@
     <MESSAGE value="set up initial benchmarks" />
     <MESSAGE value="set up more complex benchmarks" />
     <MESSAGE value="parallelise rendering loop" />
-    <option name="LAST_COMMIT_MESSAGE" value="parallelise rendering loop" />
+    <MESSAGE value="update build flags" />
+    <option name="LAST_COMMIT_MESSAGE" value="update build flags" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

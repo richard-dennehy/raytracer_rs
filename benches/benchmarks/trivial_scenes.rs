@@ -1,4 +1,5 @@
 use criterion::{criterion_group, BenchmarkId, Criterion};
+use nonzero_ext::*;
 use ray_tracer::{
     renderer, Camera, Colour, Light, Matrix4D, Object, Point3D, Ray, Vector3D, World,
 };
@@ -7,6 +8,7 @@ use std::num::NonZeroU16;
 
 criterion_group! {
     benches,
+    empty_scene_full_render,
     single_sphere_single_ray,
     single_sphere_full_render,
     single_plane_full_render,
@@ -24,6 +26,28 @@ fn single_sphere_single_ray(c: &mut Criterion) {
                 Point3D::new(0.0, 0.0, -10.0),
                 Vector3D::new(0.0, 0.0, 1.0),
             ))
+        })
+    });
+}
+
+// test loop overhead
+fn empty_scene_full_render(c: &mut Criterion) {
+    c.bench_function("render empty scene at 1920x1080", |b| {
+        b.iter(|| {
+            let world = World::empty();
+
+            let camera = Camera::new(
+                nonzero!(1920u16),
+                nonzero!(1080u16),
+                PI / 3.0,
+                Matrix4D::view_transform(
+                    Point3D::new(0.0, 0.0, -5.0),
+                    Point3D::new(0.0, 0.0, 0.0),
+                    Vector3D::new(0.0, 1.0, 0.0),
+                ),
+            );
+
+            renderer::render(world, camera);
         })
     });
 }
