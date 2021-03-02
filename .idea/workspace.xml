@@ -15,11 +15,9 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="update build flags">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="reduce overhead of rendering loop">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/performance.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/performance.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -318,14 +316,8 @@
       <workItem from="1614425629283" duration="3200000" />
       <workItem from="1614518812322" duration="4679000" />
       <workItem from="1614628688370" duration="17000" />
-      <workItem from="1614628721378" duration="1898000" />
-    </task>
-    <task id="LOCAL-00053" summary="use builder pattern for shapes with parameters">
-      <created>1611260640856</created>
-      <option name="number" value="00053" />
-      <option name="presentableId" value="LOCAL-00053" />
-      <option name="project" value="LOCAL" />
-      <updated>1611260640856</updated>
+      <workItem from="1614628721378" duration="1994000" />
+      <workItem from="1614715024235" duration="2006000" />
     </task>
     <task id="LOCAL-00054" summary="move cone and cylinder to submodules">
       <created>1611261024033</created>
@@ -663,7 +655,14 @@
       <option name="project" value="LOCAL" />
       <updated>1614523488421</updated>
     </task>
-    <option name="localTasksCounter" value="102" />
+    <task id="LOCAL-00102" summary="reduce overhead of rendering loop">
+      <created>1614630705565</created>
+      <option name="number" value="00102" />
+      <option name="presentableId" value="LOCAL-00102" />
+      <option name="project" value="LOCAL" />
+      <updated>1614630705565</updated>
+    </task>
+    <option name="localTasksCounter" value="103" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -689,7 +688,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="combined flat and smooth triangles into the same struct" />
     <MESSAGE value="document TODO items" />
     <MESSAGE value="very WIP YAML parser" />
     <MESSAGE value="very WIP YAML parser&#10;&#10;- implemented camera description parser and helper functions" />
@@ -714,7 +712,8 @@
     <MESSAGE value="set up more complex benchmarks" />
     <MESSAGE value="parallelise rendering loop" />
     <MESSAGE value="update build flags" />
-    <option name="LAST_COMMIT_MESSAGE" value="update build flags" />
+    <MESSAGE value="reduce overhead of rendering loop" />
+    <option name="LAST_COMMIT_MESSAGE" value="reduce overhead of rendering loop" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
