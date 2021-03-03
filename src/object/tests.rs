@@ -34,7 +34,7 @@ mod shape_tests {
     #[test]
     fn lighting_with_the_light_at_a_45_degree_angle_to_the_surface_normal_should_have_no_specular_and_less_diffuse(
     ) {
-        let sphere = Object::sphere().with_transform(Matrix4D::translation(0.0, 0.0, 1.0));
+        let sphere = Object::sphere().with_transform(Transform::translation(0.0, 0.0, 1.0));
         let point = Point3D::new(0.0, 0.0, 0.0);
 
         let normal = sphere.normal_at(point, None);
@@ -51,7 +51,7 @@ mod shape_tests {
     #[test]
     fn lighting_with_the_light_at_45_deg_and_the_eye_at_neg_45_deg_to_the_surface_normal_should_have_less_diffuse(
     ) {
-        let sphere = Object::sphere().with_transform(Matrix4D::translation(0.0, 0.0, 1.0));
+        let sphere = Object::sphere().with_transform(Transform::translation(0.0, 0.0, 1.0));
         let point = Point3D::new(0.0, 0.0, 0.0);
 
         let normal = sphere.normal_at(point, None);
@@ -94,7 +94,7 @@ mod shape_tests {
     #[test]
     fn translating_an_object_should_translate_the_pattern_in_world_space() {
         let sphere = Object::sphere()
-            .with_transform(Matrix4D::translation(1.0, 0.0, 0.0))
+            .with_transform(Transform::translation(1.0, 0.0, 0.0))
             .with_material(Material {
                 pattern: Pattern::striped(Colour::WHITE, Colour::BLACK),
                 ambient: 1.0,
@@ -121,7 +121,7 @@ mod shape_tests {
     #[test]
     fn rotating_an_object_should_rotate_the_pattern_in_world_space() {
         let sphere = Object::sphere()
-            .with_transform(Matrix4D::rotation_y(PI))
+            .with_transform(Transform::rotation_y(PI))
             .with_material(Material {
                 pattern: Pattern::striped(Colour::WHITE, Colour::BLACK),
                 ambient: 1.0,
@@ -196,7 +196,7 @@ mod sphere_tests {
     fn should_be_able_to_calculate_a_surface_normal_on_a_translated_sphere() {
         use std::f64::consts::FRAC_1_SQRT_2;
 
-        let sphere = Object::sphere().with_transform(Matrix4D::translation(0.0, 1.0, 0.0));
+        let sphere = Object::sphere().with_transform(Transform::translation(0.0, 1.0, 0.0));
 
         let normal = sphere.normal_at(Point3D::new(0.0, 1.0 + FRAC_1_SQRT_2, -FRAC_1_SQRT_2), None);
         assert!(approx_eq!(
@@ -210,7 +210,7 @@ mod sphere_tests {
     fn should_be_able_to_calculate_a_surface_normal_on_a_transformed_sphere() {
         use std::f64::consts::PI;
 
-        let transform = Matrix4D::scaling(1.0, 0.5, 1.0) * Matrix4D::rotation_z(PI / 5.0);
+        let transform = Transform::scaling(1.0, 0.5, 1.0) * Transform::rotation_z(PI / 5.0);
         let sphere = Object::sphere().with_transform(transform);
 
         let normal = sphere.normal_at(
@@ -284,7 +284,7 @@ mod sphere_tests {
     #[test]
     fn a_ray_should_intersect_a_scaled_sphere() {
         let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
-        let sphere = Object::sphere().with_transform(Matrix4D::uniform_scaling(2.0));
+        let sphere = Object::sphere().with_transform(Transform::uniform_scaling(2.0));
 
         let intersections = sphere.intersect(&ray);
         assert_eq!(intersections.len(), 2);
@@ -296,7 +296,7 @@ mod sphere_tests {
     #[test]
     fn a_ray_should_not_intersect_a_sphere_translated_away_from_it() {
         let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
-        let translation = Matrix4D::translation(5.0, 0.0, 0.0);
+        let translation = Transform::translation(5.0, 0.0, 0.0);
         let sphere = Object::sphere().with_transform(translation);
 
         let intersections = sphere.intersect(&ray);
@@ -370,7 +370,7 @@ mod plane_tests {
 
     #[quickcheck]
     fn the_normal_of_an_xy_plane_is_constant_at_all_points(x: f64, y: f64) {
-        let plane = Object::plane().with_transform(Matrix4D::rotation_x(PI / 2.0));
+        let plane = Object::plane().with_transform(Transform::rotation_x(PI / 2.0));
 
         assert!(approx_eq!(
             Vector3D,
@@ -381,7 +381,7 @@ mod plane_tests {
 
     #[quickcheck]
     fn the_normal_of_a_yz_plane_is_constant_at_all_points(y: f64, z: f64) {
-        let plane = Object::plane().with_transform(Matrix4D::rotation_z(PI / 2.0));
+        let plane = Object::plane().with_transform(Transform::rotation_z(PI / 2.0));
 
         assert!(approx_eq!(
             Vector3D,
@@ -867,13 +867,13 @@ mod group_tests {
         let first = Object::sphere();
         let first_id = first.id();
 
-        let second = Object::sphere().with_transform(Matrix4D::translation(0.0, 0.0, -3.0));
+        let second = Object::sphere().with_transform(Transform::translation(0.0, 0.0, -3.0));
         let second_id = second.id();
 
         let group = Object::group(vec![
             first,
             second,
-            Object::sphere().with_transform(Matrix4D::translation(5.0, 0.0, 0.0)),
+            Object::sphere().with_transform(Transform::translation(5.0, 0.0, 0.0)),
         ]);
         let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
 
@@ -888,9 +888,9 @@ mod group_tests {
     #[test]
     fn a_ray_should_intersect_the_children_of_a_transformed_group() {
         let group = Object::group(vec![
-            Object::sphere().with_transform(Matrix4D::translation(5.0, 0.0, 0.0))
+            Object::sphere().with_transform(Transform::translation(5.0, 0.0, 0.0))
         ])
-        .with_transform(Matrix4D::uniform_scaling(2.0));
+        .with_transform(Transform::uniform_scaling(2.0));
 
         let ray = Ray::new(Point3D::new(10.0, 0.0, -10.0), Vector3D::new(0.0, 0.0, 1.0));
         let intersections = group.intersect(&ray);
@@ -899,9 +899,9 @@ mod group_tests {
 
     #[test]
     fn group_transforms_should_apply_to_child_normals() {
-        let object_transform = Matrix4D::translation(5.0, 0.0, 0.0);
-        let inner_group_transform = Matrix4D::scaling(1.0, 2.0, 3.0);
-        let outer_group_transform = Matrix4D::rotation_y(PI / 2.0);
+        let object_transform = Transform::translation(5.0, 0.0, 0.0);
+        let inner_group_transform = Transform::scaling(1.0, 2.0, 3.0);
+        let outer_group_transform = Transform::rotation_y(PI / 2.0);
 
         let group = Object::group(vec![Object::group(vec![
             Object::sphere().with_transform(object_transform)
@@ -1080,7 +1080,7 @@ mod constructive_solid_geometry {
     fn a_ray_that_intersects_overlapping_objects_in_a_csg_union_should_intersect_at_the_edge_of_each_object(
     ) {
         let left = Object::sphere();
-        let right = Object::sphere().with_transform(Matrix4D::translation(0.0, 0.0, 0.5));
+        let right = Object::sphere().with_transform(Transform::translation(0.0, 0.0, 0.5));
 
         let left_id = left.id();
         let right_id = right.id();
@@ -1102,7 +1102,7 @@ mod constructive_solid_geometry {
     fn a_ray_that_intersects_overlapping_objects_in_a_csg_intersection_should_intersect_at_the_edges_of_the_overlap(
     ) {
         let left = Object::sphere();
-        let right = Object::sphere().with_transform(Matrix4D::translation(0.0, 0.0, 0.5));
+        let right = Object::sphere().with_transform(Transform::translation(0.0, 0.0, 0.5));
 
         let left_id = left.id();
         let right_id = right.id();
@@ -1124,7 +1124,7 @@ mod constructive_solid_geometry {
     fn a_ray_that_intersects_overlapping_objects_in_a_csg_subtraction_should_intersect_exclusively_inside_the_left_object(
     ) {
         let left = Object::sphere();
-        let right = Object::sphere().with_transform(Matrix4D::translation(0.0, 0.0, 0.5));
+        let right = Object::sphere().with_transform(Transform::translation(0.0, 0.0, 0.5));
 
         let left_id = left.id();
         let right_id = right.id();
@@ -1146,15 +1146,15 @@ mod constructive_solid_geometry {
     // this test ensures the implementation isn't that naive
     #[test]
     fn a_csg_comprising_groups_should_correctly_detect_intersections_on_the_children_of_children() {
-        let first = Object::sphere().with_transform(Matrix4D::translation(0.0, 0.0, -3.0));
+        let first = Object::sphere().with_transform(Transform::translation(0.0, 0.0, -3.0));
 
-        let second = Object::sphere().with_transform(Matrix4D::translation(0.0, 0.0, -0.75));
+        let second = Object::sphere().with_transform(Transform::translation(0.0, 0.0, -0.75));
         let second_id = second.id();
 
         let third = Object::sphere();
         let third_id = third.id();
 
-        let fourth = Object::sphere().with_transform(Matrix4D::translation(0.0, 0.0, 1.5));
+        let fourth = Object::sphere().with_transform(Transform::translation(0.0, 0.0, 1.5));
 
         let csg = Object::csg_intersection(
             Object::group(vec![first, second]),

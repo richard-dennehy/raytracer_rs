@@ -1,4 +1,4 @@
-use crate::{Matrix4D, Point3D, Ray};
+use crate::{Point3D, Ray, Transform};
 use std::num::NonZeroU16;
 
 #[cfg(test)]
@@ -8,7 +8,7 @@ mod tests;
 pub struct Camera {
     width: NonZeroU16,
     height: NonZeroU16,
-    transform: Matrix4D,
+    transform: Transform,
     pixel_size: f64,
     half_canvas_width: f64,
     half_canvas_height: f64,
@@ -19,7 +19,7 @@ impl Camera {
         width: NonZeroU16,
         height: NonZeroU16,
         fov_radians: f64,
-        transform: Matrix4D,
+        transform: Transform,
     ) -> Self {
         let w = width.get() as f64;
         let h = height.get() as f64;

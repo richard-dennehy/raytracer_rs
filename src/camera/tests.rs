@@ -11,7 +11,7 @@ mod unit_tests {
             NonZeroU16::new(200).unwrap(),
             NonZeroU16::new(125).unwrap(),
             PI / 2.0,
-            Matrix4D::identity(),
+            Transform::identity(),
         );
         assert!(approx_eq!(f64, camera.pixel_size, 0.01));
     }
@@ -22,7 +22,7 @@ mod unit_tests {
             NonZeroU16::new(125).unwrap(),
             NonZeroU16::new(200).unwrap(),
             PI / 2.0,
-            Matrix4D::identity(),
+            Transform::identity(),
         );
         assert!(approx_eq!(f64, camera.pixel_size, 0.01));
     }
@@ -34,7 +34,7 @@ mod unit_tests {
             NonZeroU16::new(201).unwrap(),
             NonZeroU16::new(101).unwrap(),
             PI / 2.0,
-            Matrix4D::identity(),
+            Transform::identity(),
         );
 
         let ray = camera.ray_at(100, 50);
@@ -53,7 +53,7 @@ mod unit_tests {
             NonZeroU16::new(201).unwrap(),
             NonZeroU16::new(101).unwrap(),
             PI / 2.0,
-            Matrix4D::identity(),
+            Transform::identity(),
         );
 
         let ray = camera.ray_at(0, 0);
@@ -71,7 +71,7 @@ mod unit_tests {
 
     #[test]
     fn a_ray_through_a_transformed_camera_should_have_the_inverse_transform_applied() {
-        let transform = Matrix4D::translation(0.0, -2.0, 5.0).with_rotation_y(PI / 4.0);
+        let transform = Transform::translation(0.0, -2.0, 5.0).with_rotation_y(PI / 4.0);
 
         let camera = Camera::new(
             NonZeroU16::new(201).unwrap(),

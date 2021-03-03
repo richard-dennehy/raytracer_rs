@@ -1,4 +1,4 @@
-use crate::{Colour, Light, Matrix4D, Object, Point3D, Vector3D};
+use crate::{Colour, Light, Object, Point3D, Transform, Vector3D};
 use std::vec::IntoIter;
 
 #[cfg(test)]
@@ -19,7 +19,7 @@ impl Ray {
         self.origin + self.direction * time
     }
 
-    pub fn transformed(&self, transformation: &Matrix4D) -> Self {
+    pub fn transformed(&self, transformation: &Transform) -> Self {
         let (x, y, z, w) = transformation * self.origin;
         debug_assert!(w == 1.0, "matrix transform did not return a Point");
         let transformed_origin = Point3D::new(x, y, z);

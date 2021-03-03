@@ -1,5 +1,5 @@
 use crate::{
-    Colour, Intersection, Intersections, Light, Material, Matrix4D, Point3D, Ray, Vector3D,
+    Colour, Intersection, Intersections, Light, Material, Point3D, Ray, Transform, Vector3D,
 };
 use std::fmt::Debug;
 use std::sync::atomic::{AtomicU32, Ordering};
@@ -19,7 +19,7 @@ use triangle::Triangle;
 #[derive(Debug)]
 pub struct Object {
     pub material: Material,
-    transform: Matrix4D,
+    transform: Transform,
     kind: ObjectKind,
     id: u32,
 }
@@ -106,7 +106,7 @@ impl Object {
 
     pub fn group(children: Vec<Object>) -> Self {
         Object {
-            transform: Matrix4D::identity(),
+            transform: Transform::identity(),
             material: Material::default(),
             kind: ObjectKind::Group(children),
             id: Self::next_id(),
@@ -129,7 +129,7 @@ impl Object {
 
     fn csg(left: Object, right: Object, operator: CsgOperator) -> Self {
         Object {
-            transform: Matrix4D::identity(),
+            transform: Transform::identity(),
             material: Material::default(),
             kind: ObjectKind::Csg {
                 left: Box::new(left),
@@ -142,7 +142,7 @@ impl Object {
 
     fn from_shape(shape: Box<dyn Shape>) -> Self {
         Object {
-            transform: Matrix4D::identity(),
+            transform: Transform::identity(),
             material: Material::default(),
             kind: ObjectKind::Shape(shape),
             id: Self::next_id(),
@@ -295,7 +295,7 @@ impl Object {
     }
 
     // TODO test that applying transforms to parents (i.e. CSG/Groups) affects children
-    pub fn with_transform(mut self, transform: Matrix4D) -> Self {
+    pub fn with_transform(mut self, transform: Transform) -> Self {
         self.transform = transform;
 
         match &mut self.kind {
@@ -313,7 +313,7 @@ impl Object {
     }
 
     /// allows a parent to push transforms applied to the group down to its children
-    fn apply_transform(&mut self, transform: Matrix4D) {
+    fn apply_transform(&mut self, transform: Transform) {
         match &mut self.kind {
             ObjectKind::Group(children) => children
                 .iter_mut()
@@ -359,7 +359,7 @@ impl Object {
         }
     }
 
-    pub fn transform(&self) -> Matrix4D {
+    pub fn transform(&self) -> Transform {
         self.transform
     }
 }

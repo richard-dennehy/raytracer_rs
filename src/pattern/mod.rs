@@ -1,5 +1,5 @@
 use crate::pattern::Kind::{Checkers, Gradient, Ring, Solid, Striped};
-use crate::{Colour, Matrix4D, Point3D};
+use crate::{Colour, Point3D, Transform};
 
 #[cfg(test)]
 mod tests;
@@ -7,7 +7,7 @@ mod tests;
 #[derive(Clone, Debug, PartialEq)]
 pub struct Pattern {
     kind: Kind,
-    transform: Matrix4D,
+    transform: Transform,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -23,14 +23,14 @@ impl Pattern {
     pub const fn solid(colour: Colour) -> Self {
         Pattern {
             kind: Solid(colour),
-            transform: Matrix4D::identity(),
+            transform: Transform::identity(),
         }
     }
 
     pub const fn striped(primary: Colour, secondary: Colour) -> Self {
         Pattern {
             kind: Striped(primary, secondary),
-            transform: Matrix4D::identity(),
+            transform: Transform::identity(),
         }
     }
 
@@ -40,25 +40,25 @@ impl Pattern {
                 from,
                 delta: to - from,
             },
-            transform: Matrix4D::identity(),
+            transform: Transform::identity(),
         }
     }
 
     pub const fn ring(primary: Colour, secondary: Colour) -> Self {
         Pattern {
             kind: Ring(primary, secondary),
-            transform: Matrix4D::identity(),
+            transform: Transform::identity(),
         }
     }
 
     pub const fn checkers(primary: Colour, secondary: Colour) -> Self {
         Pattern {
             kind: Checkers(primary, secondary),
-            transform: Matrix4D::identity(),
+            transform: Transform::identity(),
         }
     }
 
-    pub fn with_transform(mut self, transform: Matrix4D) -> Self {
+    pub fn with_transform(mut self, transform: Transform) -> Self {
         self.transform = transform;
         self
     }

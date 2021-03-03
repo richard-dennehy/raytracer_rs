@@ -18,7 +18,7 @@ mod canvas;
 pub use canvas::*;
 
 mod matrix;
-pub use matrix::Matrix4D;
+pub use matrix::Transform;
 
 pub mod ppm_writer;
 

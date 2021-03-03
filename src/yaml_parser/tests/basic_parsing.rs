@@ -163,12 +163,12 @@ value:
                     pattern_type: PatternType::Stripes,
                     colours: (Colour::greyscale(0.45), Colour::greyscale(0.55)),
                     transforms: Some(vec![
-                        Transform::Scale {
+                        Transformation::Scale {
                             x: 0.25,
                             y: 0.25,
                             z: 0.25
                         },
-                        Transform::RotationY(1.5708)
+                        Transformation::RotationY(1.5708)
                     ])
                 })),
                 ambient: Some(0.0),
@@ -236,12 +236,12 @@ value:
         Define::Transform {
             name: "standard-transform".into(),
             value: vec![
-                Right(Transform::Translate {
+                Right(Transformation::Translate {
                     x: 1.0,
                     y: -1.0,
                     z: 1.0
                 }),
-                Right(Transform::Scale {
+                Right(Transformation::Scale {
                     x: 0.5,
                     y: 0.5,
                     z: 0.5
@@ -270,7 +270,7 @@ value:
             name: "large-object".into(),
             value: vec![
                 Left("standard-transform".into()),
-                Right(Transform::Scale {
+                Right(Transformation::Scale {
                     x: 3.5,
                     y: 3.5,
                     z: 3.5
@@ -311,8 +311,8 @@ transform:
                 ..Default::default()
             }),
             transform: vec![
-                Right(Transform::RotationX(1.5707963267948966)),
-                Right(Transform::Translate {
+                Right(Transformation::RotationX(1.5707963267948966)),
+                Right(Transformation::Translate {
                     x: 0.0,
                     y: 0.0,
                     z: 500.0
@@ -383,7 +383,7 @@ transform:
             material: Left("white-material".into()),
             transform: vec![
                 Left("medium-object".into()),
-                Right(Transform::Translate {
+                Right(Transformation::Translate {
                     x: 4.0,
                     y: 0.0,
                     z: 0.0
@@ -465,12 +465,12 @@ fn should_parse_scene_description() {
                 Define::Transform {
                     name: "standard-transform".into(),
                     value: vec![
-                        Right(Transform::Translate {
+                        Right(Transformation::Translate {
                             x: 1.0,
                             y: -1.0,
                             z: 1.0
                         }),
-                        Right(Transform::Scale {
+                        Right(Transformation::Scale {
                             x: 0.5,
                             y: 0.5,
                             z: 0.5
@@ -481,7 +481,7 @@ fn should_parse_scene_description() {
                     name: "large-object".into(),
                     value: vec![
                         Left("standard-transform".into()),
-                        Right(Transform::Scale {
+                        Right(Transformation::Scale {
                             x: 3.5,
                             y: 3.5,
                             z: 3.5
@@ -492,7 +492,7 @@ fn should_parse_scene_description() {
                     name: "medium-object".into(),
                     value: vec![
                         Left("standard-transform".into()),
-                        Right(Transform::Scale {
+                        Right(Transformation::Scale {
                             x: 3.0,
                             y: 3.0,
                             z: 3.0
@@ -503,7 +503,7 @@ fn should_parse_scene_description() {
                     name: "small-object".into(),
                     value: vec![
                         Left("standard-transform".into()),
-                        Right(Transform::Scale {
+                        Right(Transformation::Scale {
                             x: 2.0,
                             y: 2.0,
                             z: 2.0
@@ -522,8 +522,8 @@ fn should_parse_scene_description() {
                         ..Default::default()
                     }),
                     transform: vec![
-                        Right(Transform::RotationX(1.5707963267948966)),
-                        Right(Transform::Translate {
+                        Right(Transformation::RotationX(1.5707963267948966)),
+                        Right(Transformation::Translate {
                             x: 0.0,
                             y: 0.0,
                             z: 500.0
@@ -549,7 +549,7 @@ fn should_parse_scene_description() {
                     material: Left("white-material".into()),
                     transform: vec![
                         Left("medium-object".into()),
-                        Right(Transform::Translate {
+                        Right(Transformation::Translate {
                             x: 4.0,
                             y: 0.0,
                             z: 0.0
@@ -561,7 +561,7 @@ fn should_parse_scene_description() {
                     material: Left("blue-material".into()),
                     transform: vec![
                         Left("large-object".into()),
-                        Right(Transform::Translate {
+                        Right(Transformation::Translate {
                             x: 8.5,
                             y: 1.5,
                             z: -0.5
@@ -573,7 +573,7 @@ fn should_parse_scene_description() {
                     material: Left("red-material".into()),
                     transform: vec![
                         Left("large-object".into()),
-                        Right(Transform::Translate {
+                        Right(Transformation::Translate {
                             x: 0.0,
                             y: 0.0,
                             z: 4.0,
@@ -585,7 +585,7 @@ fn should_parse_scene_description() {
                     material: Left("white-material".into()),
                     transform: vec![
                         Left("small-object".into()),
-                        Right(Transform::Translate {
+                        Right(Transformation::Translate {
                             x: 4.0,
                             y: 0.0,
                             z: 4.0,
@@ -597,7 +597,7 @@ fn should_parse_scene_description() {
                     material: Left("purple-material".into()),
                     transform: vec![
                         Left("medium-object".into()),
-                        Right(Transform::Translate {
+                        Right(Transformation::Translate {
                             x: 7.5,
                             y: 0.5,
                             z: 4.0,
@@ -609,7 +609,7 @@ fn should_parse_scene_description() {
                     material: Left("white-material".into()),
                     transform: vec![
                         Left("medium-object".into()),
-                        Right(Transform::Translate {
+                        Right(Transformation::Translate {
                             x: -0.25,
                             y: 0.25,
                             z: 8.0,
@@ -621,7 +621,7 @@ fn should_parse_scene_description() {
                     material: Left("blue-material".into()),
                     transform: vec![
                         Left("large-object".into()),
-                        Right(Transform::Translate {
+                        Right(Transformation::Translate {
                             x: 4.0,
                             y: 1.0,
                             z: 7.5,
@@ -633,7 +633,7 @@ fn should_parse_scene_description() {
                     material: Left("red-material".into()),
                     transform: vec![
                         Left("medium-object".into()),
-                        Right(Transform::Translate {
+                        Right(Transformation::Translate {
                             x: 10.0,
                             y: 2.0,
                             z: 7.5,
@@ -645,7 +645,7 @@ fn should_parse_scene_description() {
                     material: Left("white-material".into()),
                     transform: vec![
                         Left("small-object".into()),
-                        Right(Transform::Translate {
+                        Right(Transformation::Translate {
                             x: 8.0,
                             y: 2.0,
                             z: 12.0,
@@ -657,7 +657,7 @@ fn should_parse_scene_description() {
                     material: Left("white-material".into()),
                     transform: vec![
                         Left("small-object".into()),
-                        Right(Transform::Translate {
+                        Right(Transformation::Translate {
                             x: 20.0,
                             y: 1.0,
                             z: 9.0,
@@ -669,7 +669,7 @@ fn should_parse_scene_description() {
                     material: Left("blue-material".into()),
                     transform: vec![
                         Left("large-object".into()),
-                        Right(Transform::Translate {
+                        Right(Transformation::Translate {
                             x: -0.5,
                             y: -5.0,
                             z: 0.25,
@@ -681,7 +681,7 @@ fn should_parse_scene_description() {
                     material: Left("red-material".into()),
                     transform: vec![
                         Left("large-object".into()),
-                        Right(Transform::Translate {
+                        Right(Transformation::Translate {
                             x: 4.0,
                             y: -4.0,
                             z: 0.0,
@@ -693,7 +693,7 @@ fn should_parse_scene_description() {
                     material: Left("white-material".into()),
                     transform: vec![
                         Left("large-object".into()),
-                        Right(Transform::Translate {
+                        Right(Transformation::Translate {
                             x: 8.5,
                             y: -4.0,
                             z: 0.0,
@@ -705,7 +705,7 @@ fn should_parse_scene_description() {
                     material: Left("white-material".into()),
                     transform: vec![
                         Left("large-object".into()),
-                        Right(Transform::Translate {
+                        Right(Transformation::Translate {
                             x: 0.0,
                             y: -4.0,
                             z: 4.0,
@@ -717,7 +717,7 @@ fn should_parse_scene_description() {
                     material: Left("purple-material".into()),
                     transform: vec![
                         Left("large-object".into()),
-                        Right(Transform::Translate {
+                        Right(Transformation::Translate {
                             x: -0.5,
                             y: -4.5,
                             z: 8.0,
@@ -729,7 +729,7 @@ fn should_parse_scene_description() {
                     material: Left("white-material".into()),
                     transform: vec![
                         Left("large-object".into()),
-                        Right(Transform::Translate {
+                        Right(Transformation::Translate {
                             x: 0.0,
                             y: -8.0,
                             z: 4.0,
@@ -741,7 +741,7 @@ fn should_parse_scene_description() {
                     material: Left("white-material".into()),
                     transform: vec![
                         Left("large-object".into()),
-                        Right(Transform::Translate {
+                        Right(Transformation::Translate {
                             x: -0.5,
                             y: -8.5,
                             z: 8.0,

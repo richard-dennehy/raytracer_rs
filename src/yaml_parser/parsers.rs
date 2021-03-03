@@ -1,6 +1,6 @@
 use crate::yaml_parser::model::{
     CameraDescription, Define, MaterialDescription, ObjectDescription, ObjectKind,
-    PatternDescription, PatternType, Transform,
+    PatternDescription, PatternType, Transformation,
 };
 use crate::{Colour, Light, Point3D, Vector3D};
 use either::Either;
@@ -136,7 +136,7 @@ impl FromYaml for ObjectDescription {
     }
 }
 
-impl FromYaml for Either<String, Transform> {
+impl FromYaml for Either<String, Transformation> {
     fn from_yaml(yaml: &Yaml) -> Result<Self, String> {
         match yaml {
             Yaml::Array(_) => yaml.parse().map(Right),
@@ -148,9 +148,9 @@ impl FromYaml for Either<String, Transform> {
     }
 }
 
-impl FromYaml for Transform {
+impl FromYaml for Transformation {
     fn from_yaml(yaml: &Yaml) -> Result<Self, String> {
-        use Transform::*;
+        use Transformation::*;
 
         let transform = yaml.as_vec().ok_or_else(|| "transforms must be an array")?;
 

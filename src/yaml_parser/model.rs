@@ -1,4 +1,4 @@
-use crate::{Camera, Colour, Light, Matrix4D, Object, Pattern, Point3D, Vector3D};
+use crate::{Camera, Colour, Light, Object, Pattern, Point3D, Transform, Vector3D};
 use either::Either;
 use either::Either::{Left, Right};
 use std::num::NonZeroU16;
@@ -31,7 +31,7 @@ impl SceneDescription {
         let width = validate_nonzero_u16("width", self.camera.width)?;
         let height = validate_nonzero_u16("height", self.camera.height)?;
         let fov = self.camera.field_of_view;
-        let transform = Matrix4D::view_transform(self.camera.from, self.camera.to, self.camera.up);
+        let transform = Transform::view_transform(self.camera.from, self.camera.to, self.camera.up);
 
         Ok(Camera::new(width, height, fov, transform))
     }
@@ -61,16 +61,18 @@ impl SceneDescription {
                     .transform
                     .iter()
                     .map(|tf| match tf {
-                        Right(Transform::Translate { x, y, z }) => {
-                            Ok(Matrix4D::translation(*x, *y, *z))
+                        Right(Transformation::Translate { x, y, z }) => {
+                            Ok(Transform::translation(*x, *y, *z))
                         }
-                        Right(Transform::Scale { x, y, z }) => Ok(Matrix4D::scaling(*x, *y, *z)),
-                        Right(Transform::RotationX(rads)) => Ok(Matrix4D::rotation_x(*rads)),
-                        Right(Transform::RotationY(rads)) => Ok(Matrix4D::rotation_y(*rads)),
-                        Right(Transform::RotationZ(rads)) => Ok(Matrix4D::rotation_z(*rads)),
+                        Right(Transformation::Scale { x, y, z }) => {
+                            Ok(Transform::scaling(*x, *y, *z))
+                        }
+                        Right(Transformation::RotationX(rads)) => Ok(Transform::rotation_x(*rads)),
+                        Right(Transformation::RotationY(rads)) => Ok(Transform::rotation_y(*rads)),
+                        Right(Transformation::RotationZ(rads)) => Ok(Transform::rotation_z(*rads)),
                         Left(name) => self.resolve_transform(name.as_str()),
                     })
-                    .fold(Ok(Matrix4D::identity()), |acc, next| {
+                    .fold(Ok(Transform::identity()), |acc, next| {
                         acc.and_then(|lhs| next.map(|rhs| rhs * lhs))
                     });
 
@@ -114,7 +116,7 @@ impl SceneDescription {
 
     // FIXME can infinite loop
     // FIXME more: try to create function Vec<Either<String, Transform>> -> Vec<Transform>, then use `to_matrix`
-    fn resolve_transform(&self, name: &str) -> Result<Matrix4D, String> {
+    fn resolve_transform(&self, name: &str) -> Result<Transform, String> {
         self.defines
             .iter()
             .find(|def| def.name() == name)
@@ -128,16 +130,18 @@ impl SceneDescription {
             .and_then(|tfs| {
                 tfs.iter()
                     .map(|tf| match tf {
-                        Right(Transform::Translate { x, y, z }) => {
-                            Ok(Matrix4D::translation(*x, *y, *z))
+                        Right(Transformation::Translate { x, y, z }) => {
+                            Ok(Transform::translation(*x, *y, *z))
                         }
-                        Right(Transform::Scale { x, y, z }) => Ok(Matrix4D::scaling(*x, *y, *z)),
-                        Right(Transform::RotationX(rads)) => Ok(Matrix4D::rotation_x(*rads)),
-                        Right(Transform::RotationY(rads)) => Ok(Matrix4D::rotation_y(*rads)),
-                        Right(Transform::RotationZ(rads)) => Ok(Matrix4D::rotation_z(*rads)),
+                        Right(Transformation::Scale { x, y, z }) => {
+                            Ok(Transform::scaling(*x, *y, *z))
+                        }
+                        Right(Transformation::RotationX(rads)) => Ok(Transform::rotation_x(*rads)),
+                        Right(Transformation::RotationY(rads)) => Ok(Transform::rotation_y(*rads)),
+                        Right(Transformation::RotationZ(rads)) => Ok(Transform::rotation_z(*rads)),
                         Left(name) => self.resolve_transform(name.as_str()),
                     })
-                    .fold(Ok(Matrix4D::identity()), |acc, next| {
+                    .fold(Ok(Transform::identity()), |acc, next| {
                         acc.and_then(|lhs| next.map(|rhs| rhs * lhs))
                     })
             })
@@ -167,7 +171,7 @@ pub enum Define {
     },
 }
 
-pub type Transforms = Vec<Either<String, Transform>>;
+pub type Transforms = Vec<Either<String, Transformation>>;
 
 impl Define {
     pub fn name(&self) -> &str {
@@ -220,7 +224,7 @@ impl MaterialDescription {
 pub struct PatternDescription {
     pub(crate) pattern_type: PatternType,
     pub(crate) colours: (Colour, Colour),
-    pub(crate) transforms: Option<Vec<Transform>>,
+    pub(crate) transforms: Option<Vec<Transformation>>,
 }
 
 impl PatternDescription {
@@ -246,9 +250,8 @@ pub enum PatternType {
     Checker,
 }
 
-// TODO impl to_matrix for Vec<Transform>
 #[derive(PartialEq, Debug, Clone, Copy)]
-pub enum Transform {
+pub enum Transformation {
     Translate { x: f64, y: f64, z: f64 },
     Scale { x: f64, y: f64, z: f64 },
     RotationX(f64),
@@ -258,20 +261,20 @@ pub enum Transform {
 }
 
 trait ToMatrix {
-    fn to_matrix(&self) -> Matrix4D;
+    fn to_matrix(&self) -> Transform;
 }
 
-impl ToMatrix for Vec<Transform> {
-    fn to_matrix(&self) -> Matrix4D {
+impl ToMatrix for Vec<Transformation> {
+    fn to_matrix(&self) -> Transform {
         self.iter()
             .map(|tf| match tf {
-                Transform::Translate { x, y, z } => Matrix4D::translation(*x, *y, *z),
-                Transform::Scale { x, y, z } => Matrix4D::scaling(*x, *y, *z),
-                Transform::RotationX(rads) => Matrix4D::rotation_x(*rads),
-                Transform::RotationY(rads) => Matrix4D::rotation_y(*rads),
-                Transform::RotationZ(rads) => Matrix4D::rotation_z(*rads),
+                Transformation::Translate { x, y, z } => Transform::translation(*x, *y, *z),
+                Transformation::Scale { x, y, z } => Transform::scaling(*x, *y, *z),
+                Transformation::RotationX(rads) => Transform::rotation_x(*rads),
+                Transformation::RotationY(rads) => Transform::rotation_y(*rads),
+                Transformation::RotationZ(rads) => Transform::rotation_z(*rads),
             })
-            .fold(Matrix4D::identity(), |acc, next| next * acc)
+            .fold(Transform::identity(), |acc, next| next * acc)
     }
 }
 

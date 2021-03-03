@@ -166,7 +166,7 @@ mod unit_tests {
                     reflective: 0.5,
                     ..Default::default()
                 })
-                .with_transform(Matrix4D::translation(0.0, -1.0, 0.0));
+                .with_transform(Transform::translation(0.0, -1.0, 0.0));
 
             world.objects.push(reflective_plane);
         };
@@ -196,14 +196,14 @@ mod unit_tests {
         {
             let upper = Object::plane()
                 .with_material(reflective_non_blinding_material.clone())
-                .with_transform(Matrix4D::rotation_x(PI).with_translation(0.0, 1.0, 0.0));
+                .with_transform(Transform::rotation_x(PI).with_translation(0.0, 1.0, 0.0));
             world.objects.push(upper);
         };
 
         {
             let lower = Object::plane()
                 .with_material(reflective_non_blinding_material)
-                .with_transform(Matrix4D::translation(0.0, -1.0, 0.0));
+                .with_transform(Transform::translation(0.0, -1.0, 0.0));
             world.objects.push(lower);
         };
         world
@@ -231,7 +231,7 @@ mod unit_tests {
                     transparency: 0.0,
                     ..Default::default()
                 })
-                .with_transform(Matrix4D::rotation_x(-PI / 2.0));
+                .with_transform(Transform::rotation_x(-PI / 2.0));
             world.objects.push(front);
         };
 
@@ -244,7 +244,7 @@ mod unit_tests {
                     specular: 0.0,
                     ..Default::default()
                 })
-                .with_transform(Matrix4D::translation(0.0, 0.0, 1.0));
+                .with_transform(Transform::translation(0.0, 0.0, 1.0));
             world.objects.push(back);
         };
 
@@ -271,7 +271,7 @@ mod unit_tests {
                     refractive: 1.0,
                     ..Default::default()
                 })
-                .with_transform(Matrix4D::rotation_x(-PI / 2.0));
+                .with_transform(Transform::rotation_x(-PI / 2.0));
             world.objects.push(front);
         };
 
@@ -284,7 +284,7 @@ mod unit_tests {
                     specular: 0.0,
                     ..Default::default()
                 })
-                .with_transform(Matrix4D::translation(0.0, 0.0, 1.0));
+                .with_transform(Transform::translation(0.0, 0.0, 1.0));
             world.objects.push(back);
         };
 
@@ -301,7 +301,7 @@ mod unit_tests {
         let mut world = World::default();
         {
             let refractive_plane = Object::plane()
-                .with_transform(Matrix4D::translation(0.0, -1.0, 0.0))
+                .with_transform(Transform::translation(0.0, -1.0, 0.0))
                 .with_material(Material {
                     transparency: 0.5,
                     refractive: 1.5,
@@ -313,7 +313,7 @@ mod unit_tests {
 
         {
             let ball = Object::sphere()
-                .with_transform(Matrix4D::translation(0.0, -3.5, -0.5))
+                .with_transform(Transform::translation(0.0, -3.5, -0.5))
                 .with_material(Material {
                     pattern: Pattern::solid(Colour::RED),
                     ambient: 0.5,
@@ -341,7 +341,7 @@ mod unit_tests {
         let mut world = World::default();
         {
             let refractive_plane = Object::plane()
-                .with_transform(Matrix4D::translation(0.0, -1.0, 0.0))
+                .with_transform(Transform::translation(0.0, -1.0, 0.0))
                 .with_material(Material {
                     transparency: 0.5,
                     reflective: 0.5,
@@ -354,7 +354,7 @@ mod unit_tests {
 
         {
             let ball = Object::sphere()
-                .with_transform(Matrix4D::translation(0.0, -3.5, -0.5))
+                .with_transform(Transform::translation(0.0, -3.5, -0.5))
                 .with_material(Material {
                     pattern: Pattern::solid(Colour::RED),
                     ambient: 0.5,
@@ -387,7 +387,7 @@ mod unit_tests {
 
         {
             let wall = Object::plane()
-                .with_transform(Matrix4D::rotation_x(-PI / 2.0).with_translation(0.0, 0.0, 5.0))
+                .with_transform(Transform::rotation_x(-PI / 2.0).with_translation(0.0, 0.0, 5.0))
                 .with_material(Material {
                     pattern: Pattern::solid(Colour::BLUE),
                     ambient: 1.0,
@@ -399,7 +399,7 @@ mod unit_tests {
 
         {
             let glass_sphere = Object::sphere()
-                .with_transform(Matrix4D::translation(0.0, 0.0, 1.0))
+                .with_transform(Transform::translation(0.0, 0.0, 1.0))
                 .with_material(Material {
                     pattern: Pattern::solid(Colour::new(0.05, 0.05, 0.05)),
                     transparency: 1.0,
@@ -432,14 +432,14 @@ mod unit_tests {
                 ..Default::default()
             }),
             Object::sphere()
-                .with_transform(Matrix4D::translation(0.5, 0.5, -0.5))
+                .with_transform(Transform::translation(0.5, 0.5, -0.5))
                 .with_material(Material {
                     pattern: Pattern::solid(Colour::WHITE),
                     ambient: 0.01,
                     ..Default::default()
                 }),
         )
-        .with_transform(Matrix4D::translation(0.0, 1.0, 0.0).with_rotation_y(PI / 4.0));
+        .with_transform(Transform::translation(0.0, 1.0, 0.0).with_rotation_y(PI / 4.0));
 
         world.objects.push(csg);
 

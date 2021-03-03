@@ -1,7 +1,7 @@
 use criterion::{criterion_group, BenchmarkId, Criterion};
 use nonzero_ext::*;
 use ray_tracer::{
-    renderer, Camera, Colour, Light, Matrix4D, Object, Point3D, Ray, Vector3D, World,
+    renderer, Camera, Colour, Light, Object, Point3D, Ray, Transform, Vector3D, World,
 };
 use std::f64::consts::PI;
 
@@ -36,7 +36,7 @@ fn empty_scene_full_render(c: &mut Criterion) {
                 nonzero!(1920u16),
                 nonzero!(1080u16),
                 PI / 3.0,
-                Matrix4D::view_transform(
+                Transform::view_transform(
                     Point3D::new(0.0, 0.0, -5.0),
                     Point3D::new(0.0, 0.0, 0.0),
                     Vector3D::new(0.0, 1.0, 0.0),
@@ -74,7 +74,7 @@ fn single_object_full_render(c: &mut Criterion) {
                     nonzero!(1920u16),
                     nonzero!(1080u16),
                     PI / 3.0,
-                    Matrix4D::view_transform(
+                    Transform::view_transform(
                         Point3D::new(0.0, 0.0, -5.0),
                         Point3D::new(0.0, 0.0, 0.0),
                         Vector3D::new(0.0, 1.0, 0.0),

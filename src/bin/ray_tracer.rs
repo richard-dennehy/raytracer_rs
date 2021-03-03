@@ -27,7 +27,7 @@ fn main() -> Result<(), String> {
         nonzero!(200u16),
         nonzero!(200u16),
         PI / 3.0,
-        Matrix4D::view_transform(
+        Transform::view_transform(
             Point3D::new(0.0, 0.0, -5.0),
             Point3D::new(0.0, 0.0, 0.0),
             Vector3D::new(0.0, 1.0, 0.0),
