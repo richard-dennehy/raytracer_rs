@@ -11,7 +11,7 @@ mod unit_tests {
         let translation = Transform::translation(5.0, -3.0, 2.0);
 
         let translated = translation * point;
-        assert_eq!(translated, (2.0, 1.0, 7.0, 1.0));
+        assert_eq!(translated, Point3D::new(2.0, 1.0, 7.0));
     }
 
     #[test]
@@ -21,7 +21,7 @@ mod unit_tests {
         let translation = Transform::translation(5.0, -3.0, 2.0);
 
         let translated = translation.inverse().unwrap() * point;
-        assert_eq!(translated, (-8.0, 7.0, 3.0, 1.0));
+        assert_eq!(translated, Point3D::new(-8.0, 7.0, 3.0));
     }
 
     #[test]
@@ -30,7 +30,7 @@ mod unit_tests {
         let translation = Transform::translation(5.0, -3.0, 2.0);
 
         let translated = translation * vector;
-        assert_eq!(translated, (-3.0, 4.0, 5.0, 0.0));
+        assert_eq!(translated, Vector3D::new(-3.0, 4.0, 5.0));
     }
 
     #[test]
@@ -39,7 +39,7 @@ mod unit_tests {
         let scale = Transform::scaling(2.0, 3.0, 4.0);
 
         let scaled = scale * point;
-        assert_eq!(scaled, (-8.0, 18.0, 32.0, 1.0));
+        assert_eq!(scaled, Point3D::new(-8.0, 18.0, 32.0));
     }
 
     #[test]
@@ -48,7 +48,7 @@ mod unit_tests {
         let scale = Transform::scaling(2.0, 3.0, 4.0);
 
         let scaled = scale * vector;
-        assert_eq!(scaled, (-8.0, 18.0, 32.0, 0.0));
+        assert_eq!(scaled, Vector3D::new(-8.0, 18.0, 32.0));
     }
 
     #[test]
@@ -57,7 +57,7 @@ mod unit_tests {
         let scale = Transform::scaling(2.0, 3.0, 4.0);
 
         let scaled = scale.inverse().unwrap() * vector;
-        assert_eq!(scaled, (-2.0, 2.0, 2.0, 0.0));
+        assert_eq!(scaled, Vector3D::new(-2.0, 2.0, 2.0));
     }
 
     #[test]
@@ -67,19 +67,17 @@ mod unit_tests {
         let full_quarter = Transform::rotation_x(PI / 2.0);
 
         {
-            let (x, y, z, w) = half_quarter * point;
-            assert_eq!(x, 0.0);
-            assert!(approx_eq!(f64, y, 2.0_f64.sqrt() / 2.0));
-            assert!(approx_eq!(f64, z, 2.0_f64.sqrt() / 2.0));
-            assert_eq!(w, 1.0);
+            let point = half_quarter * point;
+            assert_eq!(point.x(), 0.0);
+            assert!(approx_eq!(f64, point.y(), 2.0_f64.sqrt() / 2.0));
+            assert!(approx_eq!(f64, point.z(), 2.0_f64.sqrt() / 2.0));
         }
 
         {
-            let (x, y, z, w) = full_quarter * point;
-            assert_eq!(x, 0.0);
-            assert!(approx_eq!(f64, y, 0.0));
-            assert!(approx_eq!(f64, z, 1.0));
-            assert_eq!(w, 1.0);
+            let point = full_quarter * point;
+            assert_eq!(point.x(), 0.0);
+            assert!(approx_eq!(f64, point.y(), 0.0));
+            assert!(approx_eq!(f64, point.z(), 1.0));
         }
     }
 
@@ -90,19 +88,17 @@ mod unit_tests {
         let full_quarter = Transform::rotation_y(PI / 2.0);
 
         {
-            let (x, y, z, w) = half_quarter * point;
-            assert!(approx_eq!(f64, x, 2.0_f64.sqrt() / 2.0));
-            assert_eq!(y, 0.0);
-            assert!(approx_eq!(f64, z, 2.0_f64.sqrt() / 2.0));
-            assert_eq!(w, 1.0);
+            let point = half_quarter * point;
+            assert!(approx_eq!(f64, point.x(), 2.0_f64.sqrt() / 2.0));
+            assert_eq!(point.y(), 0.0);
+            assert!(approx_eq!(f64, point.z(), 2.0_f64.sqrt() / 2.0));
         }
 
         {
-            let (x, y, z, w) = full_quarter * point;
-            assert!(approx_eq!(f64, x, 1.0));
-            assert_eq!(y, 0.0);
-            assert!(approx_eq!(f64, z, 0.0));
-            assert_eq!(w, 1.0);
+            let point = full_quarter * point;
+            assert!(approx_eq!(f64, point.x(), 1.0));
+            assert_eq!(point.y(), 0.0);
+            assert!(approx_eq!(f64, point.z(), 0.0));
         }
     }
 
@@ -113,19 +109,17 @@ mod unit_tests {
         let full_quarter = Transform::rotation_z(PI / 2.0);
 
         {
-            let (x, y, z, w) = half_quarter * point;
-            assert!(approx_eq!(f64, x, -(2.0_f64.sqrt() / 2.0)));
-            assert!(approx_eq!(f64, y, 2.0_f64.sqrt() / 2.0));
-            assert_eq!(z, 0.0);
-            assert_eq!(w, 1.0);
+            let point = half_quarter * point;
+            assert!(approx_eq!(f64, point.x(), -(2.0_f64.sqrt() / 2.0)));
+            assert!(approx_eq!(f64, point.y(), 2.0_f64.sqrt() / 2.0));
+            assert_eq!(point.z(), 0.0);
         }
 
         {
-            let (x, y, z, w) = full_quarter * point;
-            assert!(approx_eq!(f64, x, -1.0));
-            assert!(approx_eq!(f64, y, 0.0));
-            assert_eq!(z, 0.0);
-            assert_eq!(w, 1.0);
+            let point = full_quarter * point;
+            assert!(approx_eq!(f64, point.x(), -1.0));
+            assert!(approx_eq!(f64, point.y(), 0.0));
+            assert_eq!(point.z(), 0.0);
         }
     }
 
@@ -135,11 +129,10 @@ mod unit_tests {
         let half_quarter = Transform::rotation_x(PI / 4.0);
 
         {
-            let (x, y, z, w) = half_quarter.inverse().unwrap() * point;
-            assert_eq!(x, 0.0);
-            assert!(approx_eq!(f64, y, 2.0_f64.sqrt() / 2.0));
-            assert!(approx_eq!(f64, z, -(2.0_f64.sqrt() / 2.0)));
-            assert_eq!(w, 1.0);
+            let point = half_quarter.inverse().unwrap() * point;
+            assert_eq!(point.x(), 0.0);
+            assert!(approx_eq!(f64, point.y(), 2.0_f64.sqrt() / 2.0));
+            assert!(approx_eq!(f64, point.z(), -(2.0_f64.sqrt() / 2.0)));
         }
     }
 
@@ -149,7 +142,7 @@ mod unit_tests {
         let shear = Transform::shear(1.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
         let sheared = shear * point;
-        assert_eq!(sheared, (5.0, 3.0, 4.0, 1.0));
+        assert_eq!(sheared, Point3D::new(5.0, 3.0, 4.0));
     }
 
     #[test]
@@ -158,7 +151,7 @@ mod unit_tests {
         let shear = Transform::shear(0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
 
         let sheared = shear * point;
-        assert_eq!(sheared, (6.0, 3.0, 4.0, 1.0));
+        assert_eq!(sheared, Point3D::new(6.0, 3.0, 4.0));
     }
 
     #[test]
@@ -167,7 +160,7 @@ mod unit_tests {
         let shear = Transform::shear(0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
 
         let sheared = shear * point;
-        assert_eq!(sheared, (2.0, 5.0, 4.0, 1.0));
+        assert_eq!(sheared, Point3D::new(2.0, 5.0, 4.0));
     }
 
     #[test]
@@ -176,7 +169,7 @@ mod unit_tests {
         let shear = Transform::shear(0.0, 0.0, 0.0, 1.0, 0.0, 0.0);
 
         let sheared = shear * point;
-        assert_eq!(sheared, (2.0, 7.0, 4.0, 1.0));
+        assert_eq!(sheared, Point3D::new(2.0, 7.0, 4.0));
     }
 
     #[test]
@@ -185,7 +178,7 @@ mod unit_tests {
         let shear = Transform::shear(0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
         let sheared = shear * point;
-        assert_eq!(sheared, (2.0, 3.0, 6.0, 1.0));
+        assert_eq!(sheared, Point3D::new(2.0, 3.0, 6.0));
     }
 
     #[test]
@@ -194,7 +187,7 @@ mod unit_tests {
         let shear = Transform::shear(0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
 
         let sheared = shear * point;
-        assert_eq!(sheared, (2.0, 3.0, 7.0, 1.0));
+        assert_eq!(sheared, Point3D::new(2.0, 3.0, 7.0));
     }
 
     #[test]
@@ -206,22 +199,22 @@ mod unit_tests {
 
         let rotated = rotation * point;
         {
-            let (x, y, z, _) = rotated;
+            let point = rotated;
 
-            assert!(approx_eq!(f64, x, 1.0));
-            assert!(approx_eq!(f64, y, -1.0));
-            assert!(approx_eq!(f64, z, 0.0));
+            assert!(approx_eq!(f64, point.x(), 1.0));
+            assert!(approx_eq!(f64, point.y(), -1.0));
+            assert!(approx_eq!(f64, point.z(), 0.0));
         }
 
         let scaled = scale * rotated;
         {
-            let (x, y, z, _) = scaled;
+            let point = scaled;
 
-            assert!(approx_eq!(f64, x, 5.0));
-            assert!(approx_eq!(f64, y, -5.0));
+            assert!(approx_eq!(f64, point.x(), 5.0));
+            assert!(approx_eq!(f64, point.y(), -5.0));
             assert!(approx_eq!(
                 f64,
-                z,
+                point.z(),
                 0.0,
                 ulps = 5,
                 epsilon = f32::EPSILON as f64
@@ -230,11 +223,11 @@ mod unit_tests {
 
         let translated = translation * scaled;
         {
-            let (x, y, z, _) = translated;
+            let point = translated;
 
-            assert!(approx_eq!(f64, x, 15.0));
-            assert!(approx_eq!(f64, y, 0.0));
-            assert!(approx_eq!(f64, z, 7.0));
+            assert!(approx_eq!(f64, point.x(), 15.0));
+            assert!(approx_eq!(f64, point.y(), 0.0));
+            assert!(approx_eq!(f64, point.z(), 7.0));
         }
     }
 
@@ -246,12 +239,11 @@ mod unit_tests {
         let translation = Transform::translation(10.0, 5.0, 7.0);
 
         let transform = translation * scale * rotation;
-        let (x, y, z, w) = transform * point;
+        let point = transform * point;
 
-        assert_eq!(x, 15.0);
-        assert_eq!(y, 0.0);
-        assert_eq!(z, 7.0);
-        assert_eq!(w, 1.0);
+        assert_eq!(point.x(), 15.0);
+        assert_eq!(point.y(), 0.0);
+        assert_eq!(point.z(), 7.0);
     }
 
     #[test]
@@ -263,7 +255,7 @@ mod unit_tests {
             .with_scaling(5.0, 5.0, 5.0)
             .with_translation(10.0, 5.0, 7.0);
 
-        assert_eq!(translation * point, (15.0, 0.0, 7.0, 1.0));
+        assert_eq!(translation * point, Point3D::new(15.0, 0.0, 7.0));
     }
 
     #[test]
@@ -329,20 +321,14 @@ mod property_tests {
     fn multiplying_a_vector_by_identity_matrix_produces_a_4_tuple_of_the_vector_components(
         vector: Vector3D,
     ) {
-        assert_eq!(
-            Transform::identity() * vector,
-            (vector.x(), vector.y(), vector.z(), vector.w())
-        );
+        assert_eq!(Transform::identity() * vector, vector);
     }
 
     #[quickcheck]
     fn multiplying_a_point_by_identity_matrix_produces_a_4_tuple_of_the_point_components(
         point: Point3D,
     ) {
-        assert_eq!(
-            Transform::identity() * point,
-            (point.x(), point.y(), point.z(), point.w())
-        );
+        assert_eq!(Transform::identity() * point, point);
     }
 
     #[quickcheck]
@@ -389,10 +375,7 @@ mod property_tests {
     fn vectors_cannot_be_translated(vector: Vector3D, x: f64, y: f64, z: f64) {
         let translation = Transform::translation(x, y, z);
 
-        assert_eq!(
-            translation * vector,
-            (vector.x(), vector.y(), vector.z(), 0.0)
-        );
+        assert_eq!(translation * vector, vector);
     }
 
     #[quickcheck]

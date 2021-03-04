@@ -307,3 +307,69 @@ fn should_be_able_to_calculate_the_determinant_of_a_3d_matrix() {
     assert_eq!(matrix_3d.cofactor(0, 2), -46.0);
     assert_eq!(matrix_3d.determinant(), -196.0);
 }
+
+mod property_tests {
+    extern crate float_cmp;
+    extern crate quickcheck;
+    use super::*;
+
+    #[quickcheck]
+    fn multiplying_a_vector_by_identity_matrix_produces_a_4_tuple_of_the_vector_components(
+        vector: Vector3D,
+    ) {
+        assert_eq!(
+            Matrix4D::identity() * vector,
+            (vector.x(), vector.y(), vector.z(), vector.w())
+        );
+    }
+
+    #[quickcheck]
+    fn multiplying_a_point_by_identity_matrix_produces_a_4_tuple_of_the_point_components(
+        point: Point3D,
+    ) {
+        assert_eq!(
+            Matrix4D::identity() * point,
+            (point.x(), point.y(), point.z(), point.w())
+        );
+    }
+
+    #[quickcheck]
+    fn multiplying_a_matrix_by_a_matrix_inverse_undoes_multiplication(
+        first: Matrix4D,
+        second: Matrix4D,
+    ) {
+        // rounding errors become significant
+        fn assert_close_enough(f: f64, s: f64) {
+            assert!(
+                approx_eq!(f64, f, s, epsilon = f32::EPSILON as f64),
+                "not approximately equal: {} != {}",
+                f,
+                s
+            )
+        }
+
+        if second.determinant() != 0.0 {
+            let inverse = second.inverse();
+            assert!(inverse.is_some());
+            let inverse = inverse.unwrap();
+
+            let product = (first.clone() * second) * inverse;
+            assert_close_enough(first.m00(), product.m00());
+            assert_close_enough(first.m01(), product.m01());
+            assert_close_enough(first.m02(), product.m02());
+            assert_close_enough(first.m03(), product.m03());
+            assert_close_enough(first.m10(), product.m10());
+            assert_close_enough(first.m11(), product.m11());
+            assert_close_enough(first.m12(), product.m12());
+            assert_close_enough(first.m13(), product.m13());
+            assert_close_enough(first.m20(), product.m20());
+            assert_close_enough(first.m21(), product.m21());
+            assert_close_enough(first.m22(), product.m22());
+            assert_close_enough(first.m23(), product.m23());
+            assert_close_enough(first.m30(), product.m30());
+            assert_close_enough(first.m31(), product.m31());
+            assert_close_enough(first.m32(), product.m32());
+            assert_close_enough(first.m33(), product.m33());
+        }
+    }
+}

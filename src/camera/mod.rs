@@ -57,13 +57,10 @@ impl Camera {
             .inverse()
             .expect("a transform must be invertible");
 
-        let (x, y, z, _) = &inverse * Point3D::new(world_x, world_y, -1.0);
-        let pixel = Point3D::new(x, y, z);
-
-        let (x, y, z, _) = inverse * Point3D::new(0.0, 0.0, 0.0);
-        let origin = Point3D::new(x, y, z);
-
+        let pixel = &inverse * Point3D::new(world_x, world_y, -1.0);
+        let origin = inverse * Point3D::new(0.0, 0.0, 0.0);
         let direction = (pixel - origin).normalised();
+
         Ray::new(origin, direction)
     }
 

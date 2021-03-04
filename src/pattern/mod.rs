@@ -71,8 +71,7 @@ impl Pattern {
             .inverse()
             .expect("A transformation matrix must be invertible");
 
-        let (x, y, z, _) = inverse * object_point;
-        let point = Point3D::new(x, y, z);
+        let point = inverse * object_point;
 
         match self.kind {
             Solid(colour) => colour,
@@ -89,7 +88,11 @@ impl Pattern {
                 primary
             }
             Ring(_, secondary) => secondary,
-            Checkers(primary, _) if (x.floor() + y.floor() + z.floor()) % 2.0 == 0.0 => primary,
+            Checkers(primary, _)
+                if (point.x().floor() + point.y().floor() + point.z().floor()) % 2.0 == 0.0 =>
+            {
+                primary
+            }
             Checkers(_, secondary) => secondary,
         }
     }

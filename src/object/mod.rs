@@ -159,19 +159,15 @@ impl Object {
             .inverse()
             .expect("transformation Matrix must be invertible");
 
-        let (x, y, z, w) = &inverted_transform * point;
+        let object_point = inverted_transform * point;
 
-        debug_assert!(w == 1.0, "Point transformation did not return a point");
-        let object_point = Point3D::new(x, y, z);
         let object_normal = match &self.kind {
             ObjectKind::Shape(shape) => shape.object_normal_at(object_point, uv),
             ObjectKind::Group(_) => unreachable!("should never need to calculate normals on Group object as rays should only intersect Shapes"),
             ObjectKind::Csg { .. } => unreachable!("Rays cannot intersect CSGs directly")
         };
 
-        // deliberately ignoring `w` as a translation Matrix may affect `w` so it's no longer 0
-        let (x, y, z, _) = inverted_transform.transpose() * object_normal;
-        let world_normal = Vector3D::new(x, y, z);
+        let world_normal = inverted_transform.transpose() * object_normal;
         world_normal.normalised()
     }
 
@@ -190,8 +186,7 @@ impl Object {
                 .transform
                 .inverse()
                 .expect("A transformation matrix must be invertible");
-            let (x, y, z, _) = inverse * point;
-            Point3D::new(x, y, z)
+            inverse * point
         };
 
         let colour = material.pattern.colour_at(object_point) * light.colour();

@@ -20,12 +20,7 @@ impl Transform {
     }
 
     pub const fn identity() -> Self {
-        Self::new(Matrix4D::new(
-            [1.0, 0.0, 0.0, 0.0],
-            [0.0, 1.0, 0.0, 0.0],
-            [0.0, 0.0, 1.0, 0.0],
-            [0.0, 0.0, 0.0, 1.0],
-        ))
+        Self::new(Matrix4D::identity())
     }
 
     pub const fn translation(x: f64, y: f64, z: f64) -> Self {
@@ -85,7 +80,7 @@ impl Transform {
         let cos_r = radians.cos();
         let sin_r = radians.sin();
 
-Self::new(        Matrix4D::new(
+        Self::new(Matrix4D::new(
             [cos_r,  0.0, sin_r, 0.0],
             [0.0,    1.0,   0.0, 0.0],
             [-sin_r, 0.0, cos_r, 0.0],
@@ -104,7 +99,7 @@ Self::new(        Matrix4D::new(
         let cos_r = radians.cos();
         let sin_r = radians.sin();
 
-Self::new(        Matrix4D::new(
+        Self::new(Matrix4D::new(
             [cos_r, -sin_r, 0.0, 0.0],
             [sin_r,  cos_r, 0.0, 0.0],
             [0.0,    0.0,   1.0, 0.0],
@@ -134,7 +129,7 @@ Self::new(        Matrix4D::new(
         let z_to_x = z_proportionate_to_x;
         let z_to_y = z_proportionate_to_y;
 
-Self::new(        Matrix4D::new(
+        Self::new(Matrix4D::new(
             [1.0,    x_to_y, x_to_z, 0.0],
             [y_to_x, 1.0,    y_to_z, 0.0],
             [z_to_x, z_to_y, 1.0,    0.0],
@@ -218,33 +213,27 @@ impl MulAssign<Transform> for Transform {
 }
 
 impl Mul<Point3D> for &Transform {
-    type Output = (f64, f64, f64, f64);
+    type Output = Point3D;
 
     fn mul(self, rhs: Point3D) -> Self::Output {
-        (
-            self.m00() * rhs.x() + self.m01() * rhs.y() + self.m02() * rhs.z() + self.m03(),
-            self.m10() * rhs.x() + self.m11() * rhs.y() + self.m12() * rhs.z() + self.m13(),
-            self.m20() * rhs.x() + self.m21() * rhs.y() + self.m22() * rhs.z() + self.m23(),
-            self.m30() * rhs.x() + self.m31() * rhs.y() + self.m32() * rhs.z() + self.m33(),
-        )
+        let (x, y, z, _) = self.underlying * rhs;
+
+        Point3D::new(x, y, z)
     }
 }
 
 impl Mul<Vector3D> for &Transform {
-    type Output = (f64, f64, f64, f64);
+    type Output = Vector3D;
 
     fn mul(self, rhs: Vector3D) -> Self::Output {
-        (
-            self.m00() * rhs.x() + self.m01() * rhs.y() + self.m02() * rhs.z(),
-            self.m10() * rhs.x() + self.m11() * rhs.y() + self.m12() * rhs.z(),
-            self.m20() * rhs.x() + self.m21() * rhs.y() + self.m22() * rhs.z(),
-            self.m30() * rhs.x() + self.m31() * rhs.y() + self.m32() * rhs.z(),
-        )
+        let (x, y, z, _) = self.underlying * rhs;
+
+        Vector3D::new(x, y, z)
     }
 }
 
 impl Mul<Vector3D> for Transform {
-    type Output = (f64, f64, f64, f64);
+    type Output = Vector3D;
 
     fn mul(self, rhs: Vector3D) -> Self::Output {
         &self * rhs
@@ -252,7 +241,7 @@ impl Mul<Vector3D> for Transform {
 }
 
 impl Mul<Point3D> for Transform {
-    type Output = (f64, f64, f64, f64);
+    type Output = Point3D;
 
     fn mul(self, rhs: Point3D) -> Self::Output {
         &self * rhs
@@ -262,13 +251,8 @@ impl Mul<Point3D> for Transform {
 impl Mul<(f64, f64, f64, f64)> for Transform {
     type Output = (f64, f64, f64, f64);
 
-    fn mul(self, (x, y, z, w): (f64, f64, f64, f64)) -> Self::Output {
-        (
-            self.m00() * x + self.m01() * y + self.m02() * z + self.m03() * w,
-            self.m10() * x + self.m11() * y + self.m12() * z + self.m13() * w,
-            self.m20() * x + self.m21() * y + self.m22() * z + self.m23() * w,
-            self.m30() * x + self.m31() * y + self.m32() * z + self.m33() * w,
-        )
+    fn mul(self, rhs: (f64, f64, f64, f64)) -> Self::Output {
+        self.underlying * rhs
     }
 }
 

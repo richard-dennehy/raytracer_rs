@@ -20,13 +20,8 @@ impl Ray {
     }
 
     pub fn transformed(&self, transformation: &Transform) -> Self {
-        let (x, y, z, w) = transformation * self.origin;
-        debug_assert!(w == 1.0, "matrix transform did not return a Point");
-        let transformed_origin = Point3D::new(x, y, z);
-
-        let (x, y, z, w) = transformation * self.direction;
-        debug_assert!(w == 0.0, "matrix transform did not return a Vector");
-        let transformed_direction = Vector3D::new(x, y, z);
+        let transformed_origin = transformation * self.origin;
+        let transformed_direction = transformation * self.direction;
 
         Ray::new(transformed_origin, transformed_direction)
     }
