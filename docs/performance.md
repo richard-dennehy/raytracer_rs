@@ -28,3 +28,11 @@ Generate (x, y) indexes of hot loop in sequence, then cast rays in parallel, as 
 - Performance impact: reduced loop iteration time by ~25%
 
 Note: ideally would avoid allocating 2 `Vec`s and looping 3 times, but switching to parallel iterator and back again makes this difficult to avoid
+
+### Precalculating transformation matrix inverse 
+Calculate inverse eagerly and store it along with matrix data, to avoid having to recalculate it constantly
+
+- Effort: moderate - required refactoring of `matrix` module to split Transform data structure and constructors, and underlying 4D Matrix and maths
+- Performance impact: 5-10% reduction on trivial scenes, 15-20% on complex scenes
+
+Note: storing normal matrix and inverse increases size of struct significantly, which may negatively impact performance

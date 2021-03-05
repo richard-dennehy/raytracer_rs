@@ -8,6 +8,11 @@ pub fn render(world: World, camera: Camera) -> Canvas {
     let mut canvas =
         Canvas::new(camera.width(), camera.height()).expect("Camera dimensions are too large");
 
+    // TODO performance:
+    //   investigate whether `x` parallel tasks that each cast `y` rays _sequentially_
+    //   is faster than casting `x` * `y` rays in parallel
+    //   (this would avoid having to collect into the initial vector, and may reduce stop/start overhead)
+
     let pixels = (0..camera.width().get())
         .into_iter()
         .flat_map(|x| (0..camera.height().get()).into_iter().map(move |y| (x, y)))

@@ -9,21 +9,38 @@ mod tests;
 mod underlying;
 use underlying::*;
 
+// TODO:
+//   try storing just the inverse, and then inverting it when combining with other matrices,
+//   as the inverse is generally what's used, and the normal form _should_ only be used in e.g. multiplication
+//   - this would halve the size of the type
+//   this really _really_ needs good property tests in place first
 #[derive(PartialEq, Clone, Copy)]
 pub struct Transform {
     underlying: Matrix4D,
+    // TODO really need to write lots of tests to ensure this never falls out of sync
+    // calculating the inverse is relatively expensive, bearing in mind matrices are inverted millions of times per render,
+    // so pre-calculating the inverse has massive performance implications
+    inverse: Option<Matrix4D>,
 }
 
 impl Transform {
-    const fn new(underlying: Matrix4D) -> Self {
-        Transform { underlying }
+    fn new(underlying: Matrix4D) -> Self {
+        let inverse = underlying.inverse();
+
+        Self {
+            underlying,
+            inverse,
+        }
     }
 
     pub const fn identity() -> Self {
-        Self::new(Matrix4D::identity())
+        Self {
+            underlying: Matrix4D::identity(),
+            inverse: Some(Matrix4D::identity()),
+        }
     }
 
-    pub const fn translation(x: f64, y: f64, z: f64) -> Self {
+    pub fn translation(x: f64, y: f64, z: f64) -> Self {
         Self::new(Matrix4D::new(
             [1.0, 0.0, 0.0, x],
             [0.0, 1.0, 0.0, y],
@@ -38,7 +55,7 @@ impl Transform {
         translation * self
     }
 
-    pub const fn scaling(x: f64, y: f64, z: f64) -> Self {
+    pub fn scaling(x: f64, y: f64, z: f64) -> Self {
         Self::new(Matrix4D::new(
             [x, 0.0, 0.0, 0.0],
             [0.0, y, 0.0, 0.0],
@@ -47,7 +64,7 @@ impl Transform {
         ))
     }
 
-    pub const fn uniform_scaling(scale: f64) -> Self {
+    pub fn uniform_scaling(scale: f64) -> Self {
         Self::scaling(scale, scale, scale)
     }
 
@@ -159,7 +176,12 @@ impl Transform {
     }
 
     pub fn inverse(&self) -> Option<Self> {
-        self.underlying.inverse().map(Self::new)
+        debug_assert!(self.inverse == self.underlying.inverse());
+
+        self.inverse.map(|inverse| Self {
+            underlying: inverse,
+            inverse: Some(self.underlying),
+        })
     }
 
     pub fn transpose(&self) -> Self {
@@ -208,7 +230,9 @@ impl Mul<Transform> for Transform {
 
 impl MulAssign<Transform> for Transform {
     fn mul_assign(&mut self, rhs: Transform) {
-        self.underlying = self.underlying * rhs.underlying
+        self.underlying = self.underlying * rhs.underlying;
+        // FIXME ideally wouldn't have to remember to do this manually
+        self.inverse = self.underlying.inverse();
     }
 }
 
