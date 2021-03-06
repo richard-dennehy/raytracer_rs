@@ -63,8 +63,8 @@ mod unit_tests {
     #[test]
     fn should_be_able_to_rotate_a_point_around_x_axis() {
         let point = Point3D::new(0.0, 1.0, 0.0);
-        let half_quarter = Transform::rotation_x(PI / 4.0);
-        let full_quarter = Transform::rotation_x(PI / 2.0);
+        let half_quarter = Transform::identity().rotate_x(PI / 4.0);
+        let full_quarter = Transform::identity().rotate_x(PI / 2.0);
 
         {
             let point = half_quarter * point;
@@ -84,8 +84,8 @@ mod unit_tests {
     #[test]
     fn should_be_able_to_rotate_around_the_y_axis() {
         let point = Point3D::new(0.0, 0.0, 1.0);
-        let half_quarter = Transform::rotation_y(PI / 4.0);
-        let full_quarter = Transform::rotation_y(PI / 2.0);
+        let half_quarter = Transform::identity().rotate_y(PI / 4.0);
+        let full_quarter = Transform::identity().rotate_y(PI / 2.0);
 
         {
             let point = half_quarter * point;
@@ -105,8 +105,8 @@ mod unit_tests {
     #[test]
     fn should_be_able_to_rotate_around_the_z_axis() {
         let point = Point3D::new(0.0, 1.0, 0.0);
-        let half_quarter = Transform::rotation_z(PI / 4.0);
-        let full_quarter = Transform::rotation_z(PI / 2.0);
+        let half_quarter = Transform::identity().rotate_z(PI / 4.0);
+        let full_quarter = Transform::identity().rotate_z(PI / 2.0);
 
         {
             let point = half_quarter * point;
@@ -126,7 +126,7 @@ mod unit_tests {
     #[test]
     fn rotating_a_point_around_an_inverted_rotation_matrix_rotates_in_the_opposite_direction() {
         let point = Point3D::new(0.0, 1.0, 0.0);
-        let half_quarter = Transform::rotation_x(PI / 4.0);
+        let half_quarter = Transform::identity().rotate_x(PI / 4.0);
 
         {
             let point = half_quarter.inverse().unwrap() * point;
@@ -193,7 +193,7 @@ mod unit_tests {
     #[test]
     fn individual_transformations_are_applied_in_sequence() {
         let point = Point3D::new(1.0, 0.0, 1.0);
-        let rotation = Transform::rotation_x(PI / 2.0);
+        let rotation = Transform::identity().rotate_x(PI / 2.0);
         let scale = Transform::scaling(5.0, 5.0, 5.0);
         let translation = Transform::translation(10.0, 5.0, 7.0);
 
@@ -234,7 +234,7 @@ mod unit_tests {
     #[test]
     fn combined_transformations_are_applied_in_reverse_order() {
         let point = Point3D::new(1.0, 0.0, 1.0);
-        let rotation = Transform::rotation_x(PI / 2.0);
+        let rotation = Transform::identity().rotate_x(PI / 2.0);
         let scale = Transform::scaling(5.0, 5.0, 5.0);
         let translation = Transform::translation(10.0, 5.0, 7.0);
 
@@ -251,9 +251,11 @@ mod unit_tests {
         let point = Point3D::new(1.0, 0.0, 1.0);
 
         let translation = Transform::identity()
-            .with_rotation_x(PI / 2.0)
-            .with_scaling(5.0, 5.0, 5.0)
-            .with_translation(10.0, 5.0, 7.0);
+            .rotate_x(PI / 2.0)
+            .scale_all(5.0)
+            .translate_x(10.0)
+            .translate_y(5.0)
+            .translate_z(7.0);
 
         assert_eq!(translation * point, Point3D::new(15.0, 0.0, 7.0));
     }
@@ -312,22 +314,23 @@ mod unit_tests {
     }
 }
 
+// TODO write property tests for:
+//   - building and combining Transforms using all constructors/builders and ensuring the inverse is always defined
+//   - building Transforms and ensure that for all behaviours (inverting, tranposing, multiplying, etc) they behave the same as a Matrix4D
+//   - combining Transforms and ensuring the above behaviours are equivalent for combined Matrix4Ds
+//   to ensure underlying "optimised" representation is also logically correct
 mod property_tests {
     extern crate float_cmp;
     extern crate quickcheck;
     use super::*;
 
     #[quickcheck]
-    fn multiplying_a_vector_by_identity_matrix_produces_a_4_tuple_of_the_vector_components(
-        vector: Vector3D,
-    ) {
+    fn multiplying_a_vector_by_identity_matrix_produces_the_same_vector(vector: Vector3D) {
         assert_eq!(Transform::identity() * vector, vector);
     }
 
     #[quickcheck]
-    fn multiplying_a_point_by_identity_matrix_produces_a_4_tuple_of_the_point_components(
-        point: Point3D,
-    ) {
+    fn multiplying_a_point_by_identity_matrix_produces_the_same_point(point: Point3D) {
         assert_eq!(Transform::identity() * point, point);
     }
 
@@ -346,7 +349,7 @@ mod property_tests {
             )
         }
 
-        if second.underlying.determinant() != 0.0 {
+        if second.inverse.is_some() {
             let inverse = second.inverse();
             assert!(inverse.is_some());
             let inverse = inverse.unwrap();
@@ -386,7 +389,10 @@ mod property_tests {
         z: f64,
     ) {
         let direct = Transform::translation(x, y, z);
-        let fluent = Transform::identity().with_translation(x, y, z);
+        let fluent = Transform::identity()
+            .translate_x(x)
+            .translate_y(y)
+            .translate_z(z);
 
         assert_eq!(direct * point, fluent * point);
     }
@@ -399,31 +405,7 @@ mod property_tests {
         z: f64,
     ) {
         let direct = Transform::scaling(x, y, z);
-        let fluent = Transform::identity().with_scaling(x, y, z);
-
-        assert_eq!(direct * point, fluent * point);
-    }
-
-    #[quickcheck]
-    fn fluent_rotation_x_api_behaves_the_same_as_rotation_x_matrix(point: Point3D, radians: f64) {
-        let direct = Transform::rotation_x(radians);
-        let fluent = Transform::identity().with_rotation_x(radians);
-
-        assert_eq!(direct * point, fluent * point);
-    }
-
-    #[quickcheck]
-    fn fluent_rotation_y_api_behaves_the_same_as_rotation_y_matrix(point: Point3D, radians: f64) {
-        let direct = Transform::rotation_y(radians);
-        let fluent = Transform::identity().with_rotation_y(radians);
-
-        assert_eq!(direct * point, fluent * point);
-    }
-
-    #[quickcheck]
-    fn fluent_rotation_z_api_behaves_the_same_as_rotation_z_matrix(point: Point3D, radians: f64) {
-        let direct = Transform::rotation_z(radians);
-        let fluent = Transform::identity().with_rotation_z(radians);
+        let fluent = Transform::identity().scale_x(x).scale_y(y).scale_z(z);
 
         assert_eq!(direct * point, fluent * point);
     }
@@ -439,8 +421,13 @@ mod property_tests {
         z_to_y: f64,
     ) {
         let direct = Transform::shear(x_to_y, x_to_z, y_to_x, y_to_z, z_to_x, z_to_y);
-        let fluent =
-            Transform::identity().with_shear(x_to_y, x_to_z, y_to_x, y_to_z, z_to_x, z_to_y);
+        let fluent = Transform::identity()
+            .shear_x_to_y(x_to_y)
+            .shear_x_to_z(x_to_z)
+            .shear_y_to_x(y_to_x)
+            .shear_y_to_z(y_to_z)
+            .shear_z_to_x(z_to_x)
+            .shear_z_to_y(z_to_y);
 
         assert_eq!(direct * point, fluent * point);
     }

@@ -71,7 +71,10 @@ mod unit_tests {
 
     #[test]
     fn a_ray_through_a_transformed_camera_should_have_the_inverse_transform_applied() {
-        let transform = Transform::translation(0.0, -2.0, 5.0).with_rotation_y(PI / 4.0);
+        let transform = Transform::identity()
+            .translate_y(-2.0)
+            .translate_z(5.0)
+            .rotate_y(PI / 4.0);
 
         let camera = Camera::new(
             NonZeroU16::new(201).unwrap(),

@@ -166,7 +166,7 @@ mod unit_tests {
                     reflective: 0.5,
                     ..Default::default()
                 })
-                .with_transform(Transform::translation(0.0, -1.0, 0.0));
+                .with_transform(Transform::identity().translate_y(-1.0));
 
             world.objects.push(reflective_plane);
         };
@@ -196,14 +196,14 @@ mod unit_tests {
         {
             let upper = Object::plane()
                 .with_material(reflective_non_blinding_material.clone())
-                .with_transform(Transform::rotation_x(PI).with_translation(0.0, 1.0, 0.0));
+                .with_transform(Transform::identity().rotate_x(PI).translate_y(1.0));
             world.objects.push(upper);
         };
 
         {
             let lower = Object::plane()
                 .with_material(reflective_non_blinding_material)
-                .with_transform(Transform::translation(0.0, -1.0, 0.0));
+                .with_transform(Transform::identity().translate_y(-1.0));
             world.objects.push(lower);
         };
         world
@@ -231,7 +231,7 @@ mod unit_tests {
                     transparency: 0.0,
                     ..Default::default()
                 })
-                .with_transform(Transform::rotation_x(-PI / 2.0));
+                .with_transform(Transform::identity().rotate_x(-PI / 2.0));
             world.objects.push(front);
         };
 
@@ -244,7 +244,7 @@ mod unit_tests {
                     specular: 0.0,
                     ..Default::default()
                 })
-                .with_transform(Transform::translation(0.0, 0.0, 1.0));
+                .with_transform(Transform::identity().translate_z(1.0));
             world.objects.push(back);
         };
 
@@ -271,7 +271,7 @@ mod unit_tests {
                     refractive: 1.0,
                     ..Default::default()
                 })
-                .with_transform(Transform::rotation_x(-PI / 2.0));
+                .with_transform(Transform::identity().rotate_x(-PI / 2.0));
             world.objects.push(front);
         };
 
@@ -284,7 +284,7 @@ mod unit_tests {
                     specular: 0.0,
                     ..Default::default()
                 })
-                .with_transform(Transform::translation(0.0, 0.0, 1.0));
+                .with_transform(Transform::identity().translate_z(1.0));
             world.objects.push(back);
         };
 
@@ -301,7 +301,7 @@ mod unit_tests {
         let mut world = World::default();
         {
             let refractive_plane = Object::plane()
-                .with_transform(Transform::translation(0.0, -1.0, 0.0))
+                .with_transform(Transform::identity().translate_y(-1.0))
                 .with_material(Material {
                     transparency: 0.5,
                     refractive: 1.5,
@@ -313,7 +313,7 @@ mod unit_tests {
 
         {
             let ball = Object::sphere()
-                .with_transform(Transform::translation(0.0, -3.5, -0.5))
+                .with_transform(Transform::identity().translate_y(-3.5).translate_z(-0.5))
                 .with_material(Material {
                     pattern: Pattern::solid(Colour::RED),
                     ambient: 0.5,
@@ -341,7 +341,7 @@ mod unit_tests {
         let mut world = World::default();
         {
             let refractive_plane = Object::plane()
-                .with_transform(Transform::translation(0.0, -1.0, 0.0))
+                .with_transform(Transform::identity().translate_y(-1.0))
                 .with_material(Material {
                     transparency: 0.5,
                     reflective: 0.5,
@@ -354,7 +354,7 @@ mod unit_tests {
 
         {
             let ball = Object::sphere()
-                .with_transform(Transform::translation(0.0, -3.5, -0.5))
+                .with_transform(Transform::identity().translate_y(-3.5).translate_z(-0.5))
                 .with_material(Material {
                     pattern: Pattern::solid(Colour::RED),
                     ambient: 0.5,
@@ -387,7 +387,7 @@ mod unit_tests {
 
         {
             let wall = Object::plane()
-                .with_transform(Transform::rotation_x(-PI / 2.0).with_translation(0.0, 0.0, 5.0))
+                .with_transform(Transform::identity().rotate_x(-PI / 2.0).translate_z(5.0))
                 .with_material(Material {
                     pattern: Pattern::solid(Colour::BLUE),
                     ambient: 1.0,
@@ -399,7 +399,7 @@ mod unit_tests {
 
         {
             let glass_sphere = Object::sphere()
-                .with_transform(Transform::translation(0.0, 0.0, 1.0))
+                .with_transform(Transform::identity().translate_z(1.0))
                 .with_material(Material {
                     pattern: Pattern::solid(Colour::new(0.05, 0.05, 0.05)),
                     transparency: 1.0,
@@ -432,26 +432,33 @@ mod unit_tests {
                 ..Default::default()
             }),
             Object::sphere()
-                .with_transform(Transform::translation(0.5, 0.5, -0.5))
+                .with_transform(
+                    Transform::identity()
+                        .translate_x(0.5)
+                        .translate_y(0.5)
+                        .translate_z(-0.5),
+                )
                 .with_material(Material {
                     pattern: Pattern::solid(Colour::WHITE),
                     ambient: 0.01,
                     ..Default::default()
                 }),
         )
-        .with_transform(Transform::translation(0.0, 1.0, 0.0).with_rotation_y(PI / 4.0));
+        .with_transform(Transform::identity().translate_y(1.0).rotate_y(PI / 4.0));
 
         world.objects.push(csg);
 
         let ray = Ray::new(Point3D::new(0.0, 2.0, -6.0), Vector3D::new(0.0, 0.0, 1.0));
+        let actual = world.colour_at(ray);
+        let expected = Colour::new(0.1557279290614545, 0.1557279290614545, 0.1557279290614545);
         // note: if the ray misses, the colour will be black;
         // if the ray hits, but the colour is shaded incorrectly, the colour will be very dark;
         // if the ray hits and the colour is shaded correctly, the colour will be light
-        assert!(approx_eq!(
-            Colour,
-            world.colour_at(ray),
-            Colour::new(0.1557279290614545, 0.1557279290614545, 0.1557279290614545),
-            epsilon = f32::EPSILON as f64
-        ));
+        assert!(
+            approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
+            "{:?} != {:?}",
+            expected,
+            actual
+        );
     }
 }

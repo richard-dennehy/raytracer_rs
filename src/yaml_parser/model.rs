@@ -61,15 +61,22 @@ impl SceneDescription {
                     .transform
                     .iter()
                     .map(|tf| match tf {
-                        Right(Transformation::Translate { x, y, z }) => {
-                            Ok(Transform::translation(*x, *y, *z))
-                        }
+                        Right(Transformation::Translate { x, y, z }) => Ok(Transform::identity()
+                            .translate_x(*x)
+                            .translate_y(*y)
+                            .translate_z(*z)),
                         Right(Transformation::Scale { x, y, z }) => {
-                            Ok(Transform::scaling(*x, *y, *z))
+                            Ok(Transform::identity().scale_x(*x).scale_y(*y).scale_z(*z))
                         }
-                        Right(Transformation::RotationX(rads)) => Ok(Transform::rotation_x(*rads)),
-                        Right(Transformation::RotationY(rads)) => Ok(Transform::rotation_y(*rads)),
-                        Right(Transformation::RotationZ(rads)) => Ok(Transform::rotation_z(*rads)),
+                        Right(Transformation::RotationX(rads)) => {
+                            Ok(Transform::identity().rotate_x(*rads))
+                        }
+                        Right(Transformation::RotationY(rads)) => {
+                            Ok(Transform::identity().rotate_y(*rads))
+                        }
+                        Right(Transformation::RotationZ(rads)) => {
+                            Ok(Transform::identity().rotate_z(*rads))
+                        }
                         Left(name) => self.resolve_transform(name.as_str()),
                     })
                     .fold(Ok(Transform::identity()), |acc, next| {
@@ -130,15 +137,22 @@ impl SceneDescription {
             .and_then(|tfs| {
                 tfs.iter()
                     .map(|tf| match tf {
-                        Right(Transformation::Translate { x, y, z }) => {
-                            Ok(Transform::translation(*x, *y, *z))
-                        }
+                        Right(Transformation::Translate { x, y, z }) => Ok(Transform::identity()
+                            .translate_x(*x)
+                            .translate_y(*y)
+                            .translate_z(*z)),
                         Right(Transformation::Scale { x, y, z }) => {
-                            Ok(Transform::scaling(*x, *y, *z))
+                            Ok(Transform::identity().scale_x(*x).scale_y(*y).scale_z(*z))
                         }
-                        Right(Transformation::RotationX(rads)) => Ok(Transform::rotation_x(*rads)),
-                        Right(Transformation::RotationY(rads)) => Ok(Transform::rotation_y(*rads)),
-                        Right(Transformation::RotationZ(rads)) => Ok(Transform::rotation_z(*rads)),
+                        Right(Transformation::RotationX(rads)) => {
+                            Ok(Transform::identity().rotate_x(*rads))
+                        }
+                        Right(Transformation::RotationY(rads)) => {
+                            Ok(Transform::identity().rotate_y(*rads))
+                        }
+                        Right(Transformation::RotationZ(rads)) => {
+                            Ok(Transform::identity().rotate_z(*rads))
+                        }
                         Left(name) => self.resolve_transform(name.as_str()),
                     })
                     .fold(Ok(Transform::identity()), |acc, next| {
@@ -268,11 +282,16 @@ impl ToMatrix for Vec<Transformation> {
     fn to_matrix(&self) -> Transform {
         self.iter()
             .map(|tf| match tf {
-                Transformation::Translate { x, y, z } => Transform::translation(*x, *y, *z),
-                Transformation::Scale { x, y, z } => Transform::scaling(*x, *y, *z),
-                Transformation::RotationX(rads) => Transform::rotation_x(*rads),
-                Transformation::RotationY(rads) => Transform::rotation_y(*rads),
-                Transformation::RotationZ(rads) => Transform::rotation_z(*rads),
+                Transformation::Translate { x, y, z } => Transform::identity()
+                    .translate_x(*x)
+                    .translate_y(*y)
+                    .translate_z(*z),
+                Transformation::Scale { x, y, z } => {
+                    Transform::identity().scale_x(*x).scale_y(*y).scale_z(*z)
+                }
+                Transformation::RotationX(rads) => Transform::identity().rotate_x(*rads),
+                Transformation::RotationY(rads) => Transform::identity().rotate_y(*rads),
+                Transformation::RotationZ(rads) => Transform::identity().rotate_z(*rads),
             })
             .fold(Transform::identity(), |acc, next| next * acc)
     }

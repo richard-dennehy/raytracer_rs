@@ -149,7 +149,7 @@ fn should_be_able_to_create_an_object_with_a_pattern_with_a_transform() {
         objects[0].material,
         Material {
             pattern: Pattern::striped(Colour::greyscale(0.45), Colour::greyscale(0.55))
-                .with_transform(Transform::rotation_y(1.5708).with_scaling(0.25, 0.25, 0.25)),
+                .with_transform(Transform::identity().rotate_y(1.5708).scale_all(0.25)),
             ambient: 0.0,
             diffuse: 0.4,
             specular: 0.0,
@@ -329,7 +329,7 @@ fn should_be_able_to_create_an_object_with_a_single_transform() {
     );
     assert_eq!(
         objects[0].transform(),
-        Transform::translation(1.0, 0.0, 0.0)
+        Transform::identity().translate_x(1.0)
     );
 }
 
@@ -364,7 +364,11 @@ fn should_be_able_to_create_an_object_with_multiple_transforms() {
     );
     assert_eq!(
         objects[0].transform(),
-        Transform::scaling(1.0, 2.0, 1.0).with_translation(1.0, 0.0, 0.0)
+        Transform::identity()
+            .scale_x(1.0)
+            .scale_y(2.0)
+            .scale_z(1.0)
+            .translate_x(1.0)
     );
 }
 
@@ -403,7 +407,11 @@ fn should_be_able_to_create_an_object_referencing_a_defined_transform() {
     );
     assert_eq!(
         objects[0].transform(),
-        Transform::translation(1.0, -1.0, 1.0).with_scaling(0.5, 0.5, 0.5)
+        Transform::identity()
+            .translate_x(1.0)
+            .translate_y(-1.0)
+            .translate_z(1.0)
+            .scale_all(0.5)
     );
 }
 
@@ -443,9 +451,12 @@ fn should_be_able_to_create_an_object_extending_a_defined_transform() {
     );
     assert_eq!(
         objects[0].transform(),
-        Transform::translation(1.0, -1.0, 1.0)
-            .with_scaling(0.5, 0.5, 0.5)
-            .with_translation(4.0, 0.0, 0.0)
+        Transform::identity()
+            .translate_x(1.0)
+            .translate_y(-1.0)
+            .translate_z(1.0)
+            .scale_all(0.5)
+            .translate_x(4.0)
     );
 }
 
@@ -490,9 +501,12 @@ fn should_be_able_to_create_an_object_extending_a_transform_extending_another_tr
     );
     assert_eq!(
         objects[0].transform(),
-        Transform::translation(1.0, -1.0, 1.0)
-            .with_scaling(0.5, 0.5, 0.5)
-            .with_scaling(3.0, 3.0, 3.0)
-            .with_translation(4.0, 0.0, 0.0)
+        Transform::identity()
+            .translate_x(1.0)
+            .translate_y(-1.0)
+            .translate_z(1.0)
+            .scale_all(0.5)
+            .scale_all(3.0)
+            .translate_x(4.0)
     );
 }

@@ -79,7 +79,10 @@ mod ray_unit_tests {
 
     #[test]
     fn a_ray_can_be_translated() {
-        let matrix = Transform::translation(3.0, 4.0, 5.0);
+        let matrix = Transform::identity()
+            .translate_x(3.0)
+            .translate_y(4.0)
+            .translate_z(5.0);
         let ray = Ray::new(Point3D::new(1.0, 2.0, 3.0), Vector3D::new(0.0, 1.0, 0.0));
 
         let transformed = ray.transformed(&matrix);
@@ -89,7 +92,7 @@ mod ray_unit_tests {
 
     #[test]
     fn a_ray_can_be_scaled() {
-        let matrix = Transform::scaling(2.0, 3.0, 4.0);
+        let matrix = Transform::identity().scale_x(2.0).scale_y(3.0).scale_z(4.0);
         let ray = Ray::new(Point3D::new(1.0, 2.0, 3.0), Vector3D::new(0.0, 1.0, 0.0));
 
         let transformed = ray.transformed(&matrix);
@@ -138,7 +141,7 @@ mod ray_unit_tests {
     #[test]
     fn the_hit_data_should_contain_offset_point_for_shadow_calculations() {
         let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
-        let sphere = Object::sphere().with_transform(Transform::translation(0.0, 0.0, 1.0));
+        let sphere = Object::sphere().with_transform(Transform::identity().translate_z(1.0));
 
         let intersections = sphere.intersect(&ray);
         assert_eq!(intersections.len(), 2);
@@ -152,7 +155,7 @@ mod ray_unit_tests {
     #[test]
     fn the_hit_data_should_contain_an_under_offset_point_for_refraction_calculations() {
         let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
-        let sphere = Object::sphere().with_transform(Transform::translation(0.0, 0.0, 1.0));
+        let sphere = Object::sphere().with_transform(Transform::identity().translate_z(1.0));
 
         let intersections = sphere.intersect(&ray);
         assert_eq!(intersections.len(), 2);
@@ -190,7 +193,7 @@ mod ray_unit_tests {
                 refractive: 1.5,
                 ..Default::default()
             })
-            .with_transform(Transform::uniform_scaling(2.0));
+            .with_transform(Transform::identity().scale_all(2.0));
 
         let second = Object::sphere()
             .with_material(Material {
@@ -198,7 +201,7 @@ mod ray_unit_tests {
                 refractive: 2.0,
                 ..Default::default()
             })
-            .with_transform(Transform::translation(0.0, 0.0, -0.25));
+            .with_transform(Transform::identity().translate_z(-0.25));
 
         let third = Object::sphere()
             .with_material(Material {
@@ -206,7 +209,7 @@ mod ray_unit_tests {
                 refractive: 2.5,
                 ..Default::default()
             })
-            .with_transform(Transform::translation(0.0, 0.0, 0.25));
+            .with_transform(Transform::identity().translate_z(0.25));
 
         let ray = Ray::new(Point3D::new(0.0, 0.0, -4.0), Vector3D::new(0.0, 0.0, 1.0));
         let intersections = first

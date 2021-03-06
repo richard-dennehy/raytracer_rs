@@ -1,3 +1,6 @@
+use crate::{Point3D, Vector3D};
+use std::ops::{Mul, MulAssign};
+
 #[cfg(test)]
 mod tests;
 
@@ -69,14 +72,14 @@ impl Matrix4D {
         Some(Matrix4D::new(row0, row1, row2, row3))
     }
 
-    pub fn determinant(&self) -> f64 {
+    fn determinant(&self) -> f64 {
         self.m00() * self.cofactor(0, 0)
             + self.m01() * self.cofactor(0, 1)
             + self.m02() * self.cofactor(0, 2)
             + self.m03() * self.cofactor(0, 3)
     }
 
-    pub fn cofactor(&self, row: u8, column: u8) -> f64 {
+    fn cofactor(&self, row: u8, column: u8) -> f64 {
         let minor = self.minor(row, column);
 
         if (row + column) % 2 == 0 {
@@ -90,7 +93,7 @@ impl Matrix4D {
         self.submatrix(row, column).determinant()
     }
 
-    pub fn submatrix(&self, excluding_row: u8, excluding_column: u8) -> Matrix3D {
+    fn submatrix(&self, excluding_row: u8, excluding_column: u8) -> Matrix3D {
         match (excluding_row, excluding_column) {
             (0, 0) => Matrix3D::new(
                 [self.m11(), self.m12(), self.m13()],
@@ -308,21 +311,8 @@ impl Mul<Point3D> for Matrix4D {
     }
 }
 
-impl Mul<(f64, f64, f64, f64)> for Matrix4D {
-    type Output = (f64, f64, f64, f64);
-
-    fn mul(self, (x, y, z, w): (f64, f64, f64, f64)) -> Self::Output {
-        (
-            self.m00() * x + self.m01() * y + self.m02() * z + self.m03() * w,
-            self.m10() * x + self.m11() * y + self.m12() * z + self.m13() * w,
-            self.m20() * x + self.m21() * y + self.m22() * z + self.m23() * w,
-            self.m30() * x + self.m31() * y + self.m32() * z + self.m33() * w,
-        )
-    }
-}
-
 #[derive(Debug, PartialEq, Clone)]
-pub struct Matrix3D {
+struct Matrix3D {
     underlying: [[f64; 3]; 3],
 }
 
@@ -507,8 +497,6 @@ impl Matrix4D {
     }
 }
 
-use crate::{Point3D, Vector3D};
-use std::ops::{Mul, MulAssign};
 #[cfg(test)]
 pub use test_utils::*;
 

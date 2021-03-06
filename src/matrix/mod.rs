@@ -40,7 +40,25 @@ impl Transform {
         }
     }
 
-    pub fn translation(x: f64, y: f64, z: f64) -> Self {
+    pub fn translate_x(self, x: f64) -> Self {
+        let translation = Transform::translation(x, 0.0, 0.0);
+
+        translation * self
+    }
+
+    pub fn translate_y(self, y: f64) -> Self {
+        let translation = Transform::translation(0.0, y, 0.0);
+
+        translation * self
+    }
+
+    pub fn translate_z(self, z: f64) -> Self {
+        let translation = Transform::translation(0.0, 0.0, z);
+
+        translation * self
+    }
+
+    fn translation(x: f64, y: f64, z: f64) -> Self {
         Self::new(Matrix4D::new(
             [1.0, 0.0, 0.0, x],
             [0.0, 1.0, 0.0, y],
@@ -49,13 +67,31 @@ impl Transform {
         ))
     }
 
-    pub fn with_translation(self, x: f64, y: f64, z: f64) -> Self {
-        let translation = Transform::translation(x, y, z);
+    pub fn scale_x(self, x: f64) -> Self {
+        let transform = Self::scaling(x, 1.0, 1.0);
 
-        translation * self
+        transform * self
     }
 
-    pub fn scaling(x: f64, y: f64, z: f64) -> Self {
+    pub fn scale_y(self, y: f64) -> Self {
+        let transform = Self::scaling(1.0, y, 1.0);
+
+        transform * self
+    }
+
+    pub fn scale_z(self, z: f64) -> Self {
+        let transform = Self::scaling(1.0, 1.0, z);
+
+        transform * self
+    }
+
+    pub fn scale_all(self, factor: f64) -> Self {
+        let transform = Self::scaling(factor, factor, factor);
+
+        transform * self
+    }
+
+    fn scaling(x: f64, y: f64, z: f64) -> Self {
         Self::new(Matrix4D::new(
             [x, 0.0, 0.0, 0.0],
             [0.0, y, 0.0, 0.0],
@@ -64,74 +100,88 @@ impl Transform {
         ))
     }
 
-    pub fn uniform_scaling(scale: f64) -> Self {
-        Self::scaling(scale, scale, scale)
-    }
-
-    pub fn with_scaling(self, x: f64, y: f64, z: f64) -> Self {
-        let scaling = Transform::scaling(x, y, z);
-
-        scaling * self
-    }
-
-    pub fn rotation_x(radians: f64) -> Self {
+    pub fn rotate_x(self, radians: f64) -> Self {
         let cos_r = radians.cos();
         let sin_r = radians.sin();
 
-        Self::new(Matrix4D::new(
+        let translation = Self::new(Matrix4D::new(
             [1.0, 0.0, 0.0, 0.0],
             [0.0, cos_r, -sin_r, 0.0],
             [0.0, sin_r, cos_r, 0.0],
             [0.0, 0.0, 0.0, 1.0],
-        ))
-    }
+        ));
 
-    pub fn with_rotation_x(self, radians: f64) -> Self {
-        let rotation_x = Transform::rotation_x(radians);
-
-        rotation_x * self
+        translation * self
     }
 
     #[rustfmt::skip]
-    pub fn rotation_y(radians: f64) -> Self {
+    pub fn rotate_y(self, radians: f64) -> Self {
         let cos_r = radians.cos();
         let sin_r = radians.sin();
 
-        Self::new(Matrix4D::new(
+        let translation = Self::new(Matrix4D::new(
             [cos_r,  0.0, sin_r, 0.0],
             [0.0,    1.0,   0.0, 0.0],
             [-sin_r, 0.0, cos_r, 0.0],
             [0.0,    0.0,   0.0, 1.0],
-        )
-)    }
+        ));
 
-    pub fn with_rotation_y(self, radians: f64) -> Self {
-        let rotation_y = Transform::rotation_y(radians);
-
-        rotation_y * self
+        translation * self
     }
 
     #[rustfmt::skip]
-    pub fn rotation_z(radians: f64) -> Self {
+    pub fn rotate_z(self, radians: f64) -> Self {
         let cos_r = radians.cos();
         let sin_r = radians.sin();
 
-        Self::new(Matrix4D::new(
+        let translation = Self::new(Matrix4D::new(
             [cos_r, -sin_r, 0.0, 0.0],
             [sin_r,  cos_r, 0.0, 0.0],
             [0.0,    0.0,   1.0, 0.0],
             [0.0,    0.0,   0.0, 1.0],
-        )
-)    }
+        ));
 
-    pub fn with_rotation_z(self, radians: f64) -> Self {
-        let rotation_z = Transform::rotation_z(radians);
+        translation * self
+    }
 
-        rotation_z * self
+    pub fn shear_x_to_y(self, shear: f64) -> Self {
+        let transform = Self::shear(shear, 0.0, 0.0, 0.0, 0.0, 0.0);
+
+        transform * self
+    }
+
+    pub fn shear_x_to_z(self, shear: f64) -> Self {
+        let transform = Self::shear(0.0, shear, 0.0, 0.0, 0.0, 0.0);
+
+        transform * self
+    }
+
+    pub fn shear_y_to_x(self, shear: f64) -> Self {
+        let transform = Self::shear(0.0, 0.0, shear, 0.0, 0.0, 0.0);
+
+        transform * self
+    }
+
+    pub fn shear_y_to_z(self, shear: f64) -> Self {
+        let transform = Self::shear(0.0, 0.0, 0.0, shear, 0.0, 0.0);
+
+        transform * self
+    }
+
+    pub fn shear_z_to_x(self, shear: f64) -> Self {
+        let transform = Self::shear(0.0, 0.0, 0.0, 0.0, shear, 0.0);
+
+        transform * self
+    }
+
+    pub fn shear_z_to_y(self, shear: f64) -> Self {
+        let transform = Self::shear(0.0, 0.0, 0.0, 0.0, 0.0, shear);
+
+        transform * self
     }
 
     #[rustfmt::skip]
-    pub fn shear(
+    fn shear(
         x_proportionate_to_y: f64,
         x_proportionate_to_z: f64,
         y_proportionate_to_x: f64,
@@ -151,28 +201,7 @@ impl Transform {
             [y_to_x, 1.0,    y_to_z, 0.0],
             [z_to_x, z_to_y, 1.0,    0.0],
             [0.0,    0.0,    0.0,    1.0],
-        )
-)    }
-
-    pub fn with_shear(
-        self,
-        x_proportionate_to_y: f64,
-        x_proportionate_to_z: f64,
-        y_proportionate_to_x: f64,
-        y_proportionate_to_z: f64,
-        z_proportionate_to_x: f64,
-        z_proportionate_to_y: f64,
-    ) -> Self {
-        let shear = Transform::shear(
-            x_proportionate_to_y,
-            x_proportionate_to_z,
-            y_proportionate_to_x,
-            y_proportionate_to_z,
-            z_proportionate_to_x,
-            z_proportionate_to_y,
-        );
-
-        shear * self
+        ))
     }
 
     pub fn inverse(&self) -> Option<Self> {
@@ -208,7 +237,7 @@ impl Transform {
 impl Debug for Transform {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let stringified = format!(
-            "| {} | {} | {} | {} |\n| {} | {} | {} | {} |\n| {} | {} | {} | {} |\n| {} | {} | {} | {} |\n",
+            "\n| {} | {} | {} | {} |\n| {} | {} | {} | {} |\n| {} | {} | {} | {} |\n| {} | {} | {} | {} |\n",
             self.m00(), self.m01(), self.m02(), self.m03(),
             self.m10(), self.m11(), self.m12(), self.m13(),
             self.m20(), self.m21(), self.m22(), self.m23(),
@@ -269,14 +298,6 @@ impl Mul<Point3D> for Transform {
 
     fn mul(self, rhs: Point3D) -> Self::Output {
         &self * rhs
-    }
-}
-
-impl Mul<(f64, f64, f64, f64)> for Transform {
-    type Output = (f64, f64, f64, f64);
-
-    fn mul(self, rhs: (f64, f64, f64, f64)) -> Self::Output {
-        self.underlying * rhs
     }
 }
 

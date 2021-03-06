@@ -47,7 +47,7 @@ mod unit_tests {
     #[test]
     fn translating_a_striped_pattern_by_x_1_should_invert_the_stripes() {
         let pattern = Pattern::striped(Colour::WHITE, Colour::BLACK)
-            .with_transform(Transform::translation(1.0, 0.0, 0.0));
+            .with_transform(Transform::identity().translate_x(1.0));
 
         assert_eq!(
             pattern.colour_at(Point3D::new(0.0, 1.0, 1.0)),
@@ -63,7 +63,7 @@ mod unit_tests {
     #[test]
     fn rotating_a_striped_pattern_90_deg_around_y_alternates_stripes_along_z() {
         let pattern = Pattern::striped(Colour::WHITE, Colour::BLACK)
-            .with_transform(Transform::rotation_y(PI / 2.0));
+            .with_transform(Transform::identity().rotate_y(PI / 2.0));
 
         assert_eq!(
             pattern.colour_at(Point3D::new(1.0, 0.0, 0.0)),
@@ -79,7 +79,7 @@ mod unit_tests {
     #[test]
     fn shearing_a_striped_pattern_by_z_makes_the_stripes_diagonal_along_xz() {
         let pattern = Pattern::striped(Colour::WHITE, Colour::BLACK)
-            .with_transform(Transform::shear(0.0, 1.0, 0.0, 0.0, 0.0, 0.0));
+            .with_transform(Transform::identity().shear_x_to_z(1.0));
 
         assert_eq!(
             pattern.colour_at(Point3D::new(0.0, 0.0, 0.0)),

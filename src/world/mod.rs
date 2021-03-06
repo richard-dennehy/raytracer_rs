@@ -27,7 +27,7 @@ impl World {
                     specular: 0.2,
                     ..Default::default()
                 }),
-                Object::sphere().with_transform(Transform::uniform_scaling(0.5)),
+                Object::sphere().with_transform(Transform::identity().scale_all(0.5)),
             ],
             lights: vec![Light::point(
                 Colour::WHITE,

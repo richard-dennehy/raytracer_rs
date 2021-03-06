@@ -15,11 +15,19 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="still WIP refactor transformation matrix to pre-calculate determinant">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="pre-calculate Transform inverse">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/performance.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/performance.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/camera/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/camera/tests.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/matrix/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/matrix/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/matrix/underlying/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/underlying/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pattern/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/world/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/world/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/creating_a_scene.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/creating_a_scene.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,7 +95,7 @@
       <command value="cargo bench" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.bench">
+  <component name="RunManager" selected="Cargo.test">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -193,6 +201,11 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.bench loop" />
@@ -204,8 +217,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.update" />
         <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.clean" />
@@ -323,14 +336,8 @@
       <workItem from="1614717168968" duration="489000" />
       <workItem from="1614801550553" duration="2753000" />
       <workItem from="1614888001122" duration="1313000" />
-      <workItem from="1614981758642" duration="1855000" />
-    </task>
-    <task id="LOCAL-00057" summary="example: use groups to construct hexagon from spheres and cylinders">
-      <created>1611489792886</created>
-      <option name="number" value="00057" />
-      <option name="presentableId" value="LOCAL-00057" />
-      <option name="project" value="LOCAL" />
-      <updated>1611489792887</updated>
+      <workItem from="1614981758642" duration="2064000" />
+      <workItem from="1615030118476" duration="4939000" />
     </task>
     <task id="LOCAL-00058" summary="implement triangles">
       <created>1611492438378</created>
@@ -668,7 +675,14 @@
       <option name="project" value="LOCAL" />
       <updated>1614889311699</updated>
     </task>
-    <option name="localTasksCounter" value="106" />
+    <task id="LOCAL-00106" summary="pre-calculate Transform inverse">
+      <created>1614984267978</created>
+      <option name="number" value="00106" />
+      <option name="presentableId" value="LOCAL-00106" />
+      <option name="project" value="LOCAL" />
+      <updated>1614984267978</updated>
+    </task>
+    <option name="localTasksCounter" value="107" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -694,7 +708,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="very WIP YAML parser&#10;&#10;- implemented light description parser" />
     <MESSAGE value="very WIP YAML parser&#10;&#10;- implemented colour define parser, including extends" />
     <MESSAGE value="very WIP YAML parser&#10;&#10;- implemented transform define parser" />
     <MESSAGE value="WIP YAML parser&#10;&#10;- implemented object description parser" />
@@ -719,7 +732,8 @@
     <MESSAGE value="reduce number of benchmarks" />
     <MESSAGE value="WIP refactor transformation matrix to pre-calculate determinant" />
     <MESSAGE value="still WIP refactor transformation matrix to pre-calculate determinant" />
-    <option name="LAST_COMMIT_MESSAGE" value="still WIP refactor transformation matrix to pre-calculate determinant" />
+    <MESSAGE value="pre-calculate Transform inverse" />
+    <option name="LAST_COMMIT_MESSAGE" value="pre-calculate Transform inverse" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
