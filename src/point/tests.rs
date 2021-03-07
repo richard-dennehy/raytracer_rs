@@ -33,84 +33,87 @@ mod unit_tests {
 
 mod property_tests {
     use super::*;
+    use proptest::prelude::*;
 
-    #[quickcheck]
-    fn first_element_should_be_x(x: f64, y: f64, z: f64) {
-        assert_eq!(Point3D::new(x, y, z).x(), x)
-    }
+    proptest! {
+        #[test]
+        fn first_element_should_be_x(x in any::<f64>(), y in any::<f64>(), z in any::<f64>()) {
+            assert_eq!(Point3D::new(x, y, z).x(), x)
+        }
 
-    #[quickcheck]
-    fn second_element_should_be_y(x: f64, y: f64, z: f64) {
-        assert_eq!(Point3D::new(x, y, z).y(), y)
-    }
+        #[test]
+        fn second_element_should_be_y(x in any::<f64>(), y in any::<f64>(), z in any::<f64>()) {
+            assert_eq!(Point3D::new(x, y, z).y(), y)
+        }
 
-    #[quickcheck]
-    fn third_element_should_be_z(x: f64, y: f64, z: f64) {
-        assert_eq!(Point3D::new(x, y, z).z(), z)
-    }
+        #[test]
+        fn third_element_should_be_z(x in any::<f64>(), y in any::<f64>(), z in any::<f64>()) {
+            assert_eq!(Point3D::new(x, y, z).z(), z)
+        }
 
-    #[quickcheck]
-    fn w_should_always_be_one(x: f64, y: f64, z: f64) {
-        assert_eq!(Point3D::new(x, y, z).w(), 1.0)
-    }
+        #[test]
+        fn w_should_always_be_one(x in any::<f64>(), y in any::<f64>(), z in any::<f64>()) {
+            assert_eq!(Point3D::new(x, y, z).w(), 1.0)
+        }
 
-    #[quickcheck]
-    fn adding_a_vector_to_a_point_should_produce_a_point_with_sum_of_x_y_and_z(
-        x1: f64,
-        y1: f64,
-        z1: f64,
-        x2: f64,
-        y2: f64,
-        z2: f64,
-    ) {
-        let point = Point3D::new(x1, y1, z1);
-        let vector = Vector3D::new(x2, y2, z2);
+        #[test]
+        fn adding_a_vector_to_a_point_should_produce_a_point_with_sum_of_x_y_and_z(
+            x1 in any::<f64>(),
+            y1 in any::<f64>(),
+            z1 in any::<f64>(),
+            x2 in any::<f64>(),
+            y2 in any::<f64>(),
+            z2 in any::<f64>(),
+        ) {
+            let point = Point3D::new(x1, y1, z1);
+            let vector = Vector3D::new(x2, y2, z2);
 
-        let added = point + vector;
-        assert_eq!(added.x(), x1 + x2);
-        assert_eq!(added.y(), y1 + y2);
-        assert_eq!(added.z(), z1 + z2);
+            let added = point + vector;
+            assert_eq!(added.x(), x1 + x2);
+            assert_eq!(added.y(), y1 + y2);
+            assert_eq!(added.z(), z1 + z2);
 
-        assert_eq!(added.w(), 1.0);
-    }
+            assert_eq!(added.w(), 1.0);
+        }
 
-    #[quickcheck]
-    fn subtracting_a_point_from_a_point_should_produce_a_vector_of_the_distance_between_them(
-        x1: f64,
-        y1: f64,
-        z1: f64,
-        x2: f64,
-        y2: f64,
-        z2: f64,
-    ) {
-        let p1 = Point3D::new(x1, y1, z1);
-        let p2 = Point3D::new(x2, y2, z2);
+        #[test]
+        fn subtracting_a_point_from_a_point_should_produce_a_vector_of_the_distance_between_them(
+            x1 in any::<f64>(),
+            y1 in any::<f64>(),
+            z1 in any::<f64>(),
+            x2 in any::<f64>(),
+            y2 in any::<f64>(),
+            z2 in any::<f64>(),
+        ) {
+            let p1 = Point3D::new(x1, y1, z1);
+            let p2 = Point3D::new(x2, y2, z2);
 
-        let distance = p1 - p2;
-        assert_eq!(distance.x(), x1 - x2);
-        assert_eq!(distance.y(), y1 - y2);
-        assert_eq!(distance.z(), z1 - z2);
+            let distance = p1 - p2;
+            assert_eq!(distance.x(), x1 - x2);
+            assert_eq!(distance.y(), y1 - y2);
+            assert_eq!(distance.z(), z1 - z2);
 
-        assert_eq!(distance.w(), 0.0);
-    }
+            assert_eq!(distance.w(), 0.0);
+        }
 
-    #[quickcheck]
-    fn subtracting_a_vector_from_a_point_should_produce_a_point_translated_by_the_vector(
-        x1: f64,
-        y1: f64,
-        z1: f64,
-        x2: f64,
-        y2: f64,
-        z2: f64,
-    ) {
-        let point = Point3D::new(x1, y1, z1);
-        let vector = Vector3D::new(x2, y2, z2);
+        #[test]
+        fn subtracting_a_vector_from_a_point_should_produce_a_point_translated_by_the_vector(
+            x1 in any::<f64>(),
+            y1 in any::<f64>(),
+            z1 in any::<f64>(),
+            x2 in any::<f64>(),
+            y2 in any::<f64>(),
+            z2 in any::<f64>(),
+        ) {
+            let point = Point3D::new(x1, y1, z1);
+            let vector = Vector3D::new(x2, y2, z2);
 
-        let translated = point - vector;
-        assert_eq!(translated.x(), x1 - x2);
-        assert_eq!(translated.y(), y1 - y2);
-        assert_eq!(translated.z(), z1 - z2);
+            let translated = point - vector;
+            assert_eq!(translated.x(), x1 - x2);
+            assert_eq!(translated.y(), y1 - y2);
+            assert_eq!(translated.z(), z1 - z2);
 
-        assert_eq!(translated.w(), 1.0);
+            assert_eq!(translated.w(), 1.0);
+        }
     }
 }

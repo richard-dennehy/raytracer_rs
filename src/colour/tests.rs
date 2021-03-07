@@ -63,79 +63,86 @@ mod unit_tests {
 }
 
 mod property_tests {
-    extern crate quickcheck;
-
-    use self::quickcheck::{Arbitrary, Gen};
     use super::*;
 
+    use proptest::prelude::*;
+
     impl Arbitrary for Colour {
-        fn arbitrary<G: Gen>(g: &mut G) -> Self {
-            Colour::new(f64::arbitrary(g), f64::arbitrary(g), f64::arbitrary(g))
+        type Parameters = ();
+
+        fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
+            (any::<f64>(), any::<f64>(), any::<f64>())
+                .prop_map(|(x, y, z)| Colour::new(x, y, z))
+                .boxed()
         }
+
+        type Strategy = BoxedStrategy<Self>;
     }
 
-    #[quickcheck]
-    fn a_colour_has_red_blue_and_green_components(r: f64, g: f64, b: f64) {
-        let colour = Colour::new(r, g, b);
+    proptest! {
+        #[test]
+        fn a_colour_has_red_blue_and_green_components(r in any::<f64>(), g in any::<f64>(), b in any::<f64>()) {
+            let colour = Colour::new(r, g, b);
 
-        assert_eq!(colour.red(), r);
-        assert_eq!(colour.green(), g);
-        assert_eq!(colour.blue(), b);
-    }
+            assert_eq!(colour.red(), r);
+            assert_eq!(colour.green(), g);
+            assert_eq!(colour.blue(), b);
+        }
 
-    #[quickcheck]
-    fn adding_two_colours_should_sum_components(
-        r1: f64,
-        g1: f64,
-        b1: f64,
-        r2: f64,
-        g2: f64,
-        b2: f64,
-    ) {
-        let c1 = Colour::new(r1, g1, b1);
-        let c2 = Colour::new(r2, g2, b2);
+        #[test]
+        fn adding_two_colours_should_sum_components(
+            r1 in any::<f64>(),
+            g1 in any::<f64>(),
+            b1 in any::<f64>(),
+            r2 in any::<f64>(),
+            g2 in any::<f64>(),
+            b2 in any::<f64>(),
+        ) {
+            let c1 = Colour::new(r1, g1, b1);
+            let c2 = Colour::new(r2, g2, b2);
 
-        let sum = c1 + c2;
-        assert_eq!(sum.red(), r1 + r2);
-        assert_eq!(sum.green(), g1 + g2);
-        assert_eq!(sum.blue(), b1 + b2);
-    }
+            let sum = c1 + c2;
+            assert_eq!(sum.red(), r1 + r2);
+            assert_eq!(sum.green(), g1 + g2);
+            assert_eq!(sum.blue(), b1 + b2);
+        }
 
-    #[quickcheck]
-    fn adding_two_colours_is_commutative(c1: Colour, c2: Colour) {
-        assert_eq!(c1 + c2, c2 + c1);
-    }
+        #[test]
+        fn adding_two_colours_is_commutative(c1 in any::<Colour>(), c2 in any::<Colour>()) {
+            assert_eq!(c1 + c2, c2 + c1);
+        }
 
-    #[quickcheck]
-    fn multiplying_a_colour_by_a_scalar_should_scale_components(r: f64, g: f64, b: f64, s: f64) {
-        let colour = Colour::new(r, g, b);
-        let scaled = colour * s;
+        #[test]
+        fn multiplying_a_colour_by_a_scalar_should_scale_components(r in any::<f64>(), g in any::<f64>(), b in any::<f64>(), s in any::<f64>()) {
+            let colour = Colour::new(r, g, b);
+            let scaled = colour * s;
 
-        assert_eq!(scaled.red(), r * s);
-        assert_eq!(scaled.green(), g * s);
-        assert_eq!(scaled.blue(), b * s);
-    }
+            assert_eq!(scaled.red(), r * s);
+            assert_eq!(scaled.green(), g * s);
+            assert_eq!(scaled.blue(), b * s);
+        }
 
-    #[quickcheck]
-    fn multiplying_two_colours_should_multiply_components(
-        r1: f64,
-        g1: f64,
-        b1: f64,
-        r2: f64,
-        g2: f64,
-        b2: f64,
-    ) {
-        let c1 = Colour::new(r1, g1, b1);
-        let c2 = Colour::new(r2, g2, b2);
+        #[test]
+        fn multiplying_two_colours_should_multiply_components(
+            r1 in any::<f64>(),
+            g1 in any::<f64>(),
+            b1 in any::<f64>(),
+            r2 in any::<f64>(),
+            g2 in any::<f64>(),
+            b2 in any::<f64>(),
+        ) {
+            let c1 = Colour::new(r1, g1, b1);
+            let c2 = Colour::new(r2, g2, b2);
 
-        let sum = c1 * c2;
-        assert_eq!(sum.red(), r1 * r2);
-        assert_eq!(sum.green(), g1 * g2);
-        assert_eq!(sum.blue(), b1 * b2);
-    }
+            let sum = c1 * c2;
+            assert_eq!(sum.red(), r1 * r2);
+            assert_eq!(sum.green(), g1 * g2);
+            assert_eq!(sum.blue(), b1 * b2);
+        }
 
-    #[quickcheck]
-    fn multiplying_colours_is_commutative(c1: Colour, c2: Colour) {
-        assert_eq!(c1 * c2, c2 * c1);
+        #[test]
+        fn multiplying_colours_is_commutative(c1 in any::<Colour>(), c2 in any::<Colour>()) {
+            assert_eq!(c1 * c2, c2 * c1);
+        }
     }
 }

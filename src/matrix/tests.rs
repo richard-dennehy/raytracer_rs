@@ -321,114 +321,94 @@ mod unit_tests {
 //   to ensure underlying "optimised" representation is also logically correct
 mod property_tests {
     extern crate float_cmp;
-    extern crate quickcheck;
     use super::*;
+    use proptest::prelude::*;
 
-    #[quickcheck]
-    fn multiplying_a_vector_by_identity_matrix_produces_the_same_vector(vector: Vector3D) {
-        assert_eq!(Transform::identity() * vector, vector);
-    }
-
-    #[quickcheck]
-    fn multiplying_a_point_by_identity_matrix_produces_the_same_point(point: Point3D) {
-        assert_eq!(Transform::identity() * point, point);
-    }
-
-    #[quickcheck]
-    fn multiplying_a_matrix_by_a_matrix_inverse_undoes_multiplication(
-        first: Transform,
-        second: Transform,
-    ) {
-        // rounding errors become significant
-        fn assert_close_enough(f: f64, s: f64) {
-            assert!(
-                approx_eq!(f64, f, s, epsilon = f32::EPSILON as f64),
-                "not approximately equal: {} != {}",
-                f,
-                s
-            )
+    proptest! {
+        #[test]
+        fn multiplying_a_vector_by_identity_matrix_produces_the_same_vector(vector in any::<Vector3D>()) {
+            assert_eq!(Transform::identity() * vector, vector);
         }
 
-        if second.inverse.is_some() {
-            let inverse = second.inverse();
-            assert!(inverse.is_some());
-            let inverse = inverse.unwrap();
-
-            let product = (first.clone() * second) * inverse;
-            assert_close_enough(first.m00(), product.m00());
-            assert_close_enough(first.m01(), product.m01());
-            assert_close_enough(first.m02(), product.m02());
-            assert_close_enough(first.m03(), product.m03());
-            assert_close_enough(first.m10(), product.m10());
-            assert_close_enough(first.m11(), product.m11());
-            assert_close_enough(first.m12(), product.m12());
-            assert_close_enough(first.m13(), product.m13());
-            assert_close_enough(first.m20(), product.m20());
-            assert_close_enough(first.m21(), product.m21());
-            assert_close_enough(first.m22(), product.m22());
-            assert_close_enough(first.m23(), product.m23());
-            assert_close_enough(first.m30(), product.m30());
-            assert_close_enough(first.m31(), product.m31());
-            assert_close_enough(first.m32(), product.m32());
-            assert_close_enough(first.m33(), product.m33());
+        #[test]
+        fn multiplying_a_point_by_identity_matrix_produces_the_same_point(point in any::<Point3D>()) {
+            assert_eq!(Transform::identity() * point, point);
         }
-    }
 
-    #[quickcheck]
-    fn vectors_cannot_be_translated(vector: Vector3D, x: f64, y: f64, z: f64) {
-        let translation = Transform::translation(x, y, z);
+        #[test]
+        fn multiplying_a_matrix_by_a_matrix_inverse_undoes_multiplication(
+            first in any::<Transform>(),
+            second in any::<Transform>(),
+        ) {
+            // rounding errors become significant
+            fn assert_close_enough(f: f64, s: f64) {
+                assert!(
+                    approx_eq!(f64, f, s, epsilon = f32::EPSILON as f64),
+                    "not approximately equal: {} != {}",
+                    f,
+                    s
+                )
+            }
 
-        assert_eq!(translation * vector, vector);
-    }
+            if second.inverse.is_some() {
+                let inverse = second.inverse();
+                assert!(inverse.is_some());
+                let inverse = inverse.unwrap();
 
-    #[quickcheck]
-    fn fluent_translate_api_behaves_the_same_as_translation_matrix(
-        point: Point3D,
-        x: f64,
-        y: f64,
-        z: f64,
-    ) {
-        let direct = Transform::translation(x, y, z);
-        let fluent = Transform::identity()
-            .translate_x(x)
-            .translate_y(y)
-            .translate_z(z);
+                let product = (first.clone() * second) * inverse;
+                assert_close_enough(first.m00(), product.m00());
+                assert_close_enough(first.m01(), product.m01());
+                assert_close_enough(first.m02(), product.m02());
+                assert_close_enough(first.m03(), product.m03());
+                assert_close_enough(first.m10(), product.m10());
+                assert_close_enough(first.m11(), product.m11());
+                assert_close_enough(first.m12(), product.m12());
+                assert_close_enough(first.m13(), product.m13());
+                assert_close_enough(first.m20(), product.m20());
+                assert_close_enough(first.m21(), product.m21());
+                assert_close_enough(first.m22(), product.m22());
+                assert_close_enough(first.m23(), product.m23());
+                assert_close_enough(first.m30(), product.m30());
+                assert_close_enough(first.m31(), product.m31());
+                assert_close_enough(first.m32(), product.m32());
+                assert_close_enough(first.m33(), product.m33());
+            }
+        }
 
-        assert_eq!(direct * point, fluent * point);
-    }
+        #[test]
+        fn vectors_cannot_be_translated(vector in any::<Vector3D>(), x in any::<f64>(), y in any::<f64>(), z in any::<f64>()) {
+            let translation = Transform::translation(x, y, z);
 
-    #[quickcheck]
-    fn fluent_scaling_api_behaves_the_same_as_scaling_matrix(
-        point: Point3D,
-        x: f64,
-        y: f64,
-        z: f64,
-    ) {
-        let direct = Transform::scaling(x, y, z);
-        let fluent = Transform::identity().scale_x(x).scale_y(y).scale_z(z);
+            assert_eq!(translation * vector, vector);
+        }
 
-        assert_eq!(direct * point, fluent * point);
-    }
+        #[test]
+        fn fluent_translate_api_behaves_the_same_as_translation_matrix(
+            point in any::<Point3D>(),
+            x in any::<f64>(),
+            y in any::<f64>(),
+            z in any::<f64>(),
+        ) {
+            let direct = Transform::translation(x, y, z);
+            let fluent = Transform::identity()
+                .translate_x(x)
+                .translate_y(y)
+                .translate_z(z);
 
-    #[quickcheck]
-    fn fluent_shear_api_behaves_the_same_as_shear_matrix(
-        point: Point3D,
-        x_to_y: f64,
-        x_to_z: f64,
-        y_to_x: f64,
-        y_to_z: f64,
-        z_to_x: f64,
-        z_to_y: f64,
-    ) {
-        let direct = Transform::shear(x_to_y, x_to_z, y_to_x, y_to_z, z_to_x, z_to_y);
-        let fluent = Transform::identity()
-            .shear_x_to_y(x_to_y)
-            .shear_x_to_z(x_to_z)
-            .shear_y_to_x(y_to_x)
-            .shear_y_to_z(y_to_z)
-            .shear_z_to_x(z_to_x)
-            .shear_z_to_y(z_to_y);
+            assert_eq!(direct * point, fluent * point);
+        }
 
-        assert_eq!(direct * point, fluent * point);
+        #[test]
+        fn fluent_scaling_api_behaves_the_same_as_scaling_matrix(
+            point in any::<Point3D>(),
+            x in any::<f64>(),
+            y in any::<f64>(),
+            z in any::<f64>(),
+        ) {
+            let direct = Transform::scaling(x, y, z);
+            let fluent = Transform::identity().scale_x(x).scale_y(y).scale_z(z);
+
+            assert_eq!(direct * point, fluent * point);
+        }
     }
 }

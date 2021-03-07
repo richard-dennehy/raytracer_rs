@@ -144,6 +144,8 @@ impl Transform {
         translation * self
     }
 
+    // shear operations - only allow shearing in one axis at a time, as shearing in multiple axes simultaneously is not necessarily invertible
+
     pub fn shear_x_to_y(self, shear: f64) -> Self {
         let transform = Self::shear(shear, 0.0, 0.0, 0.0, 0.0, 0.0);
 
@@ -374,11 +376,50 @@ pub use test_utils::*;
 mod test_utils {
     use crate::matrix::underlying::Matrix4D;
     use crate::Transform;
-    use quickcheck::{Arbitrary, Gen};
+    use proptest::prelude::*;
 
     impl Arbitrary for Transform {
-        fn arbitrary<G: Gen>(g: &mut G) -> Self {
-            Transform::new(Matrix4D::arbitrary(g))
+        type Parameters = ();
+
+        fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
+            any::<Matrix4D>().prop_map(Self::new).boxed()
         }
+
+        type Strategy = BoxedStrategy<Self>;
     }
+
+    // fn arbitrary_translation(g: &mut Gen) -> Transform {
+    //     let x = f64::arbitrary(g);
+    //     let y = f64::arbitrary(g);
+    //     let z = f64::arbitrary(g);
+    //
+    //     // try to generate a translation in 1-3 axes in an unbiased way
+    //     let permutations = [
+    //         (Some(x), Some(y), Some(z)),
+    //         (Some(x), Some(y), None),
+    //         (Some(x), None, Some(z)),
+    //         (None, Some(y), Some(z)),
+    //         (Some(x), None, None),
+    //         (None, Some(y), None),
+    //         (None, None, Some(z)),
+    //     ];
+    //
+    //     let (x, y, z) = g.choose(&permutations).unwrap();
+    //
+    //     let mut transform = Transform::identity();
+    //
+    //     if let Some(x) = x {
+    //         transform = transform.translate_x(*x);
+    //     }
+    //
+    //     if let Some(y) = y {
+    //         transform = transform.translate_y(*y);
+    //     }
+    //
+    //     if let Some(z) = z {
+    //         transform = transform.translate_z(*z);
+    //     }
+    //
+    //     transform
+    // }
 }

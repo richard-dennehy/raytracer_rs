@@ -503,36 +503,23 @@ pub use test_utils::*;
 #[cfg(test)]
 mod test_utils {
     use crate::matrix::underlying::Matrix4D;
-    use quickcheck::{Arbitrary, Gen};
+    use proptest::prelude::*;
 
     impl Arbitrary for Matrix4D {
-        fn arbitrary<G: Gen>(g: &mut G) -> Self {
-            Matrix4D::new(
-                [
-                    f64::arbitrary(g),
-                    f64::arbitrary(g),
-                    f64::arbitrary(g),
-                    f64::arbitrary(g),
-                ],
-                [
-                    f64::arbitrary(g),
-                    f64::arbitrary(g),
-                    f64::arbitrary(g),
-                    f64::arbitrary(g),
-                ],
-                [
-                    f64::arbitrary(g),
-                    f64::arbitrary(g),
-                    f64::arbitrary(g),
-                    f64::arbitrary(g),
-                ],
-                [
-                    f64::arbitrary(g),
-                    f64::arbitrary(g),
-                    f64::arbitrary(g),
-                    f64::arbitrary(g),
-                ],
-            )
+        type Parameters = ();
+
+        fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
+            fn gen_row() -> BoxedStrategy<[f64; 4]> {
+                (any::<f64>(), any::<f64>(), any::<f64>(), any::<f64>())
+                    .prop_map(|(f1, f2, f3, f4)| [f1, f2, f3, f4])
+                    .boxed()
+            }
+
+            (gen_row(), gen_row(), gen_row(), gen_row())
+                .prop_map(|(r1, r2, r3, r4)| Matrix4D::new(r1, r2, r3, r4))
+                .boxed()
         }
+
+        type Strategy = BoxedStrategy<Self>;
     }
 }

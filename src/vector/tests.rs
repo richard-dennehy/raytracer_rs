@@ -159,161 +159,163 @@ mod unit_tests {
 }
 
 mod property_tests {
-    extern crate quickcheck;
     use super::*;
+    use proptest::prelude::*;
 
-    #[quickcheck]
-    fn first_element_should_be_x(x: f64, y: f64, z: f64) {
-        assert_eq!(Vector3D::new(x, y, z).x(), x)
-    }
+    proptest! {
+        #[test]
+        fn first_element_should_be_x(x in any::<f64>(), y in any::<f64>(), z in any::<f64>()) {
+            assert_eq!(Vector3D::new(x, y, z).x(), x)
+        }
 
-    #[quickcheck]
-    fn second_element_should_be_y(x: f64, y: f64, z: f64) {
-        assert_eq!(Vector3D::new(x, y, z).y(), y)
-    }
+        #[test]
+        fn second_element_should_be_y(x in any::<f64>(), y in any::<f64>(), z in any::<f64>()) {
+            assert_eq!(Vector3D::new(x, y, z).y(), y)
+        }
 
-    #[quickcheck]
-    fn third_element_should_be_z(x: f64, y: f64, z: f64) {
-        assert_eq!(Vector3D::new(x, y, z).z(), z)
-    }
+        #[test]
+        fn third_element_should_be_z(x in any::<f64>(), y in any::<f64>(), z in any::<f64>()) {
+            assert_eq!(Vector3D::new(x, y, z).z(), z)
+        }
 
-    #[quickcheck]
-    fn w_should_always_be_zero(x: f64, y: f64, z: f64) {
-        assert_eq!(Vector3D::new(x, y, z).w(), 0.0)
-    }
+        #[test]
+        fn w_should_always_be_zero(x in any::<f64>(), y in any::<f64>(), z in any::<f64>()) {
+            assert_eq!(Vector3D::new(x, y, z).w(), 0.0)
+        }
 
-    #[quickcheck]
-    fn adding_vectors_should_sum_x_y_and_z(x1: f64, y1: f64, z1: f64, x2: f64, y2: f64, z2: f64) {
-        let first = Vector3D::new(x1, y1, z1);
-        let second = Vector3D::new(x2, y2, z2);
+        #[test]
+        fn adding_vectors_should_sum_x_y_and_z(x1 in any::<f64>(), y1 in any::<f64>(), z1 in any::<f64>(), x2 in any::<f64>(), y2 in any::<f64>(), z2 in any::<f64>()) {
+            let first = Vector3D::new(x1, y1, z1);
+            let second = Vector3D::new(x2, y2, z2);
 
-        let added = first + second;
-        assert_eq!(added.x(), x1 + x2);
-        assert_eq!(added.y(), y1 + y2);
-        assert_eq!(added.z(), z1 + z2);
+            let added = first + second;
+            assert_eq!(added.x(), x1 + x2);
+            assert_eq!(added.y(), y1 + y2);
+            assert_eq!(added.z(), z1 + z2);
 
-        assert_eq!(added.w(), 0.0);
-    }
+            assert_eq!(added.w(), 0.0);
+        }
 
-    #[quickcheck]
-    fn adding_a_point_to_a_vector_should_produce_a_point_with_the_sum_of_x_y_and_z(
-        x1: f64,
-        y1: f64,
-        z1: f64,
-        x2: f64,
-        y2: f64,
-        z2: f64,
-    ) {
-        let vector = Vector3D::new(x1, y1, z1);
-        let point = Point3D::new(x2, y2, z2);
+        #[test]
+        fn adding_a_point_to_a_vector_should_produce_a_point_with_the_sum_of_x_y_and_z(
+            x1 in any::<f64>(),
+            y1 in any::<f64>(),
+            z1 in any::<f64>(),
+            x2 in any::<f64>(),
+            y2 in any::<f64>(),
+            z2 in any::<f64>(),
+        ) {
+            let vector = Vector3D::new(x1, y1, z1);
+            let point = Point3D::new(x2, y2, z2);
 
-        let added = vector + point;
-        assert_eq!(added.x(), x1 + x2);
-        assert_eq!(added.y(), y1 + y2);
-        assert_eq!(added.z(), z1 + z2);
+            let added = vector + point;
+            assert_eq!(added.x(), x1 + x2);
+            assert_eq!(added.y(), y1 + y2);
+            assert_eq!(added.z(), z1 + z2);
 
-        assert_eq!(added.w(), 1.0);
-    }
+            assert_eq!(added.w(), 1.0);
+        }
 
-    #[quickcheck]
-    fn subtracting_a_vector_from_a_vector_should_produce_a_vector_of_the_change_in_direction(
-        x1: f64,
-        y1: f64,
-        z1: f64,
-        x2: f64,
-        y2: f64,
-        z2: f64,
-    ) {
-        let v1 = Vector3D::new(x1, y1, z1);
-        let v2 = Vector3D::new(x2, y2, z2);
+        #[test]
+        fn subtracting_a_vector_from_a_vector_should_produce_a_vector_of_the_change_in_direction(
+            x1 in any::<f64>(),
+            y1 in any::<f64>(),
+            z1 in any::<f64>(),
+            x2 in any::<f64>(),
+            y2 in any::<f64>(),
+            z2 in any::<f64>(),
+        ) {
+            let v1 = Vector3D::new(x1, y1, z1);
+            let v2 = Vector3D::new(x2, y2, z2);
 
-        let delta = v1 - v2;
-        assert_eq!(delta.x(), x1 - x2);
-        assert_eq!(delta.y(), y1 - y2);
-        assert_eq!(delta.z(), z1 - z2);
+            let delta = v1 - v2;
+            assert_eq!(delta.x(), x1 - x2);
+            assert_eq!(delta.y(), y1 - y2);
+            assert_eq!(delta.z(), z1 - z2);
 
-        assert_eq!(delta.w(), 0.0);
-    }
+            assert_eq!(delta.w(), 0.0);
+        }
 
-    #[quickcheck]
-    fn negating_a_vector_should_negate_the_x_y_and_z(x: f64, y: f64, z: f64) {
-        let vector = Vector3D::new(x, y, z);
-        let negated = Vector3D::new(-x, -y, -z);
+        #[test]
+        fn negating_a_vector_should_negate_the_x_y_and_z(x in any::<f64>(), y in any::<f64>(), z in any::<f64>()) {
+            let vector = Vector3D::new(x, y, z);
+            let negated = Vector3D::new(-x, -y, -z);
 
-        assert_eq!(-vector.clone(), negated);
-        assert_eq!((-vector).w(), 0.0);
-    }
+            assert_eq!(-vector.clone(), negated);
+            assert_eq!((-vector).w(), 0.0);
+        }
 
-    #[quickcheck]
-    fn multiplying_a_vector_by_a_scalar_should_multiply_x_y_and_z(x: f64, y: f64, z: f64, s: f64) {
-        let vector = Vector3D::new(x, y, z);
-        let scaled = vector * s;
+        #[test]
+        fn multiplying_a_vector_by_a_scalar_should_multiply_x_y_and_z(x in any::<f64>(), y in any::<f64>(), z in any::<f64>(), s in any::<f64>()) {
+            let vector = Vector3D::new(x, y, z);
+            let scaled = vector * s;
 
-        assert_eq!(scaled.x(), x * s);
-        assert_eq!(scaled.y(), y * s);
-        assert_eq!(scaled.z(), z * s);
+            assert_eq!(scaled.x(), x * s);
+            assert_eq!(scaled.y(), y * s);
+            assert_eq!(scaled.z(), z * s);
 
-        assert_eq!(scaled.w(), 0.0);
-    }
+            assert_eq!(scaled.w(), 0.0);
+        }
 
-    #[quickcheck]
-    fn dividing_a_vector_by_a_scalar_should_divide_x_y_and_z(x: f64, y: f64, z: f64, s: f64) {
-        let vector = Vector3D::new(x, y, z);
-        let scaled = vector / s;
+        #[test]
+        fn dividing_a_vector_by_a_scalar_should_divide_x_y_and_z(x in any::<f64>(), y in any::<f64>(), z in any::<f64>(), s in any::<f64>()) {
+            let vector = Vector3D::new(x, y, z);
+            let scaled = vector / s;
 
-        assert_eq!(scaled.x(), x / s);
-        assert_eq!(scaled.y(), y / s);
-        assert_eq!(scaled.z(), z / s);
+            assert_eq!(scaled.x(), x / s);
+            assert_eq!(scaled.y(), y / s);
+            assert_eq!(scaled.z(), z / s);
 
-        assert_eq!(scaled.w(), 0.0);
-    }
+            assert_eq!(scaled.w(), 0.0);
+        }
 
-    #[quickcheck]
-    fn magnitude_of_a_vector_equals_magnitude_of_negated_vector(x: f64, y: f64, z: f64) {
-        let vector = Vector3D::new(x, y, z);
-
-        assert_eq!(vector.clone().magnitude(), (-vector).magnitude());
-    }
-
-    #[quickcheck]
-    fn magnitude_of_a_normalised_vector_is_always_1(x: f64, y: f64, z: f64) {
-        // can't normalise a zero magnitude vector - easier to just ignore this single case than properly filter it
-        if x != 0.0 && y != 0.0 && z != 0.0 {
+        #[test]
+        fn magnitude_of_a_vector_equals_magnitude_of_negated_vector(x in any::<f64>(), y in any::<f64>(), z in any::<f64>()) {
             let vector = Vector3D::new(x, y, z);
 
-            // rounding errors start to accumulate
-            assert!(vector.normalised().magnitude() - 1.0 <= f64::EPSILON)
+            assert_eq!(vector.clone().magnitude(), (-vector).magnitude());
         }
-    }
 
-    #[quickcheck]
-    fn dot_product_is_commutative(v1: Vector3D, v2: Vector3D) {
-        assert_eq!(v1.dot(v2), v2.dot(v1));
-    }
+        #[test]
+        fn magnitude_of_a_normalised_vector_is_always_1(x in any::<f64>(), y in any::<f64>(), z in any::<f64>()) {
+            // can't normalise a zero magnitude vector - easier to just ignore this single case than properly filter it
+            if x != 0.0 && y != 0.0 && z != 0.0 {
+                let vector = Vector3D::new(x, y, z);
 
-    #[quickcheck]
-    fn dot_product_of_normalised_vectors_is_always_between_1_and_negative_1(
-        v1: Vector3D,
-        v2: Vector3D,
-    ) {
-        let dot = v1.normalised().dot(v2.normalised());
+                // rounding errors start to accumulate
+                assert!(vector.normalised().magnitude() - 1.0 <= f64::EPSILON)
+            }
+        }
 
-        assert!(dot >= -1.0 && dot <= 1.0)
-    }
+        #[test]
+        fn dot_product_is_commutative(v1 in any::<Vector3D>(), v2 in any::<Vector3D>()) {
+            assert_eq!(v1.dot(v2), v2.dot(v1));
+        }
 
-    #[quickcheck]
-    fn dot_product_of_same_direction_unit_vectors_is_always_1(vector: Vector3D) {
-        // rounding errors _really_ accumulate
-        assert!(vector.normalised().dot(vector.normalised()) - 1.0 <= f32::EPSILON as _)
-    }
+        #[test]
+        fn dot_product_of_normalised_vectors_is_always_between_1_and_negative_1(
+            v1 in any::<Vector3D>(),
+            v2 in any::<Vector3D>(),
+        ) {
+            let dot = v1.normalised().dot(v2.normalised());
 
-    #[quickcheck]
-    fn dot_product_of_opposite_direction_unit_vectors_is_always_negative_1(vector: Vector3D) {
-        assert!(vector.normalised().dot(-(vector.normalised())) - 1.0 <= f32::EPSILON as _)
-    }
+            assert!(dot >= -1.0 && dot <= 1.0)
+        }
 
-    #[quickcheck]
-    fn cross_product_is_anti_commutative(v1: Vector3D, v2: Vector3D) {
-        assert_eq!(v1.cross(v2), -(v2.cross(v1)))
+        #[test]
+        fn dot_product_of_same_direction_unit_vectors_is_always_1(vector in any::<Vector3D>()) {
+            // rounding errors _really_ accumulate
+            assert!(vector.normalised().dot(vector.normalised()) - 1.0 <= f32::EPSILON as _)
+        }
+
+        #[test]
+        fn dot_product_of_opposite_direction_unit_vectors_is_always_negative_1(vector in any::<Vector3D>()) {
+            assert!(vector.normalised().dot(-(vector.normalised())) - 1.0 <= f32::EPSILON as _)
+        }
+
+        #[test]
+        fn cross_product_is_anti_commutative(v1 in any::<Vector3D>(), v2 in any::<Vector3D>()) {
+            assert_eq!(v1.cross(v2), -(v2.cross(v1)))
+        }
     }
 }

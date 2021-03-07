@@ -1,5 +1,7 @@
 use crate::Vector3D;
 use std::ops::{Add, Sub};
+#[cfg(test)]
+pub use test_utils::*;
 
 #[cfg(test)]
 mod tests;
@@ -62,11 +64,19 @@ impl Sub<Vector3D> for Point3D {
 }
 
 #[cfg(test)]
-use quickcheck::{Arbitrary, Gen};
+mod test_utils {
+    use super::*;
+    use proptest::prelude::*;
 
-#[cfg(test)]
-impl Arbitrary for Point3D {
-    fn arbitrary<G: Gen>(g: &mut G) -> Self {
-        Point3D::new(f64::arbitrary(g), f64::arbitrary(g), f64::arbitrary(g))
+    impl Arbitrary for Point3D {
+        type Parameters = ();
+
+        fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
+            (any::<f64>(), any::<f64>(), any::<f64>())
+                .prop_map(|(x, y, z)| Point3D::new(x, y, z))
+                .boxed()
+        }
+
+        type Strategy = BoxedStrategy<Self>;
     }
 }

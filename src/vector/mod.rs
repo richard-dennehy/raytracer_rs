@@ -136,12 +136,18 @@ pub use test_utils::*;
 mod test_utils {
     use super::*;
     use float_cmp::{ApproxEq, F64Margin};
-    use quickcheck::{Arbitrary, Gen};
+    use proptest::prelude::*;
 
     impl Arbitrary for Vector3D {
-        fn arbitrary<G: Gen>(g: &mut G) -> Self {
-            Vector3D::new(f64::arbitrary(g), f64::arbitrary(g), f64::arbitrary(g))
+        type Parameters = ();
+
+        fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
+            (any::<f64>(), any::<f64>(), any::<f64>())
+                .prop_map(|(x, y, z)| Vector3D::new(x, y, z))
+                .boxed()
         }
+
+        type Strategy = BoxedStrategy<Self>;
     }
 
     impl ApproxEq for Vector3D {

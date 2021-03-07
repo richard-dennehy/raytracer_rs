@@ -362,36 +362,39 @@ mod sphere_tests {
 
 mod plane_tests {
     use super::*;
+    use proptest::prelude::*;
     use std::f64::consts::PI;
 
-    #[quickcheck]
-    fn the_normal_of_an_xz_plane_is_constant_at_all_points(x: f64, z: f64) {
-        assert_eq!(
-            Object::plane().normal_at(Point3D::new(x, 0.0, z), None),
-            Vector3D::new(0.0, 1.0, 0.0)
-        );
-    }
+    proptest! {
+        #[test]
+        fn the_normal_of_an_xz_plane_is_constant_at_all_points(x in any::<f64>(), z in any::<f64>()) {
+            assert_eq!(
+                Object::plane().normal_at(Point3D::new(x, 0.0, z), None),
+                Vector3D::new(0.0, 1.0, 0.0)
+            );
+        }
 
-    #[quickcheck]
-    fn the_normal_of_an_xy_plane_is_constant_at_all_points(x: f64, y: f64) {
-        let plane = Object::plane().with_transform(Transform::identity().rotate_x(PI / 2.0));
+        #[test]
+        fn the_normal_of_an_xy_plane_is_constant_at_all_points(x in any::<f64>(), y in any::<f64>()) {
+            let plane = Object::plane().with_transform(Transform::identity().rotate_x(PI / 2.0));
 
-        assert!(approx_eq!(
-            Vector3D,
-            plane.normal_at(Point3D::new(x, y, 0.0), None),
-            Vector3D::new(0.0, 0.0, 1.0)
-        ));
-    }
+            assert!(approx_eq!(
+                Vector3D,
+                plane.normal_at(Point3D::new(x, y, 0.0), None),
+                Vector3D::new(0.0, 0.0, 1.0)
+            ));
+        }
 
-    #[quickcheck]
-    fn the_normal_of_a_yz_plane_is_constant_at_all_points(y: f64, z: f64) {
-        let plane = Object::plane().with_transform(Transform::identity().rotate_z(PI / 2.0));
+        #[test]
+        fn the_normal_of_a_yz_plane_is_constant_at_all_points(y in any::<f64>(), z in any::<f64>()) {
+            let plane = Object::plane().with_transform(Transform::identity().rotate_z(PI / 2.0));
 
-        assert!(approx_eq!(
-            Vector3D,
-            plane.normal_at(Point3D::new(0.0, y, z), None),
-            Vector3D::new(-1.0, 0.0, 0.0)
-        ));
+            assert!(approx_eq!(
+                Vector3D,
+                plane.normal_at(Point3D::new(0.0, y, z), None),
+                Vector3D::new(-1.0, 0.0, 0.0)
+            ));
+        }
     }
 
     #[test]
