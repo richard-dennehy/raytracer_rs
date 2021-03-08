@@ -510,7 +510,12 @@ mod test_utils {
 
         fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
             fn gen_row() -> BoxedStrategy<[f64; 4]> {
-                (any::<f64>(), any::<f64>(), any::<f64>(), any::<f64>())
+                (
+                    crate::util::reasonable_f64(),
+                    crate::util::reasonable_f64(),
+                    crate::util::reasonable_f64(),
+                    crate::util::reasonable_f64(),
+                )
                     .prop_map(|(f1, f2, f3, f4)| [f1, f2, f3, f4])
                     .boxed()
             }

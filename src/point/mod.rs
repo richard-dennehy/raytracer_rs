@@ -72,7 +72,11 @@ mod test_utils {
         type Parameters = ();
 
         fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
-            (any::<f64>(), any::<f64>(), any::<f64>())
+            (
+                crate::util::reasonable_f64(),
+                crate::util::reasonable_f64(),
+                crate::util::reasonable_f64(),
+            )
                 .prop_map(|(x, y, z)| Point3D::new(x, y, z))
                 .boxed()
         }

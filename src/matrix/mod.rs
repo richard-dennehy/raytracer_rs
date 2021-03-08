@@ -374,52 +374,28 @@ pub use test_utils::*;
 
 #[cfg(test)]
 mod test_utils {
-    use crate::matrix::underlying::Matrix4D;
+    use crate::util::reasonable_f64;
     use crate::Transform;
+    use proptest::option;
     use proptest::prelude::*;
 
-    impl Arbitrary for Transform {
-        type Parameters = ();
-
-        fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
-            any::<Matrix4D>().prop_map(Self::new).boxed()
+    impl Transform {
+        pub fn any_translation() -> BoxedStrategy<Self> {
+            (
+                option::of(reasonable_f64()),
+                option::of(reasonable_f64()),
+                option::of(reasonable_f64()),
+            )
+                .prop_filter("zero translation", |(x, y, z)| {
+                    x.is_none() && y.is_none() && z.is_none()
+                })
+                .prop_map(|(x, y, z)| {
+                    Transform::identity()
+                        .translate_x(x.unwrap_or(0.0))
+                        .translate_y(y.unwrap_or(0.0))
+                        .translate_z(z.unwrap_or(0.0))
+                })
+                .boxed()
         }
-
-        type Strategy = BoxedStrategy<Self>;
     }
-
-    // fn arbitrary_translation(g: &mut Gen) -> Transform {
-    //     let x = f64::arbitrary(g);
-    //     let y = f64::arbitrary(g);
-    //     let z = f64::arbitrary(g);
-    //
-    //     // try to generate a translation in 1-3 axes in an unbiased way
-    //     let permutations = [
-    //         (Some(x), Some(y), Some(z)),
-    //         (Some(x), Some(y), None),
-    //         (Some(x), None, Some(z)),
-    //         (None, Some(y), Some(z)),
-    //         (Some(x), None, None),
-    //         (None, Some(y), None),
-    //         (None, None, Some(z)),
-    //     ];
-    //
-    //     let (x, y, z) = g.choose(&permutations).unwrap();
-    //
-    //     let mut transform = Transform::identity();
-    //
-    //     if let Some(x) = x {
-    //         transform = transform.translate_x(*x);
-    //     }
-    //
-    //     if let Some(y) = y {
-    //         transform = transform.translate_y(*y);
-    //     }
-    //
-    //     if let Some(z) = z {
-    //         transform = transform.translate_z(*z);
-    //     }
-    //
-    //     transform
-    // }
 }

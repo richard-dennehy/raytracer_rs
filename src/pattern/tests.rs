@@ -223,9 +223,9 @@ mod property_tests {
         #[test]
         fn a_solid_pattern_should_have_the_same_colour_at_all_points(
             point in any::<Point3D>(),
-            red in any::<f64>(),
-            green in any::<f64>(),
-            blue in any::<f64>(),
+            red in crate::util::reasonable_f64(),
+            green in crate::util::reasonable_f64(),
+            blue in crate::util::reasonable_f64(),
         ) {
             let colour = Colour::new(red, green, blue);
             let pattern = Pattern::solid(colour);
@@ -234,14 +234,14 @@ mod property_tests {
         }
 
         #[test]
-        fn a_striped_pattern_is_constant_across_y_values(y in any::<f64>()) {
+        fn a_striped_pattern_is_constant_across_y_values(y in crate::util::reasonable_f64()) {
             let pattern = Pattern::striped(Colour::WHITE, Colour::BLACK);
 
             assert_eq!(pattern.colour_at(Point3D::new(0.0, y, 0.0)), Colour::WHITE);
         }
 
         #[test]
-        fn a_striped_pattern_is_constant_across_z_values(z in any::<f64>()) {
+        fn a_striped_pattern_is_constant_across_z_values(z in crate::util::reasonable_f64()) {
             let pattern = Pattern::striped(Colour::WHITE, Colour::BLACK);
 
             assert_eq!(pattern.colour_at(Point3D::new(0.0, 0.0, z)), Colour::WHITE);

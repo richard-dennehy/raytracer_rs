@@ -15,16 +15,13 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP refactor Transform fluent API">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="covert quickcheck property tests to proptest (note: tests failing)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/colour/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/colour/tests.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/matrix/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/matrix/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/tests.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/matrix/underlying/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/underlying/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/matrix/underlying/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/underlying/tests.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pattern/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/tests.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/point/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/point/mod.rs" afterDir="false" />
@@ -99,11 +96,6 @@
     </option>
   </component>
   <component name="RunManager" selected="Cargo.test">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -341,14 +333,8 @@
       <workItem from="1614888001122" duration="1313000" />
       <workItem from="1614981758642" duration="2064000" />
       <workItem from="1615030118476" duration="5180000" />
-      <workItem from="1615117604635" duration="5797000" />
-    </task>
-    <task id="LOCAL-00059" summary="WIP obj file parser">
-      <created>1611607114406</created>
-      <option name="number" value="00059" />
-      <option name="presentableId" value="LOCAL-00059" />
-      <option name="project" value="LOCAL" />
-      <updated>1611607114407</updated>
+      <workItem from="1615117604635" duration="5820000" />
+      <workItem from="1615233806092" duration="2259000" />
     </task>
     <task id="LOCAL-00060" summary="WIP parse faces from obj file">
       <created>1611695558865</created>
@@ -686,7 +672,14 @@
       <option name="project" value="LOCAL" />
       <updated>1615035304563</updated>
     </task>
-    <option name="localTasksCounter" value="108" />
+    <task id="LOCAL-00108" summary="covert quickcheck property tests to proptest (note: tests failing)">
+      <created>1615124134094</created>
+      <option name="number" value="00108" />
+      <option name="presentableId" value="LOCAL-00108" />
+      <option name="project" value="LOCAL" />
+      <updated>1615124134094</updated>
+    </task>
+    <option name="localTasksCounter" value="109" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -712,7 +705,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="very WIP YAML parser&#10;&#10;- implemented transform define parser" />
     <MESSAGE value="WIP YAML parser&#10;&#10;- implemented object description parser" />
     <MESSAGE value="implemented basic scene YAML parser" />
     <MESSAGE value="migrated YAML parsing models to separate module" />
@@ -737,7 +729,8 @@
     <MESSAGE value="still WIP refactor transformation matrix to pre-calculate determinant" />
     <MESSAGE value="pre-calculate Transform inverse" />
     <MESSAGE value="WIP refactor Transform fluent API" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP refactor Transform fluent API" />
+    <MESSAGE value="covert quickcheck property tests to proptest (note: tests failing)" />
+    <option name="LAST_COMMIT_MESSAGE" value="covert quickcheck property tests to proptest (note: tests failing)" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

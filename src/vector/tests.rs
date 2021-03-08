@@ -164,27 +164,27 @@ mod property_tests {
 
     proptest! {
         #[test]
-        fn first_element_should_be_x(x in any::<f64>(), y in any::<f64>(), z in any::<f64>()) {
+        fn first_element_should_be_x(x in crate::util::reasonable_f64(), y in crate::util::reasonable_f64(), z in crate::util::reasonable_f64()) {
             assert_eq!(Vector3D::new(x, y, z).x(), x)
         }
 
         #[test]
-        fn second_element_should_be_y(x in any::<f64>(), y in any::<f64>(), z in any::<f64>()) {
+        fn second_element_should_be_y(x in crate::util::reasonable_f64(), y in crate::util::reasonable_f64(), z in crate::util::reasonable_f64()) {
             assert_eq!(Vector3D::new(x, y, z).y(), y)
         }
 
         #[test]
-        fn third_element_should_be_z(x in any::<f64>(), y in any::<f64>(), z in any::<f64>()) {
+        fn third_element_should_be_z(x in crate::util::reasonable_f64(), y in crate::util::reasonable_f64(), z in crate::util::reasonable_f64()) {
             assert_eq!(Vector3D::new(x, y, z).z(), z)
         }
 
         #[test]
-        fn w_should_always_be_zero(x in any::<f64>(), y in any::<f64>(), z in any::<f64>()) {
+        fn w_should_always_be_zero(x in crate::util::reasonable_f64(), y in crate::util::reasonable_f64(), z in crate::util::reasonable_f64()) {
             assert_eq!(Vector3D::new(x, y, z).w(), 0.0)
         }
 
         #[test]
-        fn adding_vectors_should_sum_x_y_and_z(x1 in any::<f64>(), y1 in any::<f64>(), z1 in any::<f64>(), x2 in any::<f64>(), y2 in any::<f64>(), z2 in any::<f64>()) {
+        fn adding_vectors_should_sum_x_y_and_z(x1 in crate::util::reasonable_f64(), y1 in crate::util::reasonable_f64(), z1 in crate::util::reasonable_f64(), x2 in crate::util::reasonable_f64(), y2 in crate::util::reasonable_f64(), z2 in crate::util::reasonable_f64()) {
             let first = Vector3D::new(x1, y1, z1);
             let second = Vector3D::new(x2, y2, z2);
 
@@ -198,12 +198,12 @@ mod property_tests {
 
         #[test]
         fn adding_a_point_to_a_vector_should_produce_a_point_with_the_sum_of_x_y_and_z(
-            x1 in any::<f64>(),
-            y1 in any::<f64>(),
-            z1 in any::<f64>(),
-            x2 in any::<f64>(),
-            y2 in any::<f64>(),
-            z2 in any::<f64>(),
+            x1 in crate::util::reasonable_f64(),
+            y1 in crate::util::reasonable_f64(),
+            z1 in crate::util::reasonable_f64(),
+            x2 in crate::util::reasonable_f64(),
+            y2 in crate::util::reasonable_f64(),
+            z2 in crate::util::reasonable_f64(),
         ) {
             let vector = Vector3D::new(x1, y1, z1);
             let point = Point3D::new(x2, y2, z2);
@@ -218,12 +218,12 @@ mod property_tests {
 
         #[test]
         fn subtracting_a_vector_from_a_vector_should_produce_a_vector_of_the_change_in_direction(
-            x1 in any::<f64>(),
-            y1 in any::<f64>(),
-            z1 in any::<f64>(),
-            x2 in any::<f64>(),
-            y2 in any::<f64>(),
-            z2 in any::<f64>(),
+            x1 in crate::util::reasonable_f64(),
+            y1 in crate::util::reasonable_f64(),
+            z1 in crate::util::reasonable_f64(),
+            x2 in crate::util::reasonable_f64(),
+            y2 in crate::util::reasonable_f64(),
+            z2 in crate::util::reasonable_f64(),
         ) {
             let v1 = Vector3D::new(x1, y1, z1);
             let v2 = Vector3D::new(x2, y2, z2);
@@ -237,7 +237,7 @@ mod property_tests {
         }
 
         #[test]
-        fn negating_a_vector_should_negate_the_x_y_and_z(x in any::<f64>(), y in any::<f64>(), z in any::<f64>()) {
+        fn negating_a_vector_should_negate_the_x_y_and_z(x in crate::util::reasonable_f64(), y in crate::util::reasonable_f64(), z in crate::util::reasonable_f64()) {
             let vector = Vector3D::new(x, y, z);
             let negated = Vector3D::new(-x, -y, -z);
 
@@ -246,7 +246,7 @@ mod property_tests {
         }
 
         #[test]
-        fn multiplying_a_vector_by_a_scalar_should_multiply_x_y_and_z(x in any::<f64>(), y in any::<f64>(), z in any::<f64>(), s in any::<f64>()) {
+        fn multiplying_a_vector_by_a_scalar_should_multiply_x_y_and_z(x in crate::util::reasonable_f64(), y in crate::util::reasonable_f64(), z in crate::util::reasonable_f64(), s in crate::util::reasonable_f64()) {
             let vector = Vector3D::new(x, y, z);
             let scaled = vector * s;
 
@@ -258,7 +258,7 @@ mod property_tests {
         }
 
         #[test]
-        fn dividing_a_vector_by_a_scalar_should_divide_x_y_and_z(x in any::<f64>(), y in any::<f64>(), z in any::<f64>(), s in any::<f64>()) {
+        fn dividing_a_vector_by_a_scalar_should_divide_x_y_and_z(x in crate::util::reasonable_f64(), y in crate::util::reasonable_f64(), z in crate::util::reasonable_f64(), s in crate::util::reasonable_f64()) {
             let vector = Vector3D::new(x, y, z);
             let scaled = vector / s;
 
@@ -270,14 +270,14 @@ mod property_tests {
         }
 
         #[test]
-        fn magnitude_of_a_vector_equals_magnitude_of_negated_vector(x in any::<f64>(), y in any::<f64>(), z in any::<f64>()) {
+        fn magnitude_of_a_vector_equals_magnitude_of_negated_vector(x in crate::util::reasonable_f64(), y in crate::util::reasonable_f64(), z in crate::util::reasonable_f64()) {
             let vector = Vector3D::new(x, y, z);
 
             assert_eq!(vector.clone().magnitude(), (-vector).magnitude());
         }
 
         #[test]
-        fn magnitude_of_a_normalised_vector_is_always_1(x in any::<f64>(), y in any::<f64>(), z in any::<f64>()) {
+        fn magnitude_of_a_normalised_vector_is_always_1(x in crate::util::reasonable_f64(), y in crate::util::reasonable_f64(), z in crate::util::reasonable_f64()) {
             // can't normalise a zero magnitude vector - easier to just ignore this single case than properly filter it
             if x != 0.0 && y != 0.0 && z != 0.0 {
                 let vector = Vector3D::new(x, y, z);

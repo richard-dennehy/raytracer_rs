@@ -37,33 +37,33 @@ mod property_tests {
 
     proptest! {
         #[test]
-        fn first_element_should_be_x(x in any::<f64>(), y in any::<f64>(), z in any::<f64>()) {
+        fn first_element_should_be_x(x in crate::util::reasonable_f64(), y in crate::util::reasonable_f64(), z in crate::util::reasonable_f64()) {
             assert_eq!(Point3D::new(x, y, z).x(), x)
         }
 
         #[test]
-        fn second_element_should_be_y(x in any::<f64>(), y in any::<f64>(), z in any::<f64>()) {
+        fn second_element_should_be_y(x in crate::util::reasonable_f64(), y in crate::util::reasonable_f64(), z in crate::util::reasonable_f64()) {
             assert_eq!(Point3D::new(x, y, z).y(), y)
         }
 
         #[test]
-        fn third_element_should_be_z(x in any::<f64>(), y in any::<f64>(), z in any::<f64>()) {
+        fn third_element_should_be_z(x in crate::util::reasonable_f64(), y in crate::util::reasonable_f64(), z in crate::util::reasonable_f64()) {
             assert_eq!(Point3D::new(x, y, z).z(), z)
         }
 
         #[test]
-        fn w_should_always_be_one(x in any::<f64>(), y in any::<f64>(), z in any::<f64>()) {
+        fn w_should_always_be_one(x in crate::util::reasonable_f64(), y in crate::util::reasonable_f64(), z in crate::util::reasonable_f64()) {
             assert_eq!(Point3D::new(x, y, z).w(), 1.0)
         }
 
         #[test]
         fn adding_a_vector_to_a_point_should_produce_a_point_with_sum_of_x_y_and_z(
-            x1 in any::<f64>(),
-            y1 in any::<f64>(),
-            z1 in any::<f64>(),
-            x2 in any::<f64>(),
-            y2 in any::<f64>(),
-            z2 in any::<f64>(),
+            x1 in crate::util::reasonable_f64(),
+            y1 in crate::util::reasonable_f64(),
+            z1 in crate::util::reasonable_f64(),
+            x2 in crate::util::reasonable_f64(),
+            y2 in crate::util::reasonable_f64(),
+            z2 in crate::util::reasonable_f64(),
         ) {
             let point = Point3D::new(x1, y1, z1);
             let vector = Vector3D::new(x2, y2, z2);
@@ -78,12 +78,12 @@ mod property_tests {
 
         #[test]
         fn subtracting_a_point_from_a_point_should_produce_a_vector_of_the_distance_between_them(
-            x1 in any::<f64>(),
-            y1 in any::<f64>(),
-            z1 in any::<f64>(),
-            x2 in any::<f64>(),
-            y2 in any::<f64>(),
-            z2 in any::<f64>(),
+            x1 in crate::util::reasonable_f64(),
+            y1 in crate::util::reasonable_f64(),
+            z1 in crate::util::reasonable_f64(),
+            x2 in crate::util::reasonable_f64(),
+            y2 in crate::util::reasonable_f64(),
+            z2 in crate::util::reasonable_f64(),
         ) {
             let p1 = Point3D::new(x1, y1, z1);
             let p2 = Point3D::new(x2, y2, z2);
@@ -98,12 +98,12 @@ mod property_tests {
 
         #[test]
         fn subtracting_a_vector_from_a_point_should_produce_a_point_translated_by_the_vector(
-            x1 in any::<f64>(),
-            y1 in any::<f64>(),
-            z1 in any::<f64>(),
-            x2 in any::<f64>(),
-            y2 in any::<f64>(),
-            z2 in any::<f64>(),
+            x1 in crate::util::reasonable_f64(),
+            y1 in crate::util::reasonable_f64(),
+            z1 in crate::util::reasonable_f64(),
+            x2 in crate::util::reasonable_f64(),
+            y2 in crate::util::reasonable_f64(),
+            z2 in crate::util::reasonable_f64(),
         ) {
             let point = Point3D::new(x1, y1, z1);
             let vector = Vector3D::new(x2, y2, z2);

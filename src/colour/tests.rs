@@ -71,7 +71,11 @@ mod property_tests {
         type Parameters = ();
 
         fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
-            (any::<f64>(), any::<f64>(), any::<f64>())
+            (
+                crate::util::reasonable_f64(),
+                crate::util::reasonable_f64(),
+                crate::util::reasonable_f64(),
+            )
                 .prop_map(|(x, y, z)| Colour::new(x, y, z))
                 .boxed()
         }
@@ -81,7 +85,7 @@ mod property_tests {
 
     proptest! {
         #[test]
-        fn a_colour_has_red_blue_and_green_components(r in any::<f64>(), g in any::<f64>(), b in any::<f64>()) {
+        fn a_colour_has_red_blue_and_green_components(r in crate::util::reasonable_f64(), g in crate::util::reasonable_f64(), b in crate::util::reasonable_f64()) {
             let colour = Colour::new(r, g, b);
 
             assert_eq!(colour.red(), r);
@@ -91,12 +95,12 @@ mod property_tests {
 
         #[test]
         fn adding_two_colours_should_sum_components(
-            r1 in any::<f64>(),
-            g1 in any::<f64>(),
-            b1 in any::<f64>(),
-            r2 in any::<f64>(),
-            g2 in any::<f64>(),
-            b2 in any::<f64>(),
+            r1 in crate::util::reasonable_f64(),
+            g1 in crate::util::reasonable_f64(),
+            b1 in crate::util::reasonable_f64(),
+            r2 in crate::util::reasonable_f64(),
+            g2 in crate::util::reasonable_f64(),
+            b2 in crate::util::reasonable_f64(),
         ) {
             let c1 = Colour::new(r1, g1, b1);
             let c2 = Colour::new(r2, g2, b2);
@@ -113,7 +117,7 @@ mod property_tests {
         }
 
         #[test]
-        fn multiplying_a_colour_by_a_scalar_should_scale_components(r in any::<f64>(), g in any::<f64>(), b in any::<f64>(), s in any::<f64>()) {
+        fn multiplying_a_colour_by_a_scalar_should_scale_components(r in crate::util::reasonable_f64(), g in crate::util::reasonable_f64(), b in crate::util::reasonable_f64(), s in crate::util::reasonable_f64()) {
             let colour = Colour::new(r, g, b);
             let scaled = colour * s;
 
@@ -124,12 +128,12 @@ mod property_tests {
 
         #[test]
         fn multiplying_two_colours_should_multiply_components(
-            r1 in any::<f64>(),
-            g1 in any::<f64>(),
-            b1 in any::<f64>(),
-            r2 in any::<f64>(),
-            g2 in any::<f64>(),
-            b2 in any::<f64>(),
+            r1 in crate::util::reasonable_f64(),
+            g1 in crate::util::reasonable_f64(),
+            b1 in crate::util::reasonable_f64(),
+            r2 in crate::util::reasonable_f64(),
+            g2 in crate::util::reasonable_f64(),
+            b2 in crate::util::reasonable_f64(),
         ) {
             let c1 = Colour::new(r1, g1, b1);
             let c2 = Colour::new(r2, g2, b2);

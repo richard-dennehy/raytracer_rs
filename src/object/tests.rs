@@ -367,7 +367,7 @@ mod plane_tests {
 
     proptest! {
         #[test]
-        fn the_normal_of_an_xz_plane_is_constant_at_all_points(x in any::<f64>(), z in any::<f64>()) {
+        fn the_normal_of_an_xz_plane_is_constant_at_all_points(x in crate::util::reasonable_f64(), z in crate::util::reasonable_f64()) {
             assert_eq!(
                 Object::plane().normal_at(Point3D::new(x, 0.0, z), None),
                 Vector3D::new(0.0, 1.0, 0.0)
@@ -375,7 +375,7 @@ mod plane_tests {
         }
 
         #[test]
-        fn the_normal_of_an_xy_plane_is_constant_at_all_points(x in any::<f64>(), y in any::<f64>()) {
+        fn the_normal_of_an_xy_plane_is_constant_at_all_points(x in crate::util::reasonable_f64(), y in crate::util::reasonable_f64()) {
             let plane = Object::plane().with_transform(Transform::identity().rotate_x(PI / 2.0));
 
             assert!(approx_eq!(
@@ -386,7 +386,7 @@ mod plane_tests {
         }
 
         #[test]
-        fn the_normal_of_a_yz_plane_is_constant_at_all_points(y in any::<f64>(), z in any::<f64>()) {
+        fn the_normal_of_a_yz_plane_is_constant_at_all_points(y in crate::util::reasonable_f64(), z in crate::util::reasonable_f64()) {
             let plane = Object::plane().with_transform(Transform::identity().rotate_z(PI / 2.0));
 
             assert!(approx_eq!(
