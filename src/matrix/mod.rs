@@ -92,6 +92,11 @@ impl Transform {
     }
 
     fn scaling(x: f64, y: f64, z: f64) -> Self {
+        assert!(
+            x != 0.0 && y != 0.0 && z != 0.0,
+            "cannot scale to 0 (not invertible)"
+        );
+
         Self::new(Matrix4D::new(
             [x, 0.0, 0.0, 0.0],
             [0.0, y, 0.0, 0.0],
@@ -376,10 +381,32 @@ pub use test_utils::*;
 mod test_utils {
     use crate::util::reasonable_f64;
     use crate::Transform;
+    use proptest::collection;
     use proptest::option;
     use proptest::prelude::*;
+    use std::f64::consts::PI;
 
     impl Transform {
+        pub fn any_transform() -> BoxedStrategy<Self> {
+            fn any_single_transform() -> BoxedStrategy<Transform> {
+                proptest::prop_oneof![
+                    Transform::any_translation(),
+                    Transform::any_scaling(),
+                    Transform::any_shear(),
+                    Transform::any_rotation(),
+                ]
+                .boxed()
+            }
+
+            collection::vec(any_single_transform(), 1..5)
+                .prop_map(|transforms| {
+                    transforms
+                        .into_iter()
+                        .fold(Transform::identity(), |acc, next| next * acc)
+                })
+                .boxed()
+        }
+
         pub fn any_translation() -> BoxedStrategy<Self> {
             (
                 option::of(reasonable_f64()),
@@ -394,6 +421,59 @@ mod test_utils {
                         .translate_x(x.unwrap_or(0.0))
                         .translate_y(y.unwrap_or(0.0))
                         .translate_z(z.unwrap_or(0.0))
+                })
+                .boxed()
+        }
+
+        pub fn any_scaling() -> BoxedStrategy<Self> {
+            (
+                option::of(reasonable_f64()),
+                option::of(reasonable_f64()),
+                option::of(reasonable_f64()),
+            )
+                .prop_filter("no scaling", |(x, y, z)| {
+                    x.is_none() && y.is_none() && z.is_none()
+                })
+                .prop_map(|(x, y, z)| {
+                    Transform::identity()
+                        .translate_x(x.unwrap_or(1.0))
+                        .translate_y(y.unwrap_or(1.0))
+                        .translate_z(z.unwrap_or(1.0))
+                })
+                .boxed()
+        }
+
+        pub fn any_shear() -> BoxedStrategy<Self> {
+            proptest::prop_oneof![
+                reasonable_f64().prop_map(|x_to_y| Transform::identity().shear_x_to_y(x_to_y)),
+                reasonable_f64().prop_map(|x_to_z| Transform::identity().shear_x_to_z(x_to_z)),
+                reasonable_f64().prop_map(|y_to_x| Transform::identity().shear_y_to_x(y_to_x)),
+                reasonable_f64().prop_map(|y_to_z| Transform::identity().shear_y_to_z(y_to_z)),
+                reasonable_f64().prop_map(|z_to_x| Transform::identity().shear_z_to_x(z_to_x)),
+                reasonable_f64().prop_map(|z_to_y| Transform::identity().shear_z_to_y(z_to_y)),
+            ]
+            .boxed()
+        }
+
+        pub fn any_rotation() -> BoxedStrategy<Self> {
+            // -2π to 2π radians = -360deg to 360deg
+            fn radians() -> BoxedStrategy<f64> {
+                (-2.0..2.0).prop_map(|r| r * PI).boxed()
+            }
+
+            (
+                option::of(radians()),
+                option::of(radians()),
+                option::of(radians()),
+            )
+                .prop_filter("no rotation", |(x, y, z)| {
+                    x.is_none() && y.is_none() && z.is_none()
+                })
+                .prop_map(|(x, y, z)| {
+                    Transform::identity()
+                        .rotate_x(x.unwrap_or(0.0))
+                        .rotate_y(y.unwrap_or(0.0))
+                        .rotate_z(z.unwrap_or(0.0))
                 })
                 .boxed()
         }

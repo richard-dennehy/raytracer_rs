@@ -15,19 +15,10 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="covert quickcheck property tests to proptest (note: tests failing)">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add property test for translation matrix inversion">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/colour/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/colour/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/matrix/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/matrix/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/matrix/underlying/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/underlying/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pattern/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/point/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/point/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/point/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/point/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vector/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/vector/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vector/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/vector/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -334,14 +325,8 @@
       <workItem from="1614981758642" duration="2064000" />
       <workItem from="1615030118476" duration="5180000" />
       <workItem from="1615117604635" duration="5820000" />
-      <workItem from="1615233806092" duration="2259000" />
-    </task>
-    <task id="LOCAL-00060" summary="WIP parse faces from obj file">
-      <created>1611695558865</created>
-      <option name="number" value="00060" />
-      <option name="presentableId" value="LOCAL-00060" />
-      <option name="project" value="LOCAL" />
-      <updated>1611695558865</updated>
+      <workItem from="1615233806092" duration="2279000" />
+      <workItem from="1615316546307" duration="2951000" />
     </task>
     <task id="LOCAL-00061" summary="WIP triangulate obj file polygons">
       <created>1611780721241</created>
@@ -679,7 +664,14 @@
       <option name="project" value="LOCAL" />
       <updated>1615124134094</updated>
     </task>
-    <option name="localTasksCounter" value="109" />
+    <task id="LOCAL-00109" summary="add property test for translation matrix inversion">
+      <created>1615236086919</created>
+      <option name="number" value="00109" />
+      <option name="presentableId" value="LOCAL-00109" />
+      <option name="project" value="LOCAL" />
+      <updated>1615236086920</updated>
+    </task>
+    <option name="localTasksCounter" value="110" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -705,7 +697,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP YAML parser&#10;&#10;- implemented object description parser" />
     <MESSAGE value="implemented basic scene YAML parser" />
     <MESSAGE value="migrated YAML parsing models to separate module" />
     <MESSAGE value="refactoring YAML parser to use extension trait &amp; typeclass" />
@@ -730,7 +721,8 @@
     <MESSAGE value="pre-calculate Transform inverse" />
     <MESSAGE value="WIP refactor Transform fluent API" />
     <MESSAGE value="covert quickcheck property tests to proptest (note: tests failing)" />
-    <option name="LAST_COMMIT_MESSAGE" value="covert quickcheck property tests to proptest (note: tests failing)" />
+    <MESSAGE value="add property test for translation matrix inversion" />
+    <option name="LAST_COMMIT_MESSAGE" value="add property test for translation matrix inversion" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -361,11 +361,11 @@ mod property_tests {
             assert_eq!(direct * point, fluent * point);
         }
 
-        pub fn inverting_translations(translation: Transform) {
+        pub fn must_be_invertible(transform: Transform) {
             assert!(
-                translation.inverse.is_some(),
+                transform.inverse.is_some(),
                 "{:?} is not invertible",
-                translation
+                transform
             )
         }
     }
@@ -408,7 +408,27 @@ mod property_tests {
 
         #[test]
         fn all_translations_are_invertible(translation in Transform::any_translation()) {
-            properties::inverting_translations(translation);
+            properties::must_be_invertible(translation);
+        }
+
+        #[test]
+        fn all_scaling_is_invertible(scale in Transform::any_scaling()) {
+            properties::must_be_invertible(scale);
+        }
+
+        #[test]
+        fn all_shearing_is_invertible(shear in Transform::any_shear()) {
+            properties::must_be_invertible(shear);
+        }
+
+        #[test]
+        fn all_rotations_are_invertible(rotation in Transform::any_rotation()) {
+            properties::must_be_invertible(rotation);
+        }
+
+        #[test]
+        fn all_transformations_are_invertible(transform in Transform::any_transform()) {
+            properties::must_be_invertible(transform);
         }
     }
 }
