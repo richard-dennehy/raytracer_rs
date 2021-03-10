@@ -212,8 +212,6 @@ impl Transform {
     }
 
     pub fn inverse(&self) -> Option<Self> {
-        debug_assert!(self.inverse == self.underlying.inverse());
-
         self.inverse.map(|inverse| Self {
             underlying: inverse,
             inverse: Some(self.underlying),
@@ -379,7 +377,7 @@ pub use test_utils::*;
 
 #[cfg(test)]
 mod test_utils {
-    use crate::util::reasonable_f64;
+    use crate::matrix::underlying::Matrix4D;
     use crate::Transform;
     use proptest::collection;
     use proptest::option;
@@ -387,6 +385,10 @@ mod test_utils {
     use std::f64::consts::PI;
 
     impl Transform {
+        pub fn underlying(&self) -> Matrix4D {
+            self.underlying
+        }
+
         pub fn any_transform() -> BoxedStrategy<Self> {
             fn any_single_transform() -> BoxedStrategy<Transform> {
                 proptest::prop_oneof![
@@ -409,9 +411,9 @@ mod test_utils {
 
         pub fn any_translation() -> BoxedStrategy<Self> {
             (
-                option::of(reasonable_f64()),
-                option::of(reasonable_f64()),
-                option::of(reasonable_f64()),
+                option::of(-5.0..5.0),
+                option::of(-5.0..5.0),
+                option::of(-5.0..5.0),
             )
                 .prop_filter("zero translation", |(x, y, z)| {
                     x.is_none() && y.is_none() && z.is_none()
@@ -426,10 +428,11 @@ mod test_utils {
         }
 
         pub fn any_scaling() -> BoxedStrategy<Self> {
+            // use smallish values to stop combined transforms from generating enormous values (and accumulating enormous rounding errors)
             (
-                option::of(reasonable_f64()),
-                option::of(reasonable_f64()),
-                option::of(reasonable_f64()),
+                option::of(-5.0..5.0),
+                option::of(-5.0..5.0),
+                option::of(-5.0..5.0),
             )
                 .prop_filter("no scaling", |(x, y, z)| {
                     x.is_none() && y.is_none() && z.is_none()
@@ -445,12 +448,12 @@ mod test_utils {
 
         pub fn any_shear() -> BoxedStrategy<Self> {
             proptest::prop_oneof![
-                reasonable_f64().prop_map(|x_to_y| Transform::identity().shear_x_to_y(x_to_y)),
-                reasonable_f64().prop_map(|x_to_z| Transform::identity().shear_x_to_z(x_to_z)),
-                reasonable_f64().prop_map(|y_to_x| Transform::identity().shear_y_to_x(y_to_x)),
-                reasonable_f64().prop_map(|y_to_z| Transform::identity().shear_y_to_z(y_to_z)),
-                reasonable_f64().prop_map(|z_to_x| Transform::identity().shear_z_to_x(z_to_x)),
-                reasonable_f64().prop_map(|z_to_y| Transform::identity().shear_z_to_y(z_to_y)),
+                (-5.0..5.0).prop_map(|x_to_y| Transform::identity().shear_x_to_y(x_to_y)),
+                (-5.0..5.0).prop_map(|x_to_z| Transform::identity().shear_x_to_z(x_to_z)),
+                (-5.0..5.0).prop_map(|y_to_x| Transform::identity().shear_y_to_x(y_to_x)),
+                (-5.0..5.0).prop_map(|y_to_z| Transform::identity().shear_y_to_z(y_to_z)),
+                (-5.0..5.0).prop_map(|z_to_x| Transform::identity().shear_z_to_x(z_to_x)),
+                (-5.0..5.0).prop_map(|z_to_y| Transform::identity().shear_z_to_y(z_to_y)),
             ]
             .boxed()
         }

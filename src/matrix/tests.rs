@@ -314,15 +314,9 @@ mod unit_tests {
     }
 }
 
-// TODO write property tests for:
-//   - building and combining Transforms using all constructors/builders and ensuring the inverse is always defined
-//   - building Transforms and ensure that for all behaviours (inverting, tranposing, multiplying, etc) they behave the same as a Matrix4D
-//   - combining Transforms and ensuring the above behaviours are equivalent for combined Matrix4Ds
-//   to ensure underlying "optimised" representation is also logically correct
 mod property_tests {
     extern crate float_cmp;
     use super::*;
-    use crate::util::reasonable_f64;
     use proptest::prelude::*;
 
     // because the IDE totally gives up in the `proptest` macro, define functions here and
@@ -330,35 +324,16 @@ mod property_tests {
     mod properties {
         use super::*;
 
-        pub fn multiplying_vector_by_identity_transform(vector: Vector3D) {
+        pub fn identity_transform_multiplication_has_no_effect_on_vector(vector: Vector3D) {
             assert_eq!(Transform::identity() * vector, vector);
         }
 
-        pub fn multiplying_point_by_identity_transform(point: Point3D) {
+        pub fn identity_transform_multiplication_has_no_effect_on_point(point: Point3D) {
             assert_eq!(Transform::identity() * point, point);
         }
 
-        pub fn translating_vector(vector: Vector3D, x: f64, y: f64, z: f64) {
-            let translation = Transform::translation(x, y, z);
-
+        pub fn vectors_cannot_be_translated(vector: Vector3D, translation: Transform) {
             assert_eq!(translation * vector, vector);
-        }
-
-        pub fn translation_fluent_api(point: Point3D, x: f64, y: f64, z: f64) {
-            let direct = Transform::translation(x, y, z);
-            let fluent = Transform::identity()
-                .translate_x(x)
-                .translate_y(y)
-                .translate_z(z);
-
-            assert_eq!(direct * point, fluent * point);
-        }
-
-        pub fn scaling_fluent_api(point: Point3D, x: f64, y: f64, z: f64) {
-            let direct = Transform::scaling(x, y, z);
-            let fluent = Transform::identity().scale_x(x).scale_y(y).scale_z(z);
-
-            assert_eq!(direct * point, fluent * point);
         }
 
         pub fn must_be_invertible(transform: Transform) {
@@ -368,42 +343,76 @@ mod property_tests {
                 transform
             )
         }
+
+        pub fn multiplying_a_point_by_a_transform_produces_the_same_point_as_multiplying_by_the_equivalent_matrix(
+            transform: Transform,
+            point: Point3D,
+        ) {
+            let expected = transform * point;
+            let (x, y, z, _) = transform.underlying() * point;
+            let actual = Point3D::new(x, y, z);
+
+            assert_eq!(expected, actual);
+        }
+
+        pub fn multiplying_a_vector_by_a_transform_produces_the_same_vector_as_multiplying_by_the_equivalent_matrix(
+            transform: Transform,
+            vector: Vector3D,
+        ) {
+            let expected = transform * vector;
+            let (x, y, z, _) = transform.underlying() * vector;
+            let actual = Vector3D::new(x, y, z);
+
+            assert_eq!(expected, actual);
+        }
+
+        pub fn multiplying_a_point_by_an_inverted_transform_produces_the_same_point_as_multiplying_by_the_equivalent_matrix(
+            transform: Transform,
+            point: Point3D,
+        ) {
+            let expected = transform.inverse().unwrap() * point;
+            let (x, y, z, _) = transform.underlying().inverse().unwrap() * point;
+            let actual = Point3D::new(x, y, z);
+
+            assert!(
+                approx_eq!(Point3D, expected, actual, epsilon = f32::EPSILON as f64),
+                "{:?} != {:?}",
+                expected,
+                actual
+            );
+        }
+
+        pub fn multiplying_a_vector_by_an_inverted_transform_produces_the_same_vector_as_multiplying_by_the_equivalent_matrix(
+            transform: Transform,
+            vector: Vector3D,
+        ) {
+            let expected = transform.inverse().unwrap() * vector;
+            let (x, y, z, _) = transform.underlying().inverse().unwrap() * vector;
+            let actual = Vector3D::new(x, y, z);
+
+            assert!(
+                approx_eq!(Vector3D, expected, actual, epsilon = f32::EPSILON as f64),
+                "{:?} != {:?}",
+                expected,
+                actual
+            );
+        }
     }
 
     proptest! {
         #[test]
         fn multiplying_a_vector_by_identity_transform_produces_the_same_vector(vector in any::<Vector3D>()) {
-            properties::multiplying_vector_by_identity_transform(vector);
+            properties::identity_transform_multiplication_has_no_effect_on_vector(vector);
         }
 
         #[test]
         fn multiplying_a_point_by_identity_transform_produces_the_same_point(point in any::<Point3D>()) {
-            properties::multiplying_point_by_identity_transform(point);
+            properties::identity_transform_multiplication_has_no_effect_on_point(point);
         }
 
         #[test]
-        fn vectors_cannot_be_translated(vector in any::<Vector3D>(), x in reasonable_f64(), y in reasonable_f64(), z in reasonable_f64()) {
-            properties::translating_vector(vector, x, y, z);
-        }
-
-        #[test]
-        fn fluent_translate_api_behaves_the_same_as_translation_matrix(
-            point in any::<Point3D>(),
-            x in reasonable_f64(),
-            y in reasonable_f64(),
-            z in reasonable_f64(),
-        ) {
-            properties::translation_fluent_api(point, x, y, z);
-        }
-
-        #[test]
-        fn fluent_scaling_api_behaves_the_same_as_scaling_matrix(
-            point in any::<Point3D>(),
-            x in reasonable_f64(),
-            y in reasonable_f64(),
-            z in reasonable_f64(),
-        ) {
-            properties::scaling_fluent_api(point, x, y, z);
+        fn vectors_cannot_be_translated(vector in any::<Vector3D>(), translation in Transform::any_translation()) {
+            properties::vectors_cannot_be_translated(vector, translation);
         }
 
         #[test]
@@ -429,6 +438,38 @@ mod property_tests {
         #[test]
         fn all_transformations_are_invertible(transform in Transform::any_transform()) {
             properties::must_be_invertible(transform);
+        }
+
+        #[test]
+        fn multiplying_a_point_by_a_transform_produces_the_same_point_as_multiplying_by_the_equivalent_matrix(
+            transform in Transform::any_transform(),
+            point in any::<Point3D>()
+        ) {
+            properties::multiplying_a_point_by_a_transform_produces_the_same_point_as_multiplying_by_the_equivalent_matrix(transform, point)
+        }
+
+        #[test]
+        fn multiplying_a_vector_by_a_transform_produces_the_same_vector_as_multiplying_by_the_equivalent_matrix(
+            transform in Transform::any_transform(),
+            vector in any::<Vector3D>()
+        ) {
+            properties::multiplying_a_vector_by_a_transform_produces_the_same_vector_as_multiplying_by_the_equivalent_matrix(transform, vector)
+        }
+
+        #[test]
+        fn multiplying_a_point_by_an_inverted_transform_produces_the_same_point_as_multiplying_by_the_equivalent_inverted_matrix(
+            transform in Transform::any_transform(),
+            point in any::<Point3D>()
+        ) {
+            properties::multiplying_a_point_by_an_inverted_transform_produces_the_same_point_as_multiplying_by_the_equivalent_matrix(transform.inverse().unwrap(), point)
+        }
+
+        #[test]
+        fn multiplying_a_vector_by_an_inverted_transform_produces_the_same_vector_as_multiplying_by_the_equivalent_inverted_matrix(
+            transform in Transform::any_transform(),
+            vector in any::<Vector3D>()
+        ) {
+            properties::multiplying_a_vector_by_an_inverted_transform_produces_the_same_vector_as_multiplying_by_the_equivalent_matrix(transform.inverse().unwrap(), vector)
         }
     }
 }

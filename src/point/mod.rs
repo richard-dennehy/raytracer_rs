@@ -66,6 +66,7 @@ impl Sub<Vector3D> for Point3D {
 #[cfg(test)]
 mod test_utils {
     use super::*;
+    use float_cmp::{ApproxEq, F64Margin};
     use proptest::prelude::*;
 
     impl Arbitrary for Point3D {
@@ -82,5 +83,17 @@ mod test_utils {
         }
 
         type Strategy = BoxedStrategy<Self>;
+    }
+
+    impl ApproxEq for Point3D {
+        type Margin = F64Margin;
+
+        fn approx_eq<M: Into<Self::Margin>>(self, other: Self, margin: M) -> bool {
+            let margin = margin.into();
+
+            self.0.approx_eq(other.0, margin)
+                && self.1.approx_eq(other.1, margin)
+                && self.2.approx_eq(other.2, margin)
+        }
     }
 }
