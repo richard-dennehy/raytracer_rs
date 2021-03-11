@@ -7,7 +7,7 @@ use std::ops::{Mul, MulAssign};
 mod tests;
 
 mod underlying;
-use underlying::*;
+pub use underlying::Matrix4D;
 
 // TODO:
 //   try storing just the inverse, and then inverting it when combining with other matrices,
@@ -16,27 +16,23 @@ use underlying::*;
 //   this really _really_ needs good property tests in place first
 #[derive(PartialEq, Clone, Copy)]
 pub struct Transform {
-    underlying: Matrix4D,
-    // TODO really need to write lots of tests to ensure this never falls out of sync
     // calculating the inverse is relatively expensive, bearing in mind matrices are inverted millions of times per render,
     // so pre-calculating the inverse has massive performance implications
-    inverse: Option<Matrix4D>,
+    inverse: Matrix4D,
 }
 
 impl Transform {
     fn new(underlying: Matrix4D) -> Self {
-        let inverse = underlying.inverse();
+        let inverse = underlying
+            .inverse()
+            .expect("transformation matrix is not invertible");
 
-        Self {
-            underlying,
-            inverse,
-        }
+        Self { inverse }
     }
 
     pub const fn identity() -> Self {
         Self {
-            underlying: Matrix4D::identity(),
-            inverse: Some(Matrix4D::identity()),
+            inverse: Matrix4D::identity(),
         }
     }
 
@@ -211,15 +207,8 @@ impl Transform {
         ))
     }
 
-    pub fn inverse(&self) -> Option<Self> {
-        self.inverse.map(|inverse| Self {
-            underlying: inverse,
-            inverse: Some(self.underlying),
-        })
-    }
-
-    pub fn transpose(&self) -> Self {
-        Self::new(self.underlying.transpose())
+    pub fn inverse(&self) -> Matrix4D {
+        self.inverse
     }
 
     pub fn view_transform(from: Point3D, to: Point3D, up: Vector3D) -> Self {
@@ -241,12 +230,14 @@ impl Transform {
 
 impl Debug for Transform {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let underlying = self.inverse.inverse().unwrap();
+
         let stringified = format!(
             "\n| {} | {} | {} | {} |\n| {} | {} | {} | {} |\n| {} | {} | {} | {} |\n| {} | {} | {} | {} |\n",
-            self.m00(), self.m01(), self.m02(), self.m03(),
-            self.m10(), self.m11(), self.m12(), self.m13(),
-            self.m20(), self.m21(), self.m22(), self.m23(),
-            self.m30(), self.m31(), self.m32(), self.m33()
+            underlying.m00(), underlying.m01(), underlying.m02(), underlying.m03(),
+            underlying.m10(), underlying.m11(), underlying.m12(), underlying.m13(),
+            underlying.m20(), underlying.m21(), underlying.m22(), underlying.m23(),
+            underlying.m30(), underlying.m31(), underlying.m32(), underlying.m33()
         );
 
         writeln!(f, "{}", stringified)
@@ -264,9 +255,7 @@ impl Mul<Transform> for Transform {
 
 impl MulAssign<Transform> for Transform {
     fn mul_assign(&mut self, rhs: Transform) {
-        self.underlying = self.underlying * rhs.underlying;
-        // FIXME ideally wouldn't have to remember to do this manually
-        self.inverse = self.underlying.inverse();
+        self.inverse = rhs.inverse * self.inverse;
     }
 }
 
@@ -274,7 +263,7 @@ impl Mul<Point3D> for &Transform {
     type Output = Point3D;
 
     fn mul(self, rhs: Point3D) -> Self::Output {
-        let (x, y, z, _) = self.underlying * rhs;
+        let (x, y, z, _) = self.inverse.inverse().unwrap() * rhs;
 
         Point3D::new(x, y, z)
     }
@@ -284,7 +273,7 @@ impl Mul<Vector3D> for &Transform {
     type Output = Vector3D;
 
     fn mul(self, rhs: Vector3D) -> Self::Output {
-        let (x, y, z, _) = self.underlying * rhs;
+        let (x, y, z, _) = self.inverse.inverse().unwrap() * rhs;
 
         Vector3D::new(x, y, z)
     }
@@ -306,72 +295,6 @@ impl Mul<Point3D> for Transform {
     }
 }
 
-impl Transform {
-    pub fn m00(&self) -> f64 {
-        self.underlying.m00()
-    }
-
-    pub fn m01(&self) -> f64 {
-        self.underlying.m01()
-    }
-
-    pub fn m02(&self) -> f64 {
-        self.underlying.m02()
-    }
-
-    pub fn m03(&self) -> f64 {
-        self.underlying.m03()
-    }
-
-    pub fn m10(&self) -> f64 {
-        self.underlying.m10()
-    }
-
-    pub fn m11(&self) -> f64 {
-        self.underlying.m11()
-    }
-
-    pub fn m12(&self) -> f64 {
-        self.underlying.m12()
-    }
-
-    pub fn m13(&self) -> f64 {
-        self.underlying.m13()
-    }
-
-    pub fn m20(&self) -> f64 {
-        self.underlying.m20()
-    }
-
-    pub fn m21(&self) -> f64 {
-        self.underlying.m21()
-    }
-
-    pub fn m22(&self) -> f64 {
-        self.underlying.m22()
-    }
-
-    pub fn m23(&self) -> f64 {
-        self.underlying.m23()
-    }
-
-    pub fn m30(&self) -> f64 {
-        self.underlying.m30()
-    }
-
-    pub fn m31(&self) -> f64 {
-        self.underlying.m31()
-    }
-
-    pub fn m32(&self) -> f64 {
-        self.underlying.m32()
-    }
-
-    pub fn m33(&self) -> f64 {
-        self.underlying.m33()
-    }
-}
-
 #[cfg(test)]
 pub use test_utils::*;
 
@@ -379,14 +302,40 @@ pub use test_utils::*;
 mod test_utils {
     use crate::matrix::underlying::Matrix4D;
     use crate::Transform;
+    use float_cmp::{ApproxEq, F64Margin};
     use proptest::collection;
     use proptest::option;
     use proptest::prelude::*;
     use std::f64::consts::PI;
 
+    impl ApproxEq for Transform {
+        type Margin = F64Margin;
+
+        fn approx_eq<M: Into<Self::Margin>>(self, other: Self, margin: M) -> bool {
+            let margin = margin.into();
+
+            self.inverse.m00().approx_eq(other.inverse.m00(), margin)
+                && self.inverse.m01().approx_eq(other.inverse.m01(), margin)
+                && self.inverse.m02().approx_eq(other.inverse.m02(), margin)
+                && self.inverse.m03().approx_eq(other.inverse.m03(), margin)
+                && self.inverse.m10().approx_eq(other.inverse.m10(), margin)
+                && self.inverse.m11().approx_eq(other.inverse.m11(), margin)
+                && self.inverse.m12().approx_eq(other.inverse.m12(), margin)
+                && self.inverse.m13().approx_eq(other.inverse.m13(), margin)
+                && self.inverse.m20().approx_eq(other.inverse.m20(), margin)
+                && self.inverse.m21().approx_eq(other.inverse.m21(), margin)
+                && self.inverse.m22().approx_eq(other.inverse.m22(), margin)
+                && self.inverse.m23().approx_eq(other.inverse.m23(), margin)
+                && self.inverse.m30().approx_eq(other.inverse.m30(), margin)
+                && self.inverse.m31().approx_eq(other.inverse.m31(), margin)
+                && self.inverse.m32().approx_eq(other.inverse.m32(), margin)
+                && self.inverse.m33().approx_eq(other.inverse.m33(), margin)
+        }
+    }
+
     impl Transform {
         pub fn underlying(&self) -> Matrix4D {
-            self.underlying
+            self.inverse.inverse().unwrap()
         }
 
         pub fn any_transform() -> BoxedStrategy<Self> {
@@ -430,9 +379,9 @@ mod test_utils {
         pub fn any_scaling() -> BoxedStrategy<Self> {
             // use smallish values to stop combined transforms from generating enormous values (and accumulating enormous rounding errors)
             (
-                option::of(-5.0..5.0),
-                option::of(-5.0..5.0),
-                option::of(-5.0..5.0),
+                option::of(-1.5..1.5),
+                option::of(-1.5..1.5),
+                option::of(-1.5..1.5),
             )
                 .prop_filter("no scaling", |(x, y, z)| {
                     x.is_none() && y.is_none() && z.is_none()
@@ -448,12 +397,12 @@ mod test_utils {
 
         pub fn any_shear() -> BoxedStrategy<Self> {
             proptest::prop_oneof![
-                (-5.0..5.0).prop_map(|x_to_y| Transform::identity().shear_x_to_y(x_to_y)),
-                (-5.0..5.0).prop_map(|x_to_z| Transform::identity().shear_x_to_z(x_to_z)),
-                (-5.0..5.0).prop_map(|y_to_x| Transform::identity().shear_y_to_x(y_to_x)),
-                (-5.0..5.0).prop_map(|y_to_z| Transform::identity().shear_y_to_z(y_to_z)),
-                (-5.0..5.0).prop_map(|z_to_x| Transform::identity().shear_z_to_x(z_to_x)),
-                (-5.0..5.0).prop_map(|z_to_y| Transform::identity().shear_z_to_y(z_to_y)),
+                (-1.5..1.5).prop_map(|x_to_y| Transform::identity().shear_x_to_y(x_to_y)),
+                (-1.5..1.5).prop_map(|x_to_z| Transform::identity().shear_x_to_z(x_to_z)),
+                (-1.5..1.5).prop_map(|y_to_x| Transform::identity().shear_y_to_x(y_to_x)),
+                (-1.5..1.5).prop_map(|y_to_z| Transform::identity().shear_y_to_z(y_to_z)),
+                (-1.5..1.5).prop_map(|z_to_x| Transform::identity().shear_z_to_x(z_to_x)),
+                (-1.5..1.5).prop_map(|z_to_y| Transform::identity().shear_z_to_y(z_to_y)),
             ]
             .boxed()
         }

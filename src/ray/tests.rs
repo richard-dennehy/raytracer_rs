@@ -2,7 +2,7 @@ use super::*;
 
 mod ray_unit_tests {
     use super::*;
-    use crate::Material;
+    use crate::{Material, Transform};
     use std::f64::consts::SQRT_2;
 
     #[test]
@@ -85,7 +85,7 @@ mod ray_unit_tests {
             .translate_z(5.0);
         let ray = Ray::new(Point3D::new(1.0, 2.0, 3.0), Vector3D::new(0.0, 1.0, 0.0));
 
-        let transformed = ray.transformed(&matrix);
+        let transformed = ray.transformed(&matrix.underlying());
         assert_eq!(transformed.origin, Point3D::new(4.0, 6.0, 8.0));
         assert_eq!(transformed.direction, Vector3D::new(0.0, 1.0, 0.0));
     }
@@ -95,7 +95,7 @@ mod ray_unit_tests {
         let matrix = Transform::identity().scale_x(2.0).scale_y(3.0).scale_z(4.0);
         let ray = Ray::new(Point3D::new(1.0, 2.0, 3.0), Vector3D::new(0.0, 1.0, 0.0));
 
-        let transformed = ray.transformed(&matrix);
+        let transformed = ray.transformed(&matrix.underlying());
         assert_eq!(transformed.origin, Point3D::new(2.0, 6.0, 12.0));
         assert_eq!(transformed.direction, Vector3D::new(0.0, 3.0, 0.0));
     }

@@ -154,12 +154,10 @@ impl Object {
     }
 
     pub fn normal_at(&self, point: Point3D, uv: Option<(f64, f64)>) -> Vector3D {
-        let inverted_transform = self
-            .transform
-            .inverse()
-            .expect("transformation Matrix must be invertible");
+        let inverted_transform = self.transform.inverse();
 
-        let object_point = inverted_transform * point;
+        let (x, y, z, _) = inverted_transform * point;
+        let object_point = Point3D::new(x, y, z);
 
         let object_normal = match &self.kind {
             ObjectKind::Shape(shape) => shape.object_normal_at(object_point, uv),
@@ -167,7 +165,8 @@ impl Object {
             ObjectKind::Csg { .. } => unreachable!("Rays cannot intersect CSGs directly")
         };
 
-        let world_normal = inverted_transform.transpose() * object_normal;
+        let (x, y, z, _) = inverted_transform.transpose() * object_normal;
+        let world_normal = Vector3D::new(x, y, z);
         world_normal.normalised()
     }
 
@@ -182,11 +181,10 @@ impl Object {
         let material = &self.material;
 
         let object_point = {
-            let inverse = self
-                .transform
-                .inverse()
-                .expect("A transformation matrix must be invertible");
-            inverse * point
+            let inverse = self.transform.inverse();
+
+            let (x, y, z, _) = inverse * point;
+            Point3D::new(x, y, z)
         };
 
         let colour = material.pattern.colour_at(object_point) * light.colour();
@@ -238,10 +236,7 @@ impl Object {
 
         match &self.kind {
             ObjectKind::Shape(shape) => {
-                let ray_transform = self
-                    .transform
-                    .inverse()
-                    .expect("A translation matrix should be invertible");
+                let ray_transform = self.transform.inverse();
 
                 let transformed = with.transformed(&ray_transform);
                 let intersections = shape.object_intersect(&self, transformed);

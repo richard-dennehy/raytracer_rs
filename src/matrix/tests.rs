@@ -20,7 +20,8 @@ mod unit_tests {
         let point = Point3D::new(-3.0, 4.0, 5.0);
         let translation = Transform::translation(5.0, -3.0, 2.0);
 
-        let translated = translation.inverse().unwrap() * point;
+        let (x, y, z, _) = translation.inverse() * point;
+        let translated = Point3D::new(x, y, z);
         assert_eq!(translated, Point3D::new(-8.0, 7.0, 3.0));
     }
 
@@ -56,7 +57,8 @@ mod unit_tests {
         let vector = Vector3D::new(-4.0, 6.0, 8.0);
         let scale = Transform::scaling(2.0, 3.0, 4.0);
 
-        let scaled = scale.inverse().unwrap() * vector;
+        let (x, y, z, _) = scale.inverse() * vector;
+        let scaled = Vector3D::new(x, y, z);
         assert_eq!(scaled, Vector3D::new(-2.0, 2.0, 2.0));
     }
 
@@ -129,10 +131,11 @@ mod unit_tests {
         let half_quarter = Transform::identity().rotate_x(PI / 4.0);
 
         {
-            let point = half_quarter.inverse().unwrap() * point;
-            assert_eq!(point.x(), 0.0);
-            assert!(approx_eq!(f64, point.y(), 2.0_f64.sqrt() / 2.0));
-            assert!(approx_eq!(f64, point.z(), -(2.0_f64.sqrt() / 2.0)));
+            let (x, y, z, _) = half_quarter.inverse() * point;
+
+            assert_eq!(x, 0.0);
+            assert!(approx_eq!(f64, y, 2.0_f64.sqrt() / 2.0));
+            assert!(approx_eq!(f64, z, -(2.0_f64.sqrt() / 2.0)));
         }
     }
 
@@ -241,9 +244,7 @@ mod unit_tests {
         let transform = translation * scale * rotation;
         let point = transform * point;
 
-        assert_eq!(point.x(), 15.0);
-        assert_eq!(point.y(), 0.0);
-        assert_eq!(point.z(), 7.0);
+        assert!(approx_eq!(Point3D, point, Point3D::new(15.0, 0.0, 7.0)))
     }
 
     #[test]
@@ -257,7 +258,11 @@ mod unit_tests {
             .translate_y(5.0)
             .translate_z(7.0);
 
-        assert_eq!(translation * point, Point3D::new(15.0, 0.0, 7.0));
+        assert!(approx_eq!(
+            Point3D,
+            translation * point,
+            Point3D::new(15.0, 0.0, 7.0)
+        ));
     }
 
     #[test]
@@ -302,14 +307,17 @@ mod unit_tests {
         );
 
         #[rustfmt::skip]
-        assert_eq!(
-            transform,
-            Transform::new(Matrix4D::new(
-                [-0.5070925528371099, 0.5070925528371099, 0.6761234037828132, -2.366431913239846],
-                [0.7677159338596801, 0.6060915267313263, 0.12121830534626524, -2.8284271247461894],
-                [-0.35856858280031806, 0.5976143046671968, -0.7171371656006361, 0.0],
-                [0.0, 0.0, 0.0, 1.0]
-            ))
+        assert!(
+            approx_eq!(
+                Transform,
+                transform,
+                Transform::new(Matrix4D::new(
+                    [-0.5070925528371099, 0.5070925528371099, 0.6761234037828132, -2.366431913239846],
+                    [0.7677159338596801, 0.6060915267313263, 0.12121830534626524, -2.8284271247461894],
+                    [-0.35856858280031806, 0.5976143046671968, -0.7171371656006361, 0.0],
+                    [0.0, 0.0, 0.0, 1.0]
+                ))
+            )
         );
     }
 }
@@ -337,11 +345,8 @@ mod property_tests {
         }
 
         pub fn must_be_invertible(transform: Transform) {
-            assert!(
-                transform.inverse.is_some(),
-                "{:?} is not invertible",
-                transform
-            )
+            // if the underlying matrix is not invertible, the transform will panic on creation - this test only ensures that the internal invariant is properly maintained
+            assert!(transform.inverse.inverse().is_some())
         }
 
         pub fn multiplying_a_point_by_a_transform_produces_the_same_point_as_multiplying_by_the_equivalent_matrix(
@@ -364,38 +369,6 @@ mod property_tests {
             let actual = Vector3D::new(x, y, z);
 
             assert_eq!(expected, actual);
-        }
-
-        pub fn multiplying_a_point_by_an_inverted_transform_produces_the_same_point_as_multiplying_by_the_equivalent_matrix(
-            transform: Transform,
-            point: Point3D,
-        ) {
-            let expected = transform.inverse().unwrap() * point;
-            let (x, y, z, _) = transform.underlying().inverse().unwrap() * point;
-            let actual = Point3D::new(x, y, z);
-
-            assert!(
-                approx_eq!(Point3D, expected, actual, epsilon = f32::EPSILON as f64),
-                "{:?} != {:?}",
-                expected,
-                actual
-            );
-        }
-
-        pub fn multiplying_a_vector_by_an_inverted_transform_produces_the_same_vector_as_multiplying_by_the_equivalent_matrix(
-            transform: Transform,
-            vector: Vector3D,
-        ) {
-            let expected = transform.inverse().unwrap() * vector;
-            let (x, y, z, _) = transform.underlying().inverse().unwrap() * vector;
-            let actual = Vector3D::new(x, y, z);
-
-            assert!(
-                approx_eq!(Vector3D, expected, actual, epsilon = f32::EPSILON as f64),
-                "{:?} != {:?}",
-                expected,
-                actual
-            );
         }
     }
 
@@ -454,22 +427,6 @@ mod property_tests {
             vector in any::<Vector3D>()
         ) {
             properties::multiplying_a_vector_by_a_transform_produces_the_same_vector_as_multiplying_by_the_equivalent_matrix(transform, vector)
-        }
-
-        #[test]
-        fn multiplying_a_point_by_an_inverted_transform_produces_the_same_point_as_multiplying_by_the_equivalent_inverted_matrix(
-            transform in Transform::any_transform(),
-            point in any::<Point3D>()
-        ) {
-            properties::multiplying_a_point_by_an_inverted_transform_produces_the_same_point_as_multiplying_by_the_equivalent_matrix(transform.inverse().unwrap(), point)
-        }
-
-        #[test]
-        fn multiplying_a_vector_by_an_inverted_transform_produces_the_same_vector_as_multiplying_by_the_equivalent_inverted_matrix(
-            transform in Transform::any_transform(),
-            vector in any::<Vector3D>()
-        ) {
-            properties::multiplying_a_vector_by_an_inverted_transform_produces_the_same_vector_as_multiplying_by_the_equivalent_matrix(transform.inverse().unwrap(), vector)
         }
     }
 }

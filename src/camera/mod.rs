@@ -52,13 +52,13 @@ impl Camera {
         let world_x = self.half_canvas_width - x_offset;
         let world_y = self.half_canvas_height - y_offset;
 
-        let inverse = self
-            .transform
-            .inverse()
-            .expect("a transform must be invertible");
+        let inverse = self.transform.inverse();
 
-        let pixel = &inverse * Point3D::new(world_x, world_y, -1.0);
-        let origin = inverse * Point3D::new(0.0, 0.0, 0.0);
+        let (x, y, z, _) = &inverse * Point3D::new(world_x, world_y, -1.0);
+        let pixel = Point3D::new(x, y, z);
+
+        let (x, y, z, _) = inverse * Point3D::new(0.0, 0.0, 0.0);
+        let origin = Point3D::new(x, y, z);
         let direction = (pixel - origin).normalised();
 
         Ray::new(origin, direction)

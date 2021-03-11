@@ -66,33 +66,18 @@ impl Pattern {
     pub fn colour_at(&self, object_point: Point3D) -> Colour {
         use Kind::*;
 
-        let inverse = self
-            .transform
-            .inverse()
-            .expect("A transformation matrix must be invertible");
+        let inverse = self.transform.inverse();
 
-        let point = inverse * object_point;
+        let (x, y, z, _) = inverse * object_point;
 
         match self.kind {
             Solid(colour) => colour,
-            Striped(primary, _) if point.x().floor() % 2.0 == 0.0 => primary,
+            Striped(primary, _) if x.floor() % 2.0 == 0.0 => primary,
             Striped(_, secondary) => secondary,
             Gradient { from, delta } => from + delta * object_point.x().fract(),
-            Ring(primary, _)
-                if (point.x() * point.x() + point.z() * point.z())
-                    .sqrt()
-                    .floor()
-                    % 2.0
-                    == 0.0 =>
-            {
-                primary
-            }
+            Ring(primary, _) if (x.powi(2) + z.powi(2)).sqrt().floor() % 2.0 == 0.0 => primary,
             Ring(_, secondary) => secondary,
-            Checkers(primary, _)
-                if (point.x().floor() + point.y().floor() + point.z().floor()) % 2.0 == 0.0 =>
-            {
-                primary
-            }
+            Checkers(primary, _) if (x.floor() + y.floor() + z.floor()) % 2.0 == 0.0 => primary,
             Checkers(_, secondary) => secondary,
         }
     }

@@ -36,3 +36,14 @@ Calculate inverse eagerly and store it along with matrix data, to avoid having t
 - Performance impact: 5-10% reduction on trivial scenes, 15-20% on complex scenes
 
 Note: storing normal matrix and inverse increases size of struct significantly, which may negatively impact performance
+
+### Only store transformation matrix inverse
+Only store inverted matrix in `Transform` data structure, and invert it back for operations that require the non-inverted matrix
+e.g. multiplying Vectors/Points
+
+This reduces the size of the type, which may improve cache utilisation and function calls
+
+- Effort: moderate - required substantial effort to introduce strong property tests, then minor effort to change implementation details
+- Performance impact: 4-8% reduction in execution time
+
+Note: this change allows the Transform inverse function to no longer return an option, removing some branching. The performance impact of this additional change is negligible.
