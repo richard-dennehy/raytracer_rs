@@ -47,3 +47,10 @@ This reduces the size of the type, which may improve cache utilisation and funct
 - Performance impact: 4-8% reduction in execution time
 
 Note: this change allows the Transform inverse function to no longer return an option, removing some branching. The performance impact of this additional change is negligible.
+
+### Parallelise rows of pixels rather than individual pixels
+Create one task for each row of pixels, rather than one task per pixel, 
+increasing execution time of individual tasks, but potentially reducing overall overhead of synchronising and coordinating parallel tasks
+
+- Effort: small - requires deeper knowledge of Rayon API, but actual code changes are trivial
+- Performance impact: significant regression - up to 23% increase in execution time

@@ -7,55 +7,97 @@ mod tests;
 #[derive(PartialEq, Copy, Clone, Debug)]
 pub struct Vector3D(f64, f64, f64);
 
-impl Vector3D {
-    pub const fn new(x: f64, y: f64, z: f64) -> Self {
-        Vector3D(x, y, z)
-    }
+#[derive(PartialEq, Copy, Clone, Debug)]
+pub struct Normal3D(f64, f64, f64);
 
-    pub const fn x(&self) -> f64 {
-        self.0
-    }
-
-    pub const fn y(&self) -> f64 {
-        self.1
-    }
-
-    pub const fn z(&self) -> f64 {
-        self.2
-    }
-
-    pub const fn w(&self) -> f64 {
+pub trait Vector {
+    fn x(&self) -> f64;
+    fn y(&self) -> f64;
+    fn z(&self) -> f64;
+    fn w(&self) -> f64 {
         0.0
     }
 
-    pub fn magnitude(&self) -> f64 {
-        (self.0 * self.0 + self.1 * self.1 + self.2 * self.2).sqrt()
+    fn magnitude(&self) -> f64;
+    fn normalised(&self) -> Normal3D;
+    fn dot<V: Vector>(&self, other: V) -> f64 {
+        self.0 * other.x() + self.1 * other.y() + self.2 * other.z()
     }
 
-    pub fn normalised(&self) -> Self {
-        let magnitude = self.magnitude();
-
-        if magnitude <= f64::EPSILON {
-            Vector3D::new(0.0, 0.0, 0.0)
-        } else {
-            self / self.magnitude()
-        }
-    }
-
-    pub fn dot(&self, other: Vector3D) -> f64 {
-        self.0 * other.x() + self.1 * other.y() + self.2 * other.z() // self.w + other.w is always 0
-    }
-
-    pub fn cross(&self, other: Vector3D) -> Self {
-        Vector3D(
+    fn cross<V: Vector>(&self, other: V) -> Vector3D {
+        Vector3D::new(
             (self.y() * other.z()) - (self.z() * other.y()),
             (self.z() * other.x()) - (self.x() * other.z()),
             (self.x() * other.y()) - (self.y() * other.x()),
         )
     }
+}
 
-    pub fn reflect_through(&self, normal: Vector3D) -> Self {
+impl Vector3D {
+    pub const fn new(x: f64, y: f64, z: f64) -> Self {
+        Vector3D(x, y, z)
+    }
+}
+
+impl Vector for Vector3D {
+    fn x(&self) -> f64 {
+        self.0
+    }
+    fn y(&self) -> f64 {
+        self.1
+    }
+    fn z(&self) -> f64 {
+        self.2
+    }
+
+    fn magnitude(&self) -> f64 {
+        (self.0.powi(2) + self.1.powi(2) + self.2.powi(2)).sqrt()
+    }
+
+    fn normalised(&self) -> Normal3D {
+        let magnitude = self.magnitude();
+
+        if magnitude <= f64::EPSILON {
+            Normal3D::new(0.0, 0.0, 0.0) // FIXME this is wrong - probably just panic here instead
+        } else {
+            Normal3D::new(
+                self.x() / magnitude,
+                self.y() / magnitude,
+                self.z() / magnitude,
+            )
+        }
+    }
+}
+
+impl Normal3D {
+    const fn new(x: f64, y: f64, z: f64) -> Self {
+        Normal3D(x, y, z)
+    }
+
+    pub fn reflect_through(&self, normal: Normal3D) -> Self {
         *self - (normal * 2.0 * self.dot(normal))
+    }
+}
+
+impl Vector for Normal3D {
+    fn x(&self) -> f64 {
+        self.0
+    }
+
+    fn y(&self) -> f64 {
+        self.1
+    }
+
+    fn z(&self) -> f64 {
+        self.2
+    }
+
+    fn magnitude(&self) -> f64 {
+        1.0
+    }
+
+    fn normalised(&self) -> Normal3D {
+        *self
     }
 }
 
@@ -114,14 +156,6 @@ impl Mul<f64> for Vector3D {
 }
 
 impl Div<f64> for Vector3D {
-    type Output = Vector3D;
-
-    fn div(self, rhs: f64) -> Self::Output {
-        Vector3D(self.0 / rhs, self.1 / rhs, self.2 / rhs)
-    }
-}
-
-impl Div<f64> for &Vector3D {
     type Output = Vector3D;
 
     fn div(self, rhs: f64) -> Self::Output {

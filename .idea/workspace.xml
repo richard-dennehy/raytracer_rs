@@ -15,17 +15,13 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add property tests for transformation behaviour">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="reduce size of Transform and panic on creation if matrix is not invertible">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/performance.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/performance.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/camera/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/camera/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/matrix/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/matrix/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/matrix/underlying/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/underlying/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pattern/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/vector/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/vector/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,7 +89,7 @@
       <command value="cargo bench" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.bench">
+  <component name="RunManager" selected="Cargo.run (release)">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -197,11 +193,6 @@
       <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <list>
@@ -340,14 +331,8 @@
       <workItem from="1615233806092" duration="2279000" />
       <workItem from="1615316546307" duration="3058000" />
       <workItem from="1615406605762" duration="3000000" />
-      <workItem from="1615492692816" duration="5190000" />
-    </task>
-    <task id="LOCAL-00063" summary="WIP add UV coordinates to intersections">
-      <created>1611948691668</created>
-      <option name="number" value="00063" />
-      <option name="presentableId" value="LOCAL-00063" />
-      <option name="project" value="LOCAL" />
-      <updated>1611948691669</updated>
+      <workItem from="1615492692816" duration="5224000" />
+      <workItem from="1615634824009" duration="5602000" />
     </task>
     <task id="LOCAL-00064" summary="interpolate smooth triangle normals">
       <created>1612016054343</created>
@@ -685,7 +670,14 @@
       <option name="project" value="LOCAL" />
       <updated>1615409595835</updated>
     </task>
-    <option name="localTasksCounter" value="112" />
+    <task id="LOCAL-00112" summary="reduce size of Transform and panic on creation if matrix is not invertible">
+      <created>1615503248986</created>
+      <option name="number" value="00112" />
+      <option name="presentableId" value="LOCAL-00112" />
+      <option name="project" value="LOCAL" />
+      <updated>1615503248986</updated>
+    </task>
+    <option name="localTasksCounter" value="113" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -711,7 +703,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="refactoring YAML parser to use extension trait &amp; typeclass" />
     <MESSAGE value="added documentation for parser assumptions" />
     <MESSAGE value="WIP convert scene description into scene objects" />
     <MESSAGE value="still WIP convert scene description into scene objects" />
@@ -736,7 +727,8 @@
     <MESSAGE value="add property test for translation matrix inversion" />
     <MESSAGE value="add property tests for inverting transformations" />
     <MESSAGE value="add property tests for transformation behaviour" />
-    <option name="LAST_COMMIT_MESSAGE" value="add property tests for transformation behaviour" />
+    <MESSAGE value="reduce size of Transform and panic on creation if matrix is not invertible" />
+    <option name="LAST_COMMIT_MESSAGE" value="reduce size of Transform and panic on creation if matrix is not invertible" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -6,7 +6,7 @@ mod point;
 pub use point::Point3D;
 
 mod vector;
-pub use vector::Vector3D;
+pub use vector::*;
 
 mod colour;
 pub use colour::Colour;
