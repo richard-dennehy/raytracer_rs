@@ -1,5 +1,6 @@
 use crate::{
-    Colour, Intersection, Intersections, Light, Material, Point3D, Ray, Transform, Vector3D,
+    Colour, Intersection, Intersections, Light, Material, Normal3D, Point3D, Ray, Transform,
+    Vector, Vector3D,
 };
 use std::fmt::Debug;
 use std::sync::atomic::{AtomicU32, Ordering};
@@ -95,9 +96,9 @@ impl Object {
         point1: Point3D,
         point2: Point3D,
         point3: Point3D,
-        normal1: Vector3D,
-        normal2: Vector3D,
-        normal3: Vector3D,
+        normal1: Normal3D,
+        normal2: Normal3D,
+        normal3: Normal3D,
     ) -> Self {
         Self::from_shape(Box::new(Triangle::smooth(
             point1, point2, point3, normal1, normal2, normal3,
@@ -153,7 +154,7 @@ impl Object {
         NEXT_ID.fetch_add(1, Ordering::SeqCst)
     }
 
-    pub fn normal_at(&self, point: Point3D, uv: Option<(f64, f64)>) -> Vector3D {
+    pub fn normal_at(&self, point: Point3D, uv: Option<(f64, f64)>) -> Normal3D {
         let inverted_transform = self.transform.inverse();
 
         let (x, y, z, _) = inverted_transform * point;
@@ -174,8 +175,8 @@ impl Object {
         &self,
         point: Point3D,
         light: &Light,
-        eye_vector: Vector3D,
-        surface_normal: Vector3D,
+        eye_vector: Normal3D,
+        surface_normal: Normal3D,
         in_shadow: bool,
     ) -> Colour {
         let material = &self.material;
@@ -218,22 +219,6 @@ impl Object {
     }
 
     pub fn intersect(&self, with: &Ray) -> Intersections {
-        debug_assert!(
-            {
-                let normalised = with.direction.normalised();
-                let direction = &with.direction;
-
-                direction.x() - normalised.x() <= f64::EPSILON
-                    && direction.y() - normalised.y() <= f64::EPSILON
-                    && direction.z() - normalised.z() <= f64::EPSILON
-            },
-            format!(
-                "the Ray must be normalised before intersecting: {:?}, {:?}",
-                with.direction,
-                with.direction.normalised()
-            )
-        );
-
         match &self.kind {
             ObjectKind::Shape(shape) => {
                 let ray_transform = self.transform.inverse();
@@ -355,7 +340,7 @@ impl Object {
 }
 
 pub trait Shape: Debug + Sync {
-    fn object_normal_at(&self, point: Point3D, uv: Option<(f64, f64)>) -> Vector3D;
+    fn object_normal_at(&self, point: Point3D, uv: Option<(f64, f64)>) -> Normal3D;
     fn object_intersect<'parent>(
         &self,
         parent: &'parent Object,
@@ -367,8 +352,8 @@ pub trait Shape: Debug + Sync {
 /// A unit sphere, with the centre at the origin, and a radius of 1
 struct Sphere;
 impl Shape for Sphere {
-    fn object_normal_at(&self, point: Point3D, _uv: Option<(f64, f64)>) -> Vector3D {
-        point - Point3D::ORIGIN
+    fn object_normal_at(&self, point: Point3D, _uv: Option<(f64, f64)>) -> Normal3D {
+        (point - Point3D::ORIGIN).normalised()
     }
 
     fn object_intersect<'parent>(
@@ -395,8 +380,8 @@ impl Shape for Sphere {
 #[derive(Debug, PartialEq)]
 struct Plane;
 impl Shape for Plane {
-    fn object_normal_at(&self, _: Point3D, _uv: Option<(f64, f64)>) -> Vector3D {
-        Vector3D::new(0.0, 1.0, 0.0)
+    fn object_normal_at(&self, _: Point3D, _uv: Option<(f64, f64)>) -> Normal3D {
+        Normal3D::POSITIVE_Y
     }
 
     fn object_intersect<'parent>(
@@ -416,7 +401,7 @@ impl Shape for Plane {
 #[derive(Debug, PartialEq)]
 struct Cube;
 impl Shape for Cube {
-    fn object_normal_at(&self, point: Point3D, _uv: Option<(f64, f64)>) -> Vector3D {
+    fn object_normal_at(&self, point: Point3D, _uv: Option<(f64, f64)>) -> Normal3D {
         if point.x().abs() >= point.y().abs() && point.x().abs() >= point.z().abs() {
             Vector3D::new(point.x(), 0.0, 0.0)
         } else if point.y().abs() >= point.x().abs() && point.y().abs() >= point.z().abs() {
@@ -424,6 +409,7 @@ impl Shape for Cube {
         } else {
             Vector3D::new(0.0, 0.0, point.z())
         }
+        .normalised()
     }
 
     fn object_intersect<'parent>(

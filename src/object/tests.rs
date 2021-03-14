@@ -11,7 +11,7 @@ mod shape_tests {
         let point = Point3D::new(0.0, 0.0, -1.0);
 
         let normal = sphere.normal_at(point, None);
-        let eye_vector = Vector3D::new(0.0, 0.0, -1.0);
+        let eye_vector = Normal3D::POSITIVE_Z;
         let light = Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, -10.0));
 
         let lit_material = sphere.colour_at(point, &light, eye_vector, normal, false);
@@ -24,7 +24,8 @@ mod shape_tests {
         let point = Point3D::new(0.0, 0.0, -1.0);
 
         let normal = sphere.normal_at(point, None);
-        let eye_vector = Vector3D::new(0.0, 2.0_f64.sqrt() / 2.0, -2.0_f64.sqrt() / 2.0);
+        let eye_vector =
+            Vector3D::new(0.0, 2.0_f64.sqrt() / 2.0, -2.0_f64.sqrt() / 2.0).normalised();
         let light = Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, -10.0));
 
         let lit_material = sphere.colour_at(point, &light, eye_vector, normal, false);
@@ -38,7 +39,7 @@ mod shape_tests {
         let point = Point3D::new(0.0, 0.0, 0.0);
 
         let normal = sphere.normal_at(point, None);
-        let eye_vector = Vector3D::new(0.0, 0.0, -1.0);
+        let eye_vector = Normal3D::NEGATIVE_Z;
         let light = Light::point(Colour::WHITE, Point3D::new(0.0, 10.0, -10.0));
 
         let lit_material = sphere.colour_at(point, &light, eye_vector, normal, false);
@@ -55,7 +56,8 @@ mod shape_tests {
         let point = Point3D::new(0.0, 0.0, 0.0);
 
         let normal = sphere.normal_at(point, None);
-        let eye_vector = Vector3D::new(0.0, -2.0_f64.sqrt() / 2.0, -2.0_f64.sqrt() / 2.0);
+        let eye_vector =
+            Vector3D::new(0.0, -2.0_f64.sqrt() / 2.0, -2.0_f64.sqrt() / 2.0).normalised();
         let light = Light::point(Colour::WHITE, Point3D::new(0.0, 10.0, -10.0));
 
         let lit_material = sphere.colour_at(point, &light, eye_vector, normal, false);
@@ -71,7 +73,7 @@ mod shape_tests {
         let point = Point3D::new(0.0, 0.0, -1.0);
 
         let normal = sphere.normal_at(point, None);
-        let eye_vector = Vector3D::new(0.0, 0.0, -1.0);
+        let eye_vector = Normal3D::NEGATIVE_Z;
         let light = Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, 10.0));
 
         let lit_material = sphere.colour_at(point, &light, eye_vector, normal, false);
@@ -84,7 +86,7 @@ mod shape_tests {
         let point = Point3D::new(0.0, 0.0, -1.0);
 
         let normal = sphere.normal_at(point, None);
-        let eye_vector = Vector3D::new(0.0, 0.0, -1.0);
+        let eye_vector = Normal3D::NEGATIVE_Z;
         let light = Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, -10.0));
 
         let lit_material = sphere.colour_at(point, &light, eye_vector, normal, true);
@@ -110,7 +112,7 @@ mod shape_tests {
             sphere.colour_at(
                 point,
                 &Light::point(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0)),
-                Vector3D::new(-1.0, 0.0, 0.0),
+                Normal3D::NEGATIVE_X,
                 normal,
                 false
             ),
@@ -137,7 +139,7 @@ mod shape_tests {
             sphere.colour_at(
                 point,
                 &Light::point(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0)),
-                Vector3D::new(-1.0, 0.0, 0.0),
+                Normal3D::NEGATIVE_X,
                 normal,
                 false
             ),
@@ -154,21 +156,21 @@ mod sphere_tests {
     fn should_be_able_to_calculate_the_normal_on_the_x_axis() {
         let sphere = Object::sphere();
         let normal = sphere.normal_at(Point3D::new(1.0, 0.0, 0.0), None);
-        assert_eq!(normal, Vector3D::new(1.0, 0.0, 0.0));
+        assert_eq!(normal, Normal3D::POSITIVE_X);
     }
 
     #[test]
     fn should_be_able_to_calculate_the_normal_on_the_y_axis() {
         let sphere = Object::sphere();
         let normal = sphere.normal_at(Point3D::new(0.0, 1.0, 0.0), None);
-        assert_eq!(normal, Vector3D::new(0.0, 1.0, 0.0));
+        assert_eq!(normal, Normal3D::POSITIVE_Y);
     }
 
     #[test]
     fn should_be_able_to_calculate_the_normal_on_the_z_axis() {
         let sphere = Object::sphere();
         let normal = sphere.normal_at(Point3D::new(0.0, 0.0, 1.0), None);
-        assert_eq!(normal, Vector3D::new(0.0, 0.0, 1.0));
+        assert_eq!(normal, Normal3D::POSITIVE_Z);
     }
 
     #[test]
@@ -189,6 +191,7 @@ mod sphere_tests {
                 3.0_f64.sqrt() / 3.0,
                 3.0_f64.sqrt() / 3.0
             )
+            .normalised()
         );
     }
 
@@ -200,9 +203,9 @@ mod sphere_tests {
 
         let normal = sphere.normal_at(Point3D::new(0.0, 1.0 + FRAC_1_SQRT_2, -FRAC_1_SQRT_2), None);
         assert!(approx_eq!(
-            Vector3D,
+            Normal3D,
             normal,
-            Vector3D::new(0.0, FRAC_1_SQRT_2, -FRAC_1_SQRT_2)
+            Vector3D::new(0.0, FRAC_1_SQRT_2, -FRAC_1_SQRT_2).normalised()
         ));
     }
 
@@ -223,13 +226,13 @@ mod sphere_tests {
         );
         assert_eq!(
             normal,
-            Vector3D::new(0.0, 0.9701425001453319, -0.24253562503633294)
+            Vector3D::new(0.0, 0.9701425001453319, -0.24253562503633294).normalised()
         );
     }
 
     #[test]
     fn a_ray_passing_through_the_world_origin_should_intersect_a_unit_sphere_at_two_points() {
-        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z);
         let sphere = Object::sphere();
 
         let intersections = sphere.intersect(&ray);
@@ -241,7 +244,7 @@ mod sphere_tests {
 
     #[test]
     fn a_ray_on_a_tangent_with_a_unit_sphere_should_intersect_twice_at_the_same_point() {
-        let ray = Ray::new(Point3D::new(0.0, 1.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 1.0, -5.0), Normal3D::POSITIVE_Z);
         let sphere = Object::sphere();
 
         let intersections = sphere.intersect(&ray);
@@ -253,7 +256,7 @@ mod sphere_tests {
 
     #[test]
     fn a_ray_passing_over_a_unit_sphere_should_not_intersect() {
-        let ray = Ray::new(Point3D::new(0.0, 2.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 2.0, -5.0), Normal3D::POSITIVE_Z);
         let sphere = Object::sphere();
 
         let intersections = sphere.intersect(&ray);
@@ -262,7 +265,7 @@ mod sphere_tests {
 
     #[test]
     fn a_ray_originating_inside_a_unit_sphere_should_intersect_in_positive_and_negative_time() {
-        let ray = Ray::new(Point3D::new(0.0, 0.0, 0.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 0.0, 0.0), Normal3D::POSITIVE_Z);
         let sphere = Object::sphere();
 
         let intersections = sphere.intersect(&ray);
@@ -275,7 +278,7 @@ mod sphere_tests {
     #[test]
     fn a_ray_originating_outside_a_sphere_and_pointing_away_from_it_should_intersect_twice_in_negative_time(
     ) {
-        let ray = Ray::new(Point3D::new(0.0, 0.0, 5.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 0.0, 5.0), Normal3D::POSITIVE_Z);
         let sphere = Object::sphere();
 
         let intersections = sphere.intersect(&ray);
@@ -287,7 +290,7 @@ mod sphere_tests {
 
     #[test]
     fn a_ray_should_intersect_a_scaled_sphere() {
-        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z);
         let sphere = Object::sphere().with_transform(Transform::identity().scale_all(2.0));
 
         let intersections = sphere.intersect(&ray);
@@ -299,7 +302,7 @@ mod sphere_tests {
 
     #[test]
     fn a_ray_should_not_intersect_a_sphere_translated_away_from_it() {
-        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z);
         let translation = Transform::identity().translate_x(5.0);
         let sphere = Object::sphere().with_transform(translation);
 
@@ -325,7 +328,7 @@ mod sphere_tests {
             sphere.colour_at(
                 point,
                 &Light::point(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0)),
-                Vector3D::new(-1.0, 0.0, 0.0),
+                Normal3D::NEGATIVE_X,
                 normal,
                 false
             ),
@@ -351,7 +354,7 @@ mod sphere_tests {
             sphere.colour_at(
                 point,
                 &Light::point(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0)),
-                Vector3D::new(-1.0, 0.0, 0.0),
+                Normal3D::NEGATIVE_X,
                 normal,
                 false
             ),
@@ -370,7 +373,7 @@ mod plane_tests {
         fn the_normal_of_an_xz_plane_is_constant_at_all_points(x in crate::util::reasonable_f64(), z in crate::util::reasonable_f64()) {
             assert_eq!(
                 Object::plane().normal_at(Point3D::new(x, 0.0, z), None),
-                Vector3D::new(0.0, 1.0, 0.0)
+                Normal3D::POSITIVE_Y
             );
         }
 
@@ -379,9 +382,9 @@ mod plane_tests {
             let plane = Object::plane().with_transform(Transform::identity().rotate_x(PI / 2.0));
 
             assert!(approx_eq!(
-                Vector3D,
+                Normal3D,
                 plane.normal_at(Point3D::new(x, y, 0.0), None),
-                Vector3D::new(0.0, 0.0, 1.0)
+                Normal3D::POSITIVE_Z
             ));
         }
 
@@ -390,9 +393,9 @@ mod plane_tests {
             let plane = Object::plane().with_transform(Transform::identity().rotate_z(PI / 2.0));
 
             assert!(approx_eq!(
-                Vector3D,
+                Normal3D,
                 plane.normal_at(Point3D::new(0.0, y, z), None),
-                Vector3D::new(-1.0, 0.0, 0.0)
+                Normal3D::NEGATIVE_X
             ));
         }
     }
@@ -400,30 +403,22 @@ mod plane_tests {
     #[test]
     fn a_plane_is_not_intersected_by_a_parallel_ray() {
         assert!(Object::plane()
-            .intersect(&Ray::new(
-                Point3D::new(0.0, 1.0, 0.0),
-                Vector3D::new(1.0, 0.0, 0.0)
-            ))
+            .intersect(&Ray::new(Point3D::new(0.0, 1.0, 0.0), Normal3D::POSITIVE_X))
             .is_empty());
     }
 
     #[test]
     fn a_plane_is_not_intersected_by_a_coplanar_ray() {
         assert!(Object::plane()
-            .intersect(&Ray::new(
-                Point3D::new(0.0, 0.0, 0.0),
-                Vector3D::new(1.0, 0.0, 0.0)
-            ))
+            .intersect(&Ray::new(Point3D::new(0.0, 0.0, 0.0), Normal3D::POSITIVE_X))
             .is_empty());
     }
 
     #[test]
     fn a_plane_is_intersected_by_a_ray_originating_from_above() {
         let plane = Object::plane();
-        let intersections = plane.intersect(&Ray::new(
-            Point3D::new(0.0, 1.0, 0.0),
-            Vector3D::new(0.0, -1.0, 0.0),
-        ));
+        let intersections =
+            plane.intersect(&Ray::new(Point3D::new(0.0, 1.0, 0.0), Normal3D::NEGATIVE_Y));
 
         assert_eq!(intersections.len(), 1);
 
@@ -435,7 +430,7 @@ mod plane_tests {
         let plane = Object::plane();
         let intersections = plane.intersect(&Ray::new(
             Point3D::new(0.0, -1.0, 0.0),
-            Vector3D::new(0.0, 1.0, 0.0),
+            Normal3D::POSITIVE_Y,
         ));
 
         assert_eq!(intersections.len(), 1);
@@ -450,7 +445,7 @@ mod cube_tests {
     #[test]
     fn a_ray_directly_towards_the_pos_x_face_should_intersect() {
         let cube = Object::cube();
-        let ray = Ray::new(Point3D::new(5.0, 0.5, 0.0), Vector3D::new(-1.0, 0.0, 0.0));
+        let ray = Ray::new(Point3D::new(5.0, 0.5, 0.0), Normal3D::POSITIVE_X);
 
         let intersections = cube.intersect(&ray);
         assert_eq!(intersections.len(), 2);
@@ -462,7 +457,7 @@ mod cube_tests {
     #[test]
     fn a_ray_directly_towards_the_neg_x_face_should_intersect() {
         let cube = Object::cube();
-        let ray = Ray::new(Point3D::new(-5.0, 0.5, 0.0), Vector3D::new(1.0, 0.0, 0.0));
+        let ray = Ray::new(Point3D::new(-5.0, 0.5, 0.0), Normal3D::POSITIVE_X);
 
         let intersections = cube.intersect(&ray);
         assert_eq!(intersections.len(), 2);
@@ -474,7 +469,7 @@ mod cube_tests {
     #[test]
     fn a_ray_directly_towards_the_pos_y_face_should_intersect() {
         let cube = Object::cube();
-        let ray = Ray::new(Point3D::new(0.5, 5.0, 0.0), Vector3D::new(0.0, -1.0, 0.0));
+        let ray = Ray::new(Point3D::new(0.5, 5.0, 0.0), Normal3D::NEGATIVE_Y);
 
         let intersections = cube.intersect(&ray);
         assert_eq!(intersections.len(), 2);
@@ -486,7 +481,7 @@ mod cube_tests {
     #[test]
     fn a_ray_directly_towards_the_neg_y_face_should_intersect() {
         let cube = Object::cube();
-        let ray = Ray::new(Point3D::new(0.5, -5.0, 0.0), Vector3D::new(0.0, 1.0, 0.0));
+        let ray = Ray::new(Point3D::new(0.5, -5.0, 0.0), Normal3D::POSITIVE_Y);
 
         let intersections = cube.intersect(&ray);
         assert_eq!(intersections.len(), 2);
@@ -498,7 +493,7 @@ mod cube_tests {
     #[test]
     fn a_ray_directly_towards_the_pos_z_face_should_intersect() {
         let cube = Object::cube();
-        let ray = Ray::new(Point3D::new(0.5, 0.0, 5.0), Vector3D::new(0.0, 0.0, -1.0));
+        let ray = Ray::new(Point3D::new(0.5, 0.0, 5.0), Normal3D::NEGATIVE_Z);
 
         let intersections = cube.intersect(&ray);
         assert_eq!(intersections.len(), 2);
@@ -510,7 +505,7 @@ mod cube_tests {
     #[test]
     fn a_ray_directly_towards_the_neg_z_face_should_intersect() {
         let cube = Object::cube();
-        let ray = Ray::new(Point3D::new(0.5, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.5, 0.0, -5.0), Normal3D::POSITIVE_Z);
 
         let intersections = cube.intersect(&ray);
         assert_eq!(intersections.len(), 2);
@@ -522,7 +517,7 @@ mod cube_tests {
     #[test]
     fn a_ray_starting_inside_the_cube_should_intersect_in_positive_and_negative_t() {
         let cube = Object::cube();
-        let ray = Ray::new(Point3D::new(0.5, 0.0, 0.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.5, 0.0, 0.0), Normal3D::POSITIVE_Z);
 
         let intersections = cube.intersect(&ray);
         assert_eq!(intersections.len(), 2);
@@ -545,7 +540,7 @@ mod cube_tests {
     #[test]
     fn an_ray_parallel_to_the_pos_x_face_originating_from_the_right_should_not_intersect() {
         let cube = Object::cube();
-        let ray = Ray::new(Point3D::new(2.0, 2.0, 0.0), Vector3D::new(-1.0, 0.0, 0.0));
+        let ray = Ray::new(Point3D::new(2.0, 2.0, 0.0), Normal3D::NEGATIVE_X);
 
         assert!(cube.intersect(&ray).is_empty());
     }
@@ -554,14 +549,14 @@ mod cube_tests {
     #[test]
     fn the_normal_of_a_cube_point_should_be_based_off_the_largest_component() {
         vec![
-            (Point3D::new(1.0, 0.5, -0.8), Vector3D::new(1.0, 0.0, 0.0)),
-            (Point3D::new(-1.0, -0.2, 0.9), Vector3D::new(-1.0, 0.0, 0.0)),
-            (Point3D::new(-0.4, 1.0, -0.1), Vector3D::new(0.0, 1.0, 0.0)),
-            (Point3D::new(0.3, -1.0, -0.7), Vector3D::new(0.0, -1.0, 0.0)),
-            (Point3D::new(-0.6, 0.3, 1.0), Vector3D::new(0.0, 0.0, 1.0)),
-            (Point3D::new(0.4, 0.4, -1.0), Vector3D::new(0.0, 0.0, -1.0)),
-            (Point3D::new(1.0, 1.0, 1.0), Vector3D::new(1.0, 0.0, 0.0)),
-            (Point3D::new(-1.0, -1.0, -1.0), Vector3D::new(-1.0, 0.0, 0.0)),
+            (Point3D::new(1.0, 0.5, -0.8), Normal3D::POSITIVE_X),
+            (Point3D::new(-1.0, -0.2, 0.9), Normal3D::NEGATIVE_X),
+            (Point3D::new(-0.4, 1.0, -0.1), Normal3D::POSITIVE_Y),
+            (Point3D::new(0.3, -1.0, -0.7), Normal3D::NEGATIVE_Y),
+            (Point3D::new(-0.6, 0.3, 1.0), Normal3D::POSITIVE_Z),
+            (Point3D::new(0.4, 0.4, -1.0), Normal3D::NEGATIVE_Z),
+            (Point3D::new(1.0, 1.0, 1.0), Normal3D::POSITIVE_X),
+            (Point3D::new(-1.0, -1.0, -1.0), Normal3D::NEGATIVE_X),
         ]
         .into_iter()
         .for_each(|(point, normal)| {
@@ -578,8 +573,8 @@ mod cylinder_tests {
         let cylinder = Object::cylinder().build();
 
         vec![
-            Ray::new(Point3D::new(1.0, 0.0, 0.0), Vector3D::new(0.0, 1.0, 0.0)),
-            Ray::new(Point3D::ORIGIN, Vector3D::new(0.0, 1.0, 0.0)),
+            Ray::new(Point3D::new(1.0, 0.0, 0.0), Normal3D::POSITIVE_Y),
+            Ray::new(Point3D::ORIGIN, Normal3D::POSITIVE_Y),
             Ray::new(
                 Point3D::new(0.0, 0.0, -5.0),
                 Vector3D::new(1.0, 1.0, 1.0).normalised(),
@@ -595,13 +590,13 @@ mod cylinder_tests {
 
         vec![
             (
-                Ray::new(Point3D::new(1.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0)),
+                Ray::new(Point3D::new(1.0, 0.0, -5.0), Normal3D::POSITIVE_Z),
                 5.0,
                 5.0,
                 "tangent",
             ),
             (
-                Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0)),
+                Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z),
                 4.0,
                 6.0,
                 "through centre",
@@ -631,10 +626,10 @@ mod cylinder_tests {
         let cylinder = Object::cylinder().build();
 
         vec![
-            (Point3D::new(1.0, 0.0, 0.0), Vector3D::new(1.0, 0.0, 0.0)),
-            (Point3D::new(0.0, 5.0, -1.0), Vector3D::new(0.0, 0.0, -1.0)),
-            (Point3D::new(0.0, -2.0, 1.0), Vector3D::new(0.0, 0.0, 1.0)),
-            (Point3D::new(-1.0, 1.0, 0.0), Vector3D::new(-1.0, 0.0, 0.0)),
+            (Point3D::new(1.0, 0.0, 0.0), Normal3D::POSITIVE_X),
+            (Point3D::new(0.0, 5.0, -1.0), Normal3D::NEGATIVE_Z),
+            (Point3D::new(0.0, -2.0, 1.0), Normal3D::POSITIVE_Z),
+            (Point3D::new(-1.0, 1.0, 0.0), Normal3D::NEGATIVE_X),
         ]
         .into_iter()
         .for_each(|(point, normal)| {
@@ -685,7 +680,7 @@ mod cylinder_tests {
     fn a_ray_that_passes_through_a_hollow_finite_cylinder_intersects_twice() {
         let cylinder = Object::cylinder().min_y(1.0).max_y(2.0).build();
 
-        let ray = Ray::new(Point3D::new(0.0, 1.5, -2.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 1.5, -2.0), Normal3D::POSITIVE_Z);
         let intersections = cylinder.intersect(&ray);
         assert_eq!(intersections.len(), 2);
         assert_eq!(intersections.underlying()[0].t, 1.0);
@@ -736,12 +731,12 @@ mod cylinder_tests {
         let cylinder = Object::cylinder().min_y(1.0).max_y(2.0).capped().build();
 
         vec![
-            (Point3D::new(0.0, 1.0, 0.0), Vector3D::new(0.0, -1.0, 0.0)),
-            (Point3D::new(0.5, 1.0, 0.0), Vector3D::new(0.0, -1.0, 0.0)),
-            (Point3D::new(0.0, 1.0, 0.5), Vector3D::new(0.0, -1.0, 0.0)),
-            (Point3D::new(0.0, 2.0, 0.0), Vector3D::new(0.0, 1.0, 0.0)),
-            (Point3D::new(0.5, 2.0, 0.0), Vector3D::new(0.0, 1.0, 0.0)),
-            (Point3D::new(0.0, 2.0, 0.5), Vector3D::new(0.0, 1.0, 0.0)),
+            (Point3D::new(0.0, 1.0, 0.0), Normal3D::NEGATIVE_Y),
+            (Point3D::new(0.5, 1.0, 0.0), Normal3D::NEGATIVE_Y),
+            (Point3D::new(0.0, 1.0, 0.5), Normal3D::NEGATIVE_Y),
+            (Point3D::new(0.0, 2.0, 0.0), Normal3D::POSITIVE_Y),
+            (Point3D::new(0.5, 2.0, 0.0), Normal3D::POSITIVE_Y),
+            (Point3D::new(0.0, 2.0, 0.5), Normal3D::POSITIVE_Y),
         ]
         .into_iter()
         .for_each(|(point, normal)| {
@@ -864,7 +859,7 @@ mod group_tests {
     #[test]
     fn a_ray_should_not_intersect_an_empty_group() {
         let group = Object::group(vec![]);
-        let ray = Ray::new(Point3D::ORIGIN, Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::ORIGIN, Normal3D::POSITIVE_Z);
 
         assert!(group.intersect(&ray).is_empty());
     }
@@ -882,7 +877,7 @@ mod group_tests {
             second,
             Object::sphere().with_transform(Transform::identity().translate_x(5.0)),
         ]);
-        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z);
 
         let intersections = group.intersect(&ray);
         assert_eq!(intersections.len(), 4);
@@ -899,7 +894,7 @@ mod group_tests {
         ])
         .with_transform(Transform::identity().scale_all(2.0));
 
-        let ray = Ray::new(Point3D::new(10.0, 0.0, -10.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(10.0, 0.0, -10.0), Normal3D::POSITIVE_Z);
         let intersections = group.intersect(&ray);
         assert_eq!(intersections.len(), 2);
     }
@@ -928,7 +923,7 @@ mod group_tests {
 
         assert_eq!(
             sphere_ref.normal_at(Point3D::new(1.7321, 1.1547, -5.5774), None),
-            Vector3D::new(0.28570368184140726, 0.428543151781141, -0.8571605294481017)
+            Vector3D::new(0.28570368184140726, 0.428543151781141, -0.8571605294481017).normalised()
         );
     }
 }
@@ -944,7 +939,7 @@ mod triangle_tests {
             Point3D::new(1.0, 0.0, 0.0),
         );
 
-        let normal = Vector3D::new(0.0, 0.0, -1.0);
+        let normal = Normal3D::NEGATIVE_Z;
 
         assert_eq!(
             triangle.normal_at(Point3D::new(0.0, 0.5, 0.0), None),
@@ -968,7 +963,7 @@ mod triangle_tests {
             Point3D::new(1.0, 0.0, 0.0),
         );
 
-        let ray = Ray::new(Point3D::new(0.0, -1.0, -2.0), Vector3D::new(0.0, 1.0, 0.0));
+        let ray = Ray::new(Point3D::new(0.0, -1.0, -2.0), Normal3D::POSITIVE_Y);
 
         assert!(triangle.intersect(&ray).is_empty())
     }
@@ -981,7 +976,7 @@ mod triangle_tests {
             Point3D::new(1.0, 0.0, 0.0),
         );
 
-        let ray = Ray::new(Point3D::new(1.0, -1.0, -2.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(1.0, -1.0, -2.0), Normal3D::POSITIVE_Z);
 
         assert!(triangle.intersect(&ray).is_empty())
     }
@@ -994,7 +989,7 @@ mod triangle_tests {
             Point3D::new(1.0, 0.0, 0.0),
         );
 
-        let ray = Ray::new(Point3D::new(-1.0, 1.0, -2.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(-1.0, 1.0, -2.0), Normal3D::POSITIVE_Z);
 
         assert!(triangle.intersect(&ray).is_empty())
     }
@@ -1007,7 +1002,7 @@ mod triangle_tests {
             Point3D::new(1.0, 0.0, 0.0),
         );
 
-        let ray = Ray::new(Point3D::new(0.0, -1.0, -2.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, -1.0, -2.0), Normal3D::POSITIVE_Z);
 
         assert!(triangle.intersect(&ray).is_empty())
     }
@@ -1020,7 +1015,7 @@ mod triangle_tests {
             Point3D::new(1.0, 0.0, 0.0),
         );
 
-        let ray = Ray::new(Point3D::new(0.0, 0.5, -2.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 0.5, -2.0), Normal3D::POSITIVE_Z);
 
         let intersections = triangle.intersect(&ray);
         assert_eq!(intersections.len(), 1);
@@ -1037,11 +1032,11 @@ mod smooth_triangles {
             Point3D::new(0.0, 1.0, 0.0),
             Point3D::new(-1.0, 0.0, 0.0),
             Point3D::new(1.0, 0.0, 0.0),
-            Vector3D::new(0.0, 1.0, 0.0),
-            Vector3D::new(-1.0, 0.0, 0.0),
-            Vector3D::new(1.0, 0.0, 0.0),
+            Normal3D::POSITIVE_Y,
+            Normal3D::NEGATIVE_X,
+            Normal3D::POSITIVE_X,
         );
-        let ray = Ray::new(Point3D::new(-0.2, 0.3, -2.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(-0.2, 0.3, -2.0), Normal3D::POSITIVE_Z);
 
         assert_eq!(
             triangle.intersect(&ray).underlying()[0].uv,
@@ -1055,11 +1050,11 @@ mod smooth_triangles {
             Point3D::new(0.0, 1.0, 0.0),
             Point3D::new(-1.0, 0.0, 0.0),
             Point3D::new(1.0, 0.0, 0.0),
-            Vector3D::new(0.0, 1.0, 0.0),
-            Vector3D::new(-1.0, 0.0, 0.0),
-            Vector3D::new(1.0, 0.0, 0.0),
+            Normal3D::POSITIVE_Y,
+            Normal3D::NEGATIVE_X,
+            Normal3D::POSITIVE_X,
         );
-        let ray = Ray::new(Point3D::new(-0.2, 0.3, -2.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(-0.2, 0.3, -2.0), Normal3D::POSITIVE_Z);
         let uv = triangle.intersect(&ray).underlying()[0].uv;
         assert!(uv.is_some());
         let (u, v) = uv.unwrap();
@@ -1067,7 +1062,7 @@ mod smooth_triangles {
         assert_eq!(
             // Point has no effect on normal as u,v is used instead
             triangle.normal_at(Point3D::ORIGIN, Some((u, v))),
-            Vector3D::new(-0.554700196225229, 0.8320502943378437, 0.0)
+            Vector3D::new(-0.554700196225229, 0.8320502943378437, 0.0).normalised()
         );
     }
 }
@@ -1078,7 +1073,7 @@ mod constructive_solid_geometry {
     #[test]
     fn a_ray_that_misses_both_objects_in_a_csg_should_not_intersect() {
         let csg = Object::csg_union(Object::sphere(), Object::cube());
-        let ray = Ray::new(Point3D::new(0.0, 2.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 2.0, -5.0), Normal3D::POSITIVE_Z);
 
         assert!(csg.intersect(&ray).is_empty());
     }
@@ -1093,7 +1088,7 @@ mod constructive_solid_geometry {
         let right_id = right.id();
 
         let csg = Object::csg_union(left, right);
-        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z);
 
         let intersections = csg.intersect(&ray);
         assert_eq!(intersections.len(), 2);
@@ -1115,7 +1110,7 @@ mod constructive_solid_geometry {
         let right_id = right.id();
 
         let csg = Object::csg_intersection(left, right);
-        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z);
 
         let intersections = csg.intersect(&ray);
         assert_eq!(intersections.len(), 2);
@@ -1137,7 +1132,7 @@ mod constructive_solid_geometry {
         let right_id = right.id();
 
         let csg = Object::csg_difference(left, right);
-        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z);
 
         let intersections = csg.intersect(&ray);
         assert_eq!(intersections.len(), 2);
@@ -1167,7 +1162,7 @@ mod constructive_solid_geometry {
             Object::group(vec![first, second]),
             Object::csg_difference(third, fourth),
         );
-        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z);
 
         let intersections = csg.intersect(&ray);
         assert_eq!(intersections.len(), 2);

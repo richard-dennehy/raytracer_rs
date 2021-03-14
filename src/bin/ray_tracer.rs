@@ -30,7 +30,7 @@ fn main() -> Result<(), String> {
         Transform::view_transform(
             Point3D::new(0.0, 0.0, -5.0),
             Point3D::new(0.0, 0.0, 0.0),
-            Vector3D::new(0.0, 1.0, 0.0),
+            Normal3D::POSITIVE_Y,
         ),
     );
 

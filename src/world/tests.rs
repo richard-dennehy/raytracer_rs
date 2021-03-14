@@ -2,7 +2,7 @@ use super::*;
 
 mod unit_tests {
     use super::*;
-    use crate::Vector3D;
+    use crate::{Normal3D, Vector3D};
     use std::f64::consts::{PI, SQRT_2};
 
     #[test]
@@ -10,7 +10,7 @@ mod unit_tests {
         let world = World::default();
         let intersections = world.intersect(&Ray::new(
             Point3D::new(0.0, 0.0, -5.0),
-            Vector3D::new(0.0, 0.0, 1.0),
+            Normal3D::POSITIVE_Z,
         ));
 
         assert_eq!(intersections.len(), 4);
@@ -23,7 +23,7 @@ mod unit_tests {
     #[test]
     fn should_correctly_shade_an_external_hit() {
         let world = World::default();
-        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z);
         let sphere = world
             .objects
             .first()
@@ -53,7 +53,7 @@ mod unit_tests {
         let mut world = World::default();
         world.lights = vec![Light::point(Colour::WHITE, Point3D::new(0.0, 0.25, 0.0))];
 
-        let ray = Ray::new(Point3D::new(0.0, 0.0, 0.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 0.0, 0.0), Normal3D::POSITIVE_Z);
         let sphere = world
             .objects
             .get(1)
@@ -78,7 +78,7 @@ mod unit_tests {
     #[test]
     fn the_colour_should_be_black_when_a_ray_hits_nothing() {
         let world = World::default();
-        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 1.0, 0.0));
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Y);
 
         assert_eq!(world.colour_at(ray), Colour::BLACK);
     }
@@ -86,7 +86,7 @@ mod unit_tests {
     #[test]
     fn the_colour_should_be_the_shaded_surface_when_the_ray_hits_an_object() {
         let world = World::default();
-        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z);
 
         assert!(approx_eq!(
             Colour,
@@ -108,7 +108,7 @@ mod unit_tests {
             .iter_mut()
             .for_each(|obj| obj.material.ambient = 1.0);
 
-        let ray = Ray::new(Point3D::new(0.0, 0.0, 0.75), Vector3D::new(0.0, 0.0, -1.0));
+        let ray = Ray::new(Point3D::new(0.0, 0.0, 0.75), Normal3D::NEGATIVE_Z);
 
         assert_eq!(world.colour_at(ray), Colour::WHITE);
     }
@@ -175,7 +175,7 @@ mod unit_tests {
             Colour,
             world.colour_at(Ray::new(
                 Point3D::new(0.0, 0.0, -3.0),
-                Vector3D::new(0.0, -SQRT_2 / 2.0, SQRT_2 / 2.0),
+                Vector3D::new(0.0, -SQRT_2 / 2.0, SQRT_2 / 2.0).normalised(),
             )),
             Colour::new(0.8767560060717737, 0.9243386603443418, 0.8291733517992057),
             epsilon = f32::EPSILON as f64
@@ -212,7 +212,7 @@ mod unit_tests {
 
         assert!(approx_eq!(
             Colour,
-            world.colour_at(Ray::new(Point3D::ORIGIN, Vector3D::new(0.0, 1.0, 0.0))),
+            world.colour_at(Ray::new(Point3D::ORIGIN, Normal3D::POSITIVE_Y)),
             Colour::WHITE,
             epsilon = f32::EPSILON as f64
         ));
@@ -252,7 +252,7 @@ mod unit_tests {
             .lights
             .push(Light::point(Colour::WHITE, Point3D::ORIGIN));
 
-        let ray = Ray::new(Point3D::new(0.0, 0.0, -1.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -1.0), Normal3D::POSITIVE_Z);
         assert_eq!(world.colour_at(ray), Colour::new(0.1, 0.1, 0.1));
     }
 
@@ -292,7 +292,7 @@ mod unit_tests {
             .lights
             .push(Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, 0.5)));
 
-        let ray = Ray::new(Point3D::new(0.0, 0.0, -1.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -1.0), Normal3D::POSITIVE_Z);
         assert_eq!(world.colour_at(ray), Colour::GREEN);
     }
 
@@ -325,7 +325,7 @@ mod unit_tests {
 
         let ray = Ray::new(
             Point3D::new(0.0, 0.0, -3.0),
-            Vector3D::new(0.0, -SQRT_2 / 2.0, SQRT_2 / 2.0),
+            Vector3D::new(0.0, -SQRT_2 / 2.0, SQRT_2 / 2.0).normalised(),
         );
 
         assert!(approx_eq!(
@@ -366,7 +366,7 @@ mod unit_tests {
 
         let ray = Ray::new(
             Point3D::new(0.0, 0.0, -3.0),
-            Vector3D::new(0.0, -SQRT_2 / 2.0, SQRT_2 / 2.0),
+            Vector3D::new(0.0, -SQRT_2 / 2.0, SQRT_2 / 2.0).normalised(),
         );
 
         assert!(approx_eq!(
@@ -409,7 +409,7 @@ mod unit_tests {
             world.objects.push(glass_sphere);
         };
 
-        let ray = Ray::new(Point3D::ORIGIN, Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::ORIGIN, Normal3D::POSITIVE_Z);
 
         assert!(approx_eq!(
             Colour,
@@ -448,7 +448,7 @@ mod unit_tests {
 
         world.objects.push(csg);
 
-        let ray = Ray::new(Point3D::new(0.0, 2.0, -6.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 2.0, -6.0), Normal3D::POSITIVE_Z);
         let actual = world.colour_at(ray);
         let expected = Colour::new(0.1557279290614545, 0.1557279290614545, 0.1557279290614545);
         // note: if the ray misses, the colour will be black;

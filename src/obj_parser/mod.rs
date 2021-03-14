@@ -1,4 +1,4 @@
-use crate::{Object, Point3D, Vector3D};
+use crate::{Object, Point3D, Vector, Vector3D};
 use std::borrow::Borrow;
 use std::convert::TryFrom;
 use std::str::SplitWhitespace;
@@ -164,9 +164,10 @@ impl TryFrom<ObjData> for Object {
                             vertices[0],
                             vertices[1],
                             vertices[2],
-                            normals[0],
-                            normals[1],
-                            normals[2],
+                            // should probably refuse to parse a file with bad normals, but floating point errors may make a normal in the file non-normalised after parsing
+                            normals[0].normalised(),
+                            normals[1].normalised(),
+                            normals[2].normalised(),
                         ))
                     } else {
                         return Err(format!(

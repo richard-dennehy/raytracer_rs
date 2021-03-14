@@ -1,4 +1,4 @@
-use crate::{Camera, Colour, Light, Object, Pattern, Point3D, Transform, Vector3D};
+use crate::{Camera, Colour, Light, Object, Pattern, Point3D, Transform, Vector, Vector3D};
 use either::Either;
 use either::Either::{Left, Right};
 use std::num::NonZeroU16;
@@ -31,7 +31,11 @@ impl SceneDescription {
         let width = validate_nonzero_u16("width", self.camera.width)?;
         let height = validate_nonzero_u16("height", self.camera.height)?;
         let fov = self.camera.field_of_view;
-        let transform = Transform::view_transform(self.camera.from, self.camera.to, self.camera.up);
+        let transform = Transform::view_transform(
+            self.camera.from,
+            self.camera.to,
+            self.camera.up.normalised(),
+        );
 
         Ok(Camera::new(width, height, fov, transform))
     }

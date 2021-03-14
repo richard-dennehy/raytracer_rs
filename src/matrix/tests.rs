@@ -270,7 +270,7 @@ mod unit_tests {
         let transform = Transform::view_transform(
             Point3D::new(0.0, 0.0, 0.0),
             Point3D::new(0.0, 0.0, -1.0),
-            Vector3D::new(0.0, 1.0, 0.0),
+            Normal3D::POSITIVE_Y,
         );
 
         assert_eq!(transform, Transform::identity());
@@ -281,7 +281,7 @@ mod unit_tests {
         let transform = Transform::view_transform(
             Point3D::new(0.0, 0.0, 0.0),
             Point3D::new(0.0, 0.0, 1.0),
-            Vector3D::new(0.0, 1.0, 0.0),
+            Normal3D::POSITIVE_Y,
         );
 
         assert_eq!(transform, Transform::scaling(-1.0, 1.0, -1.0));
@@ -292,7 +292,7 @@ mod unit_tests {
         let transform = Transform::view_transform(
             Point3D::new(0.0, 0.0, 8.0),
             Point3D::new(0.0, 0.0, 0.0),
-            Vector3D::new(0.0, 1.0, 0.0),
+            Normal3D::POSITIVE_Y,
         );
 
         assert_eq!(transform, Transform::translation(0.0, 0.0, -8.0));
@@ -303,7 +303,7 @@ mod unit_tests {
         let transform = Transform::view_transform(
             Point3D::new(1.0, 3.0, 2.0),
             Point3D::new(4.0, -2.0, 8.0),
-            Vector3D::new(1.0, 1.0, 0.0),
+            Vector3D::new(1.0, 1.0, 0.0).normalised(),
         );
 
         #[rustfmt::skip]

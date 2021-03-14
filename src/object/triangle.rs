@@ -1,5 +1,5 @@
 use crate::object::Shape;
-use crate::{Intersection, Object, Point3D, Ray, Vector3D};
+use crate::{Intersection, Normal3D, Object, Point3D, Ray, Vector, Vector3D};
 
 #[derive(Debug, PartialEq)]
 pub struct Triangle {
@@ -32,9 +32,9 @@ impl Triangle {
         point1: Point3D,
         point2: Point3D,
         point3: Point3D,
-        normal1: Vector3D,
-        normal2: Vector3D,
-        normal3: Vector3D,
+        normal1: Normal3D,
+        normal2: Normal3D,
+        normal3: Normal3D,
     ) -> Self {
         let edge1 = point2 - point1;
         let edge2 = point3 - point1;
@@ -57,15 +57,15 @@ impl Triangle {
 #[derive(Debug, PartialEq)]
 enum NormalKind {
     Smooth {
-        normal1: Vector3D,
-        normal2: Vector3D,
-        normal3: Vector3D,
+        normal1: Normal3D,
+        normal2: Normal3D,
+        normal3: Normal3D,
     },
-    Uniform(Vector3D),
+    Uniform(Normal3D),
 }
 
 impl Shape for Triangle {
-    fn object_normal_at(&self, _: Point3D, uv: Option<(f64, f64)>) -> Vector3D {
+    fn object_normal_at(&self, _: Point3D, uv: Option<(f64, f64)>) -> Normal3D {
         match self.kind {
             NormalKind::Smooth {
                 normal1,
@@ -73,7 +73,7 @@ impl Shape for Triangle {
                 normal3,
             } => {
                 if let Some((u, v)) = uv {
-                    normal2 * u + normal3 * v + normal1 * (1.0 - u - v)
+                    (normal2 * u + normal3 * v + normal1 * (1.0 - u - v)).normalised()
                 } else {
                     panic!("Smooth triangle intersection did not set uv coordinates")
                 }

@@ -10,7 +10,7 @@ pub struct Vector3D(f64, f64, f64);
 #[derive(PartialEq, Copy, Clone, Debug)]
 pub struct Normal3D(f64, f64, f64);
 
-pub trait Vector {
+pub trait Vector: Sized + Copy + Clone {
     fn x(&self) -> f64;
     fn y(&self) -> f64;
     fn z(&self) -> f64;
@@ -21,7 +21,7 @@ pub trait Vector {
     fn magnitude(&self) -> f64;
     fn normalised(&self) -> Normal3D;
     fn dot<V: Vector>(&self, other: V) -> f64 {
-        self.0 * other.x() + self.1 * other.y() + self.2 * other.z()
+        self.x() * other.x() + self.y() * other.y() + self.z() * other.z()
     }
 
     fn cross<V: Vector>(&self, other: V) -> Vector3D {
@@ -31,6 +31,8 @@ pub trait Vector {
             (self.x() * other.y()) - (self.y() * other.x()),
         )
     }
+
+    fn reflect_through(&self, normal: Normal3D) -> Self;
 }
 
 impl Vector3D {
@@ -67,15 +69,22 @@ impl Vector for Vector3D {
             )
         }
     }
+
+    fn reflect_through(&self, normal: Normal3D) -> Self {
+        *self - (normal * 2.0 * self.dot(normal))
+    }
 }
 
 impl Normal3D {
+    pub const POSITIVE_X: Normal3D = Normal3D::new(1.0, 0.0, 0.0);
+    pub const NEGATIVE_X: Normal3D = Normal3D::new(-1.0, 0.0, 0.0);
+    pub const POSITIVE_Y: Normal3D = Normal3D::new(0.0, 1.0, 0.0);
+    pub const NEGATIVE_Y: Normal3D = Normal3D::new(0.0, -1.0, 0.0);
+    pub const POSITIVE_Z: Normal3D = Normal3D::new(0.0, 0.0, 1.0);
+    pub const NEGATIVE_Z: Normal3D = Normal3D::new(0.0, 0.0, -1.0);
+
     const fn new(x: f64, y: f64, z: f64) -> Self {
         Normal3D(x, y, z)
-    }
-
-    pub fn reflect_through(&self, normal: Normal3D) -> Self {
-        *self - (normal * 2.0 * self.dot(normal))
     }
 }
 
@@ -99,6 +108,10 @@ impl Vector for Normal3D {
     fn normalised(&self) -> Normal3D {
         *self
     }
+
+    fn reflect_through(&self, normal: Normal3D) -> Self {
+        (*self - (normal * 2.0 * self.dot(normal))).normalised()
+    }
 }
 
 impl From<(f64, f64, f64)> for Vector3D {
@@ -107,10 +120,10 @@ impl From<(f64, f64, f64)> for Vector3D {
     }
 }
 
-impl Add<Vector3D> for Vector3D {
+impl<V: Vector> Add<V> for Vector3D {
     type Output = Vector3D;
 
-    fn add(mut self, rhs: Vector3D) -> Self::Output {
+    fn add(mut self, rhs: V) -> Self::Output {
         self.0 += rhs.x();
         self.1 += rhs.y();
         self.2 += rhs.z();
@@ -119,19 +132,43 @@ impl Add<Vector3D> for Vector3D {
     }
 }
 
+impl<V: Vector> Add<V> for Normal3D {
+    type Output = Vector3D;
+
+    fn add(self, rhs: V) -> Self::Output {
+        Vector3D::new(self.x() + rhs.x(), self.y() + rhs.y(), self.z() + rhs.z())
+    }
+}
+
 impl Add<Point3D> for Vector3D {
     type Output = Point3D;
 
     fn add(self, rhs: Point3D) -> Self::Output {
-        Point3D::new(self.0 + rhs.x(), self.1 + rhs.y(), self.2 + rhs.z())
+        Point3D::new(self.x() + rhs.x(), self.y() + rhs.y(), self.z() + rhs.z())
     }
 }
 
-impl Sub<Vector3D> for Vector3D {
+impl Add<Point3D> for Normal3D {
+    type Output = Point3D;
+
+    fn add(self, rhs: Point3D) -> Self::Output {
+        Point3D::new(self.x() + rhs.x(), self.y() + rhs.y(), self.z() + rhs.z())
+    }
+}
+
+impl<V: Vector> Sub<V> for Vector3D {
     type Output = Vector3D;
 
-    fn sub(self, rhs: Vector3D) -> Self::Output {
-        Vector3D(self.0 - rhs.0, self.1 - rhs.1, self.2 - rhs.2)
+    fn sub(self, rhs: V) -> Self::Output {
+        Vector3D(self.x() - rhs.x(), self.y() - rhs.y(), self.z() - rhs.z())
+    }
+}
+
+impl<V: Vector> Sub<V> for Normal3D {
+    type Output = Vector3D;
+
+    fn sub(self, rhs: V) -> Self::Output {
+        Vector3D(self.x() - rhs.x(), self.y() - rhs.y(), self.z() - rhs.z())
     }
 }
 
@@ -147,11 +184,31 @@ impl Neg for Vector3D {
     }
 }
 
+impl Neg for Normal3D {
+    type Output = Normal3D;
+
+    fn neg(mut self) -> Self::Output {
+        self.0 = -self.0;
+        self.1 = -self.1;
+        self.2 = -self.2;
+
+        self
+    }
+}
+
 impl Mul<f64> for Vector3D {
     type Output = Vector3D;
 
     fn mul(self, rhs: f64) -> Self::Output {
-        Vector3D(self.0 * rhs, self.1 * rhs, self.2 * rhs)
+        Vector3D(self.x() * rhs, self.y() * rhs, self.z() * rhs)
+    }
+}
+
+impl Mul<f64> for Normal3D {
+    type Output = Vector3D;
+
+    fn mul(self, rhs: f64) -> Self::Output {
+        Vector3D(self.x() * rhs, self.y() * rhs, self.z() * rhs)
     }
 }
 
@@ -159,7 +216,15 @@ impl Div<f64> for Vector3D {
     type Output = Vector3D;
 
     fn div(self, rhs: f64) -> Self::Output {
-        Vector3D(self.0 / rhs, self.1 / rhs, self.2 / rhs)
+        Vector3D(self.x() / rhs, self.y() / rhs, self.z() / rhs)
+    }
+}
+
+impl Div<f64> for Normal3D {
+    type Output = Vector3D;
+
+    fn div(self, rhs: f64) -> Self::Output {
+        Vector3D(self.x() / rhs, self.y() / rhs, self.z() / rhs)
     }
 }
 
@@ -189,6 +254,18 @@ mod test_utils {
     }
 
     impl ApproxEq for Vector3D {
+        type Margin = F64Margin;
+
+        fn approx_eq<M: Into<Self::Margin>>(self, other: Self, margin: M) -> bool {
+            let margin = margin.into();
+
+            self.0.approx_eq(other.0, margin)
+                && self.1.approx_eq(other.1, margin)
+                && self.2.approx_eq(other.2, margin)
+        }
+    }
+
+    impl ApproxEq for Normal3D {
         type Margin = F64Margin;
 
         fn approx_eq<M: Into<Self::Margin>>(self, other: Self, margin: M) -> bool {

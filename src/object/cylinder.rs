@@ -1,5 +1,5 @@
 use crate::object::Shape;
-use crate::{Intersection, Object, Point3D, Ray, Vector3D};
+use crate::{Intersection, Normal3D, Object, Point3D, Ray, Vector, Vector3D};
 
 #[derive(Debug, PartialEq)]
 pub struct Cylinder {
@@ -8,26 +8,26 @@ pub struct Cylinder {
     capped: bool,
 }
 impl Shape for Cylinder {
-    fn object_normal_at(&self, point: Point3D, _uv: Option<(f64, f64)>) -> Vector3D {
+    fn object_normal_at(&self, point: Point3D, _uv: Option<(f64, f64)>) -> Normal3D {
         let distance = point.x().powi(2) + point.z().powi(2);
 
         if distance < 1.0 && point.y() >= self.max_y - f64::EPSILON {
-            Vector3D::new(0.0, 1.0, 0.0)
+            Normal3D::POSITIVE_Y
         } else if distance < 1.0 && point.y() <= self.min_y + f64::EPSILON {
-            Vector3D::new(0.0, -1.0, 0.0)
+            Normal3D::NEGATIVE_Y
         } else {
-            Vector3D::new(point.x(), 0.0, point.z())
+            Vector3D::new(point.x(), 0.0, point.z()).normalised()
         }
     }
 
     fn object_intersect<'parent>(
         &self,
         parent: &'parent Object,
-        with: Ray,
+        ray: Ray,
     ) -> Vec<Intersection<'parent>> {
         let intersects_cap = |t: f64| {
-            let x = with.origin.x() + t * with.direction.x();
-            let z = with.origin.z() + t * with.direction.z();
+            let x = ray.origin.x() + t * ray.direction.x();
+            let z = ray.origin.z() + t * ray.direction.z();
 
             (x.powi(2) + z.powi(2)) <= 1.0
         };
@@ -35,14 +35,14 @@ impl Shape for Cylinder {
         let mut cap_intersections = if self.capped {
             let mut ts = Vec::with_capacity(2);
             // check bottom cap
-            let t = (self.min_y - with.origin.y()) / with.direction.y();
+            let t = (self.min_y - ray.origin.y()) / ray.direction.y();
 
             if intersects_cap(t) {
                 ts.push(Intersection::new(t, parent));
             }
 
             // check top cap
-            let t = (self.max_y - with.origin.y()) / with.direction.y();
+            let t = (self.max_y - ray.origin.y()) / ray.direction.y();
 
             if intersects_cap(t) {
                 ts.push(Intersection::new(t, parent));
@@ -53,15 +53,14 @@ impl Shape for Cylinder {
             vec![]
         };
 
-        let a = with.direction.x().powi(2) + with.direction.z().powi(2);
+        let a = ray.direction.x().powi(2) + ray.direction.z().powi(2);
 
         if a.abs() <= f64::EPSILON {
             return cap_intersections;
         };
 
-        let b =
-            2.0 * with.origin.x() * with.direction.x() + 2.0 * with.origin.z() * with.direction.z();
-        let c = with.origin.x().powi(2) + with.origin.z().powi(2) - 1.0;
+        let b = 2.0 * ray.origin.x() * ray.direction.x() + 2.0 * ray.origin.z() * ray.direction.z();
+        let c = ray.origin.x().powi(2) + ray.origin.z().powi(2) - 1.0;
 
         let discriminant = b.powi(2) - 4.0 * a * c;
 
@@ -72,8 +71,8 @@ impl Shape for Cylinder {
         let first = (-b - discriminant.sqrt()) / (2.0 * a);
         let second = (-b + discriminant.sqrt()) / (2.0 * a);
 
-        let y_first = with.origin.y() + with.direction.y() * first;
-        let y_second = with.origin.y() + with.direction.y() * second;
+        let y_first = ray.origin.y() + ray.direction.y() * first;
+        let y_second = ray.origin.y() + ray.direction.y() * second;
 
         let mut ts = Vec::with_capacity(2);
         if y_first > self.min_y && y_first < self.max_y {

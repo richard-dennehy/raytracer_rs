@@ -2,7 +2,7 @@ use super::*;
 
 mod unit_tests {
     use super::*;
-    use crate::Vector3D;
+    use crate::{Vector3D, Normal3D};
     use std::f64::consts::{PI, SQRT_2};
 
     #[test]
@@ -40,9 +40,9 @@ mod unit_tests {
         let ray = camera.ray_at(100, 50);
         assert_eq!(ray.origin, Point3D::new(0.0, 0.0, 0.0));
         assert!(approx_eq!(
-            Vector3D,
+            Normal3D,
             ray.direction,
-            Vector3D::new(0.0, 0.0, -1.0)
+            Normal3D::NEGATIVE_Z
         ))
     }
 
@@ -60,9 +60,9 @@ mod unit_tests {
         assert_eq!(ray.origin, Point3D::new(0.0, 0.0, 0.0));
         assert!(
             approx_eq!(
-                Vector3D,
+                Normal3D,
                 ray.direction,
-                Vector3D::new(0.6651864261194508, 0.3325932130597254, -0.6685123582500481)
+                Vector3D::new(0.6651864261194508, 0.3325932130597254, -0.6685123582500481).normalised()
             ),
             "not approximately equal to {:?}",
             ray.direction
@@ -87,9 +87,9 @@ mod unit_tests {
         assert_eq!(ray.origin, Point3D::new(0.0, 2.0, -5.0));
         assert!(
             approx_eq!(
-                Vector3D,
+                Normal3D,
                 ray.direction,
-                Vector3D::new(SQRT_2 / 2.0, 0.0, -SQRT_2 / 2.0)
+                Vector3D::new(SQRT_2 / 2.0, 0.0, -SQRT_2 / 2.0).normalised()
             ),
             "not approximately equal to {:?}",
             ray.direction

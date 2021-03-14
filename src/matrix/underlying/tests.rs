@@ -311,6 +311,7 @@ fn should_be_able_to_calculate_the_determinant_of_a_3d_matrix() {
 mod property_tests {
     extern crate float_cmp;
     use super::*;
+    use crate::Vector3D;
     use proptest::prelude::*;
 
     proptest! {

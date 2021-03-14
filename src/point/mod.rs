@@ -1,4 +1,4 @@
-use crate::Vector3D;
+use crate::{Vector, Vector3D};
 use std::ops::{Add, Sub};
 #[cfg(test)]
 pub use test_utils::*;
@@ -39,10 +39,10 @@ impl From<(f64, f64, f64)> for Point3D {
     }
 }
 
-impl Add<Vector3D> for Point3D {
+impl<V: Vector> Add<V> for Point3D {
     type Output = Point3D;
 
-    fn add(self, rhs: Vector3D) -> Self::Output {
+    fn add(self, rhs: V) -> Self::Output {
         Point3D(self.0 + rhs.x(), self.1 + rhs.y(), self.2 + rhs.z())
     }
 }
@@ -55,10 +55,10 @@ impl Sub<Point3D> for Point3D {
     }
 }
 
-impl Sub<Vector3D> for Point3D {
+impl<V: Vector> Sub<V> for Point3D {
     type Output = Point3D;
 
-    fn sub(self, rhs: Vector3D) -> Self::Output {
+    fn sub(self, rhs: V) -> Self::Output {
         Point3D(self.0 - rhs.x(), self.1 - rhs.y(), self.2 - rhs.z())
     }
 }

@@ -7,7 +7,7 @@ mod ray_unit_tests {
 
     #[test]
     fn should_be_able_to_calculate_the_position_of_a_ray_at_a_given_time() {
-        let ray = Ray::new(Point3D::new(2.0, 3.0, 4.0), Vector3D::new(1.0, 0.0, 0.0));
+        let ray = Ray::new(Point3D::new(2.0, 3.0, 4.0), Normal3D::POSITIVE_X);
 
         assert_eq!(ray.position(0.0), Point3D::new(2.0, 3.0, 4.0));
         assert_eq!(ray.position(1.0), Point3D::new(3.0, 3.0, 4.0));
@@ -83,26 +83,26 @@ mod ray_unit_tests {
             .translate_x(3.0)
             .translate_y(4.0)
             .translate_z(5.0);
-        let ray = Ray::new(Point3D::new(1.0, 2.0, 3.0), Vector3D::new(0.0, 1.0, 0.0));
+        let ray = Ray::new(Point3D::new(1.0, 2.0, 3.0), Normal3D::POSITIVE_Y);
 
         let transformed = ray.transformed(&matrix.underlying());
         assert_eq!(transformed.origin, Point3D::new(4.0, 6.0, 8.0));
-        assert_eq!(transformed.direction, Vector3D::new(0.0, 1.0, 0.0));
+        assert_eq!(transformed.direction, Normal3D::POSITIVE_Y);
     }
 
     #[test]
     fn a_ray_can_be_scaled() {
         let matrix = Transform::identity().scale_x(2.0).scale_y(3.0).scale_z(4.0);
-        let ray = Ray::new(Point3D::new(1.0, 2.0, 3.0), Vector3D::new(0.0, 1.0, 0.0));
+        let ray = Ray::new(Point3D::new(1.0, 2.0, 3.0), Normal3D::POSITIVE_Y);
 
         let transformed = ray.transformed(&matrix.underlying());
         assert_eq!(transformed.origin, Point3D::new(2.0, 6.0, 12.0));
-        assert_eq!(transformed.direction, Vector3D::new(0.0, 3.0, 0.0));
+        assert_eq!(transformed.direction, Normal3D::POSITIVE_Y);
     }
 
     #[test]
     fn should_be_able_to_precompute_hit_data_for_an_outside_hit() {
-        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z);
         let sphere = Object::sphere();
 
         let intersections = sphere.intersect(&ray);
@@ -114,14 +114,14 @@ mod ray_unit_tests {
         assert_eq!(data.t, 4.0);
         assert_eq!(data.object.id(), sphere.id());
         assert_eq!(data.point, Point3D::new(0.0, 0.0, -1.0));
-        assert_eq!(data.eye, Vector3D::new(0.0, 0.0, -1.0));
-        assert_eq!(data.normal, Vector3D::new(0.0, 0.0, -1.0));
+        assert_eq!(data.eye, Normal3D::NEGATIVE_Z);
+        assert_eq!(data.normal, Normal3D::NEGATIVE_Z);
         assert_eq!(data.inside, false);
     }
 
     #[test]
     fn should_be_able_to_precompute_hit_data_for_an_inside_hit() {
-        let ray = Ray::new(Point3D::new(0.0, 0.0, 0.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 0.0, 0.0), Normal3D::POSITIVE_Z);
         let sphere = Object::sphere();
 
         let intersections = sphere.intersect(&ray);
@@ -133,14 +133,14 @@ mod ray_unit_tests {
         assert_eq!(data.t, 1.0);
         assert_eq!(data.object.id(), sphere.id());
         assert_eq!(data.point, Point3D::new(0.0, 0.0, 1.0));
-        assert_eq!(data.eye, Vector3D::new(0.0, 0.0, -1.0));
-        assert_eq!(data.normal, Vector3D::new(0.0, 0.0, -1.0));
+        assert_eq!(data.eye, Normal3D::NEGATIVE_Z);
+        assert_eq!(data.normal, Normal3D::NEGATIVE_Z);
         assert!(data.inside);
     }
 
     #[test]
     fn the_hit_data_should_contain_offset_point_for_shadow_calculations() {
-        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z);
         let sphere = Object::sphere().with_transform(Transform::identity().translate_z(1.0));
 
         let intersections = sphere.intersect(&ray);
@@ -154,7 +154,7 @@ mod ray_unit_tests {
 
     #[test]
     fn the_hit_data_should_contain_an_under_offset_point_for_refraction_calculations() {
-        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z);
         let sphere = Object::sphere().with_transform(Transform::identity().translate_z(1.0));
 
         let intersections = sphere.intersect(&ray);
@@ -170,7 +170,7 @@ mod ray_unit_tests {
     fn hit_data_should_contain_the_reflection_vector() {
         let ray = Ray::new(
             Point3D::new(0.0, 1.0, -1.0),
-            Vector3D::new(0.0, -SQRT_2 / 2.0, SQRT_2 / 2.0),
+            Vector3D::new(0.0, -SQRT_2 / 2.0, SQRT_2 / 2.0).normalised(),
         );
         let sphere = Object::plane();
 
@@ -181,7 +181,7 @@ mod ray_unit_tests {
         let data = HitData::from(&ray, intersection, intersections);
         assert_eq!(
             data.reflection,
-            Vector3D::new(0.0, SQRT_2 / 2.0, SQRT_2 / 2.0)
+            Vector3D::new(0.0, SQRT_2 / 2.0, SQRT_2 / 2.0).normalised()
         );
     }
 
@@ -211,7 +211,7 @@ mod ray_unit_tests {
             })
             .with_transform(Transform::identity().translate_z(0.25));
 
-        let ray = Ray::new(Point3D::new(0.0, 0.0, -4.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -4.0), Normal3D::POSITIVE_Z);
         let intersections = first
             .intersect(&ray)
             .join(second.intersect(&ray))
@@ -280,18 +280,18 @@ mod ray_unit_tests {
             Point3D::new(0.0, 1.0, 0.0),
             Point3D::new(-1.0, 0.0, 0.0),
             Point3D::new(1.0, 0.0, 0.0),
-            Vector3D::new(0.0, 1.0, 0.0),
-            Vector3D::new(-1.0, 0.0, 0.0),
-            Vector3D::new(1.0, 0.0, 0.0),
+            Normal3D::POSITIVE_Y,
+            Normal3D::NEGATIVE_X,
+            Normal3D::POSITIVE_X,
         );
-        let ray = Ray::new(Point3D::new(-0.2, 0.3, -2.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(-0.2, 0.3, -2.0), Normal3D::POSITIVE_Z);
         let intersections = triangle.intersect(&ray);
         let intersection = intersections.hit();
         assert!(intersection.is_some());
         let hit = HitData::from(&ray, intersection.unwrap(), intersections);
         assert_eq!(
             hit.normal,
-            Vector3D::new(-0.554700196225229, 0.8320502943378437, 0.0)
+            Vector3D::new(-0.554700196225229, 0.8320502943378437, 0.0).normalised()
         );
     }
 
@@ -304,10 +304,7 @@ mod ray_unit_tests {
             ..Default::default()
         });
 
-        let ray = Ray::new(
-            Point3D::new(0.0, 0.0, SQRT_2 / 2.0),
-            Vector3D::new(0.0, 1.0, 0.0),
-        );
+        let ray = Ray::new(Point3D::new(0.0, 0.0, SQRT_2 / 2.0), Normal3D::POSITIVE_Y);
 
         let intersections = shape.intersect(&ray);
         let intersection = intersections.hit();
@@ -327,7 +324,7 @@ mod ray_unit_tests {
             ..Default::default()
         });
 
-        let ray = Ray::new(Point3D::new(0.0, 0.0, 0.0), Vector3D::new(0.0, 1.0, 0.0));
+        let ray = Ray::new(Point3D::new(0.0, 0.0, 0.0), Normal3D::POSITIVE_Y);
 
         let intersections = shape.intersect(&ray);
         let intersection = intersections.hit();
@@ -348,7 +345,7 @@ mod ray_unit_tests {
             ..Default::default()
         });
 
-        let ray = Ray::new(Point3D::new(0.0, 0.99, -2.0), Vector3D::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point3D::new(0.0, 0.99, -2.0), Normal3D::POSITIVE_Z);
 
         let intersections = shape.intersect(&ray);
         let intersection = intersections.hit();

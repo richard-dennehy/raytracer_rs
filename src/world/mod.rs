@@ -1,5 +1,5 @@
 use crate::ray::HitData;
-use crate::{Colour, Intersections, Light, Material, Object, Pattern, Point3D, Ray, Transform};
+use crate::{Colour, Intersections, Light, Material, Object, Pattern, Point3D, Ray, Transform, Vector};
 
 #[cfg(test)]
 mod tests;
@@ -69,7 +69,7 @@ impl World {
                         let refracted_direction =
                             hit_data.normal * (ratio * cos_i - cos_t) - (hit_data.eye * ratio);
 
-                        let refracted_ray = Ray::new(hit_data.under_point, refracted_direction);
+                        let refracted_ray = Ray::new(hit_data.under_point, refracted_direction.normalised());
 
                         inner(this, refracted_ray, limit - 1)
                             * hit_data.object.material.transparency

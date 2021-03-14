@@ -1,5 +1,5 @@
 use super::*;
-use crate::{Camera, Colour, Material, Pattern, Point3D, Transform, Vector3D};
+use crate::{Camera, Colour, Material, Pattern, Point3D, Transform, Vector, Vector3D};
 use nonzero_ext::nonzero;
 
 fn with_camera_description(rest: &str) -> String {
@@ -39,7 +39,7 @@ fn should_be_able_to_create_a_camera_from_a_valid_file() {
             Transform::view_transform(
                 Point3D::new(-6.0, 6.0, -10.0),
                 Point3D::new(6.0, 0.0, 6.0),
-                Vector3D::new(-0.45, 1.0, 0.0)
+                Vector3D::new(-0.45, 1.0, 0.0).normalised()
             )
         )
     );

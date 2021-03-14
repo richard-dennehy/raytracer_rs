@@ -1,4 +1,4 @@
-use crate::{Point3D, Vector3D};
+use crate::{Point3D, Vector};
 use std::ops::{Mul, MulAssign};
 
 #[cfg(test)]
@@ -287,10 +287,10 @@ impl Mul<Point3D> for &Matrix4D {
     }
 }
 
-impl Mul<Vector3D> for &Matrix4D {
+impl<V: Vector> Mul<V> for &Matrix4D {
     type Output = (f64, f64, f64, f64);
 
-    fn mul(self, rhs: Vector3D) -> Self::Output {
+    fn mul(self, rhs: V) -> Self::Output {
         (
             self.m00() * rhs.x() + self.m01() * rhs.y() + self.m02() * rhs.z(),
             self.m10() * rhs.x() + self.m11() * rhs.y() + self.m12() * rhs.z(),
@@ -300,10 +300,10 @@ impl Mul<Vector3D> for &Matrix4D {
     }
 }
 
-impl Mul<Vector3D> for Matrix4D {
+impl<V: Vector> Mul<V> for Matrix4D {
     type Output = (f64, f64, f64, f64);
 
-    fn mul(self, rhs: Vector3D) -> Self::Output {
+    fn mul(self, rhs: V) -> Self::Output {
         &self * rhs
     }
 }

@@ -1,5 +1,5 @@
 use crate::matrix::Matrix4D;
-use crate::{Colour, Light, Object, Point3D, Vector3D};
+use crate::{Colour, Light, Normal3D, Object, Point3D, Vector, Vector3D};
 use std::vec::IntoIter;
 
 #[cfg(test)]
@@ -8,11 +8,11 @@ mod tests;
 #[derive(Clone, Debug, PartialEq)]
 pub struct Ray {
     pub origin: Point3D,
-    pub direction: Vector3D,
+    pub direction: Normal3D,
 }
 
 impl Ray {
-    pub fn new(origin: Point3D, direction: Vector3D) -> Self {
+    pub fn new(origin: Point3D, direction: Normal3D) -> Self {
         Ray { origin, direction }
     }
 
@@ -25,7 +25,7 @@ impl Ray {
         let origin = Point3D::new(x, y, z);
 
         let (x, y, z, _) = transformation * self.direction;
-        let direction = Vector3D::new(x, y, z);
+        let direction = Vector3D::new(x, y, z).normalised();
 
         Ray::new(origin, direction)
     }
@@ -56,12 +56,12 @@ pub struct HitData<'obj> {
     pub t: f64,
     pub object: &'obj Object,
     pub point: Point3D,
-    pub eye: Vector3D,
-    pub normal: Vector3D,
+    pub eye: Normal3D,
+    pub normal: Normal3D,
     pub inside: bool,
     pub over_point: Point3D,
     pub under_point: Point3D,
-    pub reflection: Vector3D,
+    pub reflection: Normal3D,
     pub entered_refractive: f64,
     pub exited_refractive: f64,
     pub uv: Option<(f64, f64)>,

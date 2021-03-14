@@ -2,7 +2,7 @@ use super::*;
 
 mod unit_tests {
     use super::*;
-    use crate::{Colour, Point3D, Transform, Vector3D};
+    use crate::{Colour, Normal3D, Point3D, Transform};
     use std::f64::consts::PI;
     use std::num::NonZeroU16;
 
@@ -11,7 +11,7 @@ mod unit_tests {
         let view_transform = Transform::view_transform(
             Point3D::new(0.0, 0.0, -5.0),
             Point3D::new(0.0, 0.0, 0.0),
-            Vector3D::new(0.0, 1.0, 0.0),
+            Normal3D::POSITIVE_Y,
         );
         let camera = Camera::new(
             NonZeroU16::new(11).unwrap(),

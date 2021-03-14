@@ -89,7 +89,7 @@ mod unit_tests {
     #[test]
     fn normalising_a_non_unit_x_vector_should_produce_a_unit_x_vector() {
         let vector = Vector3D::new(4.0, 0.0, 0.0);
-        assert_eq!(vector.normalised(), Vector3D::new(1.0, 0.0, 0.0));
+        assert_eq!(vector.normalised(), Normal3D::POSITIVE_X);
     }
 
     #[test]
@@ -97,7 +97,7 @@ mod unit_tests {
         let vector = Vector3D::new(1.0, 2.0, 3.0);
         assert_eq!(
             vector.normalised(),
-            Vector3D::new(
+            Normal3D::new(
                 1.0 / 14.0_f64.sqrt(),
                 2.0 / 14.0_f64.sqrt(),
                 3.0 / 14.0_f64.sqrt()
@@ -110,12 +110,13 @@ mod unit_tests {
     ///  - return another zero vector (which means `normalised` doesn't always return a unit vector)
     ///  - return `None` for zero vectors (and make the return type optional)
     ///  - returning an arbitrary unit vector
+    ///  - panicking
     /// returning a zero vector seems "least worst" for the time being
     #[test]
     fn normalising_a_zero_vector_should_produce_a_zero_vector() {
         let vector = Vector3D::new(0.0, 0.0, 0.0);
 
-        assert_eq!(vector.normalised(), Vector3D::new(0.0, 0.0, 0.0));
+        assert_eq!(vector.normalised(), Normal3D::new(0.0, 0.0, 0.0));
     }
 
     #[test]
@@ -138,7 +139,7 @@ mod unit_tests {
     #[test]
     fn should_correctly_reflect_a_vector_at_a_45_degree_angle_to_the_normal_plane() {
         let vector = Vector3D::new(1.0, -1.0, 0.0);
-        let normal = Vector3D::new(0.0, 1.0, 0.0);
+        let normal = Normal3D::POSITIVE_Y;
 
         let reflected = vector.reflect_through(normal);
         assert_eq!(reflected, Vector3D::new(1.0, 1.0, 0.0));
@@ -147,7 +148,7 @@ mod unit_tests {
     #[test]
     fn should_correctly_reflect_a_vector_off_a_slanted_plane() {
         let vector = Vector3D::new(0.0, -1.0, 0.0);
-        let normal = Vector3D::new(2.0_f64.sqrt() / 2.0, 2.0_f64.sqrt() / 2.0, 0.0);
+        let normal = Normal3D::new(2.0_f64.sqrt() / 2.0, 2.0_f64.sqrt() / 2.0, 0.0);
 
         let reflected = vector.reflect_through(normal);
         assert!(approx_eq!(

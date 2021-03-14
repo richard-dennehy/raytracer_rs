@@ -15,13 +15,31 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="reduce size of Transform and panic on creation if matrix is not invertible">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP create distinct type for normalised Vectors">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/performance.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/performance.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/camera/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/camera/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/camera/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/camera/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/matrix/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/matrix/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/matrix/underlying/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/underlying/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/matrix/underlying/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/underlying/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/obj_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/obj_parser/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/cone.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cone.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/cylinder.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cylinder.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/triangle.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/point/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/point/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tests.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/vector/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/vector/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/vector/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/vector/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/world/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/world/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/creating_a_scene.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/creating_a_scene.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,6 +92,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Richard\CLionProjects\raytracer\docs" />
       <recent name="C:\Users\Richard\CLionProjects\raytracer\benches\benchmarks" />
       <recent name="C:\Users\Richard\CLionProjects\raytracer\src" />
       <recent name="C:\Users\Richard\CLionProjects\raytracer\src\lib" />
@@ -89,7 +108,7 @@
       <command value="cargo bench" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.run (release)">
+  <component name="RunManager" selected="Cargo.test">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -195,6 +214,11 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.bench loop" />
@@ -206,8 +230,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.update" />
         <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.clean" />
@@ -332,14 +356,8 @@
       <workItem from="1615316546307" duration="3058000" />
       <workItem from="1615406605762" duration="3000000" />
       <workItem from="1615492692816" duration="5224000" />
-      <workItem from="1615634824009" duration="5602000" />
-    </task>
-    <task id="LOCAL-00064" summary="interpolate smooth triangle normals">
-      <created>1612016054343</created>
-      <option name="number" value="00064" />
-      <option name="presentableId" value="LOCAL-00064" />
-      <option name="project" value="LOCAL" />
-      <updated>1612016054343</updated>
+      <workItem from="1615634824009" duration="5625000" />
+      <workItem from="1615724339849" duration="5185000" />
     </task>
     <task id="LOCAL-00065" summary="parse faces with texture and normal data">
       <created>1612097700218</created>
@@ -677,7 +695,14 @@
       <option name="project" value="LOCAL" />
       <updated>1615503248986</updated>
     </task>
-    <option name="localTasksCounter" value="113" />
+    <task id="LOCAL-00113" summary="WIP create distinct type for normalised Vectors">
+      <created>1615642576365</created>
+      <option name="number" value="00113" />
+      <option name="presentableId" value="LOCAL-00113" />
+      <option name="project" value="LOCAL" />
+      <updated>1615642576365</updated>
+    </task>
+    <option name="localTasksCounter" value="114" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -703,7 +728,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added documentation for parser assumptions" />
     <MESSAGE value="WIP convert scene description into scene objects" />
     <MESSAGE value="still WIP convert scene description into scene objects" />
     <MESSAGE value="still WIP add tests for scene creation from YAML" />
@@ -728,7 +752,8 @@
     <MESSAGE value="add property tests for inverting transformations" />
     <MESSAGE value="add property tests for transformation behaviour" />
     <MESSAGE value="reduce size of Transform and panic on creation if matrix is not invertible" />
-    <option name="LAST_COMMIT_MESSAGE" value="reduce size of Transform and panic on creation if matrix is not invertible" />
+    <MESSAGE value="WIP create distinct type for normalised Vectors" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP create distinct type for normalised Vectors" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -745,7 +770,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/object/mod.rs</url>
-          <line>190</line>
+          <line>191</line>
           <option name="timeStamp" value="20" />
         </line-breakpoint>
       </breakpoints>

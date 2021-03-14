@@ -1,4 +1,4 @@
-use crate::{Point3D, Vector3D};
+use crate::{Normal3D, Point3D, Vector, Vector3D};
 use std::fmt;
 use std::fmt::{Debug, Formatter};
 use std::ops::{Mul, MulAssign};
@@ -211,8 +211,7 @@ impl Transform {
         self.inverse
     }
 
-    pub fn view_transform(from: Point3D, to: Point3D, up: Vector3D) -> Self {
-        let up = up.normalised();
+    pub fn view_transform(from: Point3D, to: Point3D, up: Normal3D) -> Self {
         let forward = (to - from).normalised();
         let left = forward.cross(up);
         let true_up = left.cross(forward);
