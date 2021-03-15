@@ -66,13 +66,14 @@ mod unit_tests {
 
         let hit_data = HitData::from(&ray, intersection, intersections);
         let colour = world.shade_hit(&hit_data);
+        let expected = Colour::new(0.9049844720832575, 0.9049844720832575, 0.9049844720832575);
 
-        assert!(approx_eq!(
-            Colour,
+        assert!(
+            approx_eq!(Colour, colour, expected, epsilon = f32::EPSILON as f64),
+            "{:?} != {:?}",
             colour,
-            Colour::new(0.9049844720832575, 0.9049844720832575, 0.9049844720832575),
-            epsilon = f32::EPSILON as f64
-        ));
+            expected
+        );
     }
 
     #[test]

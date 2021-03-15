@@ -8,12 +8,16 @@ mod tests;
 #[derive(Clone, Debug, PartialEq)]
 pub struct Ray {
     pub origin: Point3D,
-    pub direction: Normal3D,
+    // a ray should be normalised when created, but may be stretched or squashed
+    pub direction: Vector3D,
 }
 
 impl Ray {
     pub fn new(origin: Point3D, direction: Normal3D) -> Self {
-        Ray { origin, direction }
+        Ray {
+            origin,
+            direction: direction.into(),
+        }
     }
 
     pub fn position(&self, time: f64) -> Point3D {
@@ -25,9 +29,9 @@ impl Ray {
         let origin = Point3D::new(x, y, z);
 
         let (x, y, z, _) = transformation * self.direction;
-        let direction = Vector3D::new(x, y, z).normalised();
+        let direction = Vector3D::new(x, y, z);
 
-        Ray::new(origin, direction)
+        Ray { origin, direction }
     }
 }
 
@@ -74,7 +78,7 @@ impl<'obj> HitData<'obj> {
         intersections: Intersections<'obj>,
     ) -> Self {
         let point = ray.position(intersection.t);
-        let eye = -ray.direction;
+        let eye = -ray.direction.normalised();
         let normal = intersection.with.normal_at(point, intersection.uv);
 
         let inside = normal.dot(eye) < 0.0;
@@ -83,7 +87,7 @@ impl<'obj> HitData<'obj> {
         let offset = normal * (f32::EPSILON as f64); // f64 epsilon isn't sufficient to compensate for rounding errors
         let over_point = point + offset;
         let under_point = point - offset;
-        let reflection = ray.direction.reflect_through(normal);
+        let reflection = ray.direction.normalised().reflect_through(normal);
 
         // calculate refraction changes from entering one material and exiting another (including the empty space)
         let mut entered_refractive = 1.0;

@@ -11,7 +11,7 @@ mod shape_tests {
         let point = Point3D::new(0.0, 0.0, -1.0);
 
         let normal = sphere.normal_at(point, None);
-        let eye_vector = Normal3D::POSITIVE_Z;
+        let eye_vector = Normal3D::NEGATIVE_Z;
         let light = Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, -10.0));
 
         let lit_material = sphere.colour_at(point, &light, eye_vector, normal, false);
@@ -63,7 +63,7 @@ mod shape_tests {
         let lit_material = sphere.colour_at(point, &light, eye_vector, normal, false);
         assert_eq!(
             lit_material,
-            Colour::new(1.6363961030678928, 1.6363961030678928, 1.6363961030678928)
+            Colour::new(1.6363961030679328, 1.6363961030679328, 1.6363961030679328)
         );
     }
 
@@ -445,7 +445,7 @@ mod cube_tests {
     #[test]
     fn a_ray_directly_towards_the_pos_x_face_should_intersect() {
         let cube = Object::cube();
-        let ray = Ray::new(Point3D::new(5.0, 0.5, 0.0), Normal3D::POSITIVE_X);
+        let ray = Ray::new(Point3D::new(5.0, 0.5, 0.0), Normal3D::NEGATIVE_X);
 
         let intersections = cube.intersect(&ray);
         assert_eq!(intersections.len(), 2);
@@ -840,14 +840,13 @@ mod cone_tests {
         let cone = Object::cone().build();
 
         vec![
-            ("Middle point", Point3D::ORIGIN, Vector3D::new(0.0, 0.0, 0.0)),
-            ("Positive y", Point3D::new(1.0, 1.0, 1.0), Vector3D::new(1.0, -SQRT_2, 1.0)),
-            ("Negative y", Point3D::new(-1.0, -1.0, 0.0), Vector3D::new(-1.0, 1.0, 0.0)),
+            ("Middle point", Point3D::ORIGIN, Vector3D::new(0.0, 0.0, 0.0).normalised()),
+            ("Positive y", Point3D::new(1.0, 1.0, 1.0), Vector3D::new(1.0, -SQRT_2, 1.0).normalised()),
+            ("Negative y", Point3D::new(-1.0, -1.0, 0.0), Vector3D::new(-1.0, 1.0, 0.0).normalised()),
         ]
         .into_iter()
         .for_each(|(scenario, point, normal)| {
-            // the book examples aren't normalised
-            assert_eq!(cone.normal_at(point, None), normal.normalised(), "{}", scenario);
+            assert!(approx_eq!(Normal3D, cone.normal_at(point, None), normal), "{}", scenario);
         })
     }
 }
@@ -921,10 +920,11 @@ mod group_tests {
             .first()
             .unwrap();
 
-        assert_eq!(
+        assert!(approx_eq!(
+            Normal3D,
             sphere_ref.normal_at(Point3D::new(1.7321, 1.1547, -5.5774), None),
             Vector3D::new(0.28570368184140726, 0.428543151781141, -0.8571605294481017).normalised()
-        );
+        ));
     }
 }
 

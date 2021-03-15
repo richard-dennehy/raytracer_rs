@@ -93,7 +93,7 @@ f 1 2 3 4 5";
             p3: Point3D(1.0, 0.0, 0.0), \
             edge1: Vector3D(2.0, -1.0, 0.0), \
             edge2: Vector3D(0.0, 0.0, 0.0), \
-            kind: Uniform(Vector3D(0.0, 0.0, 0.0)) \
+            kind: Uniform(Normal3D(0.0, 0.0, 0.0)) \
             }"
             .to_string()
         );
@@ -106,7 +106,7 @@ f 1 2 3 4 5";
             p3: Point3D(1.0, 1.0, 0.0), \
             edge1: Vector3D(2.0, -1.0, 0.0), \
             edge2: Vector3D(0.0, 1.0, 0.0), \
-            kind: Uniform(Vector3D(0.0, 0.0, -1.0)) \
+            kind: Uniform(Normal3D(0.0, 0.0, -1.0)) \
             }"
             .to_string()
         );
@@ -135,7 +135,7 @@ f 1 2 3 4 5";
             p3: Point3D(1.0, 0.0, 0.0), \
             edge1: Vector3D(0.0, -1.0, 0.0), \
             edge2: Vector3D(2.0, 0.0, 0.0), \
-            kind: Uniform(Vector3D(0.0, 0.0, -1.0)) \
+            kind: Uniform(Normal3D(0.0, 0.0, -1.0)) \
             }"
             .to_string()
         );
@@ -148,7 +148,7 @@ f 1 2 3 4 5";
             p3: Point3D(1.0, 1.0, 0.0), \
             edge1: Vector3D(2.0, -1.0, 0.0), \
             edge2: Vector3D(0.0, 1.0, 0.0), \
-            kind: Uniform(Vector3D(0.0, 0.0, -1.0)) \
+            kind: Uniform(Normal3D(0.0, 0.0, -1.0)) \
             }"
             .to_string()
         );
@@ -161,7 +161,7 @@ f 1 2 3 4 5";
              p3: Point3D(0.0, 2.0, 0.0), \
              edge1: Vector3D(2.0, 0.0, 0.0), \
              edge2: Vector3D(-1.0, 1.0, 0.0), \
-             kind: Uniform(Vector3D(0.0, 0.0, -1.0)) \
+             kind: Uniform(Normal3D(0.0, 0.0, -1.0)) \
              }"
             .to_string()
         );
@@ -310,9 +310,9 @@ f 1 2 3 4 5";
             edge1: Vector3D(-1.0, -1.0, 0.0), \
             edge2: Vector3D(1.0, -1.0, 0.0), \
             kind: Smooth { \
-            normal1: Vector3D(0.0, 1.0, 0.0), \
-            normal2: Vector3D(-1.0, 0.0, 0.0), \
-            normal3: Vector3D(1.0, 0.0, 0.0) \
+            normal1: Normal3D(0.0, 1.0, 0.0), \
+            normal2: Normal3D(-1.0, 0.0, 0.0), \
+            normal3: Normal3D(1.0, 0.0, 0.0) \
             } \
             }"
             .to_string()
@@ -327,9 +327,9 @@ f 1 2 3 4 5";
             edge1: Vector3D(-1.0, -1.0, 0.0), \
             edge2: Vector3D(1.0, -1.0, 0.0), \
             kind: Smooth { \
-            normal1: Vector3D(0.0, 1.0, 0.0), \
-            normal2: Vector3D(-1.0, 0.0, 0.0), \
-            normal3: Vector3D(1.0, 0.0, 0.0) \
+            normal1: Normal3D(0.0, 1.0, 0.0), \
+            normal2: Normal3D(-1.0, 0.0, 0.0), \
+            normal3: Normal3D(1.0, 0.0, 0.0) \
             } \
             }"
             .to_string()

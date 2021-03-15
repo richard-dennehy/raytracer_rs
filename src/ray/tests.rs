@@ -87,7 +87,7 @@ mod ray_unit_tests {
 
         let transformed = ray.transformed(&matrix.underlying());
         assert_eq!(transformed.origin, Point3D::new(4.0, 6.0, 8.0));
-        assert_eq!(transformed.direction, Normal3D::POSITIVE_Y);
+        assert_eq!(transformed.direction, Vector3D::new(0.0, 1.0, 0.0));
     }
 
     #[test]
@@ -97,7 +97,7 @@ mod ray_unit_tests {
 
         let transformed = ray.transformed(&matrix.underlying());
         assert_eq!(transformed.origin, Point3D::new(2.0, 6.0, 12.0));
-        assert_eq!(transformed.direction, Normal3D::POSITIVE_Y);
+        assert_eq!(transformed.direction, Vector3D::new(0.0, 3.0, 0.0));
     }
 
     #[test]

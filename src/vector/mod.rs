@@ -41,6 +41,12 @@ impl Vector3D {
     }
 }
 
+impl From<Normal3D> for Vector3D {
+    fn from(normal: Normal3D) -> Self {
+        Vector3D(normal.x(), normal.y(), normal.z())
+    }
+}
+
 impl Vector for Vector3D {
     fn x(&self) -> f64 {
         self.0

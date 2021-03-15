@@ -54,3 +54,10 @@ increasing execution time of individual tasks, but potentially reducing overall 
 
 - Effort: small - requires deeper knowledge of Rayon API, but actual code changes are trivial
 - Performance impact: significant regression - up to 23% increase in execution time
+
+### Distinct type for normalised Vectors
+Implemented for correctness reasons, but coincidentally appears to improve performance.
+It's not obvious to me why this is the case - normalising a normalised vector now optimises to a no-op, but it's unclear why the impact of this is so large.
+
+- Effort: moderate - a large number of Vectors across the codebase needed to be updated to Normals where appropriate
+- Performance impact: 3-4% reduction in execution time
