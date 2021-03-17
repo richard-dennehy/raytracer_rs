@@ -140,7 +140,6 @@ impl<'obj> HitData<'obj> {
     }
 
     pub fn colour(&self, light: &Light, in_shadow: bool) -> Colour {
-        // TODO using `point` instead of `over_point` causes severe acne on e.g. checkered planes - write a test for this somehow
         self.object
             .colour_at(self.over_point, light, self.eye, self.normal, in_shadow)
     }

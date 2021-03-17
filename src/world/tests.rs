@@ -2,7 +2,7 @@ use super::*;
 
 mod unit_tests {
     use super::*;
-    use crate::{Normal3D, Vector3D};
+    use crate::{Camera, Normal3D, Vector3D};
     use std::f64::consts::{PI, SQRT_2};
 
     #[test]
@@ -461,5 +461,51 @@ mod unit_tests {
             expected,
             actual
         );
+    }
+
+    // using the hit `point` rather than `over_point` results in hideous acne at certain angles;
+    // this test ensures that doesn't happen
+    #[test]
+    fn a_checker_pattern_on_a_rotated_plane_should_not_have_noise() {
+        use nonzero_ext::*;
+
+        let mut world = World::empty();
+        world.lights.push(Light::point(
+            Colour::WHITE,
+            Point3D::new(-10.0, 10.0, -10.0),
+        ));
+        world.objects.push(
+            Object::plane()
+                .with_transform(Transform::identity().rotate_x(-PI / 4.0))
+                .with_material(Material {
+                    pattern: Pattern::checkers(Colour::WHITE, Colour::BLACK),
+                    // ensure lighting doesn't affect colours
+                    ambient: 1.0,
+                    specular: 0.0,
+                    diffuse: 0.0,
+                    ..Default::default()
+                }),
+        );
+
+        // it's easier to use the camera to generate the rays
+        let camera = Camera::new(
+            nonzero!(400u16),
+            nonzero!(400u16),
+            PI / 3.0,
+            Transform::view_transform(
+                Point3D::new(0.0, 1.0, -5.0),
+                Point3D::new(0.0, 0.0, 0.0),
+                Normal3D::POSITIVE_Y,
+            ),
+        );
+
+        let rays = (0..5)
+            .into_iter()
+            .flat_map(|x| (0..5).into_iter().map(move |y| (x, y)))
+            .map(|(x, y)| camera.ray_at(x, y))
+            .collect::<Vec<_>>();
+
+        rays.into_iter()
+            .for_each(|ray| assert_eq!(world.colour_at(ray), Colour::WHITE))
     }
 }

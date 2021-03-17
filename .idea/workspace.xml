@@ -15,16 +15,11 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP replace Vector3D with Normal3D for normal vectors">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="replace Vector3D with Normal3D for normal vectors">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/performance.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/performance.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/camera/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/camera/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/obj_parser/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/obj_parser/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vector/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/vector/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/world/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -94,7 +89,7 @@
       <command value="cargo bench" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.bench">
+  <component name="RunManager" selected="Cargo.test">
     <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -216,10 +211,10 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.test" />
-        <item itemvalue="Cargo.update" />
         <item itemvalue="Cargo.run (release)" />
+        <item itemvalue="Cargo.bench" />
+        <item itemvalue="Cargo.update" />
         <item itemvalue="Cargo.clean" />
       </list>
     </recent_temporary>
@@ -344,14 +339,10 @@
       <workItem from="1615492692816" duration="5224000" />
       <workItem from="1615634824009" duration="5625000" />
       <workItem from="1615724339849" duration="5219000" />
-      <workItem from="1615848123548" duration="2157000" />
-    </task>
-    <task id="LOCAL-00066" summary="convert faces with normals into smooth triangles">
-      <created>1612185117234</created>
-      <option name="number" value="00066" />
-      <option name="presentableId" value="LOCAL-00066" />
-      <option name="project" value="LOCAL" />
-      <updated>1612185117235</updated>
+      <workItem from="1615848123548" duration="2189000" />
+      <workItem from="1615933139272" duration="166000" />
+      <workItem from="1616012409674" duration="266000" />
+      <workItem from="1616019448583" duration="1528000" />
     </task>
     <task id="LOCAL-00067" summary="example rendering wavefront file">
       <created>1612292509389</created>
@@ -689,7 +680,14 @@
       <option name="project" value="LOCAL" />
       <updated>1615729563462</updated>
     </task>
-    <option name="localTasksCounter" value="115" />
+    <task id="LOCAL-00115" summary="replace Vector3D with Normal3D for normal vectors">
+      <created>1615850299966</created>
+      <option name="number" value="00115" />
+      <option name="presentableId" value="LOCAL-00115" />
+      <option name="project" value="LOCAL" />
+      <updated>1615850299966</updated>
+    </task>
+    <option name="localTasksCounter" value="116" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -715,7 +713,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="still WIP convert scene description into scene objects" />
     <MESSAGE value="still WIP add tests for scene creation from YAML" />
     <MESSAGE value="example: render cover image from YAML file" />
     <MESSAGE value="yaml parser: replace Vec&lt;Transform&gt; with Vec&lt;Either&lt;String, Transform&gt;&gt; to handle define references" />
@@ -740,7 +737,8 @@
     <MESSAGE value="reduce size of Transform and panic on creation if matrix is not invertible" />
     <MESSAGE value="WIP create distinct type for normalised Vectors" />
     <MESSAGE value="WIP replace Vector3D with Normal3D for normal vectors" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP replace Vector3D with Normal3D for normal vectors" />
+    <MESSAGE value="replace Vector3D with Normal3D for normal vectors" />
+    <option name="LAST_COMMIT_MESSAGE" value="replace Vector3D with Normal3D for normal vectors" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

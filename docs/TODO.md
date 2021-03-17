@@ -1,8 +1,5 @@
 - Check disabling shadows does anything meaningful
-- Add test for checkers pattern acne fix
 - Check if `HitData::inside` needs to be saved
-- Enforce Ray Vectors are Normalised
-- Distinct type for Normalised Vectors
 - Handle cone centre intersections (currently returns Zero vector)
 - Use `copy` as much as possible
 - Remove references where possible
