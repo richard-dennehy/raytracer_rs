@@ -66,7 +66,9 @@ impl Vector for Vector3D {
         let magnitude = self.magnitude();
 
         if magnitude <= f64::EPSILON {
-            Normal3D::new(0.0, 0.0, 0.0) // FIXME this is wrong - probably just panic here instead
+            // this is wrong, but panicking isn't helpful, and it's difficult to replace this with a meaningful Unit vector
+            // this may result in odd-looking colours for some pixels, but it _should_ be rare that this branch is ever hit (point of Cones)
+            Normal3D::new(0.0, 0.0, 0.0)
         } else {
             Normal3D::new(
                 self.x() / magnitude,

@@ -57,18 +57,14 @@ impl<'with> Intersection<'with> {
 }
 
 pub struct HitData<'obj> {
-    pub t: f64,
     pub object: &'obj Object,
-    pub point: Point3D,
     pub eye: Normal3D,
     pub normal: Normal3D,
-    pub inside: bool,
     pub over_point: Point3D,
     pub under_point: Point3D,
     pub reflection: Normal3D,
     pub entered_refractive: f64,
     pub exited_refractive: f64,
-    pub uv: Option<(f64, f64)>,
 }
 
 impl<'obj> HitData<'obj> {
@@ -124,18 +120,14 @@ impl<'obj> HitData<'obj> {
         }
 
         HitData {
-            t: intersection.t,
             object: intersection.with,
-            point,
             eye,
             normal,
-            inside,
             over_point,
             under_point,
             reflection,
             entered_refractive,
             exited_refractive,
-            uv: intersection.uv,
         }
     }
 

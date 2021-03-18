@@ -15,12 +15,13 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="replace Vector3D with Normal3D for normal vectors">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add test for checkered plane acne fix">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/world/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/vector/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/vector/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/world/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,11 +91,6 @@
     </option>
   </component>
   <component name="RunManager" selected="Cargo.test">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -200,6 +196,11 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.bench loop" />
@@ -212,8 +213,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.test" />
-        <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.bench" />
+        <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.update" />
         <item itemvalue="Cargo.clean" />
       </list>
@@ -342,28 +343,8 @@
       <workItem from="1615848123548" duration="2189000" />
       <workItem from="1615933139272" duration="166000" />
       <workItem from="1616012409674" duration="266000" />
-      <workItem from="1616019448583" duration="1528000" />
-    </task>
-    <task id="LOCAL-00067" summary="example rendering wavefront file">
-      <created>1612292509389</created>
-      <option name="number" value="00067" />
-      <option name="presentableId" value="LOCAL-00067" />
-      <option name="project" value="LOCAL" />
-      <updated>1612292509389</updated>
-    </task>
-    <task id="LOCAL-00068" summary="remove test functions from shape trait">
-      <created>1612295324443</created>
-      <option name="number" value="00068" />
-      <option name="presentableId" value="LOCAL-00068" />
-      <option name="project" value="LOCAL" />
-      <updated>1612295324443</updated>
-    </task>
-    <task id="LOCAL-00069" summary="remove test functions from shape trait">
-      <created>1612295385066</created>
-      <option name="number" value="00069" />
-      <option name="presentableId" value="LOCAL-00069" />
-      <option name="project" value="LOCAL" />
-      <updated>1612295385066</updated>
+      <workItem from="1616019448583" duration="1709000" />
+      <workItem from="1616104745722" duration="2373000" />
     </task>
     <task id="LOCAL-00070" summary="WIP CSG">
       <created>1612385654987</created>
@@ -687,7 +668,28 @@
       <option name="project" value="LOCAL" />
       <updated>1615850299966</updated>
     </task>
-    <option name="localTasksCounter" value="116" />
+    <task id="LOCAL-00116" summary="add test for checkerd plane acne fix">
+      <created>1616021138453</created>
+      <option name="number" value="00116" />
+      <option name="presentableId" value="LOCAL-00116" />
+      <option name="project" value="LOCAL" />
+      <updated>1616021138453</updated>
+    </task>
+    <task id="LOCAL-00117" summary="add test for checkerd plane acne fix">
+      <created>1616021143491</created>
+      <option name="number" value="00117" />
+      <option name="presentableId" value="LOCAL-00117" />
+      <option name="project" value="LOCAL" />
+      <updated>1616021143491</updated>
+    </task>
+    <task id="LOCAL-00118" summary="add test for checkered plane acne fix">
+      <created>1616021148418</created>
+      <option name="number" value="00118" />
+      <option name="presentableId" value="LOCAL-00118" />
+      <option name="project" value="LOCAL" />
+      <updated>1616021148418</updated>
+    </task>
+    <option name="localTasksCounter" value="119" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -713,8 +715,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="still WIP add tests for scene creation from YAML" />
-    <MESSAGE value="example: render cover image from YAML file" />
     <MESSAGE value="yaml parser: replace Vec&lt;Transform&gt; with Vec&lt;Either&lt;String, Transform&gt;&gt; to handle define references" />
     <MESSAGE value="split yaml parser tests" />
     <MESSAGE value="YAML parser: add support for stripe patterns" />
@@ -738,19 +738,21 @@
     <MESSAGE value="WIP create distinct type for normalised Vectors" />
     <MESSAGE value="WIP replace Vector3D with Normal3D for normal vectors" />
     <MESSAGE value="replace Vector3D with Normal3D for normal vectors" />
-    <option name="LAST_COMMIT_MESSAGE" value="replace Vector3D with Normal3D for normal vectors" />
+    <MESSAGE value="add test for checkerd plane acne fix" />
+    <MESSAGE value="add test for checkered plane acne fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="add test for checkered plane acne fix" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/world/mod.rs</url>
-          <line>41</line>
+          <line>43</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/world/mod.rs</url>
-          <line>73</line>
+          <line>76</line>
           <option name="timeStamp" value="15" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">

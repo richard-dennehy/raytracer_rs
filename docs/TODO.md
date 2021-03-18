@@ -1,6 +1,4 @@
 - Check disabling shadows does anything meaningful
-- Check if `HitData::inside` needs to be saved
-- Handle cone centre intersections (currently returns Zero vector)
 - Use `copy` as much as possible
 - Remove references where possible
 - Handle obj parser errors more gracefully

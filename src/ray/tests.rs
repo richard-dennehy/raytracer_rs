@@ -111,12 +111,34 @@ mod ray_unit_tests {
         let intersection = intersections.0[0].clone();
 
         let data = HitData::from(&ray, intersection, intersections);
-        assert_eq!(data.t, 4.0);
         assert_eq!(data.object.id(), sphere.id());
-        assert_eq!(data.point, Point3D::new(0.0, 0.0, -1.0));
+
+        assert!(
+            approx_eq!(
+                Point3D,
+                data.over_point,
+                Point3D::new(0.0, 0.0, -1.0),
+                epsilon = f32::EPSILON as f64
+            ),
+            "{:?} != {:?}",
+            data.over_point,
+            Point3D::new(0.0, 0.0, -1.0)
+        );
+        assert!(
+            approx_eq!(
+                Point3D,
+                data.under_point,
+                Point3D::new(0.0, 0.0, -1.0),
+                epsilon = f32::EPSILON as f64
+            ),
+            "{:?} != {:?}",
+            data.over_point,
+            Point3D::new(0.0, 0.0, -1.0)
+        );
+        assert!(data.over_point.z() < data.under_point.z());
+
         assert_eq!(data.eye, Normal3D::NEGATIVE_Z);
         assert_eq!(data.normal, Normal3D::NEGATIVE_Z);
-        assert_eq!(data.inside, false);
     }
 
     #[test]
@@ -130,12 +152,34 @@ mod ray_unit_tests {
         let intersection = intersections.0[1].clone();
 
         let data = HitData::from(&ray, intersection, intersections);
-        assert_eq!(data.t, 1.0);
         assert_eq!(data.object.id(), sphere.id());
-        assert_eq!(data.point, Point3D::new(0.0, 0.0, 1.0));
+
+        assert!(
+            approx_eq!(
+                Point3D,
+                data.over_point,
+                Point3D::new(0.0, 0.0, 1.0),
+                epsilon = f32::EPSILON as f64
+            ),
+            "{:?} != {:?}",
+            data.over_point,
+            Point3D::new(0.0, 0.0, 1.0)
+        );
+        assert!(
+            approx_eq!(
+                Point3D,
+                data.under_point,
+                Point3D::new(0.0, 0.0, 1.0),
+                epsilon = f32::EPSILON as f64
+            ),
+            "{:?} != {:?}",
+            data.under_point,
+            Point3D::new(0.0, 0.0, 1.0)
+        );
+        assert!(data.over_point.z() < data.under_point.z());
+
         assert_eq!(data.eye, Normal3D::NEGATIVE_Z);
         assert_eq!(data.normal, Normal3D::NEGATIVE_Z);
-        assert!(data.inside);
     }
 
     #[test]
@@ -149,7 +193,7 @@ mod ray_unit_tests {
         let intersection = intersections.0[0].clone();
         let data = HitData::from(&ray, intersection, intersections);
         assert!(data.over_point.z() < -f64::EPSILON / 2.0);
-        assert!(data.point.z() > data.over_point.z());
+        assert!(data.under_point.z() > data.over_point.z());
     }
 
     #[test]
@@ -163,7 +207,7 @@ mod ray_unit_tests {
         let intersection = intersections.0[0].clone();
         let data = HitData::from(&ray, intersection, intersections);
         assert!(data.under_point.z() > -f64::EPSILON / 2.0);
-        assert!(data.point.z() < data.under_point.z());
+        assert!(data.over_point.z() < data.under_point.z());
     }
 
     #[test]
