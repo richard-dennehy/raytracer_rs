@@ -130,7 +130,7 @@ value:
 }
 
 #[test]
-#[clippy::allow("approx_constant")]
+#[allow(clippy::approx_constant)]
 fn should_parse_a_material_define_using_a_stripes_pattern() {
     let input = "\
 define: wall-material
@@ -281,7 +281,7 @@ value:
 }
 
 #[test]
-#[clippy::allow("approx_constant")]
+#[allow(clippy::approx_constant)]
 fn should_parse_simple_plane_description() {
     let input = "\
 add: plane
@@ -394,7 +394,7 @@ transform:
 }
 
 #[test]
-#[clippy::allow("approx_constant")] // approximation of PI/2 matches the file
+#[allow(clippy::approx_constant)] // approximation of PI/2 matches the file
 fn should_parse_scene_description() {
     let scene = include_str!(concat!(
         env!("CARGO_MANIFEST_DIR"),

@@ -114,7 +114,7 @@ fn should_be_able_to_create_an_object_with_a_checker_pattern() {
 }
 
 #[test]
-#[clippy::allow("approx_constant")]
+#[allow(clippy::approx_constant)]
 fn should_be_able_to_create_an_object_with_a_pattern_with_a_transform() {
     let input = with_camera_description(
         "\
