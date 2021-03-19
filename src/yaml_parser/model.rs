@@ -87,9 +87,8 @@ impl SceneDescription {
                         acc.and_then(|lhs| next.map(|rhs| rhs * lhs))
                     });
 
-                material.and_then(|mat| {
-                    transform.map(|tf| object.with_material(mat).with_transform(tf))
-                })
+                material
+                    .and_then(|mat| transform.map(|tf| object.with_material(mat).transformed(tf)))
             })
             .collect()
     }

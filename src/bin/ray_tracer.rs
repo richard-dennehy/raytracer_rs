@@ -24,7 +24,7 @@ fn main() -> Result<(), String> {
     ));
     world.objects.push(
         Object::plane()
-            .with_transform(Transform::identity().rotate_x(-PI / 4.0))
+            .transformed(Transform::identity().rotate_x(-PI / 4.0))
             .with_material(Material {
                 pattern: Pattern::checkers(Colour::WHITE, Colour::BLACK),
                 ambient: 1.0,

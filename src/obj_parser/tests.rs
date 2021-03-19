@@ -23,7 +23,9 @@ in a relative way,
 and came back the previous night.";
 
         let out = parse(invalid_obj_file);
-        assert_eq!(out.ignored_lines, 5);
+        assert!(out.vertices.is_empty());
+        assert!(out.normals.is_empty());
+        assert!(out.groups.is_empty());
     }
 
     #[test]

@@ -11,7 +11,6 @@ pub fn parse(input: &str) -> ObjData {
     let mut normals = vec![];
     let mut polys = vec![];
     let mut groups = vec![];
-    let mut ignored_lines = 0;
 
     input.lines().map(|line| line.trim()).for_each(|line| {
         let mut parts = line.split_whitespace();
@@ -26,7 +25,7 @@ pub fn parse(input: &str) -> ObjData {
                     groups.push(polys);
                 }
             }
-            _ => ignored_lines += 1,
+            _ => (),
         }
     });
 
@@ -38,7 +37,6 @@ pub fn parse(input: &str) -> ObjData {
         vertices,
         normals,
         groups,
-        ignored_lines,
     }
 }
 
@@ -111,7 +109,6 @@ pub struct ObjData {
     vertices: Vec<Point3D>,
     normals: Vec<Vector3D>,
     groups: Vec<Group>,
-    pub ignored_lines: usize,
 }
 
 impl ObjData {

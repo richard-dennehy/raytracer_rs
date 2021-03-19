@@ -185,7 +185,7 @@ mod ray_unit_tests {
     #[test]
     fn the_hit_data_should_contain_offset_point_for_shadow_calculations() {
         let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z);
-        let sphere = Object::sphere().with_transform(Transform::identity().translate_z(1.0));
+        let sphere = Object::sphere().transformed(Transform::identity().translate_z(1.0));
 
         let intersections = sphere.intersect(&ray);
         assert_eq!(intersections.len(), 2);
@@ -199,7 +199,7 @@ mod ray_unit_tests {
     #[test]
     fn the_hit_data_should_contain_an_under_offset_point_for_refraction_calculations() {
         let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z);
-        let sphere = Object::sphere().with_transform(Transform::identity().translate_z(1.0));
+        let sphere = Object::sphere().transformed(Transform::identity().translate_z(1.0));
 
         let intersections = sphere.intersect(&ray);
         assert_eq!(intersections.len(), 2);
@@ -237,7 +237,7 @@ mod ray_unit_tests {
                 refractive: 1.5,
                 ..Default::default()
             })
-            .with_transform(Transform::identity().scale_all(2.0));
+            .transformed(Transform::identity().scale_all(2.0));
 
         let second = Object::sphere()
             .with_material(Material {
@@ -245,7 +245,7 @@ mod ray_unit_tests {
                 refractive: 2.0,
                 ..Default::default()
             })
-            .with_transform(Transform::identity().translate_z(-0.25));
+            .transformed(Transform::identity().translate_z(-0.25));
 
         let third = Object::sphere()
             .with_material(Material {
@@ -253,7 +253,7 @@ mod ray_unit_tests {
                 refractive: 2.5,
                 ..Default::default()
             })
-            .with_transform(Transform::identity().translate_z(0.25));
+            .transformed(Transform::identity().translate_z(0.25));
 
         let ray = Ray::new(Point3D::new(0.0, 0.0, -4.0), Normal3D::POSITIVE_Z);
         let intersections = first

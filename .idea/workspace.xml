@@ -15,13 +15,19 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add test for checkered plane acne fix">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="remove unused fields from HitData">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/colour/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/colour/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/light/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/light/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/obj_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/obj_parser/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/obj_parser/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/obj_parser/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ray/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vector/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/vector/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/world/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/world/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,6 +97,11 @@
     </option>
   </component>
   <component name="RunManager" selected="Cargo.test">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -194,11 +205,6 @@
       <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <list>
@@ -344,14 +350,8 @@
       <workItem from="1615933139272" duration="166000" />
       <workItem from="1616012409674" duration="266000" />
       <workItem from="1616019448583" duration="1709000" />
-      <workItem from="1616104745722" duration="2373000" />
-    </task>
-    <task id="LOCAL-00070" summary="WIP CSG">
-      <created>1612385654987</created>
-      <option name="number" value="00070" />
-      <option name="presentableId" value="LOCAL-00070" />
-      <option name="project" value="LOCAL" />
-      <updated>1612385654988</updated>
+      <workItem from="1616104745722" duration="2455000" />
+      <workItem from="1616181821179" duration="2248000" />
     </task>
     <task id="LOCAL-00071" summary="CSG Union, Intersection, and Difference operations">
       <created>1612470541350</created>
@@ -689,7 +689,14 @@
       <option name="project" value="LOCAL" />
       <updated>1616021148418</updated>
     </task>
-    <option name="localTasksCounter" value="119" />
+    <task id="LOCAL-00119" summary="remove unused fields from HitData">
+      <created>1616107150636</created>
+      <option name="number" value="00119" />
+      <option name="presentableId" value="LOCAL-00119" />
+      <option name="project" value="LOCAL" />
+      <updated>1616107150636</updated>
+    </task>
+    <option name="localTasksCounter" value="120" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -715,7 +722,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="yaml parser: replace Vec&lt;Transform&gt; with Vec&lt;Either&lt;String, Transform&gt;&gt; to handle define references" />
     <MESSAGE value="split yaml parser tests" />
     <MESSAGE value="YAML parser: add support for stripe patterns" />
     <MESSAGE value="WIP extend yaml parser pattern support" />
@@ -740,7 +746,8 @@
     <MESSAGE value="replace Vector3D with Normal3D for normal vectors" />
     <MESSAGE value="add test for checkerd plane acne fix" />
     <MESSAGE value="add test for checkered plane acne fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="add test for checkered plane acne fix" />
+    <MESSAGE value="remove unused fields from HitData" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove unused fields from HitData" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

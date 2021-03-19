@@ -167,7 +167,7 @@ mod unit_tests {
                     reflective: 0.5,
                     ..Default::default()
                 })
-                .with_transform(Transform::identity().translate_y(-1.0));
+                .transformed(Transform::identity().translate_y(-1.0));
 
             world.objects.push(reflective_plane);
         };
@@ -197,14 +197,14 @@ mod unit_tests {
         {
             let upper = Object::plane()
                 .with_material(reflective_non_blinding_material.clone())
-                .with_transform(Transform::identity().rotate_x(PI).translate_y(1.0));
+                .transformed(Transform::identity().rotate_x(PI).translate_y(1.0));
             world.objects.push(upper);
         };
 
         {
             let lower = Object::plane()
                 .with_material(reflective_non_blinding_material)
-                .with_transform(Transform::identity().translate_y(-1.0));
+                .transformed(Transform::identity().translate_y(-1.0));
             world.objects.push(lower);
         };
         world
@@ -232,7 +232,7 @@ mod unit_tests {
                     transparency: 0.0,
                     ..Default::default()
                 })
-                .with_transform(Transform::identity().rotate_x(-PI / 2.0));
+                .transformed(Transform::identity().rotate_x(-PI / 2.0));
             world.objects.push(front);
         };
 
@@ -245,7 +245,7 @@ mod unit_tests {
                     specular: 0.0,
                     ..Default::default()
                 })
-                .with_transform(Transform::identity().translate_z(1.0));
+                .transformed(Transform::identity().translate_z(1.0));
             world.objects.push(back);
         };
 
@@ -272,7 +272,7 @@ mod unit_tests {
                     refractive: 1.0,
                     ..Default::default()
                 })
-                .with_transform(Transform::identity().rotate_x(-PI / 2.0));
+                .transformed(Transform::identity().rotate_x(-PI / 2.0));
             world.objects.push(front);
         };
 
@@ -285,7 +285,7 @@ mod unit_tests {
                     specular: 0.0,
                     ..Default::default()
                 })
-                .with_transform(Transform::identity().translate_z(1.0));
+                .transformed(Transform::identity().translate_z(1.0));
             world.objects.push(back);
         };
 
@@ -302,7 +302,7 @@ mod unit_tests {
         let mut world = World::default();
         {
             let refractive_plane = Object::plane()
-                .with_transform(Transform::identity().translate_y(-1.0))
+                .transformed(Transform::identity().translate_y(-1.0))
                 .with_material(Material {
                     transparency: 0.5,
                     refractive: 1.5,
@@ -314,7 +314,7 @@ mod unit_tests {
 
         {
             let ball = Object::sphere()
-                .with_transform(Transform::identity().translate_y(-3.5).translate_z(-0.5))
+                .transformed(Transform::identity().translate_y(-3.5).translate_z(-0.5))
                 .with_material(Material {
                     pattern: Pattern::solid(Colour::RED),
                     ambient: 0.5,
@@ -342,7 +342,7 @@ mod unit_tests {
         let mut world = World::default();
         {
             let refractive_plane = Object::plane()
-                .with_transform(Transform::identity().translate_y(-1.0))
+                .transformed(Transform::identity().translate_y(-1.0))
                 .with_material(Material {
                     transparency: 0.5,
                     reflective: 0.5,
@@ -355,7 +355,7 @@ mod unit_tests {
 
         {
             let ball = Object::sphere()
-                .with_transform(Transform::identity().translate_y(-3.5).translate_z(-0.5))
+                .transformed(Transform::identity().translate_y(-3.5).translate_z(-0.5))
                 .with_material(Material {
                     pattern: Pattern::solid(Colour::RED),
                     ambient: 0.5,
@@ -388,7 +388,7 @@ mod unit_tests {
 
         {
             let wall = Object::plane()
-                .with_transform(Transform::identity().rotate_x(-PI / 2.0).translate_z(5.0))
+                .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(5.0))
                 .with_material(Material {
                     pattern: Pattern::solid(Colour::BLUE),
                     ambient: 1.0,
@@ -400,7 +400,7 @@ mod unit_tests {
 
         {
             let glass_sphere = Object::sphere()
-                .with_transform(Transform::identity().translate_z(1.0))
+                .transformed(Transform::identity().translate_z(1.0))
                 .with_material(Material {
                     pattern: Pattern::solid(Colour::new(0.05, 0.05, 0.05)),
                     transparency: 1.0,
@@ -433,7 +433,7 @@ mod unit_tests {
                 ..Default::default()
             }),
             Object::sphere()
-                .with_transform(
+                .transformed(
                     Transform::identity()
                         .translate_x(0.5)
                         .translate_y(0.5)
@@ -445,7 +445,7 @@ mod unit_tests {
                     ..Default::default()
                 }),
         )
-        .with_transform(Transform::identity().translate_y(1.0).rotate_y(PI / 4.0));
+        .transformed(Transform::identity().translate_y(1.0).rotate_y(PI / 4.0));
 
         world.objects.push(csg);
 
@@ -476,7 +476,7 @@ mod unit_tests {
         ));
         world.objects.push(
             Object::plane()
-                .with_transform(Transform::identity().rotate_x(-PI / 4.0))
+                .transformed(Transform::identity().rotate_x(-PI / 4.0))
                 .with_material(Material {
                     pattern: Pattern::checkers(Colour::WHITE, Colour::BLACK),
                     // ensure lighting doesn't affect colours

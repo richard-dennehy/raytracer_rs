@@ -231,7 +231,7 @@ impl Object {
             ObjectKind::Group(children) => children
                 .iter()
                 .map(|child| child.intersect(with))
-                .fold(Intersections::empty(), |acc, next| acc.join(next)),
+                .fold(Intersections::empty(), Intersections::join),
             ObjectKind::Csg {
                 left,
                 right,
@@ -269,25 +269,16 @@ impl Object {
         self
     }
 
-    // TODO test that applying transforms to parents (i.e. CSG/Groups) affects children
-    pub fn with_transform(mut self, transform: Transform) -> Self {
-        self.transform = transform;
-
-        match &mut self.kind {
-            ObjectKind::Group(children) => children
-                .iter_mut()
-                .for_each(|child| child.apply_transform(transform)),
-            ObjectKind::Csg { left, right, .. } => {
-                left.apply_transform(transform);
-                right.apply_transform(transform);
-            }
-            _ => (),
-        }
+    /// note that the provided `transform` is _combined_ with the existing transform
+    /// such that the existing transform is applied first, then the provided one, as opposed to replacing it
+    pub fn transformed(mut self, transform: Transform) -> Self {
+        self.apply_transform(transform);
 
         self
     }
 
-    /// allows a parent to push transforms applied to the group down to its children
+    /// `with_transform` is designed to be used as a fluent API, and therefore takes ownership (then returns it),
+    /// but requires re-assignment, whereas this function makes it clear that the `Object` is mutated in-place
     fn apply_transform(&mut self, transform: Transform) {
         match &mut self.kind {
             ObjectKind::Group(children) => children
@@ -378,6 +369,7 @@ impl Shape for Sphere {
 }
 
 #[derive(Debug, PartialEq)]
+// an infinite XZ plane
 struct Plane;
 impl Shape for Plane {
     fn object_normal_at(&self, _: Point3D, _uv: Option<(f64, f64)>) -> Normal3D {
