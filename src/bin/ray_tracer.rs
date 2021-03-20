@@ -2,10 +2,14 @@ extern crate ray_tracer;
 
 use ray_tracer::*;
 use std::f64::consts::PI;
+use std::num::NonZeroU16;
 use std::time::Instant;
 
 #[macro_use]
 extern crate nonzero_ext;
+
+const CAMERA_WIDTH: NonZeroU16 = nonzero!(600u16);
+const CAMERA_HEIGHT: NonZeroU16 = nonzero!(600u16);
 
 /// Notes on axes and rotation:
 /// X axis runs from left (negative values) to right (positive values) of default camera view
@@ -22,25 +26,58 @@ fn main() -> Result<(), String> {
         Colour::WHITE,
         Point3D::new(-10.0, 10.0, -10.0),
     ));
-    world.objects.push(
-        Object::plane()
-            .transformed(Transform::identity().rotate_x(-PI / 4.0))
+
+    {
+        let wall = Object::plane()
+            .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(5.1))
             .with_material(Material {
-                pattern: Pattern::checkers(Colour::WHITE, Colour::BLACK),
-                ambient: 1.0,
-                specular: 0.0,
-                diffuse: 0.0,
+                pattern: Pattern::checkers(Colour::BLACK, Colour::WHITE),
                 ..Default::default()
-            }),
-    );
+            });
+
+        world.objects.push(wall);
+    };
+
+    {
+        let outer_glass_sphere = Object::sphere()
+            .transformed(Transform::identity().translate_y(1.0).translate_z(0.5))
+            .with_material(Material {
+                pattern: Pattern::solid(Colour::BLACK),
+                transparency: 1.0,
+                refractive: 1.5,
+                reflective: 1.0,
+                ..Default::default()
+            });
+
+        world.objects.push(outer_glass_sphere);
+    };
+
+    {
+        let inner_air_sphere = Object::sphere()
+            .transformed(
+                Transform::identity()
+                    .scale_all(0.5)
+                    .translate_y(1.0)
+                    .translate_z(0.5),
+            )
+            .with_material(Material {
+                pattern: Pattern::solid(Colour::BLACK),
+                transparency: 1.0,
+                refractive: 1.0,
+                reflective: 1.0,
+                ..Default::default()
+            });
+
+        world.objects.push(inner_air_sphere);
+    };
 
     let camera = Camera::new(
-        nonzero!(400u16),
-        nonzero!(400u16),
+        CAMERA_WIDTH,
+        CAMERA_HEIGHT,
         PI / 3.0,
         Transform::view_transform(
-            Point3D::new(0.0, 1.0, -5.0),
-            Point3D::new(0.0, 0.0, 0.0),
+            Point3D::new(0.0, 1.5, -3.0),
+            Point3D::new(0.0, 1.0, 0.0),
             Normal3D::POSITIVE_Y,
         ),
     );

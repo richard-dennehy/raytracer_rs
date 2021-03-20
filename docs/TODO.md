@@ -4,3 +4,4 @@
 - Handle obj parser errors more gracefully
 - Use `Settings` struct in World instead of hardcoded magic values (e.g. recursion depth, skybox colour)
 - Maybe performance: replace partial comparison + expect with total comparison when sorting `Intersections`
+- Add benchmark for Groups & CSGs to demonstrate that bounding boxes can improve performance

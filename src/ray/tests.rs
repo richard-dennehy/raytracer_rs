@@ -211,25 +211,6 @@ mod ray_unit_tests {
     }
 
     #[test]
-    fn hit_data_should_contain_the_reflection_vector() {
-        let ray = Ray::new(
-            Point3D::new(0.0, 1.0, -1.0),
-            Vector3D::new(0.0, -SQRT_2 / 2.0, SQRT_2 / 2.0).normalised(),
-        );
-        let sphere = Object::plane();
-
-        let intersections = sphere.intersect(&ray);
-        assert_eq!(intersections.len(), 1);
-
-        let intersection = intersections.0[0].clone();
-        let data = HitData::from(&ray, intersection, intersections);
-        assert_eq!(
-            data.reflection,
-            Vector3D::new(0.0, SQRT_2 / 2.0, SQRT_2 / 2.0).normalised()
-        );
-    }
-
-    #[test]
     fn hit_data_should_calculate_refraction_data() {
         let first = Object::sphere()
             .with_material(Material {
@@ -356,7 +337,12 @@ mod ray_unit_tests {
         let intersection = intersection.unwrap();
 
         let hit_data = HitData::from(&ray, intersection, intersections);
-        assert_eq!(hit_data.reflectance(), 1.0);
+        assert_eq!(
+            hit_data
+                .reflection()
+                .reflectance(hit_data.entered_refractive, hit_data.exited_refractive),
+            1.0
+        );
     }
 
     #[test]
@@ -376,7 +362,12 @@ mod ray_unit_tests {
         let intersection = intersection.unwrap();
 
         let hit_data = HitData::from(&ray, intersection, intersections);
-        assert_eq!(hit_data.reflectance(), 0.04000000000000001);
+        assert_eq!(
+            hit_data
+                .reflection()
+                .reflectance(hit_data.entered_refractive, hit_data.exited_refractive),
+            0.04000000000000001
+        );
     }
 
     #[test]
@@ -397,6 +388,11 @@ mod ray_unit_tests {
         let intersection = intersection.unwrap();
 
         let hit_data = HitData::from(&ray, intersection, intersections);
-        assert_eq!(hit_data.reflectance(), 0.4888143830387389);
+        assert_eq!(
+            hit_data
+                .reflection()
+                .reflectance(hit_data.entered_refractive, hit_data.exited_refractive),
+            0.4888143830387389
+        );
     }
 }

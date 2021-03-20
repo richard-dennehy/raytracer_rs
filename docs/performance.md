@@ -56,8 +56,15 @@ increasing execution time of individual tasks, but potentially reducing overall 
 - Performance impact: significant regression - up to 23% increase in execution time
 
 ### Distinct type for normalised Vectors
-Implemented for correctness reasons, but coincidentally appears to improve performance.
-It's not obvious to me why this is the case - normalising a normalised vector now optimises to a no-op, but it's unclear why the impact of this is so large.
+Implemented for correctness reasons - appeared to improve performance, but within likely noise threshold 
+(running benchmarks multiple times without any changes can change performance by up to 8% in extreme cases)
 
 - Effort: moderate - a large number of Vectors across the codebase needed to be updated to Normals where appropriate
-- Performance impact: 3-4% reduction in execution time
+- Performance impact: improvement within noise threshold
+
+### Avoid calculating reflection data multiple times
+Calculate reflection data at most once per ray, instead of potentially once for reflection, and once again for reflectance.
+Primarily implemented to avoid duplicated logic, and to simplify sections of the code (e.g. ray colour calculations), but also potentially avoids duplicating work.
+
+- Effort: small - changes were localised to a small area of the codebase
+- Performance impact: within noise threshold - only a small number of calculations have been removed, and it's possible the compiler was optimising the duplicated calculations out

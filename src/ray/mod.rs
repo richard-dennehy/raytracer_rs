@@ -62,7 +62,6 @@ pub struct HitData<'obj> {
     pub normal: Normal3D,
     pub over_point: Point3D,
     pub under_point: Point3D,
-    pub reflection: Normal3D,
     pub entered_refractive: f64,
     pub exited_refractive: f64,
 }
@@ -83,7 +82,6 @@ impl<'obj> HitData<'obj> {
         let offset = normal * (f32::EPSILON as f64); // f64 epsilon isn't sufficient to compensate for rounding errors
         let over_point = point + offset;
         let under_point = point - offset;
-        let reflection = ray.direction.normalised().reflect_through(normal);
 
         // calculate refraction changes from entering one material and exiting another (including the empty space)
         let mut entered_refractive = 1.0;
@@ -125,7 +123,6 @@ impl<'obj> HitData<'obj> {
             normal,
             over_point,
             under_point,
-            reflection,
             entered_refractive,
             exited_refractive,
         }
@@ -136,29 +133,61 @@ impl<'obj> HitData<'obj> {
             .colour_at(self.over_point, light, self.eye, self.normal, in_shadow)
     }
 
+    pub fn reflection(&self) -> ReflectionData {
+        let ratio = self.entered_refractive / self.exited_refractive;
+        let cos_i = self.eye.dot(self.normal);
+        let sin2_t = ratio.powi(2) * (1.0 - cos_i.powi(2));
+
+        ReflectionData {
+            cos_i,
+            ratio,
+            sin2_t,
+        }
+    }
+}
+
+pub struct ReflectionData {
+    pub cos_i: f64,
+    pub ratio: f64,
+    pub sin2_t: f64,
+}
+
+impl ReflectionData {
+    pub fn is_total(&self) -> bool {
+        self.sin2_t > 1.0
+    }
+
+    /// note: reflection must not be total (sin2_t must not be > 1.0)
+    pub fn refraction_vector(&self, normal: Normal3D, eye: Normal3D) -> Vector3D {
+        debug_assert!(self.sin2_t <= 1.0);
+
+        normal * (self.ratio * self.cos_i - self.cos_t()) - (eye * self.ratio)
+    }
+
     /// `shlick` approximation of fresnel
-    pub fn reflectance(&self) -> f64 {
-        let mut cos = self.eye.dot(self.normal);
-
-        if self.entered_refractive > self.exited_refractive {
-            // FIXME duplicated total internal reflection logic
-            let ratio = self.entered_refractive / self.exited_refractive;
-            let sin2_t = ratio.powi(2) * (1.0 - cos.powi(2));
-
-            if sin2_t > 1.0 {
-                return 1.0;
-            }
-
-            let cos_t = (1.0 - sin2_t).sqrt();
-
-            cos = cos_t;
+    pub fn reflectance(&self, entered_refractive: f64, exited_refractive: f64) -> f64 {
+        if self.is_total() {
+            return 1.0;
         }
 
-        let r0 = ((self.entered_refractive - self.exited_refractive)
-            / (self.entered_refractive + self.exited_refractive))
+        let cos = if entered_refractive > exited_refractive {
+            self.cos_t()
+        } else {
+            self.cos_i
+        };
+
+        let r0 = ((entered_refractive - exited_refractive)
+            / (entered_refractive + exited_refractive))
             .powi(2);
 
         r0 + (1.0 - r0) * (1.0 - cos).powi(5)
+    }
+
+    /// note: reflection must not be total (sin2_t must not be > 1.0)
+    fn cos_t(&self) -> f64 {
+        debug_assert!(self.sin2_t <= 1.0);
+
+        (1.0 - self.sin2_t).sqrt()
     }
 }
 

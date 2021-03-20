@@ -49,44 +49,42 @@ impl World {
                 let hit_data = HitData::from(&ray, hit, intersections);
                 let surface = this.shade_hit(&hit_data);
 
-                let reflective = if hit_data.object.material.reflective == 0.0 {
+                let reflected = if hit_data.object.material.reflective == 0.0 {
                     Colour::BLACK
                 } else {
-                    let reflection = Ray::new(hit_data.over_point, hit_data.reflection);
+                    let reflection_vector =
+                        ray.direction.normalised().reflect_through(hit_data.normal);
+                    let reflection = Ray::new(hit_data.over_point, reflection_vector);
                     inner(this, reflection, limit - 1) * hit_data.object.material.reflective
                 };
 
-                let refractive = if hit_data.object.material.transparency == 0.0 {
-                    Colour::BLACK
+                if hit_data.object.material.transparency == 0.0 {
+                    surface + reflected
                 } else {
                     // check for total internal reflection
-                    let ratio = hit_data.entered_refractive / hit_data.exited_refractive;
-                    let cos_i = hit_data.eye.dot(hit_data.normal);
-                    let sin2_t = ratio.powi(2) * (1.0 - cos_i.powi(2));
+                    let reflection_data = hit_data.reflection();
 
-                    if sin2_t > 1.0 {
+                    let refracted = if reflection_data.is_total() {
                         Colour::BLACK
                     } else {
-                        let cos_t = (1.0 - sin2_t).sqrt();
                         let refracted_direction =
-                            hit_data.normal * (ratio * cos_i - cos_t) - (hit_data.eye * ratio);
+                            reflection_data.refraction_vector(hit_data.normal, hit_data.eye);
 
                         let refracted_ray =
                             Ray::new(hit_data.under_point, refracted_direction.normalised());
 
                         inner(this, refracted_ray, limit - 1)
                             * hit_data.object.material.transparency
+                    };
+
+                    if hit_data.object.material.reflective > 0.0 {
+                        let reflectance = reflection_data
+                            .reflectance(hit_data.entered_refractive, hit_data.exited_refractive);
+
+                        surface + (reflected * reflectance) + (refracted * (1.0 - reflectance))
+                    } else {
+                        surface + reflected + refracted
                     }
-                };
-
-                if hit_data.object.material.reflective > 0.0
-                    && hit_data.object.material.transparency > 0.0
-                {
-                    let reflectance = hit_data.reflectance();
-
-                    surface + (reflective * reflectance) + (refractive * (1.0 - reflectance))
-                } else {
-                    surface + reflective + refractive
                 }
             } else {
                 Colour::BLACK
