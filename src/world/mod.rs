@@ -9,13 +9,32 @@ mod tests;
 pub struct World {
     pub objects: Vec<Object>,
     pub lights: Vec<Light>,
+    pub settings: WorldSettings,
+}
+
+pub struct WorldSettings {
+    /// Max number of rays to cast from reflections/refractions
+    /// Higher values produce more accurate results, but increase rendering time
+    pub recursion_depth: u8,
+    /// Default colour returned when a ray doesn't intersect any objects
+    pub sky_colour: Colour,
+}
+
+impl Default for WorldSettings {
+    fn default() -> Self {
+        WorldSettings {
+            recursion_depth: 5,
+            sky_colour: Colour::BLACK,
+        }
+    }
 }
 
 impl World {
-    pub const fn empty() -> Self {
+    pub fn empty() -> Self {
         World {
             objects: Vec::new(),
             lights: Vec::new(),
+            settings: Default::default(),
         }
     }
 
@@ -35,11 +54,12 @@ impl World {
                 Colour::WHITE,
                 Point3D::new(-10.0, 10.0, -10.0),
             )],
+            settings: Default::default(),
         }
     }
 
     pub fn colour_at(&self, ray: Ray) -> Colour {
-        fn inner(this: &World, ray: Ray, limit: usize) -> Colour {
+        fn inner(this: &World, ray: Ray, limit: u8) -> Colour {
             if limit == 0 {
                 return Colour::BLACK;
             }
@@ -87,11 +107,11 @@ impl World {
                     }
                 }
             } else {
-                Colour::BLACK
+                this.settings.sky_colour
             }
         }
 
-        inner(self, ray, 5)
+        inner(self, ray, self.settings.recursion_depth)
     }
 
     fn intersect(&self, ray: &Ray) -> Intersections {

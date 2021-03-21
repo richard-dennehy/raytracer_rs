@@ -1,6 +1,4 @@
 - Check disabling shadows does anything meaningful
-- Use `copy` as much as possible
-- Remove references where possible
 - Handle obj parser errors more gracefully
 - Use `Settings` struct in World instead of hardcoded magic values (e.g. recursion depth, skybox colour)
 - Maybe performance: replace partial comparison + expect with total comparison when sorting `Intersections`

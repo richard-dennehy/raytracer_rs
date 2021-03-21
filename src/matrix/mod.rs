@@ -9,11 +9,6 @@ mod tests;
 mod underlying;
 pub use underlying::Matrix4D;
 
-// TODO:
-//   try storing just the inverse, and then inverting it when combining with other matrices,
-//   as the inverse is generally what's used, and the normal form _should_ only be used in e.g. multiplication
-//   - this would halve the size of the type
-//   this really _really_ needs good property tests in place first
 #[derive(PartialEq, Clone, Copy)]
 pub struct Transform {
     // calculating the inverse is relatively expensive, bearing in mind matrices are inverted millions of times per render,
@@ -211,8 +206,8 @@ impl Transform {
         self.inverse
     }
 
-    pub fn view_transform(from: Point3D, to: Point3D, up: Normal3D) -> Self {
-        let forward = (to - from).normalised();
+    pub fn view_transform(eye: Point3D, target: Point3D, up: Normal3D) -> Self {
+        let forward = (target - eye).normalised();
         let left = forward.cross(up);
         let true_up = left.cross(forward);
 
@@ -223,7 +218,7 @@ impl Transform {
             [0.0, 0.0, 0.0, 1.0],
         ));
 
-        orientation * Transform::translation(-from.x(), -from.y(), -from.z())
+        orientation * Transform::translation(-eye.x(), -eye.y(), -eye.z())
     }
 }
 
