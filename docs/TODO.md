@@ -1,5 +1,6 @@
-- Check disabling shadows does anything meaningful
+- Shadow casting: allow some light through transparent objects; make transparent material colour affect light colour 
 - Handle obj parser errors more gracefully
 - Use `Settings` struct in World instead of hardcoded magic values (e.g. recursion depth, skybox colour)
 - Maybe performance: replace partial comparison + expect with total comparison when sorting `Intersections`
 - Add benchmark for Groups & CSGs to demonstrate that bounding boxes can improve performance
+- Use small vec type optimised for common case of few intersections e.g. `smallvec`

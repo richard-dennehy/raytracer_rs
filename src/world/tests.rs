@@ -508,4 +508,111 @@ mod unit_tests {
         rays.into_iter()
             .for_each(|ray| assert_eq!(world.colour_at(ray), Colour::WHITE))
     }
+
+    #[test]
+    fn a_fully_transparent_material_with_shadow_ray_collisions_disabled_should_not_cast_shadows() {
+        let mut world = World::empty();
+        world
+            .lights
+            .push(Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, -2.0)));
+        world.objects.push(
+            Object::plane()
+                .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(2.0))
+                .with_material(Material {
+                    pattern: Pattern::solid(Colour::WHITE),
+                    // ensure the material colour should be 100% white iff light reaches it
+                    ambient: 0.0,
+                    diffuse: 1.0,
+                    specular: 0.0,
+                    ..Default::default()
+                }),
+        );
+        world.objects.push(
+            Object::plane()
+                .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(1.0))
+                .with_material(Material {
+                    pattern: Pattern::solid(Colour::BLACK),
+                    // prevent light reflections from transparent plane
+                    specular: 0.0,
+                    transparency: 1.0,
+                    casts_shadow: false,
+                    ..Default::default()
+                }),
+        );
+
+        let ray = Ray::new(Point3D::ORIGIN, Normal3D::POSITIVE_Z);
+        assert_eq!(world.colour_at(ray), Colour::WHITE);
+    }
+
+    #[test]
+    fn a_fully_transparent_material_should_not_cast_shadows() {
+        let mut world = World::empty();
+        world
+            .lights
+            .push(Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, -2.0)));
+        world.objects.push(
+            Object::plane()
+                .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(2.0))
+                .with_material(Material {
+                    pattern: Pattern::solid(Colour::WHITE),
+                    // ensure the material colour should be 100% white iff light reaches it
+                    ambient: 0.0,
+                    diffuse: 1.0,
+                    specular: 0.0,
+                    ..Default::default()
+                }),
+        );
+        world.objects.push(
+            Object::plane()
+                .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(1.0))
+                .with_material(Material {
+                    pattern: Pattern::solid(Colour::BLACK),
+                    // prevent light reflections from transparent plane
+                    specular: 0.0,
+                    transparency: 1.0,
+                    // 100% of light should get through anyway
+                    casts_shadow: true,
+                    ..Default::default()
+                }),
+        );
+
+        let ray = Ray::new(Point3D::ORIGIN, Normal3D::POSITIVE_Z);
+        assert_eq!(world.colour_at(ray), Colour::WHITE);
+    }
+
+    #[test]
+    fn a_half_transparent_material_should_allow_half_of_the_light_source_through() {
+        let mut world = World::empty();
+        world
+            .lights
+            .push(Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, -2.0)));
+        world.objects.push(
+            Object::plane()
+                .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(2.0))
+                .with_material(Material {
+                    pattern: Pattern::solid(Colour::WHITE),
+                    // ensure the material colour should be 100% white iff light reaches it
+                    ambient: 0.0,
+                    diffuse: 1.0,
+                    specular: 0.0,
+                    ..Default::default()
+                }),
+        );
+        world.objects.push(
+            Object::plane()
+                .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(1.0))
+                .with_material(Material {
+                    pattern: Pattern::solid(Colour::BLACK),
+                    // prevent light reflections from semi-transparent plane
+                    specular: 0.0,
+                    transparency: 0.5,
+                    // 50% of light should get through anyway
+                    casts_shadow: true,
+                    ..Default::default()
+                }),
+        );
+
+        let ray = Ray::new(Point3D::ORIGIN, Normal3D::POSITIVE_Z);
+        assert_eq!(world.colour_at(ray), Colour::greyscale(0.5));
+    }
 }
