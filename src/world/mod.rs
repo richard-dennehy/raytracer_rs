@@ -124,7 +124,11 @@ impl World {
     fn shade_hit(&self, hit_data: &HitData) -> Colour {
         self.lights
             .iter()
-            .map(|light| hit_data.colour(light, self.is_in_shadow(hit_data.over_point, light)))
+            .map(|light| {
+                let direct_light = self.direct_light(hit_data.over_point, light);
+
+                hit_data.colour(direct_light, light)
+            })
             .sum()
     }
 
@@ -139,5 +143,28 @@ impl World {
         } else {
             false
         }
+    }
+
+    fn direct_light(&self, point: Point3D, light: &Light) -> Option<Light> {
+        let light_vector = light.position() - point;
+        let light_distance = light_vector.magnitude();
+        let light_vector = light_vector.normalised();
+
+        let ray = Ray::new(point, light_vector);
+
+        self.intersect(&ray)
+            .into_iter()
+            .filter(|i| i.t >= 0.0 && i.t < light_distance)
+            .fold(None, |maybe_light, hit| {
+                let light = maybe_light.unwrap_or_else(|| light.clone());
+
+                if hit.with.material.casts_shadow {
+                    let transmit = 1.0 - hit.with.material.transparency;
+                    // TODO should be affected by transparent material colour
+                    Some(light * transmit)
+                } else {
+                    Some(light)
+                }
+            })
     }
 }

@@ -174,10 +174,10 @@ impl Object {
     pub fn colour_at(
         &self,
         point: Point3D,
-        light: &Light,
+        direct_light: Option<Light>,
         eye_vector: Normal3D,
         surface_normal: Normal3D,
-        in_shadow: bool,
+        world_light: &Light,
     ) -> Colour {
         let material = &self.material;
 
@@ -188,15 +188,15 @@ impl Object {
             Point3D::new(x, y, z)
         };
 
-        let colour = material.pattern.colour_at(object_point) * light.colour();
+        let colour = material.pattern.colour_at(object_point) * world_light.colour();
         let ambient = colour * material.ambient;
 
-        if in_shadow {
+        if direct_light.is_none() {
             return ambient;
         }
+        let light = direct_light.unwrap();
 
         let light_vector = (light.position() - point).normalised();
-
         let light_dot_normal = light_vector.dot(surface_normal);
         // if dot product is <= 0, the light is behind the surface
         if light_dot_normal.is_sign_negative() {

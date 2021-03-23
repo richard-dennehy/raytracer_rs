@@ -1,4 +1,5 @@
 use crate::{Colour, Point3D};
+use std::ops::Mul;
 
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub enum Light {
@@ -19,6 +20,19 @@ impl Light {
     pub fn position(&self) -> Point3D {
         match &self {
             Light::Point { position, .. } => *position,
+        }
+    }
+}
+
+impl Mul<f64> for Light {
+    type Output = Light;
+
+    fn mul(self, rhs: f64) -> Self::Output {
+        match self {
+            Light::Point { colour, position } => Light::Point {
+                colour: colour * rhs,
+                position,
+            },
         }
     }
 }

@@ -15,11 +15,12 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="create a test scene to demonstrate disabling shadow casting for individual objects">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP test/improve transparent object shadow casting">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/world/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/light/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/light/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/world/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -194,11 +195,6 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.bench loop" />
@@ -347,14 +343,8 @@
       <workItem from="1616184524600" duration="108000" />
       <workItem from="1616239332407" duration="5614000" />
       <workItem from="1616330107219" duration="3329000" />
-      <workItem from="1616442883403" duration="2991000" />
-    </task>
-    <task id="LOCAL-00075" summary="CSG example and pattern/internal lighting fixes">
-      <created>1612616372438</created>
-      <option name="number" value="00075" />
-      <option name="presentableId" value="LOCAL-00075" />
-      <option name="project" value="LOCAL" />
-      <updated>1612616372438</updated>
+      <workItem from="1616442883403" duration="3015000" />
+      <workItem from="1616529568783" duration="2000000" />
     </task>
     <task id="LOCAL-00076" summary="combined flat and smooth triangles into the same struct">
       <created>1612699529428</created>
@@ -692,7 +682,14 @@
       <option name="project" value="LOCAL" />
       <updated>1616333436782</updated>
     </task>
-    <option name="localTasksCounter" value="124" />
+    <task id="LOCAL-00124" summary="WIP test/improve transparent object shadow casting">
+      <created>1616446280865</created>
+      <option name="number" value="00124" />
+      <option name="presentableId" value="LOCAL-00124" />
+      <option name="project" value="LOCAL" />
+      <updated>1616446280865</updated>
+    </task>
+    <option name="localTasksCounter" value="125" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -718,7 +715,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="set up initial benchmarks" />
     <MESSAGE value="set up more complex benchmarks" />
     <MESSAGE value="parallelise rendering loop" />
     <MESSAGE value="update build flags" />
@@ -743,7 +739,8 @@
     <MESSAGE value="fix clippy suppression" />
     <MESSAGE value="refactor reflection/reflectance calculations" />
     <MESSAGE value="create a test scene to demonstrate disabling shadow casting for individual objects" />
-    <option name="LAST_COMMIT_MESSAGE" value="create a test scene to demonstrate disabling shadow casting for individual objects" />
+    <MESSAGE value="WIP test/improve transparent object shadow casting" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP test/improve transparent object shadow casting" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
