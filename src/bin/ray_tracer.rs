@@ -22,40 +22,62 @@ fn main() -> Result<(), String> {
     let timer = Instant::now();
 
     let mut world = World::empty();
-    world
-        .lights
-        .push(Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, -2.0)));
-    world.objects.push(
-        Object::plane()
-            .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(2.0))
+    world.lights.push(Light::point(
+        Colour::WHITE,
+        Point3D::new(-10.0, 10.0, -10.0),
+    ));
+
+    {
+        let wall = Object::plane()
+            .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(5.1))
             .with_material(Material {
-                pattern: Pattern::solid(Colour::WHITE),
-                // ensure the material colour should be 100% white iff light reaches it
-                ambient: 0.0,
-                diffuse: 1.0,
-                specular: 0.0,
+                pattern: Pattern::checkers(Colour::BLACK, Colour::WHITE),
                 ..Default::default()
-            }),
-    );
-    world.objects.push(
-        Object::plane()
-            .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(1.0))
+            });
+
+        world.objects.push(wall);
+    };
+
+    {
+        let outer_glass_sphere = Object::sphere()
+            .transformed(Transform::identity().translate_y(1.0).translate_z(0.5))
             .with_material(Material {
                 pattern: Pattern::solid(Colour::BLACK),
-                transparency: 0.5,
-                // 50% of light should get through anyway
-                casts_shadow: true,
+                transparency: 1.0,
+                refractive: 1.5,
+                reflective: 1.0,
                 ..Default::default()
-            }),
-    );
+            });
+
+        world.objects.push(outer_glass_sphere);
+    };
+
+    {
+        let inner_air_sphere = Object::sphere()
+            .transformed(
+                Transform::identity()
+                    .scale_all(0.5)
+                    .translate_y(1.0)
+                    .translate_z(0.5),
+            )
+            .with_material(Material {
+                pattern: Pattern::solid(Colour::BLACK),
+                transparency: 1.0,
+                refractive: 1.0,
+                reflective: 1.0,
+                ..Default::default()
+            });
+
+        world.objects.push(inner_air_sphere);
+    };
 
     let camera = Camera::new(
         CAMERA_WIDTH,
         CAMERA_HEIGHT,
         PI / 3.0,
         Transform::view_transform(
-            Point3D::new(0.0, 0.0, 0.0),
-            Point3D::new(0.0, 0.0, 1.0),
+            Point3D::new(0.0, 1.5, -3.0),
+            Point3D::new(0.0, 1.0, 0.0),
             Normal3D::POSITIVE_Y,
         ),
     );

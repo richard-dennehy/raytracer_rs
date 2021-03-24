@@ -24,28 +24,20 @@ mod unit_tests {
     fn should_correctly_shade_an_external_hit() {
         let world = World::default();
         let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z);
-        let sphere = world
-            .objects
-            .first()
-            .expect("Default world should have objects");
-        let intersections = sphere.intersect(&ray);
-        let intersection = intersections.hit();
-        assert!(intersection.is_some());
-        let intersection = intersection.unwrap();
 
-        let hit_data = HitData::from(&ray, intersection, intersections);
-        let colour = world.shade_hit(&hit_data);
+        let colour = world.colour_at(ray);
+        let expected = Colour::new(
+            0.38066119308103435,
+            0.47582649135129296,
+            0.28549589481077575,
+        );
 
-        assert!(approx_eq!(
-            Colour,
-            colour,
-            Colour::new(
-                0.38066119308103435,
-                0.47582649135129296,
-                0.28549589481077575
-            ),
-            epsilon = f32::EPSILON as f64
-        ));
+        assert!(
+            approx_eq!(Colour, colour, expected, epsilon = f32::EPSILON as f64),
+            "{:?} != {:?}",
+            expected,
+            colour
+        );
     }
 
     #[test]
@@ -614,5 +606,41 @@ mod unit_tests {
 
         let ray = Ray::new(Point3D::ORIGIN, Normal3D::POSITIVE_Z);
         assert_eq!(world.colour_at(ray), Colour::greyscale(0.5));
+    }
+
+    #[test]
+    fn lighting_a_point_in_shadow_should_only_have_ambient() {
+        let mut world = World::empty();
+        world
+            .lights
+            .push(Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, -10.0)));
+        // target object
+        world.objects.push(Object::sphere());
+        // object in-between target/ray and light source
+        world.objects.push(
+            Object::sphere()
+                .transformed(Transform::identity().translate_z(-7.5))
+                .with_material(Material {
+                    pattern: Pattern::solid(Colour::BLUE),
+                    ..Default::default()
+                }),
+        );
+
+        let colour = world.colour_at(Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z));
+
+        assert_eq!(colour, Colour::greyscale(0.1));
+    }
+
+    #[test]
+    fn lighting_with_the_light_behind_the_surface_should_only_have_ambient() {
+        let mut world = World::empty();
+        world
+            .lights
+            .push(Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, 10.0)));
+        world.objects.push(Object::sphere());
+
+        let colour = world.colour_at(Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z));
+
+        assert_eq!(colour, Colour::greyscale(0.1));
     }
 }

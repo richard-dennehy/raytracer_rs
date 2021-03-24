@@ -145,7 +145,7 @@ impl World {
         }
     }
 
-    fn direct_light(&self, point: Point3D, light: &Light) -> Option<Light> {
+    fn direct_light(&self, point: Point3D, light: &Light) -> Colour {
         let light_vector = light.position() - point;
         let light_distance = light_vector.magnitude();
         let light_vector = light_vector.normalised();
@@ -155,15 +155,13 @@ impl World {
         self.intersect(&ray)
             .into_iter()
             .filter(|i| i.t >= 0.0 && i.t < light_distance)
-            .fold(None, |maybe_light, hit| {
-                let light = maybe_light.unwrap_or_else(|| light.clone());
-
+            .fold(light.colour(), |light, hit| {
                 if hit.with.material.casts_shadow {
                     let transmit = 1.0 - hit.with.material.transparency;
                     // TODO should be affected by transparent material colour
-                    Some(light * transmit)
+                    light * transmit
                 } else {
-                    Some(light)
+                    light
                 }
             })
     }

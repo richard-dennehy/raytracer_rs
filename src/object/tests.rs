@@ -14,7 +14,7 @@ mod shape_tests {
         let eye_vector = Normal3D::NEGATIVE_Z;
         let light = Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, -10.0));
 
-        let lit_material = sphere.colour_at(point, &light, eye_vector, normal, false);
+        let lit_material = sphere.colour_at(point, light.colour(), eye_vector, normal, &light);
         assert_eq!(lit_material, Colour::new(1.9, 1.9, 1.9));
     }
 
@@ -28,7 +28,7 @@ mod shape_tests {
             Vector3D::new(0.0, 2.0_f64.sqrt() / 2.0, -2.0_f64.sqrt() / 2.0).normalised();
         let light = Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, -10.0));
 
-        let lit_material = sphere.colour_at(point, &light, eye_vector, normal, false);
+        let lit_material = sphere.colour_at(point, light.colour(), eye_vector, normal, &light);
         assert_eq!(lit_material, Colour::new(1.0, 1.0, 1.0));
     }
 
@@ -42,7 +42,7 @@ mod shape_tests {
         let eye_vector = Normal3D::NEGATIVE_Z;
         let light = Light::point(Colour::WHITE, Point3D::new(0.0, 10.0, -10.0));
 
-        let lit_material = sphere.colour_at(point, &light, eye_vector, normal, false);
+        let lit_material = sphere.colour_at(point, light.colour(), eye_vector, normal, &light);
         assert_eq!(
             lit_material,
             Colour::new(0.7363961030678927, 0.7363961030678927, 0.7363961030678927)
@@ -60,37 +60,11 @@ mod shape_tests {
             Vector3D::new(0.0, -2.0_f64.sqrt() / 2.0, -2.0_f64.sqrt() / 2.0).normalised();
         let light = Light::point(Colour::WHITE, Point3D::new(0.0, 10.0, -10.0));
 
-        let lit_material = sphere.colour_at(point, &light, eye_vector, normal, false);
+        let lit_material = sphere.colour_at(point, light.colour(), eye_vector, normal, &light);
         assert_eq!(
             lit_material,
             Colour::new(1.6363961030679328, 1.6363961030679328, 1.6363961030679328)
         );
-    }
-
-    #[test]
-    fn lighting_with_the_light_behind_the_surface_should_only_have_ambient() {
-        let sphere = Object::sphere();
-        let point = Point3D::new(0.0, 0.0, -1.0);
-
-        let normal = sphere.normal_at(point, None);
-        let eye_vector = Normal3D::NEGATIVE_Z;
-        let light = Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, 10.0));
-
-        let lit_material = sphere.colour_at(point, &light, eye_vector, normal, false);
-        assert_eq!(lit_material, Colour::new(0.1, 0.1, 0.1));
-    }
-
-    #[test]
-    fn lighting_a_point_in_shadow_should_only_have_ambient() {
-        let sphere = Object::sphere();
-        let point = Point3D::new(0.0, 0.0, -1.0);
-
-        let normal = sphere.normal_at(point, None);
-        let eye_vector = Normal3D::NEGATIVE_Z;
-        let light = Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, -10.0));
-
-        let lit_material = sphere.colour_at(point, &light, eye_vector, normal, true);
-        assert_eq!(lit_material, Colour::new(0.1, 0.1, 0.1));
     }
 
     #[test]
@@ -111,10 +85,10 @@ mod shape_tests {
         assert_eq!(
             sphere.colour_at(
                 point,
-                &Light::point(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0)),
+                Colour::WHITE,
                 Normal3D::NEGATIVE_X,
                 normal,
-                false
+                &Light::point(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0))
             ),
             Colour::BLACK
         );
@@ -138,10 +112,10 @@ mod shape_tests {
         assert_eq!(
             sphere.colour_at(
                 point,
-                &Light::point(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0)),
+                Colour::WHITE,
                 Normal3D::NEGATIVE_X,
                 normal,
-                false
+                &Light::point(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0))
             ),
             Colour::WHITE
         );
@@ -327,10 +301,10 @@ mod sphere_tests {
         assert_eq!(
             sphere.colour_at(
                 point,
-                &Light::point(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0)),
+                Colour::WHITE,
                 Normal3D::NEGATIVE_X,
                 normal,
-                false
+                &Light::point(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0)),
             ),
             Colour::BLACK
         );
@@ -353,10 +327,10 @@ mod sphere_tests {
         assert_eq!(
             sphere.colour_at(
                 point,
-                &Light::point(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0)),
+                Colour::WHITE,
                 Normal3D::NEGATIVE_X,
                 normal,
-                false
+                &Light::point(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0)),
             ),
             Colour::WHITE
         );

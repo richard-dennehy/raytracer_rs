@@ -21,15 +21,18 @@ mod unit_tests {
         );
 
         let canvas = render(World::default(), camera);
-        assert!(approx_eq!(
-            Colour,
-            canvas.get(5, 5),
-            Colour::new(
-                0.38066119308103435,
-                0.47582649135129296,
-                0.28549589481077575
-            ),
-            epsilon = f32::EPSILON as f64
-        ));
+        let expected = Colour::new(
+            0.38066119308103435,
+            0.47582649135129296,
+            0.28549589481077575,
+        );
+        let actual = canvas.get(5, 5);
+
+        assert!(
+            approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
+            "{:?} != {:?}",
+            expected,
+            actual
+        );
     }
 }

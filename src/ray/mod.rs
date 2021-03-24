@@ -128,13 +128,13 @@ impl<'obj> HitData<'obj> {
         }
     }
 
-    pub fn colour(&self, direct_light: Option<Light>, world_light: &Light) -> Colour {
+    pub fn colour(&self, direct_light: Colour, light_source: &Light) -> Colour {
         self.object.colour_at(
             self.over_point,
             direct_light,
             self.eye,
             self.normal,
-            world_light,
+            light_source,
         )
     }
 
