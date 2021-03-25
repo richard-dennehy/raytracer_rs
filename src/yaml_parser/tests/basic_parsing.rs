@@ -15,7 +15,7 @@ up: [ -0.45, 1, 0 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
     let output = yaml.parse::<CameraDescription>();
-    assert!(output.is_ok(), output.unwrap_err());
+    assert!(output.is_ok(), "{}", output.unwrap_err());
     let output = output.unwrap();
 
     assert_eq!(
@@ -40,7 +40,7 @@ intensity: [ 1, 1, 1 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
     let output = yaml.parse::<Light>();
-    assert!(output.is_ok(), output.unwrap_err());
+    assert!(output.is_ok(), "{}", output.unwrap_err());
     let output = output.unwrap();
 
     assert_eq!(
@@ -59,7 +59,7 @@ intensity: [ 0.2, 0.2, 0.2 ]
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
     let output = yaml.parse::<Light>();
-    assert!(output.is_ok(), output.unwrap_err());
+    assert!(output.is_ok(), "{}", output.unwrap_err());
     let output = output.unwrap();
 
     assert_eq!(
@@ -81,7 +81,7 @@ value:
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
     let define = yaml.parse::<Define>();
-    assert!(define.is_ok(), define.unwrap_err());
+    assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
     assert_eq!(
@@ -113,7 +113,7 @@ value:
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
     let define = yaml.parse::<Define>();
-    assert!(define.is_ok(), define.unwrap_err());
+    assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
     assert_eq!(
@@ -150,7 +150,7 @@ value:
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
     let define = yaml.parse::<Define>();
-    assert!(define.is_ok(), define.unwrap_err());
+    assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
     assert_eq!(
@@ -196,7 +196,7 @@ value:
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
     let define = yaml.parse::<Define>();
-    assert!(define.is_ok(), define.unwrap_err());
+    assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
     assert_eq!(
@@ -228,7 +228,7 @@ value:
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
     let define = yaml.parse::<Define>();
-    assert!(define.is_ok(), define.unwrap_err());
+    assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
     assert_eq!(
@@ -261,7 +261,7 @@ value:
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
     let define = yaml.parse::<Define>();
-    assert!(define.is_ok(), define.unwrap_err());
+    assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
     assert_eq!(
@@ -296,7 +296,7 @@ transform:
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
     let object = yaml.parse::<ObjectDescription>();
-    assert!(object.is_ok(), object.unwrap_err());
+    assert!(object.is_ok(), "{}", object.unwrap_err());
     let object = object.unwrap();
 
     assert_eq!(
@@ -340,7 +340,7 @@ transform:
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
     let object = yaml.parse::<ObjectDescription>();
-    assert!(object.is_ok(), object.unwrap_err());
+    assert!(object.is_ok(), "{}", object.unwrap_err());
     let object = object.unwrap();
 
     assert_eq!(
@@ -373,7 +373,7 @@ transform:
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
     let object = yaml.parse::<ObjectDescription>();
-    assert!(object.is_ok(), object.unwrap_err());
+    assert!(object.is_ok(), "{}", object.unwrap_err());
     let object = object.unwrap();
 
     assert_eq!(
@@ -402,7 +402,7 @@ fn should_parse_scene_description() {
     ));
 
     let output = parse(scene);
-    assert!(output.is_ok(), output.unwrap_err());
+    assert!(output.is_ok(), "{}", output.unwrap_err());
     let output = output.unwrap();
     assert_eq!(
         output,

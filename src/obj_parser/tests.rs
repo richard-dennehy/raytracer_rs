@@ -83,7 +83,7 @@ f 1 2 3 4 5";
 
         let out = parse(input);
         let object: Result<Object, _> = out.try_into();
-        assert!(object.is_ok(), object.unwrap_err());
+        assert!(object.is_ok(), "{}", object.unwrap_err());
         let object = object.unwrap();
 
         // this is moderately disgusting, but Shapes are totally opaque at runtime, so this seems to be the least worst way to introspect the fields
@@ -126,7 +126,7 @@ f 1 2 3 4 5";
 
         let out = parse(input);
         let object: Result<Object, _> = out.try_into();
-        assert!(object.is_ok(), object.unwrap_err());
+        assert!(object.is_ok(), "{}", object.unwrap_err());
         let object = object.unwrap();
 
         assert_eq!(
@@ -200,7 +200,7 @@ f 1 2 3 4 5";
 
         let output = parse(input);
         let object: Result<Object, _> = output.try_into();
-        assert!(object.is_ok(), object.unwrap_err());
+        assert!(object.is_ok(), "{}", object.unwrap_err());
         let object = object.unwrap();
 
         assert_eq!(object.children().len(), 2);
@@ -300,7 +300,7 @@ f 1 2 3 4 5";
 
         let output = parse(input);
         let object: Result<Object, _> = output.try_into();
-        assert!(object.is_ok(), object.unwrap_err());
+        assert!(object.is_ok(), "{}", object.unwrap_err());
         let object = object.unwrap();
 
         assert_eq!(

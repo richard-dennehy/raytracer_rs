@@ -68,3 +68,6 @@ Primarily implemented to avoid duplicated logic, and to simplify sections of the
 
 - Effort: small - changes were localised to a small area of the codebase
 - Performance impact: within noise threshold - only a small number of calculations have been removed, and it's possible the compiler was optimising the duplicated calculations out
+
+### Rust 1.51
+No noticeable change

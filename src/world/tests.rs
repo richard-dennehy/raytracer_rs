@@ -107,50 +107,6 @@ mod unit_tests {
     }
 
     #[test]
-    fn a_point_with_no_objects_collinear_to_the_light_should_not_be_shadowed() {
-        let world = World::default();
-        let light = world
-            .lights
-            .get(0)
-            .expect("The default world should have a light");
-
-        assert!(!world.is_in_shadow(Point3D::new(0.0, 10.0, 0.0), light))
-    }
-
-    #[test]
-    fn a_point_behind_a_lit_object_should_be_shadowed() {
-        let world = World::default();
-        let light = world
-            .lights
-            .get(0)
-            .expect("The default world should have a light");
-
-        assert!(world.is_in_shadow(Point3D::new(10.0, -10.0, 10.0), light))
-    }
-
-    #[test]
-    fn a_point_behind_the_light_should_not_be_shadowed() {
-        let world = World::default();
-        let light = world
-            .lights
-            .get(0)
-            .expect("The default world should have a light");
-
-        assert!(!world.is_in_shadow(Point3D::new(-20.0, 20.0, -20.0), light))
-    }
-
-    #[test]
-    fn a_point_in_between_the_light_and_an_object_should_not_be_shadowed() {
-        let world = World::default();
-        let light = world
-            .lights
-            .get(0)
-            .expect("The default world should have a light");
-
-        assert!(!world.is_in_shadow(Point3D::new(-2.0, 2.0, -2.0), light))
-    }
-
-    #[test]
     fn a_hit_on_a_reflective_surface_should_combine_the_surface_colour_with_the_reflected_colour() {
         let mut world = World::default();
         {
@@ -321,12 +277,15 @@ mod unit_tests {
             Vector3D::new(0.0, -SQRT_2 / 2.0, SQRT_2 / 2.0).normalised(),
         );
 
-        assert!(approx_eq!(
-            Colour,
-            world.colour_at(ray),
-            Colour::new(0.9364253889815014, 0.6864253889815014, 0.6864253889815014),
-            epsilon = f32::EPSILON as f64
-        ));
+        let expected = world.colour_at(ray);
+        let actual = Colour::new(1.314506180562316, 0.686425385324466, 0.686425385324466);
+
+        assert!(
+            approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
+            "{:?} != {:?}",
+            expected,
+            actual
+        );
     }
 
     #[test]
@@ -362,12 +321,15 @@ mod unit_tests {
             Vector3D::new(0.0, -SQRT_2 / 2.0, SQRT_2 / 2.0).normalised(),
         );
 
-        assert!(approx_eq!(
-            Colour,
-            world.colour_at(ray),
-            Colour::new(0.9339151414147093, 0.6964342273743777, 0.6924306920172272),
-            epsilon = f32::EPSILON as f64
-        ));
+        let expected = world.colour_at(ray);
+        let actual = Colour::new(1.2960903486979611, 0.6964342236428152, 0.6924306883154755);
+
+        assert!(
+            approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
+            "{:?} != {:?}",
+            expected,
+            actual
+        );
     }
 
     #[test]
@@ -404,12 +366,15 @@ mod unit_tests {
 
         let ray = Ray::new(Point3D::ORIGIN, Normal3D::POSITIVE_Z);
 
-        assert!(approx_eq!(
-            Colour,
-            world.colour_at(ray),
-            Colour::new(0.03598076211353316, 0.03598076211353316, 1.690826949711632),
-            epsilon = f32::EPSILON as f64
-        ));
+        let expected = Colour::new(0.065095610503828, 0.065095610503828, 1.719941795652868);
+        let actual = world.colour_at(ray);
+
+        assert!(
+            approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
+            "{:?} != {:?}",
+            expected,
+            actual
+        );
     }
 
     #[test]

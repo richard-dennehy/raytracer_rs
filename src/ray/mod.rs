@@ -241,13 +241,6 @@ impl<'scene> Intersections<'scene> {
         self.0.iter().find(|&intersect| intersect.t >= 0.0).cloned()
     }
 
-    pub fn shadow_hit(&self) -> Option<Intersection<'scene>> {
-        self.0
-            .iter()
-            .find(|&intersect| intersect.t >= 0.0 && intersect.with.material.casts_shadow)
-            .cloned()
-    }
-
     pub fn append(&mut self, mut other: Intersections<'scene>) {
         self.0.append(&mut other.0);
         self.sort();

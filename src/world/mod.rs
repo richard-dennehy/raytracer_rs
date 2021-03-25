@@ -132,19 +132,6 @@ impl World {
             .sum()
     }
 
-    fn is_in_shadow(&self, point: Point3D, light: &Light) -> bool {
-        let light_vector = light.position() - point;
-        let light_distance = light_vector.magnitude();
-        let light_vector = light_vector.normalised();
-
-        let ray = Ray::new(point, light_vector);
-        if let Some(hit) = self.intersect(&ray).shadow_hit() {
-            hit.t < light_distance
-        } else {
-            false
-        }
-    }
-
     fn direct_light(&self, point: Point3D, light: &Light) -> Colour {
         let light_vector = light.position() - point;
         let light_distance = light_vector.magnitude();
@@ -157,9 +144,8 @@ impl World {
             .filter(|i| i.t >= 0.0 && i.t < light_distance)
             .fold(light.colour(), |light, hit| {
                 if hit.with.material.casts_shadow {
-                    let transmit = 1.0 - hit.with.material.transparency;
                     // TODO should be affected by transparent material colour
-                    light * transmit
+                    light * hit.with.material.transparency
                 } else {
                     light
                 }

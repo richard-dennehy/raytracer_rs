@@ -23,11 +23,11 @@ fn should_be_able_to_create_a_camera_from_a_valid_file() {
     let input = with_camera_description("");
 
     let scene = parse(&input);
-    assert!(scene.is_ok(), scene.unwrap_err());
+    assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
     let camera = scene.camera();
-    assert!(camera.is_ok(), camera.unwrap_err());
+    assert!(camera.is_ok(), "{}", camera.unwrap_err());
     let camera = camera.unwrap();
 
     assert_eq!(
@@ -56,11 +56,11 @@ fn should_be_able_to_create_a_simple_object_with_a_colour_and_no_transforms() {
     );
 
     let scene = parse(&input);
-    assert!(scene.is_ok(), scene.unwrap_err());
+    assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
     let objects = scene.objects();
-    assert!(objects.is_ok(), objects.unwrap_err());
+    assert!(objects.is_ok(), "{}", objects.unwrap_err());
     let objects = objects.unwrap();
 
     assert_eq!(objects.len(), 1);
@@ -92,11 +92,11 @@ fn should_be_able_to_create_an_object_with_a_checker_pattern() {
     );
 
     let scene = parse(&input);
-    assert!(scene.is_ok(), scene.unwrap_err());
+    assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
     let objects = scene.objects();
-    assert!(objects.is_ok(), objects.unwrap_err());
+    assert!(objects.is_ok(), "{}", objects.unwrap_err());
     let objects = objects.unwrap();
 
     assert_eq!(objects.len(), 1);
@@ -136,11 +136,11 @@ fn should_be_able_to_create_an_object_with_a_pattern_with_a_transform() {
     );
 
     let scene = parse(&input);
-    assert!(scene.is_ok(), scene.unwrap_err());
+    assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
     let objects = scene.objects();
-    assert!(objects.is_ok(), objects.unwrap_err());
+    assert!(objects.is_ok(), "{}", objects.unwrap_err());
     let objects = objects.unwrap();
 
     assert_eq!(objects.len(), 1);
@@ -178,11 +178,11 @@ fn should_be_able_to_create_an_object_referencing_a_defined_material() {
     );
 
     let scene = parse(&input);
-    assert!(scene.is_ok(), scene.unwrap_err());
+    assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
     let objects = scene.objects();
-    assert!(objects.is_ok(), objects.unwrap_err());
+    assert!(objects.is_ok(), "{}", objects.unwrap_err());
     let objects = objects.unwrap();
 
     assert_eq!(objects.len(), 1);
@@ -224,11 +224,11 @@ fn should_be_to_create_an_object_with_a_material_extending_another_material() {
     );
 
     let scene = parse(&input);
-    assert!(scene.is_ok(), scene.unwrap_err());
+    assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
     let objects = scene.objects();
-    assert!(objects.is_ok(), objects.unwrap_err());
+    assert!(objects.is_ok(), "{}", objects.unwrap_err());
     let objects = objects.unwrap();
 
     assert_eq!(objects.len(), 1);
@@ -275,11 +275,11 @@ fn should_create_an_object_with_a_material_extending_a_material_extending_anothe
     );
 
     let scene = parse(&input);
-    assert!(scene.is_ok(), scene.unwrap_err());
+    assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
     let objects = scene.objects();
-    assert!(objects.is_ok(), objects.unwrap_err());
+    assert!(objects.is_ok(), "{}", objects.unwrap_err());
     let objects = objects.unwrap();
 
     assert_eq!(objects.len(), 1);
@@ -311,11 +311,11 @@ fn should_be_able_to_create_an_object_with_a_single_transform() {
     );
 
     let scene = parse(&input);
-    assert!(scene.is_ok(), scene.unwrap_err());
+    assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
     let objects = scene.objects();
-    assert!(objects.is_ok(), objects.unwrap_err());
+    assert!(objects.is_ok(), "{}", objects.unwrap_err());
     let objects = objects.unwrap();
 
     assert_eq!(objects.len(), 1);
@@ -346,11 +346,11 @@ fn should_be_able_to_create_an_object_with_multiple_transforms() {
     );
 
     let scene = parse(&input);
-    assert!(scene.is_ok(), scene.unwrap_err());
+    assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
     let objects = scene.objects();
-    assert!(objects.is_ok(), objects.unwrap_err());
+    assert!(objects.is_ok(), "{}", objects.unwrap_err());
     let objects = objects.unwrap();
 
     assert_eq!(objects.len(), 1);
@@ -389,11 +389,11 @@ fn should_be_able_to_create_an_object_referencing_a_defined_transform() {
     );
 
     let scene = parse(&input);
-    assert!(scene.is_ok(), scene.unwrap_err());
+    assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
     let objects = scene.objects();
-    assert!(objects.is_ok(), objects.unwrap_err());
+    assert!(objects.is_ok(), "{}", objects.unwrap_err());
     let objects = objects.unwrap();
 
     assert_eq!(objects.len(), 1);
@@ -433,11 +433,11 @@ fn should_be_able_to_create_an_object_extending_a_defined_transform() {
     );
 
     let scene = parse(&input);
-    assert!(scene.is_ok(), scene.unwrap_err());
+    assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
     let objects = scene.objects();
-    assert!(objects.is_ok(), objects.unwrap_err());
+    assert!(objects.is_ok(), "{}", objects.unwrap_err());
     let objects = objects.unwrap();
 
     assert_eq!(objects.len(), 1);
@@ -483,11 +483,11 @@ fn should_be_able_to_create_an_object_extending_a_transform_extending_another_tr
     );
 
     let scene = parse(&input);
-    assert!(scene.is_ok(), scene.unwrap_err());
+    assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
     let objects = scene.objects();
-    assert!(objects.is_ok(), objects.unwrap_err());
+    assert!(objects.is_ok(), "{}", objects.unwrap_err());
     let objects = objects.unwrap();
 
     assert_eq!(objects.len(), 1);
