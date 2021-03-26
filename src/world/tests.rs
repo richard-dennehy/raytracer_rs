@@ -278,7 +278,7 @@ mod unit_tests {
         );
 
         let expected = world.colour_at(ray);
-        let actual = Colour::new(1.314506180562316, 0.686425385324466, 0.686425385324466);
+        let actual = Colour::new(1.125465782943391, 0.686425385324466, 0.686425385324466);
 
         assert!(
             approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
@@ -322,7 +322,7 @@ mod unit_tests {
         );
 
         let expected = world.colour_at(ray);
-        let actual = Colour::new(1.2960903486979611, 0.6964342236428152, 0.6924306883154755);
+        let actual = Colour::new(1.1150027431980067, 0.6964342236428152, 0.6924306883154755);
 
         assert!(
             approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
@@ -570,7 +570,9 @@ mod unit_tests {
         );
 
         let ray = Ray::new(Point3D::ORIGIN, Normal3D::POSITIVE_Z);
-        assert_eq!(world.colour_at(ray), Colour::greyscale(0.5));
+        // 50% of the light reaches the surface, and only 50% of the _reflected_ light passes back
+        // through the plane into the camera; therefore only 25% of the surface colour reaches the camera
+        assert_eq!(world.colour_at(ray), Colour::greyscale(0.25));
     }
 
     #[test]

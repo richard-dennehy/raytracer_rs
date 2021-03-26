@@ -34,6 +34,24 @@ impl Colour {
     pub const fn blue(&self) -> f64 {
         self.2
     }
+
+    /// scales the RGB components such that R+G+B ~= 1.0 - intended to calculate light passing through
+    /// coloured transparent materials
+    ///
+    /// Note that `Colour::BLACK.normalised() == Colour::BLACK`
+    pub fn normalised(&self) -> Self {
+        let magnitude = self.red() + self.blue() + self.green();
+
+        if magnitude == 0.0 {
+            *self
+        } else {
+            Colour::new(
+                self.red() / magnitude,
+                self.blue() / magnitude,
+                self.green() / magnitude,
+            )
+        }
+    }
 }
 
 impl Default for Colour {

@@ -22,62 +22,92 @@ fn main() -> Result<(), String> {
     let timer = Instant::now();
 
     let mut world = World::empty();
-    world.lights.push(Light::point(
-        Colour::WHITE,
-        Point3D::new(-10.0, 10.0, -10.0),
-    ));
+    world
+        .lights
+        .push(Light::point(Colour::WHITE, Point3D::new(-6.0, 15.0, -8.0)));
 
     {
         let wall = Object::plane()
-            .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(5.1))
+            .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(15.0))
             .with_material(Material {
-                pattern: Pattern::checkers(Colour::BLACK, Colour::WHITE),
+                pattern: Pattern::solid(Colour::WHITE),
+                specular: 0.1,
                 ..Default::default()
             });
-
         world.objects.push(wall);
-    };
+    }
 
     {
-        let outer_glass_sphere = Object::sphere()
-            .transformed(Transform::identity().translate_y(1.0).translate_z(0.5))
-            .with_material(Material {
-                pattern: Pattern::solid(Colour::BLACK),
-                transparency: 1.0,
-                refractive: 1.5,
-                reflective: 1.0,
-                ..Default::default()
-            });
+        let floor = Object::plane().with_material(Material {
+            pattern: Pattern::solid(Colour::WHITE),
+            diffuse: 0.9,
+            ambient: 0.2,
+            ..Default::default()
+        });
 
-        world.objects.push(outer_glass_sphere);
-    };
+        world.objects.push(floor);
+    }
 
     {
-        let inner_air_sphere = Object::sphere()
+        let red_pane = Object::cube()
             .transformed(
                 Transform::identity()
-                    .scale_all(0.5)
-                    .translate_y(1.0)
-                    .translate_z(0.5),
+                    .scale_z(0.01)
+                    .translate_z(4.5)
+                    .translate_y(3.0)
+                    .translate_x(-3.0),
             )
             .with_material(Material {
-                pattern: Pattern::solid(Colour::BLACK),
-                transparency: 1.0,
-                refractive: 1.0,
-                reflective: 1.0,
+                pattern: Pattern::solid(Colour::new(0.2, 0.0, 0.0)),
+                transparency: 0.5,
                 ..Default::default()
             });
 
-        world.objects.push(inner_air_sphere);
-    };
+        world.objects.push(red_pane);
+    }
+
+    {
+        let green_pane = Object::cube()
+            .transformed(
+                Transform::identity()
+                    .scale_z(0.01)
+                    .translate_z(4.5)
+                    .translate_y(3.0),
+            )
+            .with_material(Material {
+                pattern: Pattern::solid(Colour::new(0.0, 0.2, 0.0)),
+                transparency: 0.5,
+                ..Default::default()
+            });
+
+        world.objects.push(green_pane);
+    }
+
+    {
+        let blue_pane = Object::cube()
+            .transformed(
+                Transform::identity()
+                    .scale_z(0.01)
+                    .translate_z(4.5)
+                    .translate_y(3.0)
+                    .translate_x(3.0),
+            )
+            .with_material(Material {
+                pattern: Pattern::solid(Colour::new(0.0, 0.0, 0.2)),
+                transparency: 0.5,
+                ..Default::default()
+            });
+
+        world.objects.push(blue_pane);
+    }
 
     let camera = Camera::new(
         CAMERA_WIDTH,
         CAMERA_HEIGHT,
         PI / 3.0,
         Transform::view_transform(
-            Point3D::new(0.0, 1.5, -3.0),
-            Point3D::new(0.0, 1.0, 0.0),
+            Point3D::new(0.0, 4.0, -3.0),
+            Point3D::new(0.0, 3.5, 0.0),
             Normal3D::POSITIVE_Y,
         ),
     );

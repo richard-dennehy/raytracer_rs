@@ -145,6 +145,7 @@ impl World {
             .fold(light.colour(), |light, hit| {
                 if hit.with.material.casts_shadow {
                     // TODO should be affected by transparent material colour
+                    // TODO figure out what colour the transparent material is at intersection point
                     light * hit.with.material.transparency
                 } else {
                     light

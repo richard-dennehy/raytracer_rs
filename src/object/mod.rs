@@ -188,8 +188,8 @@ impl Object {
             Point3D::new(x, y, z)
         };
 
-        let colour = material.pattern.colour_at(object_point) * light_source.colour();
-        let ambient = colour * material.ambient;
+        let material_colour = material.pattern.colour_at(object_point);
+        let ambient = material_colour * light_source.colour() * material.ambient;
 
         // i.e. is in shadow
         if direct_light == Colour::BLACK {
@@ -203,9 +203,10 @@ impl Object {
             return ambient;
         }
 
+        let colour = material_colour * direct_light;
         let diffuse = colour * material.diffuse * light_dot_normal;
-        let reflected = (-light_vector).reflect_through(surface_normal);
 
+        let reflected = (-light_vector).reflect_through(surface_normal);
         let reflect_dot_eye = reflected.dot(eye_vector);
         // if dot product is <= 0, the reflected light cannot reach the eye
         if reflect_dot_eye.is_sign_negative() {

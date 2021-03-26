@@ -15,16 +15,12 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP fix world function to calculate direct light on a point">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="allow light to partially pass through transparent objects">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/performance.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/performance.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/obj_parser/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/obj_parser/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/world/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/colour/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/colour/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/world/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/creating_a_scene.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/creating_a_scene.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,11 +90,6 @@
     </option>
   </component>
   <component name="RunManager" selected="Cargo.test">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -202,6 +193,11 @@
       <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <list>
@@ -355,14 +351,8 @@
       <workItem from="1616442883403" duration="3015000" />
       <workItem from="1616529568783" duration="2026000" />
       <workItem from="1616617156404" duration="2515000" />
-      <workItem from="1616702390592" duration="2177000" />
-    </task>
-    <task id="LOCAL-00078" summary="very WIP YAML parser">
-      <created>1612793978385</created>
-      <option name="number" value="00078" />
-      <option name="presentableId" value="LOCAL-00078" />
-      <option name="project" value="LOCAL" />
-      <updated>1612793978385</updated>
+      <workItem from="1616702390592" duration="2220000" />
+      <workItem from="1616788900769" duration="3243000" />
     </task>
     <task id="LOCAL-00079" summary="very WIP YAML parser&#10;&#10;- implemented camera description parser and helper functions">
       <created>1612903659017</created>
@@ -700,7 +690,14 @@
       <option name="project" value="LOCAL" />
       <updated>1616619670854</updated>
     </task>
-    <option name="localTasksCounter" value="127" />
+    <task id="LOCAL-00127" summary="allow light to partially pass through transparent objects">
+      <created>1616704601133</created>
+      <option name="number" value="00127" />
+      <option name="presentableId" value="LOCAL-00127" />
+      <option name="project" value="LOCAL" />
+      <updated>1616704601133</updated>
+    </task>
+    <option name="localTasksCounter" value="128" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -726,7 +723,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="update build flags" />
     <MESSAGE value="reduce overhead of rendering loop" />
     <MESSAGE value="reduce number of benchmarks" />
     <MESSAGE value="WIP refactor transformation matrix to pre-calculate determinant" />
@@ -751,25 +747,16 @@
     <MESSAGE value="WIP test/improve transparent object shadow casting" />
     <MESSAGE value="WIP add world function to calculate direct light on a point" />
     <MESSAGE value="WIP fix world function to calculate direct light on a point" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP fix world function to calculate direct light on a point" />
+    <MESSAGE value="allow light to partially pass through transparent objects" />
+    <option name="LAST_COMMIT_MESSAGE" value="allow light to partially pass through transparent objects" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/object/mod.rs</url>
-          <line>217</line>
+          <line>218</line>
           <option name="timeStamp" value="25" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/object/mod.rs</url>
-          <line>191</line>
-          <option name="timeStamp" value="27" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/object/mod.rs</url>
-          <line>195</line>
-          <option name="timeStamp" value="28" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
