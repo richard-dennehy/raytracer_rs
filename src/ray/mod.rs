@@ -1,5 +1,6 @@
 use crate::matrix::Matrix4D;
 use crate::{Colour, Light, Normal3D, Object, Point3D, Vector, Vector3D};
+use std::slice::Iter;
 use std::vec::IntoIter;
 
 #[cfg(test)]
@@ -252,6 +253,10 @@ impl<'scene> Intersections<'scene> {
 
     pub fn into_iter(self) -> IntoIter<Intersection<'scene>> {
         self.0.into_iter()
+    }
+
+    pub fn iter(&self) -> Iter<Intersection<'scene>> {
+        self.0.iter()
     }
 
     fn sort(&mut self) {

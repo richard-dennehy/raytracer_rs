@@ -41,7 +41,8 @@ fn main() -> Result<(), String> {
         let floor = Object::plane().with_material(Material {
             pattern: Pattern::solid(Colour::WHITE),
             diffuse: 0.9,
-            ambient: 0.2,
+            // have to crank the ambient up so it actually appears white rather than grey
+            ambient: 0.35,
             ..Default::default()
         });
 
@@ -58,8 +59,8 @@ fn main() -> Result<(), String> {
                     .translate_x(-3.0),
             )
             .with_material(Material {
-                pattern: Pattern::solid(Colour::new(0.2, 0.0, 0.0)),
-                transparency: 0.5,
+                pattern: Pattern::solid(Colour::new(0.33, 0.0, 0.0)),
+                transparency: 0.9,
                 ..Default::default()
             });
 
@@ -75,8 +76,8 @@ fn main() -> Result<(), String> {
                     .translate_y(3.0),
             )
             .with_material(Material {
-                pattern: Pattern::solid(Colour::new(0.0, 0.2, 0.0)),
-                transparency: 0.5,
+                pattern: Pattern::solid(Colour::new(0.0, 0.33, 0.0)),
+                transparency: 0.9,
                 ..Default::default()
             });
 
@@ -93,8 +94,8 @@ fn main() -> Result<(), String> {
                     .translate_x(3.0),
             )
             .with_material(Material {
-                pattern: Pattern::solid(Colour::new(0.0, 0.0, 0.2)),
-                transparency: 0.5,
+                pattern: Pattern::solid(Colour::new(0.0, 0.0, 0.33)),
+                transparency: 0.9,
                 ..Default::default()
             });
 

@@ -143,11 +143,43 @@ impl World {
             .into_iter()
             .filter(|i| i.t >= 0.0 && i.t < light_distance)
             .fold(light.colour(), |light, hit| {
+                if light == Colour::BLACK {
+                    return Colour::BLACK;
+                }
+
                 if hit.with.material.casts_shadow {
-                    // TODO should be affected by transparent material colour
-                    // TODO figure out what colour the transparent material is at intersection point
-                    light * hit.with.material.transparency
+                    // opaque object prevents light from reaching point
+                    if hit.with.material.transparency == 0.0 {
+                        return Colour::BLACK;
+                    }
+
+                    let hit_colour = hit.with.raw_colour_at(ray.position(hit.t));
+                    // plain glass, etc, don't have a colour, and shouldn't change the colour of light passing though
+                    if hit_colour == Colour::BLACK {
+                        return light * hit.with.material.transparency;
+                    }
+                    // This colour mixing is very crude, as RGB isn't really the right way to model this.
+                    // HSV would likely make this much easier
+
+                    // try to create a new colour with the same intensity as the light source (as much as possible), but
+                    // tint the shade based on the colour it's passing through
+                    let light_intensity = light.red() + light.blue() + light.green();
+                    let transmitted_colour = Colour::new(
+                        hit_colour.red_factor(),
+                        hit_colour.green_factor(),
+                        hit_colour.blue_factor(),
+                    ) * light_intensity;
+                    let transmitted_colour = transmitted_colour.normalised();
+                    // mix the colours together so that e.g. a red glass pane doesn't make the surface behind
+                    // it totally red
+                    // note: `mix` is a magic value, based off what vaguely "looks right"
+                    // note: this may cause transparent materials to effectively emit light as e.g. a red light passing through a green plane will become slightly green
+                    let mix_factor = 0.9;
+                    let colour = transmitted_colour * (1.0 - mix_factor) + light * mix_factor;
+
+                    colour * hit.with.material.transparency
                 } else {
+                    // intersecting object doesn't affect shadow calculations
                     light
                 }
             })

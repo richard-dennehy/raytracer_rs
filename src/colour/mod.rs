@@ -35,22 +35,41 @@ impl Colour {
         self.2
     }
 
+    /// the proportion (0.0 to 1.0) that red contributes to this colour
+    pub fn red_factor(&self) -> f64 {
+        self.red() / self.intensity()
+    }
+
+    /// the proportion (0.0 to 1.0) that green contributes to this colour
+    pub fn green_factor(&self) -> f64 {
+        self.green() / self.intensity()
+    }
+
+    /// the proportion (0.0 to 1.0) that blue contributes to this colour
+    pub fn blue_factor(&self) -> f64 {
+        self.blue() / self.intensity()
+    }
+
     /// scales the RGB components such that R+G+B ~= 1.0 - intended to calculate light passing through
     /// coloured transparent materials
     ///
     /// Note that `Colour::BLACK.normalised() == Colour::BLACK`
     pub fn normalised(&self) -> Self {
-        let magnitude = self.red() + self.blue() + self.green();
+        let magnitude = self.intensity();
 
         if magnitude == 0.0 {
             *self
         } else {
             Colour::new(
                 self.red() / magnitude,
-                self.blue() / magnitude,
                 self.green() / magnitude,
+                self.blue() / magnitude,
             )
         }
+    }
+
+    pub fn intensity(&self) -> f64 {
+        self.red() + self.blue() + self.green()
     }
 }
 

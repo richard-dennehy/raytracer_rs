@@ -180,15 +180,7 @@ impl Object {
         light_source: &Light,
     ) -> Colour {
         let material = &self.material;
-
-        let object_point = {
-            let inverse = self.transform.inverse();
-
-            let (x, y, z, _) = inverse * point;
-            Point3D::new(x, y, z)
-        };
-
-        let material_colour = material.pattern.colour_at(object_point);
+        let material_colour = self.raw_colour_at(point);
         let ambient = material_colour * light_source.colour() * material.ambient;
 
         // i.e. is in shadow
@@ -217,6 +209,23 @@ impl Object {
         let specular = direct_light * material.specular * specular_factor;
 
         ambient + diffuse + specular
+    }
+
+    /// The colour of the object at the given point based on the object's material/pattern,
+    /// without taking the lighting or eye location into account
+    ///
+    /// Intended for use by transparency/shadow calculations
+    pub fn raw_colour_at(&self, point: Point3D) -> Colour {
+        let material = &self.material;
+
+        let object_point = {
+            let inverse = self.transform.inverse();
+
+            let (x, y, z, _) = inverse * point;
+            Point3D::new(x, y, z)
+        };
+
+        material.pattern.colour_at(object_point)
     }
 
     pub fn intersect(&self, with: &Ray) -> Intersections {
