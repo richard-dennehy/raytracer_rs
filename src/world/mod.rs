@@ -18,6 +18,8 @@ pub struct WorldSettings {
     pub recursion_depth: u8,
     /// Default colour returned when a ray doesn't intersect any objects
     pub sky_colour: Colour,
+    /// how strongly the colour of a transparent material should affect the light passing through - works best with low values
+    pub transparent_colour_tint: f64,
 }
 
 impl Default for WorldSettings {
@@ -25,6 +27,7 @@ impl Default for WorldSettings {
         WorldSettings {
             recursion_depth: 5,
             sky_colour: Colour::BLACK,
+            transparent_colour_tint: 0.1,
         }
     }
 }
@@ -170,12 +173,10 @@ impl World {
                         hit_colour.blue_factor(),
                     ) * light_intensity;
                     let transmitted_colour = transmitted_colour.normalised();
-                    // mix the colours together so that e.g. a red glass pane doesn't make the surface behind
-                    // it totally red
-                    // note: `mix` is a magic value, based off what vaguely "looks right"
+                    // mix the colours together so that e.g. a red glass pane doesn't make the surface behind it totally red
                     // note: this may cause transparent materials to effectively emit light as e.g. a red light passing through a green plane will become slightly green
-                    let mix_factor = 0.9;
-                    let colour = transmitted_colour * (1.0 - mix_factor) + light * mix_factor;
+                    let tint = self.settings.transparent_colour_tint;
+                    let colour = transmitted_colour * tint + light * (1.0 - tint);
 
                     colour * hit.with.material.transparency
                 } else {

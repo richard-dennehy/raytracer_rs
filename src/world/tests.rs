@@ -1,9 +1,9 @@
 use super::*;
 
-mod unit_tests {
+mod intersections {
     use super::*;
-    use crate::{Camera, Normal3D, Vector3D};
-    use std::f64::consts::{PI, SQRT_2};
+    use crate::Normal3D;
+    use std::f64::consts::PI;
 
     #[test]
     fn intersecting_a_ray_with_the_default_world_should_produce_a_sorted_list_of_intersections() {
@@ -19,6 +19,58 @@ mod unit_tests {
         assert_eq!(intersections.get(2).unwrap().t, 5.5);
         assert_eq!(intersections.get(3).unwrap().t, 6.0);
     }
+
+    #[test]
+    fn the_colour_should_be_black_when_a_ray_hits_nothing() {
+        let world = World::default();
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Y);
+
+        assert_eq!(world.colour_at(ray), Colour::BLACK);
+    }
+
+    #[test]
+    fn a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it() {
+        let mut world = World::empty();
+        {
+            let front = Object::plane()
+                .with_material(Material {
+                    ambient: 1.0,
+                    specular: 0.0,
+                    diffuse: 0.0,
+                    pattern: Pattern::solid(Colour::new(0.1, 0.1, 0.1)),
+                    transparency: 0.0,
+                    ..Default::default()
+                })
+                .transformed(Transform::identity().rotate_x(-PI / 2.0));
+            world.objects.push(front);
+        };
+
+        {
+            let back = Object::sphere()
+                .with_material(Material {
+                    pattern: Pattern::solid(Colour::GREEN),
+                    ambient: 1.0,
+                    diffuse: 0.0,
+                    specular: 0.0,
+                    ..Default::default()
+                })
+                .transformed(Transform::identity().translate_z(1.0));
+            world.objects.push(back);
+        };
+
+        world
+            .lights
+            .push(Light::point(Colour::WHITE, Point3D::ORIGIN));
+
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -1.0), Normal3D::POSITIVE_Z);
+        assert_eq!(world.colour_at(ray), Colour::new(0.1, 0.1, 0.1));
+    }
+}
+
+mod shading {
+    use super::*;
+    use crate::{Camera, Normal3D};
+    use std::f64::consts::PI;
 
     #[test]
     fn should_correctly_shade_an_external_hit() {
@@ -69,14 +121,6 @@ mod unit_tests {
     }
 
     #[test]
-    fn the_colour_should_be_black_when_a_ray_hits_nothing() {
-        let world = World::default();
-        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Y);
-
-        assert_eq!(world.colour_at(ray), Colour::BLACK);
-    }
-
-    #[test]
     fn the_colour_should_be_the_shaded_surface_when_the_ray_hits_an_object() {
         let world = World::default();
         let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z);
@@ -104,277 +148,6 @@ mod unit_tests {
         let ray = Ray::new(Point3D::new(0.0, 0.0, 0.75), Normal3D::NEGATIVE_Z);
 
         assert_eq!(world.colour_at(ray), Colour::WHITE);
-    }
-
-    #[test]
-    fn a_hit_on_a_reflective_surface_should_combine_the_surface_colour_with_the_reflected_colour() {
-        let mut world = World::default();
-        {
-            let reflective_plane = Object::plane()
-                .with_material(Material {
-                    reflective: 0.5,
-                    ..Default::default()
-                })
-                .transformed(Transform::identity().translate_y(-1.0));
-
-            world.objects.push(reflective_plane);
-        };
-
-        assert!(approx_eq!(
-            Colour,
-            world.colour_at(Ray::new(
-                Point3D::new(0.0, 0.0, -3.0),
-                Vector3D::new(0.0, -SQRT_2 / 2.0, SQRT_2 / 2.0).normalised(),
-            )),
-            Colour::new(0.8767560060717737, 0.9243386603443418, 0.8291733517992057),
-            epsilon = f32::EPSILON as f64
-        ));
-    }
-
-    #[test]
-    fn a_hit_facing_a_pair_of_parallel_mirrors_should_not_reflect_infinitely() {
-        let reflective_non_blinding_material = Material {
-            reflective: 1.0,
-            ambient: 0.2,
-            specular: 0.0,
-            diffuse: 0.0,
-            ..Default::default()
-        };
-
-        let mut world = World::empty();
-        {
-            let upper = Object::plane()
-                .with_material(reflective_non_blinding_material.clone())
-                .transformed(Transform::identity().rotate_x(PI).translate_y(1.0));
-            world.objects.push(upper);
-        };
-
-        {
-            let lower = Object::plane()
-                .with_material(reflective_non_blinding_material)
-                .transformed(Transform::identity().translate_y(-1.0));
-            world.objects.push(lower);
-        };
-        world
-            .lights
-            .push(Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, 0.0)));
-
-        assert!(approx_eq!(
-            Colour,
-            world.colour_at(Ray::new(Point3D::ORIGIN, Normal3D::POSITIVE_Y)),
-            Colour::WHITE,
-            epsilon = f32::EPSILON as f64
-        ));
-    }
-
-    #[test]
-    fn a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it() {
-        let mut world = World::empty();
-        {
-            let front = Object::plane()
-                .with_material(Material {
-                    ambient: 1.0,
-                    specular: 0.0,
-                    diffuse: 0.0,
-                    pattern: Pattern::solid(Colour::new(0.1, 0.1, 0.1)),
-                    transparency: 0.0,
-                    ..Default::default()
-                })
-                .transformed(Transform::identity().rotate_x(-PI / 2.0));
-            world.objects.push(front);
-        };
-
-        {
-            let back = Object::sphere()
-                .with_material(Material {
-                    pattern: Pattern::solid(Colour::GREEN),
-                    ambient: 1.0,
-                    diffuse: 0.0,
-                    specular: 0.0,
-                    ..Default::default()
-                })
-                .transformed(Transform::identity().translate_z(1.0));
-            world.objects.push(back);
-        };
-
-        world
-            .lights
-            .push(Light::point(Colour::WHITE, Point3D::ORIGIN));
-
-        let ray = Ray::new(Point3D::new(0.0, 0.0, -1.0), Normal3D::POSITIVE_Z);
-        assert_eq!(world.colour_at(ray), Colour::new(0.1, 0.1, 0.1));
-    }
-
-    #[test]
-    fn a_hit_on_a_fully_transparent_non_refractive_object_should_include_the_colour_of_objects_behind_it(
-    ) {
-        let mut world = World::empty();
-        {
-            let front = Object::plane()
-                .with_material(Material {
-                    ambient: 1.0,
-                    specular: 0.0,
-                    diffuse: 0.0,
-                    pattern: Pattern::solid(Colour::BLACK),
-                    transparency: 1.0,
-                    refractive: 1.0,
-                    ..Default::default()
-                })
-                .transformed(Transform::identity().rotate_x(-PI / 2.0));
-            world.objects.push(front);
-        };
-
-        {
-            let back = Object::sphere()
-                .with_material(Material {
-                    pattern: Pattern::solid(Colour::GREEN),
-                    ambient: 1.0,
-                    diffuse: 0.0,
-                    specular: 0.0,
-                    ..Default::default()
-                })
-                .transformed(Transform::identity().translate_z(1.0));
-            world.objects.push(back);
-        };
-
-        world
-            .lights
-            .push(Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, 0.5)));
-
-        let ray = Ray::new(Point3D::new(0.0, 0.0, -1.0), Normal3D::POSITIVE_Z);
-        assert_eq!(world.colour_at(ray), Colour::GREEN);
-    }
-
-    #[test]
-    fn a_hit_on_a_refractive_object_should_include_the_colour_from_refracted_rays() {
-        let mut world = World::default();
-        {
-            let refractive_plane = Object::plane()
-                .transformed(Transform::identity().translate_y(-1.0))
-                .with_material(Material {
-                    transparency: 0.5,
-                    refractive: 1.5,
-                    ..Default::default()
-                });
-
-            world.objects.push(refractive_plane);
-        };
-
-        {
-            let ball = Object::sphere()
-                .transformed(Transform::identity().translate_y(-3.5).translate_z(-0.5))
-                .with_material(Material {
-                    pattern: Pattern::solid(Colour::RED),
-                    ambient: 0.5,
-                    ..Default::default()
-                });
-
-            world.objects.push(ball);
-        };
-
-        let ray = Ray::new(
-            Point3D::new(0.0, 0.0, -3.0),
-            Vector3D::new(0.0, -SQRT_2 / 2.0, SQRT_2 / 2.0).normalised(),
-        );
-
-        let expected = world.colour_at(ray);
-        let actual = Colour::new(1.125465782943391, 0.686425385324466, 0.686425385324466);
-
-        assert!(
-            approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
-            "{:?} != {:?}",
-            expected,
-            actual
-        );
-    }
-
-    #[test]
-    fn a_hit_on_a_transparent_refractive_and_reflective_object_should_have_fresnel() {
-        let mut world = World::default();
-        {
-            let refractive_plane = Object::plane()
-                .transformed(Transform::identity().translate_y(-1.0))
-                .with_material(Material {
-                    transparency: 0.5,
-                    reflective: 0.5,
-                    refractive: 1.5,
-                    ..Default::default()
-                });
-
-            world.objects.push(refractive_plane);
-        };
-
-        {
-            let ball = Object::sphere()
-                .transformed(Transform::identity().translate_y(-3.5).translate_z(-0.5))
-                .with_material(Material {
-                    pattern: Pattern::solid(Colour::RED),
-                    ambient: 0.5,
-                    ..Default::default()
-                });
-
-            world.objects.push(ball);
-        };
-
-        let ray = Ray::new(
-            Point3D::new(0.0, 0.0, -3.0),
-            Vector3D::new(0.0, -SQRT_2 / 2.0, SQRT_2 / 2.0).normalised(),
-        );
-
-        let expected = world.colour_at(ray);
-        let actual = Colour::new(1.1150027431980067, 0.6964342236428152, 0.6924306883154755);
-
-        assert!(
-            approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
-            "{:?} != {:?}",
-            expected,
-            actual
-        );
-    }
-
-    #[test]
-    fn a_transparent_sphere_should_include_the_colour_of_objects_behind_it() {
-        let mut world = World::empty();
-        world.lights.push(Light::point(
-            Colour::WHITE,
-            Point3D::new(-10.0, 10.0, -10.0),
-        ));
-
-        {
-            let wall = Object::plane()
-                .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(5.0))
-                .with_material(Material {
-                    pattern: Pattern::solid(Colour::BLUE),
-                    ambient: 1.0,
-                    ..Default::default()
-                });
-
-            world.objects.push(wall);
-        };
-
-        {
-            let glass_sphere = Object::sphere()
-                .transformed(Transform::identity().translate_z(1.0))
-                .with_material(Material {
-                    pattern: Pattern::solid(Colour::new(0.05, 0.05, 0.05)),
-                    transparency: 1.0,
-                    ..Default::default()
-                });
-
-            world.objects.push(glass_sphere);
-        };
-
-        let ray = Ray::new(Point3D::ORIGIN, Normal3D::POSITIVE_Z);
-
-        let expected = Colour::new(0.065095610503828, 0.065095610503828, 1.719941795652868);
-        let actual = world.colour_at(ray);
-
-        assert!(
-            approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
-            "{:?} != {:?}",
-            expected,
-            actual
-        );
     }
 
     #[test]
@@ -464,6 +237,291 @@ mod unit_tests {
 
         rays.into_iter()
             .for_each(|ray| assert_eq!(world.colour_at(ray), Colour::WHITE))
+    }
+}
+
+mod lighting {
+    use super::*;
+    use crate::Normal3D;
+
+    #[test]
+    fn lighting_a_point_in_shadow_should_only_have_ambient() {
+        let mut world = World::empty();
+        world
+            .lights
+            .push(Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, -10.0)));
+        // target object
+        world.objects.push(Object::sphere());
+        // object in-between target/ray and light source
+        world.objects.push(
+            Object::sphere()
+                .transformed(Transform::identity().translate_z(-7.5))
+                .with_material(Material {
+                    pattern: Pattern::solid(Colour::BLUE),
+                    ..Default::default()
+                }),
+        );
+
+        let colour = world.colour_at(Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z));
+
+        assert_eq!(colour, Colour::greyscale(0.1));
+    }
+
+    #[test]
+    fn lighting_with_the_light_behind_the_surface_should_only_have_ambient() {
+        let mut world = World::empty();
+        world
+            .lights
+            .push(Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, 10.0)));
+        world.objects.push(Object::sphere());
+
+        let colour = world.colour_at(Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z));
+
+        assert_eq!(colour, Colour::greyscale(0.1));
+    }
+}
+
+mod reflection_and_refraction {
+    use super::*;
+    use crate::{Normal3D, Vector3D};
+    use std::f64::consts::{PI, SQRT_2};
+
+    #[test]
+    fn a_hit_on_a_reflective_surface_should_combine_the_surface_colour_with_the_reflected_colour() {
+        let mut world = World::default();
+        {
+            let reflective_plane = Object::plane()
+                .with_material(Material {
+                    reflective: 0.5,
+                    ..Default::default()
+                })
+                .transformed(Transform::identity().translate_y(-1.0));
+
+            world.objects.push(reflective_plane);
+        };
+
+        assert!(approx_eq!(
+            Colour,
+            world.colour_at(Ray::new(
+                Point3D::new(0.0, 0.0, -3.0),
+                Vector3D::new(0.0, -SQRT_2 / 2.0, SQRT_2 / 2.0).normalised(),
+            )),
+            Colour::new(0.8767560060717737, 0.9243386603443418, 0.8291733517992057),
+            epsilon = f32::EPSILON as f64
+        ));
+    }
+
+    #[test]
+    fn a_hit_facing_a_pair_of_parallel_mirrors_should_not_reflect_infinitely() {
+        let reflective_non_blinding_material = Material {
+            reflective: 1.0,
+            ambient: 0.2,
+            specular: 0.0,
+            diffuse: 0.0,
+            ..Default::default()
+        };
+
+        let mut world = World::empty();
+        {
+            let upper = Object::plane()
+                .with_material(reflective_non_blinding_material.clone())
+                .transformed(Transform::identity().rotate_x(PI).translate_y(1.0));
+            world.objects.push(upper);
+        };
+
+        {
+            let lower = Object::plane()
+                .with_material(reflective_non_blinding_material)
+                .transformed(Transform::identity().translate_y(-1.0));
+            world.objects.push(lower);
+        };
+        world
+            .lights
+            .push(Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, 0.0)));
+
+        assert!(approx_eq!(
+            Colour,
+            world.colour_at(Ray::new(Point3D::ORIGIN, Normal3D::POSITIVE_Y)),
+            Colour::WHITE,
+            epsilon = f32::EPSILON as f64
+        ));
+    }
+
+    #[test]
+    fn a_hit_on_a_refractive_object_should_include_the_colour_from_refracted_rays() {
+        let mut world = World::default();
+        {
+            let refractive_plane = Object::plane()
+                .transformed(Transform::identity().translate_y(-1.0))
+                .with_material(Material {
+                    transparency: 0.5,
+                    refractive: 1.5,
+                    ..Default::default()
+                });
+
+            world.objects.push(refractive_plane);
+        };
+
+        {
+            let ball = Object::sphere()
+                .transformed(Transform::identity().translate_y(-3.5).translate_z(-0.5))
+                .with_material(Material {
+                    pattern: Pattern::solid(Colour::RED),
+                    ambient: 0.5,
+                    ..Default::default()
+                });
+
+            world.objects.push(ball);
+        };
+
+        let ray = Ray::new(
+            Point3D::new(0.0, 0.0, -3.0),
+            Vector3D::new(0.0, -SQRT_2 / 2.0, SQRT_2 / 2.0).normalised(),
+        );
+
+        let expected = world.colour_at(ray);
+        let actual = Colour::new(1.1128630897687959, 0.686425385324466, 0.686425385324466);
+
+        assert!(
+            approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
+            "{:?} != {:?}",
+            expected,
+            actual
+        );
+    }
+}
+
+mod transparency {
+    use super::*;
+    use crate::{Camera, Normal3D, Vector3D};
+    use std::f64::consts::{PI, SQRT_2};
+
+    #[test]
+    fn a_hit_on_a_fully_transparent_non_refractive_object_should_include_the_colour_of_objects_behind_it(
+    ) {
+        let mut world = World::empty();
+        {
+            let front = Object::plane()
+                .with_material(Material {
+                    ambient: 1.0,
+                    specular: 0.0,
+                    diffuse: 0.0,
+                    pattern: Pattern::solid(Colour::BLACK),
+                    transparency: 1.0,
+                    refractive: 1.0,
+                    ..Default::default()
+                })
+                .transformed(Transform::identity().rotate_x(-PI / 2.0));
+            world.objects.push(front);
+        };
+
+        {
+            let back = Object::sphere()
+                .with_material(Material {
+                    pattern: Pattern::solid(Colour::GREEN),
+                    ambient: 1.0,
+                    diffuse: 0.0,
+                    specular: 0.0,
+                    ..Default::default()
+                })
+                .transformed(Transform::identity().translate_z(1.0));
+            world.objects.push(back);
+        };
+
+        world
+            .lights
+            .push(Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, 0.5)));
+
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -1.0), Normal3D::POSITIVE_Z);
+        assert_eq!(world.colour_at(ray), Colour::GREEN);
+    }
+    #[test]
+    fn a_hit_on_a_transparent_refractive_and_reflective_object_should_have_fresnel() {
+        let mut world = World::default();
+        {
+            let refractive_plane = Object::plane()
+                .transformed(Transform::identity().translate_y(-1.0))
+                .with_material(Material {
+                    transparency: 0.5,
+                    reflective: 0.5,
+                    refractive: 1.5,
+                    ..Default::default()
+                });
+
+            world.objects.push(refractive_plane);
+        };
+
+        {
+            let ball = Object::sphere()
+                .transformed(Transform::identity().translate_y(-3.5).translate_z(-0.5))
+                .with_material(Material {
+                    pattern: Pattern::solid(Colour::RED),
+                    ambient: 0.5,
+                    ..Default::default()
+                });
+
+            world.objects.push(ball);
+        };
+
+        let ray = Ray::new(
+            Point3D::new(0.0, 0.0, -3.0),
+            Vector3D::new(0.0, -SQRT_2 / 2.0, SQRT_2 / 2.0).normalised(),
+        );
+
+        let expected = world.colour_at(ray);
+        let actual = Colour::new(1.1029302361646764, 0.6964342236428152, 0.6924306883154755);
+
+        assert!(
+            approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
+            "{:?} != {:?}",
+            expected,
+            actual
+        );
+    }
+
+    #[test]
+    fn a_transparent_sphere_should_include_the_colour_of_objects_behind_it() {
+        let mut world = World::empty();
+        world.lights.push(Light::point(
+            Colour::WHITE,
+            Point3D::new(-10.0, 10.0, -10.0),
+        ));
+
+        {
+            let wall = Object::plane()
+                .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(5.0))
+                .with_material(Material {
+                    pattern: Pattern::solid(Colour::BLUE),
+                    ambient: 1.0,
+                    ..Default::default()
+                });
+
+            world.objects.push(wall);
+        };
+
+        {
+            let glass_sphere = Object::sphere()
+                .transformed(Transform::identity().translate_z(1.0))
+                .with_material(Material {
+                    pattern: Pattern::solid(Colour::new(0.05, 0.05, 0.05)),
+                    transparency: 1.0,
+                    ..Default::default()
+                });
+
+            world.objects.push(glass_sphere);
+        };
+
+        let ray = Ray::new(Point3D::ORIGIN, Normal3D::POSITIVE_Z);
+
+        let expected = Colour::new(0.06315462059737657, 0.06315462059737657, 1.7180008057464167);
+        let actual = world.colour_at(ray);
+
+        assert!(
+            approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
+            "{:?} != {:?}",
+            expected,
+            actual
+        );
     }
 
     #[test]
@@ -576,38 +634,101 @@ mod unit_tests {
     }
 
     #[test]
-    fn lighting_a_point_in_shadow_should_only_have_ambient() {
+    fn a_partially_transparent_red_material_should_cast_red_tinted_shadows() {
         let mut world = World::empty();
         world
             .lights
-            .push(Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, -10.0)));
-        // target object
-        world.objects.push(Object::sphere());
-        // object in-between target/ray and light source
-        world.objects.push(
-            Object::sphere()
-                .transformed(Transform::identity().translate_z(-7.5))
-                .with_material(Material {
-                    pattern: Pattern::solid(Colour::BLUE),
-                    ..Default::default()
-                }),
+            .push(Light::point(Colour::WHITE, Point3D::new(-6.0, 15.0, -8.0)));
+
+        let floor = Object::plane().with_material(Material {
+            pattern: Pattern::solid(Colour::WHITE),
+            diffuse: 0.9,
+            // have to crank the ambient up so it actually appears white rather than grey
+            ambient: 0.35,
+            ..Default::default()
+        });
+
+        world.objects.push(floor);
+
+        let red_pane = Object::cube()
+            .transformed(
+                Transform::identity()
+                    .scale_z(0.01)
+                    .translate_z(4.5)
+                    .translate_y(3.0),
+            )
+            .with_material(Material {
+                pattern: Pattern::solid(Colour::new(0.33, 0.0, 0.0)),
+                transparency: 0.9,
+                ..Default::default()
+            });
+
+        world.objects.push(red_pane);
+
+        // use camera to calculate ray angle
+        let camera = Camera::new(
+            nonzero_ext::nonzero!(800u16),
+            nonzero_ext::nonzero!(600u16),
+            PI / 3.0,
+            Transform::view_transform(
+                Point3D::new(0.0, 4.0, -3.0),
+                Point3D::new(0.0, 3.5, 0.0),
+                Normal3D::POSITIVE_Y,
+            ),
         );
+        let ray = camera.ray_at(550, 450);
 
-        let colour = world.colour_at(Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z));
-
-        assert_eq!(colour, Colour::greyscale(0.1));
+        let slightly_red = Colour::new(0.8358840839713972, 0.7392412057309325, 0.7392412057309325);
+        assert_eq!(world.colour_at(ray), slightly_red);
     }
 
     #[test]
-    fn lighting_with_the_light_behind_the_surface_should_only_have_ambient() {
+    fn a_partially_transparent_yellow_material_should_cast_yellow_tinted_shadows() {
         let mut world = World::empty();
         world
             .lights
-            .push(Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, 10.0)));
-        world.objects.push(Object::sphere());
+            .push(Light::point(Colour::WHITE, Point3D::new(-6.0, 15.0, -8.0)));
 
-        let colour = world.colour_at(Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z));
+        let floor = Object::plane().with_material(Material {
+            pattern: Pattern::solid(Colour::WHITE),
+            diffuse: 0.9,
+            // have to crank the ambient up so it actually appears white rather than grey
+            ambient: 0.35,
+            ..Default::default()
+        });
 
-        assert_eq!(colour, Colour::greyscale(0.1));
+        world.objects.push(floor);
+
+        let yellow_pane = Object::cube()
+            .transformed(
+                Transform::identity()
+                    .scale_z(0.01)
+                    .translate_z(4.5)
+                    .translate_y(3.0),
+            )
+            .with_material(Material {
+                pattern: Pattern::solid(Colour::new(0.0, 0.33, 0.33)),
+                transparency: 0.9,
+                ..Default::default()
+            });
+
+        world.objects.push(yellow_pane);
+
+        // use camera to calculate ray angle
+        let camera = Camera::new(
+            nonzero_ext::nonzero!(800u16),
+            nonzero_ext::nonzero!(600u16),
+            PI / 3.0,
+            Transform::view_transform(
+                Point3D::new(0.0, 4.0, -3.0),
+                Point3D::new(0.0, 3.5, 0.0),
+                Normal3D::POSITIVE_Y,
+            ),
+        );
+        let ray = camera.ray_at(550, 450);
+
+        let slightly_yellow =
+            Colour::new(0.7392412057309325, 0.7875626448511649, 0.7875626448511649);
+        assert_eq!(world.colour_at(ray), slightly_yellow);
     }
 }
