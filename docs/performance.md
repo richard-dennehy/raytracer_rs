@@ -87,3 +87,11 @@ and therefore the overhead of the various intermediate data structures is remove
 - Effort: minimal - implementation mostly taken from blog post
 - Performance impact: ~67% reduced hot loop execution time, noting that the absolute time reduction is fairly low (~50ms),
  and the impact on more complicated scenes is less noticeable
+  
+### Try 1D Vector again
+The same blog post as above shows that 1D Vectors are potentially faster
+
+- Effort: minimal
+- Performance impact: ~25% regression in hot loop
+- Baseless speculation: parallel iteration over a 2D vector may suit the per-core caches better, as each thread iterates over sequential memory,
+whereas the 1D Vector will be iterated over unpredictably
