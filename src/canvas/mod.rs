@@ -62,4 +62,18 @@ impl Canvas {
 
         self.0[y][x] = colour
     }
+
+    pub fn draw<F>(&mut self, f: F)
+    where
+        F: Fn(u16, u16) -> Colour,
+        F: Sync + Send,
+    {
+        use rayon::prelude::*;
+
+        self.0.par_iter_mut().enumerate().for_each(|(y, row)| {
+            for (x, pixel) in row.iter_mut().enumerate() {
+                *pixel = f(x as _, y as _)
+            }
+        })
+    }
 }

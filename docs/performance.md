@@ -71,3 +71,19 @@ Primarily implemented to avoid duplicated logic, and to simplify sections of the
 
 ### Rust 1.51
 No noticeable change
+
+### Use 1D/flat Vector for Canvas
+Use flat Vector for Canvas as opposed to 2D nested Vectors, to reduce pointer indirection
+
+- Effort: minimal - very localised change
+- Performance impact: mild regression (~4% generally; 12% slowdown in empty scene) - possibly causing more cache misses, but this kind of thing can be very difficult to diagnose
+
+### Draw directly to canvas in parallel
+Note: more or less taken entirely from https://blog.adamchalmers.com/grids-1/
+
+By providing a callback function to the canvas, the canvas can be iterated over in parallel directly and safely,
+and therefore the overhead of the various intermediate data structures is removed
+
+- Effort: minimal - implementation mostly taken from blog post
+- Performance impact: ~67% reduced hot loop execution time, noting that the absolute time reduction is fairly low (~50ms),
+ and the impact on more complicated scenes is less noticeable

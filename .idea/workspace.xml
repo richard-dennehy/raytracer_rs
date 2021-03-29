@@ -15,10 +15,12 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP (slightly less) allow transparent material colour to affect light transmission">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add tests for tinted shadows">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/world/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/world/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/performance.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/performance.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/canvas/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/canvas/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/canvas/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/canvas/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,7 +89,7 @@
       <command value="cargo bench" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.test">
+  <component name="RunManager" selected="Cargo.bench">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -201,17 +203,17 @@
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.bench loop" />
+      <item itemvalue="Cargo.Test world::tests::unit_tests::a_half_transparent_material_should_allow_half_of_the_light_source_through" />
+      <item itemvalue="Cargo.Test world::tests::unit_tests::should_correctly_shade_an_external_hit" />
       <item itemvalue="Cargo.bench" />
       <item itemvalue="Cargo.run (release)" />
       <item itemvalue="Cargo.test" />
-      <item itemvalue="Cargo.Test world::tests::unit_tests::a_half_transparent_material_should_allow_half_of_the_light_source_through" />
-      <item itemvalue="Cargo.Test world::tests::unit_tests::should_correctly_shade_an_external_hit" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.test" />
-        <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.bench" />
+        <item itemvalue="Cargo.run (release)" />
+        <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.Test world::tests::unit_tests::should_correctly_shade_an_external_hit" />
         <item itemvalue="Cargo.Test world::tests::unit_tests::a_half_transparent_material_should_allow_half_of_the_light_source_through" />
       </list>
@@ -352,14 +354,9 @@
       <workItem from="1616702390592" duration="2220000" />
       <workItem from="1616788900769" duration="4053000" />
       <workItem from="1616845547307" duration="4297000" />
-      <workItem from="1616933877584" duration="1592000" />
-    </task>
-    <task id="LOCAL-00081" summary="very WIP YAML parser&#10;&#10;- implemented colour define parser, including extends">
-      <created>1613160428328</created>
-      <option name="number" value="00081" />
-      <option name="presentableId" value="LOCAL-00081" />
-      <option name="project" value="LOCAL" />
-      <updated>1613160428328</updated>
+      <workItem from="1616933877584" duration="1614000" />
+      <workItem from="1617044858990" duration="11000" />
+      <workItem from="1617044884566" duration="2148000" />
     </task>
     <task id="LOCAL-00082" summary="very WIP YAML parser&#10;&#10;- implemented transform define parser">
       <created>1613221300484</created>
@@ -697,7 +694,14 @@
       <option name="project" value="LOCAL" />
       <updated>1616849845537</updated>
     </task>
-    <option name="localTasksCounter" value="130" />
+    <task id="LOCAL-00130" summary="add tests for tinted shadows">
+      <created>1616935484486</created>
+      <option name="number" value="00130" />
+      <option name="presentableId" value="LOCAL-00130" />
+      <option name="project" value="LOCAL" />
+      <updated>1616935484487</updated>
+    </task>
+    <option name="localTasksCounter" value="131" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -723,7 +727,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP refactor transformation matrix to pre-calculate determinant" />
     <MESSAGE value="still WIP refactor transformation matrix to pre-calculate determinant" />
     <MESSAGE value="pre-calculate Transform inverse" />
     <MESSAGE value="WIP refactor Transform fluent API" />
@@ -748,7 +751,8 @@
     <MESSAGE value="allow light to partially pass through transparent objects" />
     <MESSAGE value="WIP allow transparent material colour to affect light transmission" />
     <MESSAGE value="WIP (slightly less) allow transparent material colour to affect light transmission" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP (slightly less) allow transparent material colour to affect light transmission" />
+    <MESSAGE value="add tests for tinted shadows" />
+    <option name="LAST_COMMIT_MESSAGE" value="add tests for tinted shadows" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
