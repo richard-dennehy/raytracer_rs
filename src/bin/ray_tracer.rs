@@ -22,93 +22,69 @@ fn main() -> Result<(), String> {
     let timer = Instant::now();
 
     let mut world = World::empty();
-    world
-        .lights
-        .push(Light::point(Colour::WHITE, Point3D::new(-6.0, 15.0, -8.0)));
+    world.settings.sky_colour = Colour::greyscale(0.9);
 
-    {
-        let wall = Object::plane()
-            .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(15.0))
-            .with_material(Material {
-                pattern: Pattern::solid(Colour::WHITE),
-                specular: 0.1,
-                ..Default::default()
-            });
-        world.objects.push(wall);
+    let cube_size = 4;
+    let spacing = 2.7;
+
+    for x in 0..cube_size {
+        for y in 0..cube_size {
+            for z in 0..cube_size {
+                let x = x as f64;
+                let y = y as f64;
+                let z = z as f64;
+                let cube_size = cube_size as f64;
+
+                let colour = Colour::new(x / cube_size, y / cube_size, z / cube_size);
+
+                let sphere = Object::sphere()
+                    .transformed(
+                        Transform::identity()
+                            .translate_z(z * spacing)
+                            .translate_y(y * spacing)
+                            .translate_x(x * spacing),
+                    )
+                    .with_material(Material {
+                        pattern: Pattern::solid(colour),
+                        ..Default::default()
+                    });
+
+                world.objects.push(sphere);
+            }
+        }
     }
 
-    {
-        let floor = Object::plane().with_material(Material {
-            pattern: Pattern::solid(Colour::WHITE),
-            diffuse: 0.9,
-            // have to crank the ambient up so it actually appears white rather than grey
-            ambient: 0.35,
-            ..Default::default()
-        });
+    let cube_size = cube_size as f64;
+    let approx_centre = cube_size * spacing / 2.0;
 
-        world.objects.push(floor);
-    }
-
-    {
-        let red_pane = Object::cube()
-            .transformed(
-                Transform::identity()
-                    .scale_z(0.01)
-                    .translate_z(4.5)
-                    .translate_y(3.0)
-                    .translate_x(-3.0),
-            )
-            .with_material(Material {
-                pattern: Pattern::solid(Colour::new(0.33, 0.0, 0.0)),
-                transparency: 0.9,
-                ..Default::default()
-            });
-
-        world.objects.push(red_pane);
-    }
-
-    {
-        let green_pane = Object::cube()
-            .transformed(
-                Transform::identity()
-                    .scale_z(0.01)
-                    .translate_z(4.5)
-                    .translate_y(3.0),
-            )
-            .with_material(Material {
-                pattern: Pattern::solid(Colour::new(0.0, 0.33, 0.0)),
-                transparency: 0.9,
-                ..Default::default()
-            });
-
-        world.objects.push(green_pane);
-    }
-
-    {
-        let blue_pane = Object::cube()
-            .transformed(
-                Transform::identity()
-                    .scale_z(0.01)
-                    .translate_z(4.5)
-                    .translate_y(3.0)
-                    .translate_x(3.0),
-            )
-            .with_material(Material {
-                pattern: Pattern::solid(Colour::new(0.0, 0.0, 0.33)),
-                transparency: 0.9,
-                ..Default::default()
-            });
-
-        world.objects.push(blue_pane);
-    }
+    world.lights.push(Light::point(
+        Colour::greyscale(0.95),
+        Point3D::new(
+            approx_centre * 2.8,
+            approx_centre * 3.7,
+            approx_centre * 3.7,
+        ),
+    ));
+    world.lights.push(Light::point(
+        Colour::greyscale(0.95),
+        Point3D::new(
+            approx_centre * -2.8,
+            approx_centre * 3.7,
+            approx_centre * -3.7,
+        ),
+    ));
 
     let camera = Camera::new(
         CAMERA_WIDTH,
         CAMERA_HEIGHT,
         PI / 3.0,
         Transform::view_transform(
-            Point3D::new(0.0, 4.0, -3.0),
-            Point3D::new(0.0, 3.5, 0.0),
+            Point3D::new(
+                -approx_centre * 2.2,
+                approx_centre * 2.4,
+                approx_centre * -3.2,
+            ),
+            Point3D::new(approx_centre, approx_centre - spacing, approx_centre),
             Normal3D::POSITIVE_Y,
         ),
     );

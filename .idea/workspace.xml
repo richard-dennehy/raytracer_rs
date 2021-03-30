@@ -15,8 +15,13 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="move parallel rendering into canvas">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="failed attempt to convert to 1D Vector in Canvas (causes regression)">
+      <change afterPath="$PROJECT_DIR$/benches/benchmarks/bounding_boxes.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benches/bench_main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/bench_main.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benches/benchmarks/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -352,14 +357,9 @@
       <workItem from="1616845547307" duration="4297000" />
       <workItem from="1616933877584" duration="1614000" />
       <workItem from="1617044858990" duration="11000" />
-      <workItem from="1617044884566" duration="2908000" />
-    </task>
-    <task id="LOCAL-00083" summary="WIP YAML parser&#10;&#10;- implemented object description parser">
-      <created>1613308728937</created>
-      <option name="number" value="00083" />
-      <option name="presentableId" value="LOCAL-00083" />
-      <option name="project" value="LOCAL" />
-      <updated>1613308728938</updated>
+      <workItem from="1617044884566" duration="3233000" />
+      <workItem from="1617048373679" duration="220000" />
+      <workItem from="1617127523521" duration="4039000" />
     </task>
     <task id="LOCAL-00084" summary="implemented basic scene YAML parser">
       <created>1613392139717</created>
@@ -697,7 +697,14 @@
       <option name="project" value="LOCAL" />
       <updated>1617047145427</updated>
     </task>
-    <option name="localTasksCounter" value="132" />
+    <task id="LOCAL-00132" summary="failed attempt to convert to 1D Vector in Canvas (causes regression)">
+      <created>1617048118561</created>
+      <option name="number" value="00132" />
+      <option name="presentableId" value="LOCAL-00132" />
+      <option name="project" value="LOCAL" />
+      <updated>1617048118561</updated>
+    </task>
+    <option name="localTasksCounter" value="133" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -723,7 +730,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="pre-calculate Transform inverse" />
     <MESSAGE value="WIP refactor Transform fluent API" />
     <MESSAGE value="covert quickcheck property tests to proptest (note: tests failing)" />
     <MESSAGE value="add property test for translation matrix inversion" />
@@ -748,7 +754,8 @@
     <MESSAGE value="WIP (slightly less) allow transparent material colour to affect light transmission" />
     <MESSAGE value="add tests for tinted shadows" />
     <MESSAGE value="move parallel rendering into canvas" />
-    <option name="LAST_COMMIT_MESSAGE" value="move parallel rendering into canvas" />
+    <MESSAGE value="failed attempt to convert to 1D Vector in Canvas (causes regression)" />
+    <option name="LAST_COMMIT_MESSAGE" value="failed attempt to convert to 1D Vector in Canvas (causes regression)" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

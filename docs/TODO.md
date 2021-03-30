@@ -1,8 +1,5 @@
-- Shadow casting: allow some light through transparent objects; make transparent material colour affect light colour 
 - Handle obj parser errors more gracefully
-- Use `Settings` struct in World instead of hardcoded magic values (e.g. recursion depth, skybox colour)
 - Maybe performance: replace partial comparison + expect with total comparison when sorting `Intersections`
 - Add benchmark for Groups & CSGs to demonstrate that bounding boxes can improve performance
 - Use small vec type optimised for common case of few intersections e.g. `smallvec`
-- Use const generics for Canvas, and use parallelism pattern from https://blog.adamchalmers.com/grids-2/
 - Use [approx](https://docs.rs/approx/0.4.0/approx/index.html) instead of `float_cmp`
