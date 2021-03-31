@@ -17,11 +17,15 @@ pub use cone::ConeBuilder;
 mod triangle;
 use triangle::Triangle;
 
+mod bounds;
+use bounds::BoundingBox;
+
 #[derive(Debug)]
 pub struct Object {
     pub material: Material,
     transform: Transform,
     kind: ObjectKind,
+    bounds: BoundingBox,
     id: u32,
 }
 
@@ -109,6 +113,7 @@ impl Object {
         Object {
             transform: Transform::identity(),
             material: Material::default(),
+            bounds: BoundingBox::infinite(),
             kind: ObjectKind::Group(children),
             id: Self::next_id(),
         }
@@ -132,6 +137,7 @@ impl Object {
         Object {
             transform: Transform::identity(),
             material: Material::default(),
+            bounds: BoundingBox::infinite(),
             kind: ObjectKind::Csg {
                 left: Box::new(left),
                 right: Box::new(right),
@@ -145,6 +151,7 @@ impl Object {
         Object {
             transform: Transform::identity(),
             material: Material::default(),
+            bounds: shape.object_bounds(),
             kind: ObjectKind::Shape(shape),
             id: Self::next_id(),
         }
@@ -341,6 +348,8 @@ impl Object {
 }
 
 pub trait Shape: Debug + Sync {
+    fn object_bounds(&self) -> BoundingBox;
+
     fn object_normal_at(&self, point: Point3D, uv: Option<(f64, f64)>) -> Normal3D;
     fn object_intersect<'parent>(
         &self,
@@ -353,6 +362,10 @@ pub trait Shape: Debug + Sync {
 /// A unit sphere, with the centre at the origin, and a radius of 1
 struct Sphere;
 impl Shape for Sphere {
+    fn object_bounds(&self) -> BoundingBox {
+        BoundingBox::new(Point3D::new(-1.0, -1.0, -1.0), Point3D::new(1.0, 1.0, 1.0))
+    }
+
     fn object_normal_at(&self, point: Point3D, _uv: Option<(f64, f64)>) -> Normal3D {
         (point - Point3D::ORIGIN).normalised()
     }
@@ -382,6 +395,13 @@ impl Shape for Sphere {
 // an infinite XZ plane
 struct Plane;
 impl Shape for Plane {
+    fn object_bounds(&self) -> BoundingBox {
+        BoundingBox::new(
+            Point3D::new(-f64::INFINITY, 0.0, -f64::INFINITY),
+            Point3D::new(f64::INFINITY, 0.0, f64::INFINITY),
+        )
+    }
+
     fn object_normal_at(&self, _: Point3D, _uv: Option<(f64, f64)>) -> Normal3D {
         Normal3D::POSITIVE_Y
     }
@@ -403,6 +423,10 @@ impl Shape for Plane {
 #[derive(Debug, PartialEq)]
 struct Cube;
 impl Shape for Cube {
+    fn object_bounds(&self) -> BoundingBox {
+        BoundingBox::new(Point3D::new(-1.0, -1.0, -1.0), Point3D::new(1.0, 1.0, 1.0))
+    }
+
     fn object_normal_at(&self, point: Point3D, _uv: Option<(f64, f64)>) -> Normal3D {
         if point.x().abs() >= point.y().abs() && point.x().abs() >= point.z().abs() {
             Vector3D::new(point.x(), 0.0, 0.0)

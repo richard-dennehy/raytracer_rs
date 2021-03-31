@@ -1,3 +1,4 @@
+use crate::object::bounds::BoundingBox;
 use crate::object::Shape;
 use crate::{Intersection, Normal3D, Object, Point3D, Ray, Vector, Vector3D};
 
@@ -7,7 +8,15 @@ pub struct Cylinder {
     min_y: f64,
     capped: bool,
 }
+
 impl Shape for Cylinder {
+    fn object_bounds(&self) -> BoundingBox {
+        BoundingBox::new(
+            Point3D::new(-1.0, self.min_y, -1.0),
+            Point3D::new(1.0, self.max_y, 1.0),
+        )
+    }
+
     fn object_normal_at(&self, point: Point3D, _uv: Option<(f64, f64)>) -> Normal3D {
         let distance = point.x().powi(2) + point.z().powi(2);
 

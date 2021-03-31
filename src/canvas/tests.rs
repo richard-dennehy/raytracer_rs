@@ -29,7 +29,7 @@ mod unit_tests {
     }
 
     #[test]
-    // #[cfg_attr(not(feature = "slow_tests"), ignore)] // iterating over ~20 million elements is slow
+    #[cfg_attr(not(feature = "slow_tests"), ignore)] // iterating over ~20 million elements is slow
     fn should_be_able_to_create_16k_canvas() {
         let canvas = Canvas::new(
             NonZeroU16::new(7680).unwrap(),

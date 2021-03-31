@@ -1162,3 +1162,70 @@ mod constructive_solid_geometry {
         assert_eq!(intersections.underlying()[0].with.id, first_id);
     }
 }
+
+mod bounding_boxes {
+    use super::*;
+
+    #[test]
+    fn bounding_box_of_untransformed_primitives() {
+        vec![
+            (
+                "sphere",
+                Object::sphere(),
+                BoundingBox::new(Point3D::new(-1.0, -1.0, -1.0), Point3D::new(1.0, 1.0, 1.0)),
+            ),
+            (
+                "plane",
+                Object::plane(),
+                BoundingBox::new(
+                    Point3D::new(-f64::INFINITY, 0.0, -f64::INFINITY),
+                    Point3D::new(f64::INFINITY, 0.0, f64::INFINITY),
+                ),
+            ),
+            (
+                "cube",
+                Object::cube(),
+                BoundingBox::new(Point3D::new(-1.0, -1.0, -1.0), Point3D::new(1.0, 1.0, 1.0)),
+            ),
+            (
+                "infinite cylinder",
+                Object::cylinder().build(),
+                BoundingBox::new(
+                    Point3D::new(-1.0, -f64::INFINITY, -1.0),
+                    Point3D::new(1.0, f64::INFINITY, 1.0),
+                ),
+            ),
+            (
+                "truncated cylinder",
+                Object::cylinder().min_y(-5.0).max_y(3.0).build(),
+                BoundingBox::new(Point3D::new(-1.0, -5.0, -1.0), Point3D::new(1.0, 3.0, 1.0)),
+            ),
+            (
+                "infinite cone",
+                Object::cone().build(),
+                BoundingBox::new(
+                    Point3D::new(-f64::INFINITY, -f64::INFINITY, -f64::INFINITY),
+                    Point3D::new(f64::INFINITY, f64::INFINITY, f64::INFINITY),
+                ),
+            ),
+            (
+                "truncated cone",
+                Object::cone().min_y(-5.0).max_y(3.0).build(),
+                BoundingBox::new(Point3D::new(-5.0, -5.0, -5.0), Point3D::new(5.0, 3.0, 5.0)),
+            ),
+            (
+                "triangle",
+                Object::triangle(
+                    Point3D::new(-3.0, 7.0, 2.0),
+                    Point3D::new(6.0, 2.0, -4.0),
+                    Point3D::new(2.0, -1.0, -1.0),
+                ),
+                BoundingBox::new(Point3D::new(-3.0, -1.0, -4.0), Point3D::new(6.0, 7.0, 2.0)),
+            ),
+        ]
+        .into_iter()
+        .for_each(|(scenario, object, bounds)| {
+            assert_eq!(object.bounds, bounds, "{}", scenario);
+        })
+    }
+}

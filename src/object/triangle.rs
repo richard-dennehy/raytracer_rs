@@ -1,3 +1,4 @@
+use crate::object::bounds::BoundingBox;
 use crate::object::Shape;
 use crate::{Intersection, Normal3D, Object, Point3D, Ray, Vector, Vector3D};
 
@@ -65,6 +66,16 @@ enum NormalKind {
 }
 
 impl Shape for Triangle {
+    fn object_bounds(&self) -> BoundingBox {
+        let min = |axis: fn(Point3D) -> f64| axis(self.p1).min(axis(self.p2)).min(axis(self.p3));
+        let max = |axis: fn(Point3D) -> f64| axis(self.p1).max(axis(self.p2)).max(axis(self.p3));
+
+        BoundingBox::new(
+            Point3D::new(min(|p| p.x()), min(|p| p.y()), min(|p| p.z())),
+            Point3D::new(max(|p| p.x()), max(|p| p.y()), max(|p| p.z())),
+        )
+    }
+
     fn object_normal_at(&self, _: Point3D, uv: Option<(f64, f64)>) -> Normal3D {
         match self.kind {
             NormalKind::Smooth {

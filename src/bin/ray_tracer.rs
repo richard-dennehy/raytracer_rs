@@ -27,6 +27,7 @@ fn main() -> Result<(), String> {
     let cube_size = 4;
     let spacing = 2.7;
 
+    let mut spheres = Vec::with_capacity((cube_size as usize).pow(3));
     for x in 0..cube_size {
         for y in 0..cube_size {
             for z in 0..cube_size {
@@ -49,10 +50,12 @@ fn main() -> Result<(), String> {
                         ..Default::default()
                     });
 
-                world.objects.push(sphere);
+                spheres.push(sphere);
             }
         }
     }
+
+    world.objects.push(Object::group(spheres));
 
     let cube_size = cube_size as f64;
     let approx_centre = cube_size * spacing / 2.0;

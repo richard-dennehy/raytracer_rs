@@ -1,3 +1,4 @@
+use crate::object::bounds::BoundingBox;
 use crate::object::Shape;
 use crate::{Intersection, Normal3D, Object, Point3D, Ray, Vector, Vector3D};
 
@@ -7,7 +8,17 @@ pub struct Cone {
     min_y: f64,
     capped: bool,
 }
+
 impl Shape for Cone {
+    fn object_bounds(&self) -> BoundingBox {
+        let limit = self.min_y.abs().max(self.max_y.abs());
+
+        BoundingBox::new(
+            Point3D::new(-limit, self.min_y, -limit),
+            Point3D::new(limit, self.max_y, limit),
+        )
+    }
+
     fn object_normal_at(&self, point: Point3D, _uv: Option<(f64, f64)>) -> Normal3D {
         let distance = point.x().powi(2) + point.z().powi(2);
 
