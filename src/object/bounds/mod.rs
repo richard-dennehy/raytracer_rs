@@ -1,4 +1,4 @@
-use crate::Point3D;
+use crate::{Point3D, Transform};
 
 #[cfg(test)]
 mod tests;
@@ -27,12 +27,9 @@ impl BoundingBox {
     }
 
     pub fn expand_to_fit(&self, other: &Self) -> Self {
-        let min = |axis: fn(Point3D) -> f64| axis(self.min).min(axis(other.min));
-        let max = |axis: fn(Point3D) -> f64| axis(self.max).max(axis(other.max));
-
         BoundingBox {
-            min: Point3D::new(min(|p| p.x()), min(|p| p.y()), min(|p| p.z())),
-            max: Point3D::new(max(|p| p.x()), max(|p| p.y()), max(|p| p.z())),
+            min: Point3D::min([self.min, other.min]),
+            max: Point3D::max([self.max, other.max]),
         }
     }
 
@@ -55,6 +52,37 @@ impl BoundingBox {
 
     pub fn partially_excludes(&self, other: &BoundingBox) -> bool {
         !self.fully_contains(other)
+    }
+
+    pub fn transform(&self, transformation: Transform) -> Self {
+        // implementation is slightly complicated because a BoundingBox must be axis-aligned, and
+        // naive rotation breaks that invariant
+        let bottom_left_front = transformation * self.min;
+        let bottom_left_back =
+            transformation * Point3D::new(self.min.x(), self.min.y(), self.max.z());
+        let bottom_right_back =
+            transformation * Point3D::new(self.max.x(), self.min.y(), self.max.z());
+        let bottom_right_front =
+            transformation * Point3D::new(self.max.x(), self.min.y(), self.min.z());
+        let top_right_front =
+            transformation * Point3D::new(self.max.x(), self.max.y(), self.min.z());
+        let top_left_front =
+            transformation * Point3D::new(self.min.x(), self.max.y(), self.min.z());
+        let top_left_back = transformation * Point3D::new(self.min.x(), self.max.y(), self.max.z());
+        let top_right_back = transformation * self.max;
+
+        let points = [
+            bottom_left_front,
+            bottom_left_back,
+            bottom_right_back,
+            bottom_right_front,
+            top_right_front,
+            top_left_front,
+            top_left_back,
+            top_right_back,
+        ];
+
+        BoundingBox::new(Point3D::min(points), Point3D::max(points))
     }
 }
 

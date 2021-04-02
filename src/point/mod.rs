@@ -31,6 +31,48 @@ impl Point3D {
     pub const fn w(&self) -> f64 {
         1.0
     }
+
+    /// returns a new 3D Point with the minimum `x`, `y`, and `z` of the provided points
+    ///
+    /// `points` must not be empty
+    pub fn min<const N: usize>(points: [Point3D; N]) -> Point3D {
+        assert!(
+            points.len() >= 1,
+            "cannot find the minimum of an empty list of Points"
+        );
+
+        let first = points[0];
+        std::array::IntoIter::new(points)
+            .skip(1)
+            .fold(first, |acc, next| {
+                Point3D::new(
+                    acc.x().min(next.x()),
+                    acc.y().min(next.y()),
+                    acc.z().min(next.z()),
+                )
+            })
+    }
+
+    /// returns a new 3D Point with the maximum `x`, `y`, and `z` of the provided points
+    ///
+    /// `points` must not be empty
+    pub fn max<const N: usize>(points: [Point3D; N]) -> Point3D {
+        assert!(
+            points.len() >= 1,
+            "cannot find the maximum of an empty list of Points"
+        );
+
+        let first = points[0];
+        std::array::IntoIter::new(points)
+            .skip(1)
+            .fold(first, |acc, next| {
+                Point3D::new(
+                    acc.x().max(next.x()),
+                    acc.y().max(next.y()),
+                    acc.z().max(next.z()),
+                )
+            })
+    }
 }
 
 impl From<(f64, f64, f64)> for Point3D {

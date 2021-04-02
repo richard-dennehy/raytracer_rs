@@ -29,6 +29,28 @@ mod unit_tests {
         let translated = point - vector;
         assert_eq!(translated, Point3D::new(-2.0, -4.0, -6.0));
     }
+
+    #[test]
+    fn the_min_of_an_array_of_points_should_lie_at_the_minimum_x_y_and_z_positions() {
+        let min = Point3D::min([
+            Point3D::new(0.0, 1.0, -2.0),
+            Point3D::new(-1.0, 2.0, 3.0),
+            Point3D::new(2.0, -3.0, 4.0),
+        ]);
+
+        assert_eq!(min, Point3D::new(-1.0, -3.0, -2.0));
+    }
+
+    #[test]
+    fn the_max_of_an_array_of_points_should_lie_at_the_maximum_x_y_and_z_positions() {
+        let max = Point3D::max([
+            Point3D::new(0.0, 1.0, -2.0),
+            Point3D::new(-1.0, 2.0, 3.0),
+            Point3D::new(2.0, -3.0, 4.0),
+        ]);
+
+        assert_eq!(max, Point3D::new(2.0, 2.0, 4.0));
+    }
 }
 
 mod property_tests {

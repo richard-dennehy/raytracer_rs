@@ -15,11 +15,13 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implement bounding boxes for primitive objects">
-      <change afterPath="$PROJECT_DIR$/src/object/bounds/mod.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/object/bounds/tests.rs" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implement basic bounding box operations">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/bounds.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/bounds/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/bounds/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/bounds/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/bounds/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/triangle.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/point/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/point/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/point/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/point/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,6 +91,11 @@
     </option>
   </component>
   <component name="RunManager" selected="Cargo.test">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -192,11 +199,6 @@
       <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <list>
@@ -359,14 +361,8 @@
       <workItem from="1617048373679" duration="220000" />
       <workItem from="1617127523521" duration="5021000" />
       <workItem from="1617216870332" duration="3036000" />
-      <workItem from="1617305305191" duration="4218000" />
-    </task>
-    <task id="LOCAL-00086" summary="refactoring YAML parser to use extension trait &amp; typeclass">
-      <created>1613509426006</created>
-      <option name="number" value="00086" />
-      <option name="presentableId" value="LOCAL-00086" />
-      <option name="project" value="LOCAL" />
-      <updated>1613509426006</updated>
+      <workItem from="1617305305191" duration="4269000" />
+      <workItem from="1617362516094" duration="2999000" />
     </task>
     <task id="LOCAL-00087" summary="refactoring YAML parser to use extension trait &amp; typeclass">
       <created>1613594215800</created>
@@ -704,7 +700,14 @@
       <option name="project" value="LOCAL" />
       <updated>1617219900133</updated>
     </task>
-    <option name="localTasksCounter" value="135" />
+    <task id="LOCAL-00135" summary="implement basic bounding box operations">
+      <created>1617309576690</created>
+      <option name="number" value="00135" />
+      <option name="presentableId" value="LOCAL-00135" />
+      <option name="project" value="LOCAL" />
+      <updated>1617309576691</updated>
+    </task>
+    <option name="localTasksCounter" value="136" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -730,7 +733,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add property test for translation matrix inversion" />
     <MESSAGE value="add property tests for inverting transformations" />
     <MESSAGE value="add property tests for transformation behaviour" />
     <MESSAGE value="reduce size of Transform and panic on creation if matrix is not invertible" />
@@ -755,7 +757,8 @@
     <MESSAGE value="failed attempt to convert to 1D Vector in Canvas (causes regression)" />
     <MESSAGE value="introduce benchmarks for scenes with lots of objects" />
     <MESSAGE value="implement bounding boxes for primitive objects" />
-    <option name="LAST_COMMIT_MESSAGE" value="implement bounding boxes for primitive objects" />
+    <MESSAGE value="implement basic bounding box operations" />
+    <option name="LAST_COMMIT_MESSAGE" value="implement basic bounding box operations" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

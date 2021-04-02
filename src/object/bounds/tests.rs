@@ -2,6 +2,7 @@ use super::*;
 
 mod unit_tests {
     use super::*;
+    use std::f64::consts::{PI, SQRT_2};
 
     #[test]
     fn expanding_a_bounding_box_to_contain_a_smaller_box_should_return_the_outer_box() {
@@ -122,6 +123,48 @@ mod unit_tests {
         ]
         .into_iter()
         .for_each(|(scenario, inner)| assert!(outer.partially_excludes(&inner), "{}", scenario))
+    }
+
+    #[test]
+    fn transforming_a_bounding_box_with_a_scaling_matrix_should_scale_it() {
+        let bounds = BoundingBox::new(Point3D::new(-1.0, -1.0, -1.0), Point3D::new(1.0, 1.0, 1.0));
+        let transform = Transform::identity().scale_all(2.0);
+
+        let scaled = bounds.transform(transform);
+        assert_eq!(scaled.min, Point3D::new(-2.0, -2.0, -2.0));
+        assert_eq!(scaled.max, Point3D::new(2.0, 2.0, 2.0));
+    }
+
+    #[test]
+    fn transforming_a_bounding_box_with_a_translation_matrix_should_translate_it() {
+        let bounds = BoundingBox::new(Point3D::new(-1.0, -1.0, -1.0), Point3D::new(1.0, 1.0, 1.0));
+        let transform = Transform::identity()
+            .translate_x(1.0)
+            .translate_y(1.0)
+            .translate_z(1.0);
+
+        let scaled = bounds.transform(transform);
+        assert_eq!(scaled.min, Point3D::ORIGIN);
+        assert_eq!(scaled.max, Point3D::new(2.0, 2.0, 2.0));
+    }
+
+    #[test]
+    fn transforming_a_bounding_box_with_a_rotation_matrix_should_scale_the_bounds_to_fit_the_rotated_points(
+    ) {
+        let bounds = BoundingBox::new(Point3D::new(-1.0, -1.0, -1.0), Point3D::new(1.0, 1.0, 1.0));
+        let transform = Transform::identity().rotate_y(PI / 4.0).rotate_x(PI / 4.0);
+
+        let scaled = bounds.transform(transform);
+        assert!(approx_eq!(
+            Point3D,
+            scaled.min,
+            Point3D::new(-SQRT_2, -1.7071067811865475, -1.7071067811865475)
+        ));
+        assert!(approx_eq!(
+            Point3D,
+            scaled.max,
+            Point3D::new(SQRT_2, 1.7071067811865475, 1.7071067811865475)
+        ));
     }
 }
 

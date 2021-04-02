@@ -67,12 +67,9 @@ enum NormalKind {
 
 impl Shape for Triangle {
     fn object_bounds(&self) -> BoundingBox {
-        let min = |axis: fn(Point3D) -> f64| axis(self.p1).min(axis(self.p2)).min(axis(self.p3));
-        let max = |axis: fn(Point3D) -> f64| axis(self.p1).max(axis(self.p2)).max(axis(self.p3));
-
         BoundingBox::new(
-            Point3D::new(min(|p| p.x()), min(|p| p.y()), min(|p| p.z())),
-            Point3D::new(max(|p| p.x()), max(|p| p.y()), max(|p| p.z())),
+            Point3D::min([self.p1, self.p2, self.p3]),
+            Point3D::max([self.p1, self.p2, self.p3]),
         )
     }
 
