@@ -110,10 +110,19 @@ impl Object {
     }
 
     pub fn group(children: Vec<Object>) -> Self {
+        let initial_bounds = children
+            .first()
+            .map_or(BoundingBox::infinite(), |c| c.bounds);
+        let bounds = children
+            .iter()
+            .skip(1)
+            .map(|c| c.bounds)
+            .fold(initial_bounds, |acc, next| acc.expand_to_fit(&next));
+
         Object {
             transform: Transform::identity(),
             material: Material::default(),
-            bounds: BoundingBox::infinite(),
+            bounds,
             kind: ObjectKind::Group(children),
             id: Self::next_id(),
         }
@@ -137,7 +146,7 @@ impl Object {
         Object {
             transform: Transform::identity(),
             material: Material::default(),
-            bounds: BoundingBox::infinite(),
+            bounds: left.bounds.expand_to_fit(&right.bounds),
             kind: ObjectKind::Csg {
                 left: Box::new(left),
                 right: Box::new(right),
@@ -309,6 +318,7 @@ impl Object {
         }
 
         self.transform = transform * self.transform;
+        self.bounds = self.bounds.transformed(transform);
     }
 
     pub fn id(&self) -> u32 {
@@ -397,8 +407,8 @@ struct Plane;
 impl Shape for Plane {
     fn object_bounds(&self) -> BoundingBox {
         BoundingBox::new(
-            Point3D::new(-f64::INFINITY, 0.0, -f64::INFINITY),
-            Point3D::new(f64::INFINITY, 0.0, f64::INFINITY),
+            Point3D::new(-f64::MAX, 0.0, -f64::MAX),
+            Point3D::new(f64::MAX, 0.0, f64::MAX),
         )
     }
 

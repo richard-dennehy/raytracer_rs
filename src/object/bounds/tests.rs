@@ -130,7 +130,7 @@ mod unit_tests {
         let bounds = BoundingBox::new(Point3D::new(-1.0, -1.0, -1.0), Point3D::new(1.0, 1.0, 1.0));
         let transform = Transform::identity().scale_all(2.0);
 
-        let scaled = bounds.transform(transform);
+        let scaled = bounds.transformed(transform);
         assert_eq!(scaled.min, Point3D::new(-2.0, -2.0, -2.0));
         assert_eq!(scaled.max, Point3D::new(2.0, 2.0, 2.0));
     }
@@ -143,7 +143,7 @@ mod unit_tests {
             .translate_y(1.0)
             .translate_z(1.0);
 
-        let scaled = bounds.transform(transform);
+        let scaled = bounds.transformed(transform);
         assert_eq!(scaled.min, Point3D::ORIGIN);
         assert_eq!(scaled.max, Point3D::new(2.0, 2.0, 2.0));
     }
@@ -154,7 +154,7 @@ mod unit_tests {
         let bounds = BoundingBox::new(Point3D::new(-1.0, -1.0, -1.0), Point3D::new(1.0, 1.0, 1.0));
         let transform = Transform::identity().rotate_y(PI / 4.0).rotate_x(PI / 4.0);
 
-        let scaled = bounds.transform(transform);
+        let scaled = bounds.transformed(transform);
         assert!(approx_eq!(
             Point3D,
             scaled.min,

@@ -36,7 +36,11 @@ pub trait Vector: Sized + Copy + Clone {
 }
 
 impl Vector3D {
-    pub const fn new(x: f64, y: f64, z: f64) -> Self {
+    pub fn new(x: f64, y: f64, z: f64) -> Self {
+        debug_assert!(
+            x.is_finite() && y.is_finite() && z.is_finite(),
+            "`x`, `y`, and `z` components must always be finite"
+        );
         Vector3D(x, y, z)
     }
 }

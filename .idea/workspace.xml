@@ -15,13 +15,16 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implement basic bounding box operations">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implement bounding box transformations">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/bounds/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/bounds/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/bounds/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/bounds/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/triangle.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/cone.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cone.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/cylinder.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cylinder.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/point/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/point/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/point/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/point/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/vector/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/vector/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,11 +94,6 @@
     </option>
   </component>
   <component name="RunManager" selected="Cargo.test">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -111,8 +109,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test world::tests::unit_tests::a_half_transparent_material_should_allow_half_of_the_light_source_through" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib world::tests::unit_tests::a_half_transparent_material_should_allow_half_of_the_light_source_through -- --exact" />
+    <configuration name="Test matrix::tests::unit_tests::translating_a_point_at_infinity_should_keep_the_point_at_infinity" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib matrix::tests::unit_tests::translating_a_point_at_infinity_should_keep_the_point_at_infinity -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -126,8 +124,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test world::tests::unit_tests::should_correctly_shade_an_external_hit" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib world::tests::unit_tests::should_correctly_shade_an_external_hit -- --exact" />
+    <configuration name="Test world::tests::intersections::a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib world::tests::intersections::a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -201,22 +199,27 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.bench loop" />
-      <item itemvalue="Cargo.Test world::tests::unit_tests::a_half_transparent_material_should_allow_half_of_the_light_source_through" />
-      <item itemvalue="Cargo.Test world::tests::unit_tests::should_correctly_shade_an_external_hit" />
       <item itemvalue="Cargo.bench" />
       <item itemvalue="Cargo.run (release)" />
       <item itemvalue="Cargo.test" />
+      <item itemvalue="Cargo.Test world::tests::intersections::a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it" />
+      <item itemvalue="Cargo.Test matrix::tests::unit_tests::translating_a_point_at_infinity_should_keep_the_point_at_infinity" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.Test matrix::tests::unit_tests::translating_a_point_at_infinity_should_keep_the_point_at_infinity" />
+        <item itemvalue="Cargo.Test world::tests::intersections::a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it" />
         <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.bench" />
-        <item itemvalue="Cargo.Test world::tests::unit_tests::should_correctly_shade_an_external_hit" />
-        <item itemvalue="Cargo.Test world::tests::unit_tests::a_half_transparent_material_should_allow_half_of_the_light_source_through" />
       </list>
     </recent_temporary>
   </component>
@@ -362,14 +365,8 @@
       <workItem from="1617127523521" duration="5021000" />
       <workItem from="1617216870332" duration="3036000" />
       <workItem from="1617305305191" duration="4269000" />
-      <workItem from="1617362516094" duration="2999000" />
-    </task>
-    <task id="LOCAL-00087" summary="refactoring YAML parser to use extension trait &amp; typeclass">
-      <created>1613594215800</created>
-      <option name="number" value="00087" />
-      <option name="presentableId" value="LOCAL-00087" />
-      <option name="project" value="LOCAL" />
-      <updated>1613594215800</updated>
+      <workItem from="1617362516094" duration="3529000" />
+      <workItem from="1617447539731" duration="3406000" />
     </task>
     <task id="LOCAL-00088" summary="added documentation for parser assumptions">
       <created>1613682412211</created>
@@ -707,7 +704,14 @@
       <option name="project" value="LOCAL" />
       <updated>1617309576691</updated>
     </task>
-    <option name="localTasksCounter" value="136" />
+    <task id="LOCAL-00136" summary="implement bounding box transformations">
+      <created>1617365651553</created>
+      <option name="number" value="00136" />
+      <option name="presentableId" value="LOCAL-00136" />
+      <option name="project" value="LOCAL" />
+      <updated>1617365651553</updated>
+    </task>
+    <option name="localTasksCounter" value="137" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -733,7 +737,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add property tests for inverting transformations" />
     <MESSAGE value="add property tests for transformation behaviour" />
     <MESSAGE value="reduce size of Transform and panic on creation if matrix is not invertible" />
     <MESSAGE value="WIP create distinct type for normalised Vectors" />
@@ -758,26 +761,29 @@
     <MESSAGE value="introduce benchmarks for scenes with lots of objects" />
     <MESSAGE value="implement bounding boxes for primitive objects" />
     <MESSAGE value="implement basic bounding box operations" />
-    <option name="LAST_COMMIT_MESSAGE" value="implement basic bounding box operations" />
+    <MESSAGE value="implement bounding box transformations" />
+    <option name="LAST_COMMIT_MESSAGE" value="implement bounding box transformations" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/object/mod.rs</url>
-          <line>217</line>
+          <line>226</line>
           <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/object/bounds/mod.rs</url>
+          <line>21</line>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/matrix/underlying/mod.rs</url>
+          <line>281</line>
+          <option name="timeStamp" value="27" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
-    <watches-manager>
-      <configuration name="CargoCommandRunConfiguration">
-        <watch expression="first" />
-        <watch expression="second" />
-        <watch expression="ts" />
-        <watch expression="with" />
-      </configuration>
-    </watches-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

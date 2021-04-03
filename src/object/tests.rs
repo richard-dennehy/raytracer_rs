@@ -1178,8 +1178,8 @@ mod bounding_boxes {
                 "plane",
                 Object::plane(),
                 BoundingBox::new(
-                    Point3D::new(-f64::INFINITY, 0.0, -f64::INFINITY),
-                    Point3D::new(f64::INFINITY, 0.0, f64::INFINITY),
+                    Point3D::new(-f64::MAX, 0.0, -f64::MAX),
+                    Point3D::new(f64::MAX, 0.0, f64::MAX),
                 ),
             ),
             (
@@ -1191,8 +1191,8 @@ mod bounding_boxes {
                 "infinite cylinder",
                 Object::cylinder().build(),
                 BoundingBox::new(
-                    Point3D::new(-1.0, -f64::INFINITY, -1.0),
-                    Point3D::new(1.0, f64::INFINITY, 1.0),
+                    Point3D::new(-1.0, -f64::MAX, -1.0),
+                    Point3D::new(1.0, f64::MAX, 1.0),
                 ),
             ),
             (
@@ -1204,8 +1204,8 @@ mod bounding_boxes {
                 "infinite cone",
                 Object::cone().build(),
                 BoundingBox::new(
-                    Point3D::new(-f64::INFINITY, -f64::INFINITY, -f64::INFINITY),
-                    Point3D::new(f64::INFINITY, f64::INFINITY, f64::INFINITY),
+                    Point3D::new(-f64::MAX, -f64::MAX, -f64::MAX),
+                    Point3D::new(f64::MAX, f64::MAX, f64::MAX),
                 ),
             ),
             (
@@ -1227,5 +1227,66 @@ mod bounding_boxes {
         .for_each(|(scenario, object, bounds)| {
             assert_eq!(object.bounds, bounds, "{}", scenario);
         })
+    }
+
+    #[test]
+    fn the_bounding_box_of_a_transformed_primitive_should_be_transformed() {
+        let shape = Object::sphere().transformed(
+            Transform::identity()
+                .scale_x(0.5)
+                .scale_y(2.0)
+                .scale_z(4.0)
+                .translate_x(1.0)
+                .translate_y(-3.0)
+                .translate_z(5.0),
+        );
+
+        assert_eq!(shape.bounds.min, Point3D::new(0.5, -5.0, 1.0));
+        assert_eq!(shape.bounds.max, Point3D::new(1.5, -1.0, 9.0));
+    }
+
+    #[test]
+    fn the_bounding_box_of_a_group_containing_transformed_children_should_contain_the_children_in_world_space(
+    ) {
+        let group = Object::group(vec![
+            Object::sphere().transformed(
+                Transform::identity()
+                    .scale_all(2.0)
+                    .translate_x(2.0)
+                    .translate_y(5.0)
+                    .translate_z(-3.0),
+            ),
+            Object::cylinder()
+                .max_y(2.0)
+                .min_y(-2.0)
+                .build()
+                .transformed(
+                    Transform::identity()
+                        .scale_x(0.5)
+                        .scale_z(0.5)
+                        .translate_x(-4.0)
+                        .translate_y(-1.0)
+                        .translate_z(4.0),
+                ),
+        ]);
+
+        assert_eq!(group.bounds.min, Point3D::new(-4.5, -3.0, -5.0));
+        assert_eq!(group.bounds.max, Point3D::new(4.0, 7.0, 4.5));
+    }
+
+    #[test]
+    fn the_bounding_box_of_a_csg_should_be_large_enough_to_contain_its_children() {
+        let csg = Object::csg_difference(
+            Object::sphere(),
+            Object::sphere().transformed(
+                Transform::identity()
+                    .translate_x(2.0)
+                    .translate_y(3.0)
+                    .translate_z(4.0),
+            ),
+        );
+
+        assert_eq!(csg.bounds.min, Point3D::new(-1.0, -1.0, -1.0));
+        assert_eq!(csg.bounds.max, Point3D::new(3.0, 4.0, 5.0));
     }
 }

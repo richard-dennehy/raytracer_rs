@@ -121,8 +121,8 @@ pub struct ConeBuilder {
 impl ConeBuilder {
     pub(super) fn new() -> Self {
         ConeBuilder {
-            min_y: -f64::INFINITY,
-            max_y: f64::INFINITY,
+            min_y: -f64::MAX,
+            max_y: f64::MAX,
             capped: false,
         }
     }

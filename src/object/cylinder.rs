@@ -107,8 +107,8 @@ pub struct CylinderBuilder {
 impl CylinderBuilder {
     pub(super) fn new() -> Self {
         CylinderBuilder {
-            min_y: -f64::INFINITY,
-            max_y: f64::INFINITY,
+            min_y: -f64::MAX,
+            max_y: f64::MAX,
             capped: false,
         }
     }

@@ -3,7 +3,7 @@ use crate::{Point3D, Transform};
 #[cfg(test)]
 mod tests;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub struct BoundingBox {
     pub min: Point3D,
     pub max: Point3D,
@@ -13,15 +13,17 @@ impl BoundingBox {
     // TODO temporary
     pub fn infinite() -> Self {
         BoundingBox {
-            min: Point3D::new(-f64::INFINITY, -f64::INFINITY, -f64::INFINITY),
-            max: Point3D::new(f64::INFINITY, f64::INFINITY, f64::INFINITY),
+            min: Point3D::new(-f64::MAX, -f64::MAX, -f64::MAX),
+            max: Point3D::new(f64::MAX, f64::MAX, f64::MAX),
         }
     }
 
     pub fn new(min: Point3D, max: Point3D) -> Self {
         assert!(
             min.x() <= max.x() && min.y() <= max.y() && min.z() <= max.z(),
-            "Bounding box not correctly aligned"
+            "Bounding box not correctly aligned\n{:?} to {:?}",
+            min,
+            max
         );
         BoundingBox { min, max }
     }
@@ -54,7 +56,7 @@ impl BoundingBox {
         !self.fully_contains(other)
     }
 
-    pub fn transform(&self, transformation: Transform) -> Self {
+    pub fn transformed(&self, transformation: Transform) -> Self {
         // implementation is slightly complicated because a BoundingBox must be axis-aligned, and
         // naive rotation breaks that invariant
         let bottom_left_front = transformation * self.min;
