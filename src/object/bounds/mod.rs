@@ -1,4 +1,4 @@
-use crate::{Point3D, Transform};
+use crate::{Point3D, Ray, Transform, Vector};
 
 #[cfg(test)]
 mod tests;
@@ -85,6 +85,46 @@ impl BoundingBox {
         ];
 
         BoundingBox::new(Point3D::min(points), Point3D::max(points))
+    }
+
+    pub fn intersected_by(&self, ray: &Ray) -> bool {
+        fn check_axis(origin: f64, direction: f64, min: f64, max: f64) -> (f64, f64) {
+            let t_min_numerator = min - origin;
+            let t_max_numerator = max - origin;
+
+            let t_min = t_min_numerator / direction;
+            let t_max = t_max_numerator / direction;
+
+            if t_min > t_max {
+                (t_max, t_min)
+            } else {
+                (t_min, t_max)
+            }
+        }
+
+        let (t_min_x, t_max_x) = check_axis(
+            ray.origin.x(),
+            ray.direction.x(),
+            self.min.x(),
+            self.max.x(),
+        );
+        let (t_min_y, t_max_y) = check_axis(
+            ray.origin.y(),
+            ray.direction.y(),
+            self.min.y(),
+            self.max.y(),
+        );
+        let (t_min_z, t_max_z) = check_axis(
+            ray.origin.z(),
+            ray.direction.z(),
+            self.min.z(),
+            self.max.z(),
+        );
+
+        let t_min = t_min_x.max(t_min_y).max(t_min_z);
+        let t_max = t_max_x.min(t_max_y).min(t_max_z);
+
+        t_max >= t_min
     }
 }
 

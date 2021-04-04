@@ -245,6 +245,10 @@ impl Object {
     }
 
     pub fn intersect(&self, with: &Ray) -> Intersections {
+        if !self.bounds.intersected_by(&with) {
+            return Intersections::empty();
+        }
+
         match &self.kind {
             ObjectKind::Shape(shape) => {
                 let ray_transform = self.transform.inverse();

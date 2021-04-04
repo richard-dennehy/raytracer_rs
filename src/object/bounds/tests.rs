@@ -166,6 +166,197 @@ mod unit_tests {
             Point3D::new(SQRT_2, 1.7071067811865475, 1.7071067811865475)
         ));
     }
+
+    mod intersection {
+        use super::*;
+        use crate::{Normal3D, Vector, Vector3D};
+
+        #[test]
+        fn intersecting_a_ray_with_a_cubic_bounding_box_at_the_origin() {
+            vec![
+                (
+                    "through right face",
+                    Point3D::new(5.0, 0.5, 0.0),
+                    Normal3D::NEGATIVE_X,
+                ),
+                (
+                    "through left face",
+                    Point3D::new(-5.0, 0.5, 0.0),
+                    Normal3D::POSITIVE_X,
+                ),
+                (
+                    "through top face",
+                    Point3D::new(0.5, 5.0, 0.0),
+                    Normal3D::NEGATIVE_Y,
+                ),
+                (
+                    "through bottom face",
+                    Point3D::new(0.5, -5.0, 0.0),
+                    Normal3D::POSITIVE_Y,
+                ),
+                (
+                    "through back face",
+                    Point3D::new(0.5, 0.0, 5.0),
+                    Normal3D::NEGATIVE_Z,
+                ),
+                (
+                    "through front face",
+                    Point3D::new(0.5, 0.0, -5.0),
+                    Normal3D::POSITIVE_Z,
+                ),
+                (
+                    "from inside",
+                    Point3D::new(0.0, 0.5, 0.0),
+                    Normal3D::POSITIVE_Z,
+                ),
+            ]
+            .into_iter()
+            .for_each(|(scenario, origin, direction)| {
+                let bounds =
+                    BoundingBox::new(Point3D::new(-1.0, -1.0, -1.0), Point3D::new(1.0, 1.0, 1.0));
+                let ray = Ray::new(origin, direction);
+
+                assert!(bounds.intersected_by(&ray), "{}", scenario)
+            })
+        }
+
+        #[test]
+        fn intersecting_a_ray_that_misses_a_cubic_bounding_box_at_the_origin() {
+            vec![
+                (
+                    "behind left face",
+                    Point3D::new(-2.0, 0.0, 0.0),
+                    Vector3D::new(2.0, 4.0, 6.0).normalised(),
+                ),
+                (
+                    "right of top face",
+                    Point3D::new(0.0, -2.0, 0.0),
+                    Vector3D::new(6.0, 2.0, 4.0).normalised(),
+                ),
+                (
+                    "above front face",
+                    Point3D::new(0.0, 0.0, -2.0),
+                    Vector3D::new(4.0, 6.0, 2.0).normalised(),
+                ),
+                (
+                    "outside x bounds",
+                    Point3D::new(2.0, 0.0, 2.0),
+                    Normal3D::NEGATIVE_Z,
+                ),
+                (
+                    "outside z bounds",
+                    Point3D::new(0.0, 2.0, 2.0),
+                    Normal3D::NEGATIVE_Y,
+                ),
+                (
+                    "outside y bounds",
+                    Point3D::new(2.0, 2.0, 0.0),
+                    Normal3D::NEGATIVE_X,
+                ),
+            ]
+            .into_iter()
+            .for_each(|(scenario, origin, direction)| {
+                let bounds =
+                    BoundingBox::new(Point3D::new(-1.0, -1.0, -1.0), Point3D::new(1.0, 1.0, 1.0));
+                let ray = Ray::new(origin, direction);
+
+                assert!(!bounds.intersected_by(&ray), "{}", scenario)
+            })
+        }
+
+        #[test]
+        fn intersecting_a_ray_with_a_non_centred_non_cubic_bounding_box() {
+            vec![
+                (
+                    "through right face",
+                    Point3D::new(15.0, 1.0, 2.0),
+                    Normal3D::NEGATIVE_X,
+                ),
+                (
+                    "through left face",
+                    Point3D::new(-5.0, -1.0, 4.0),
+                    Normal3D::POSITIVE_X,
+                ),
+                (
+                    "through top face",
+                    Point3D::new(7.0, 6.0, 5.0),
+                    Normal3D::NEGATIVE_Y,
+                ),
+                (
+                    "through bottom face",
+                    Point3D::new(9.0, -5.0, 6.0),
+                    Normal3D::POSITIVE_Y,
+                ),
+                (
+                    "through front face",
+                    Point3D::new(8.0, 2.0, 12.0),
+                    Normal3D::NEGATIVE_Z,
+                ),
+                (
+                    "through back face",
+                    Point3D::new(6.0, 0.0, -5.0),
+                    Normal3D::POSITIVE_Z,
+                ),
+                (
+                    "from inside",
+                    Point3D::new(8.0, 1.0, 3.5),
+                    Normal3D::POSITIVE_Z,
+                ),
+            ]
+            .into_iter()
+            .for_each(|(scenario, origin, direction)| {
+                let bounds =
+                    BoundingBox::new(Point3D::new(5.0, -2.0, 0.0), Point3D::new(11.0, 4.0, 7.0));
+                let ray = Ray::new(origin, direction);
+
+                assert!(bounds.intersected_by(&ray), "{}", scenario)
+            })
+        }
+
+        #[test]
+        fn intersecting_a_ray_that_misses_a_non_centred_non_cubic_bounding_box() {
+            vec![
+                (
+                    "behind left face",
+                    Point3D::new(9.0, -1.0, -8.0),
+                    Vector3D::new(2.0, 4.0, 6.0).normalised(),
+                ),
+                (
+                    "right of top face",
+                    Point3D::new(8.0, 3.0, -4.0),
+                    Vector3D::new(6.0, 2.0, 4.0).normalised(),
+                ),
+                (
+                    "above front face",
+                    Point3D::new(9.0, -1.0, -2.0),
+                    Vector3D::new(4.0, 6.0, 2.0).normalised(),
+                ),
+                (
+                    "outside x bounds",
+                    Point3D::new(4.0, 0.0, 9.0),
+                    Normal3D::NEGATIVE_Z,
+                ),
+                (
+                    "outside z bounds",
+                    Point3D::new(8.0, 6.0, -1.0),
+                    Normal3D::NEGATIVE_Y,
+                ),
+                (
+                    "outside y bounds",
+                    Point3D::new(12.0, 5.0, 4.0),
+                    Normal3D::NEGATIVE_X,
+                ),
+            ]
+            .into_iter()
+            .for_each(|(scenario, origin, direction)| {
+                let bounds =
+                    BoundingBox::new(Point3D::new(5.0, -2.0, 0.0), Point3D::new(11.0, 4.0, 7.0));
+                let ray = Ray::new(origin, direction);
+
+                assert!(!bounds.intersected_by(&ray), "{}", scenario)
+            })
+        }
+    }
 }
 
 mod property_tests {

@@ -95,3 +95,10 @@ The same blog post as above shows that 1D Vectors are potentially faster
 - Performance impact: ~25% regression in hot loop
 - Baseless speculation: parallel iteration over a 2D vector may suit the per-core caches better, as each thread iterates over sequential memory,
 whereas the 1D Vector will be iterated over unpredictably
+  
+### Axis-aligned Bounding Boxes
+Add bounding boxes to all primitives and composites to calculate missed rays quicker - as this is the common case in most scenes, this eliminates a large amount of unnecessary work, 
+at the cost of making successful intersections slightly slower
+
+- Effort: moderate
+- Performance impact: 15-20% speedup in complex scenes with many objects; minor slowdown on single-ray intersection tests
