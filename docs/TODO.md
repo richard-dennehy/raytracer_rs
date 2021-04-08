@@ -3,3 +3,4 @@
 - Add benchmark for Groups & CSGs to demonstrate that bounding boxes can improve performance
 - Use small vec type optimised for common case of few intersections e.g. `smallvec`
 - Use [approx](https://docs.rs/approx/0.4.0/approx/index.html) instead of `float_cmp`
+- Separate primitives and composites

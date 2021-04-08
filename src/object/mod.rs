@@ -263,35 +263,97 @@ impl Object {
                 .map(|child| child.intersect(with))
                 .fold(Intersections::empty(), Intersections::join),
             ObjectKind::Csg {
-                left,
-                right,
+                left: first,
+                right: second,
                 operator,
             } => {
-                let left_intersections = left.intersect(&with);
-                let right_intersections = right.intersect(&with);
+                // FIXME there must be a more idiomatic way to do this
+                let first_intersections = first.intersect(&with);
+                let second_intersections = second.intersect(&with);
 
-                let intersections = left_intersections.join(right_intersections);
+                let intersections = first_intersections.join(second_intersections);
 
-                let (mut in_left, mut in_right) = (false, false);
+                let (mut in_first, mut in_second) = (false, false);
                 let mut out = Intersections::empty();
 
                 for intersection in intersections.into_iter() {
-                    let left_hit = left.contains(intersection.with.id);
+                    let hit_first = first.contains(intersection.with.id);
 
-                    if operator.is_intersection(left_hit, in_left, in_right) {
+                    if operator.is_intersection(hit_first, in_first, in_second) {
                         out.push(intersection)
                     }
 
-                    if left_hit {
-                        in_left = !in_left;
+                    if hit_first {
+                        in_first = !in_first;
                     } else {
-                        in_right = !in_right;
+                        in_second = !in_second;
                     }
                 }
 
                 out
             }
         }
+    }
+
+    /// Re-organises Group structures such that each sub-group contains no more than `threshold` members,
+    /// as much as possible. If no sub-groups exist, they may be created, to respect the `threshold` value.
+    ///
+    /// (Sub) Groups are divided based on the bounding box - if a shape cannot neatly fit within a split
+    /// bounding box, it will be kept in its current group, otherwise it will be moved into a sub-group
+    /// dependent on which sub-bounding box contains it. Therefore, groups may be larger than `threshold`.
+    pub fn optimised(mut self, threshold: usize) -> Self {
+        self.kind = match self.kind {
+            shape @ ObjectKind::Shape(_) => shape,
+            ObjectKind::Group(children) => {
+                // TODO
+                //   double check the bounds remain correct after moving everything around
+                //   (note: because the "outer" group contains the same children, but with extra indirection, the bounds shouldn't change)
+
+                let mut children = if children.len() > threshold {
+                    let (left, right) = self.bounds.split();
+
+                    let (left_fits, right_fits, mut neither_fits) = children.into_iter().fold(
+                        (Vec::new(), Vec::new(), Vec::new()),
+                        |(mut l, mut r, mut n), next| {
+                            if left.fully_contains(&next.bounds) {
+                                l.push(next)
+                            } else if right.fully_contains(&next.bounds) {
+                                r.push(next)
+                            } else {
+                                n.push(next)
+                            }
+
+                            (l, r, n)
+                        },
+                    );
+
+                    neither_fits.push(Object::group(left_fits));
+                    neither_fits.push(Object::group(right_fits));
+
+                    neither_fits
+                } else {
+                    children
+                };
+
+                let children = children
+                    .iter_mut()
+                    .map(|child| child.optimised(threshold))
+                    .collect();
+
+                ObjectKind::Group(children)
+            }
+            ObjectKind::Csg {
+                left,
+                right,
+                operator,
+            } => ObjectKind::Csg {
+                left: Box::new(left.optimised(threshold)),
+                right: Box::new(right.optimised(threshold)),
+                operator,
+            },
+        };
+
+        self
     }
 
     pub fn with_material(mut self, material: Material) -> Self {
