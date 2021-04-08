@@ -10,7 +10,6 @@ pub struct BoundingBox {
 }
 
 impl BoundingBox {
-    // TODO temporary
     pub fn infinite() -> Self {
         BoundingBox {
             min: Point3D::new(-f64::MAX, -f64::MAX, -f64::MAX),
@@ -125,6 +124,41 @@ impl BoundingBox {
         let t_max = t_max_x.min(t_max_y).min(t_max_z);
 
         t_max >= t_min
+    }
+
+    pub fn split(&self) -> (Self, Self) {
+        let x_len = self.max.x() - self.min.x();
+        let y_len = self.max.y() - self.min.y();
+        let z_len = self.max.z() - self.min.z();
+
+        if x_len >= y_len && x_len >= z_len {
+            let halfway = self.max.x() - x_len / 2.0;
+
+            let left =
+                BoundingBox::new(self.min, Point3D::new(halfway, self.max.y(), self.max.z()));
+            let right =
+                BoundingBox::new(Point3D::new(halfway, self.min.y(), self.min.z()), self.max);
+
+            (left, right)
+        } else if y_len >= z_len {
+            let halfway = self.max.y() - y_len / 2.0;
+
+            let left =
+                BoundingBox::new(self.min, Point3D::new(self.max.x(), halfway, self.max.z()));
+            let right =
+                BoundingBox::new(Point3D::new(self.min.x(), halfway, self.min.z()), self.max);
+
+            (left, right)
+        } else {
+            let halfway = self.max.z() - z_len / 2.0;
+
+            let left =
+                BoundingBox::new(self.min, Point3D::new(self.max.x(), self.max.y(), halfway));
+            let right =
+                BoundingBox::new(Point3D::new(self.min.x(), self.min.y(), halfway), self.max);
+
+            (left, right)
+        }
     }
 }
 

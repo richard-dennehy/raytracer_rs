@@ -357,6 +357,66 @@ mod unit_tests {
             })
         }
     }
+
+    mod splitting {
+        use super::*;
+
+        #[test]
+        fn splitting_a_cubic_bounding_box_should_split_in_half_on_the_x_axis() {
+            let bounds =
+                BoundingBox::new(Point3D::new(-1.0, -4.0, -5.0), Point3D::new(9.0, 6.0, 5.0));
+
+            let (left, right) = bounds.split();
+
+            assert_eq!(left.min, Point3D::new(-1.0, -4.0, -5.0));
+            assert_eq!(left.max, Point3D::new(4.0, 6.0, 5.0));
+
+            assert_eq!(right.min, Point3D::new(4.0, -4.0, -5.0));
+            assert_eq!(right.max, Point3D::new(9.0, 6.0, 5.0));
+        }
+
+        #[test]
+        fn splitting_an_x_wide_cubic_bounding_box_should_split_in_half_on_the_x_axis() {
+            let bounds =
+                BoundingBox::new(Point3D::new(-1.0, -2.0, -3.0), Point3D::new(9.0, 5.5, 3.0));
+
+            let (left, right) = bounds.split();
+
+            assert_eq!(left.min, Point3D::new(-1.0, -2.0, -3.0));
+            assert_eq!(left.max, Point3D::new(4.0, 5.5, 3.0));
+
+            assert_eq!(right.min, Point3D::new(4.0, -2.0, -3.0));
+            assert_eq!(right.max, Point3D::new(9.0, 5.5, 3.0));
+        }
+
+        #[test]
+        fn splitting_a_y_wide_cubic_bounding_box_should_split_in_half_on_the_x_axis() {
+            let bounds =
+                BoundingBox::new(Point3D::new(-1.0, -2.0, -3.0), Point3D::new(5.0, 8.0, 3.0));
+
+            let (left, right) = bounds.split();
+
+            assert_eq!(left.min, Point3D::new(-1.0, -2.0, -3.0));
+            assert_eq!(left.max, Point3D::new(5.0, 3.0, 3.0));
+
+            assert_eq!(right.min, Point3D::new(-1.0, 3.0, -3.0));
+            assert_eq!(right.max, Point3D::new(5.0, 8.0, 3.0));
+        }
+
+        #[test]
+        fn splitting_a_z_wide_cubic_bounding_box_should_split_in_half_on_the_x_axis() {
+            let bounds =
+                BoundingBox::new(Point3D::new(-1.0, -2.0, -3.0), Point3D::new(5.0, 3.0, 7.0));
+
+            let (left, right) = bounds.split();
+
+            assert_eq!(left.min, Point3D::new(-1.0, -2.0, -3.0));
+            assert_eq!(left.max, Point3D::new(5.0, 3.0, 2.0));
+
+            assert_eq!(right.min, Point3D::new(-1.0, -2.0, 2.0));
+            assert_eq!(right.max, Point3D::new(5.0, 3.0, 7.0));
+        }
+    }
 }
 
 mod property_tests {

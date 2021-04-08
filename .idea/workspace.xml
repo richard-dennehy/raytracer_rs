@@ -15,12 +15,10 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implement bounding boxes for transformed and composite objects">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="use bounding box intersections to fail fast on missed rays">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/performance.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/performance.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/bounds/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/bounds/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/bounds/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/bounds/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,12 +87,7 @@
       <command value="cargo bench" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.bench">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="Cargo.test">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -211,8 +204,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.Test matrix::tests::unit_tests::translating_a_point_at_infinity_should_keep_the_point_at_infinity" />
         <item itemvalue="Cargo.Test world::tests::intersections::a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it" />
         <item itemvalue="Cargo.run (release)" />
@@ -363,14 +356,8 @@
       <workItem from="1617305305191" duration="4269000" />
       <workItem from="1617362516094" duration="3529000" />
       <workItem from="1617447539731" duration="3479000" />
-      <workItem from="1617531509678" duration="3898000" />
-    </task>
-    <task id="LOCAL-00089" summary="WIP convert scene description into scene objects">
-      <created>1613766137097</created>
-      <option name="number" value="00089" />
-      <option name="presentableId" value="LOCAL-00089" />
-      <option name="project" value="LOCAL" />
-      <updated>1613766137098</updated>
+      <workItem from="1617531509678" duration="4219000" />
+      <workItem from="1617824318871" duration="2781000" />
     </task>
     <task id="LOCAL-00090" summary="still WIP convert scene description into scene objects">
       <created>1613826294308</created>
@@ -708,7 +695,14 @@
       <option name="project" value="LOCAL" />
       <updated>1617451020184</updated>
     </task>
-    <option name="localTasksCounter" value="138" />
+    <task id="LOCAL-00138" summary="use bounding box intersections to fail fast on missed rays">
+      <created>1617535730769</created>
+      <option name="number" value="00138" />
+      <option name="presentableId" value="LOCAL-00138" />
+      <option name="project" value="LOCAL" />
+      <updated>1617535730770</updated>
+    </task>
+    <option name="localTasksCounter" value="139" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -734,7 +728,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="reduce size of Transform and panic on creation if matrix is not invertible" />
     <MESSAGE value="WIP create distinct type for normalised Vectors" />
     <MESSAGE value="WIP replace Vector3D with Normal3D for normal vectors" />
     <MESSAGE value="replace Vector3D with Normal3D for normal vectors" />
@@ -759,7 +752,8 @@
     <MESSAGE value="implement basic bounding box operations" />
     <MESSAGE value="implement bounding box transformations" />
     <MESSAGE value="implement bounding boxes for transformed and composite objects" />
-    <option name="LAST_COMMIT_MESSAGE" value="implement bounding boxes for transformed and composite objects" />
+    <MESSAGE value="use bounding box intersections to fail fast on missed rays" />
+    <option name="LAST_COMMIT_MESSAGE" value="use bounding box intersections to fail fast on missed rays" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
