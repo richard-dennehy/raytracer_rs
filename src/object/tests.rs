@@ -1290,3 +1290,118 @@ mod bounding_boxes {
         assert_eq!(csg.bounds.max, Point3D::new(3.0, 4.0, 5.0));
     }
 }
+
+mod optimising_groups {
+    use super::*;
+
+    #[test]
+    fn optimising_a_group_to_contain_as_few_children_as_possible_should_partition_the_children_based_on_the_split_bounding_box(
+    ) {
+        let left_sphere = Object::sphere().transformed(Transform::identity().translate_x(-2.0));
+        let left_id = left_sphere.id;
+        let left_bounds = left_sphere.bounds;
+
+        let right_sphere = Object::sphere().transformed(Transform::identity().translate_x(2.0));
+        let right_id = right_sphere.id;
+        let right_bounds = right_sphere.bounds;
+
+        let middle_sphere = Object::sphere();
+        let middle_id = middle_sphere.id;
+
+        let outer = Object::group(vec![left_sphere, right_sphere, middle_sphere]);
+        let outer_bounds = outer.bounds;
+
+        let optimised = outer.optimised(1);
+
+        // ensure original bounds are unchanged
+        assert_eq!(optimised.bounds, outer_bounds);
+
+        assert_eq!(optimised.children().len(), 3);
+        // ensure middle sphere is a direct child of the new group (as it doesn't entirely fit in either half of the bounds)
+        assert_eq!(optimised.children()[0].id(), middle_id);
+
+        // left sphere fits in left half of outer bounds
+        assert_eq!(optimised.children()[1].children().len(), 1);
+        assert_eq!(optimised.children()[1].children()[0].id(), left_id);
+        // ensure the bounds of the sub-group are the same as (i.e. fully contain) the left sphere
+        assert_eq!(optimised.children()[1].bounds, left_bounds);
+
+        // right sphere fits in right half of outer bounds
+        assert_eq!(optimised.children()[2].children().len(), 1);
+        assert_eq!(optimised.children()[2].children()[0].id(), right_id);
+        // ensure the bounds of the sub-group are the same as (i.e. fully contain) the right sphere
+        assert_eq!(optimised.children()[2].bounds, right_bounds);
+    }
+
+    #[test]
+    fn optimising_a_group_should_optimise_its_subgroups() {
+        let s1 = Object::sphere().transformed(Transform::identity().translate_x(-2.0));
+        let s1_id = s1.id;
+        let s1_bounds = s1.bounds;
+
+        let s2 =
+            Object::sphere().transformed(Transform::identity().translate_x(2.0).translate_y(1.0));
+        let s2_id = s2.id;
+        let s2_bounds = s2.bounds;
+
+        let s3 =
+            Object::sphere().transformed(Transform::identity().translate_x(2.0).translate_y(-1.0));
+        let s3_id = s3.id;
+        let s3_bounds = s3.bounds;
+
+        let s4 = Object::sphere();
+        let s4_id = s4.id;
+
+        let group = Object::group(vec![s4, Object::group(vec![s1, s2, s3])]);
+        let optimised = group.optimised(3);
+
+        assert_eq!(optimised.children().len(), 2);
+        assert_eq!(optimised.children()[0].id, s4_id);
+
+        let subgroup = &optimised.children()[1];
+        assert_eq!(subgroup.children().len(), 2);
+
+        assert_eq!(subgroup.children()[0].children().len(), 1);
+        assert_eq!(subgroup.children()[0].children()[0].id, s1_id);
+        assert_eq!(subgroup.children()[0].children()[0].bounds, s1_bounds);
+
+        assert_eq!(subgroup.children()[1].children().len(), 2);
+        assert_eq!(subgroup.children()[1].children()[0].id, s2_id);
+        assert_eq!(subgroup.children()[1].children()[1].id, s3_id);
+
+        assert!(subgroup.children()[1].bounds.fully_contains(&s2_bounds));
+        assert!(subgroup.children()[1].bounds.fully_contains(&s3_bounds));
+    }
+
+    #[test]
+    fn optimising_a_csg_should_optimise_its_children() {
+        let s1 = Object::sphere().transformed(Transform::identity().translate_x(-1.5));
+        let s1_id = s1.id;
+
+        let s2 = Object::sphere().transformed(Transform::identity().translate_x(1.5));
+        let s2_id = s2.id;
+
+        let s3 = Object::sphere().transformed(Transform::identity().translate_z(-1.5));
+        let s3_id = s3.id;
+
+        let s4 = Object::sphere().transformed(Transform::identity().translate_z(1.5));
+        let s4_id = s4.id;
+
+        let csg = Object::csg_difference(Object::group(vec![s1, s2]), Object::group(vec![s3, s4]));
+        let optimised = csg.optimised(1);
+
+        let (left, right) = optimised.csg_children();
+        assert_eq!(left.children().len(), 2);
+        assert_eq!(left.children()[0].children().len(), 1);
+        assert_eq!(left.children()[0].children()[0].id, s1_id);
+
+        assert_eq!(left.children()[1].children().len(), 1);
+        assert_eq!(left.children()[1].children()[0].id, s2_id);
+
+        assert_eq!(right.children()[0].children().len(), 1);
+        assert_eq!(right.children()[0].children()[0].id, s3_id);
+
+        assert_eq!(right.children()[1].children().len(), 1);
+        assert_eq!(right.children()[1].children()[0].id, s4_id);
+    }
+}

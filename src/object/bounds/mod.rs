@@ -43,6 +43,7 @@ impl BoundingBox {
             && self.max.z() >= point.z()
     }
 
+    #[allow(dead_code)]
     pub fn excludes(&self, point: Point3D) -> bool {
         !self.contains(point)
     }
@@ -51,6 +52,7 @@ impl BoundingBox {
         self.contains(other.min) && self.contains(other.max)
     }
 
+    #[allow(dead_code)]
     pub fn partially_excludes(&self, other: &BoundingBox) -> bool {
         !self.fully_contains(other)
     }

@@ -15,10 +15,11 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add function to split bounding boxes">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP add function to optimise Groups hierarchy">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/bounds/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/bounds/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,8 +62,10 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="RunOnceActivity.cidr.known.project.marker" value="true" />
     <property name="WebServerToolWindowFactoryState" value="true" />
     <property name="cf.first.check.clang-format" value="false" />
+    <property name="cidr.known.project.marker" value="true" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
@@ -101,6 +104,7 @@
       <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
     <configuration name="Test matrix::tests::unit_tests::translating_a_point_at_infinity_should_keep_the_point_at_infinity" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
@@ -115,6 +119,7 @@
       <option name="isRedirectInput" value="false" />
       <option name="redirectInputPath" value="" />
       <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
@@ -131,6 +136,7 @@
       <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
     <configuration name="bench loop" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
@@ -145,6 +151,7 @@
       <option name="isRedirectInput" value="false" />
       <option name="redirectInputPath" value="" />
       <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
@@ -161,6 +168,7 @@
       <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
     <configuration name="run (release)" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
@@ -175,6 +183,7 @@
       <option name="isRedirectInput" value="false" />
       <option name="redirectInputPath" value="" />
       <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
@@ -191,6 +200,7 @@
       <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
     <list>
@@ -205,10 +215,6 @@
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.test" />
-        <item itemvalue="Cargo.bench" />
-        <item itemvalue="Cargo.Test matrix::tests::unit_tests::translating_a_point_at_infinity_should_keep_the_point_at_infinity" />
-        <item itemvalue="Cargo.Test world::tests::intersections::a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it" />
-        <item itemvalue="Cargo.run (release)" />
       </list>
     </recent_temporary>
   </component>
@@ -358,14 +364,10 @@
       <workItem from="1617447539731" duration="3479000" />
       <workItem from="1617531509678" duration="4219000" />
       <workItem from="1617824318871" duration="2781000" />
-      <workItem from="1617908260616" duration="2384000" />
-    </task>
-    <task id="LOCAL-00091" summary="still WIP add tests for scene creation from YAML">
-      <created>1613922414956</created>
-      <option name="number" value="00091" />
-      <option name="presentableId" value="LOCAL-00091" />
-      <option name="project" value="LOCAL" />
-      <updated>1613922414956</updated>
+      <workItem from="1617908260616" duration="2582000" />
+      <workItem from="1617993432813" duration="58000" />
+      <workItem from="1617993642860" duration="18000" />
+      <workItem from="1617993671832" duration="2598000" />
     </task>
     <task id="LOCAL-00092" summary="example: render cover image from YAML file">
       <created>1613998684754</created>
@@ -703,7 +705,14 @@
       <option name="project" value="LOCAL" />
       <updated>1617908375991</updated>
     </task>
-    <option name="localTasksCounter" value="140" />
+    <task id="LOCAL-00140" summary="WIP add function to optimise Groups hierarchy">
+      <created>1617910843411</created>
+      <option name="number" value="00140" />
+      <option name="presentableId" value="LOCAL-00140" />
+      <option name="project" value="LOCAL" />
+      <updated>1617910843411</updated>
+    </task>
+    <option name="localTasksCounter" value="141" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -729,7 +738,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP replace Vector3D with Normal3D for normal vectors" />
     <MESSAGE value="replace Vector3D with Normal3D for normal vectors" />
     <MESSAGE value="add test for checkerd plane acne fix" />
     <MESSAGE value="add test for checkered plane acne fix" />
@@ -754,7 +762,8 @@
     <MESSAGE value="implement bounding boxes for transformed and composite objects" />
     <MESSAGE value="use bounding box intersections to fail fast on missed rays" />
     <MESSAGE value="add function to split bounding boxes" />
-    <option name="LAST_COMMIT_MESSAGE" value="add function to split bounding boxes" />
+    <MESSAGE value="WIP add function to optimise Groups hierarchy" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP add function to optimise Groups hierarchy" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

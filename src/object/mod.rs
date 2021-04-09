@@ -305,11 +305,7 @@ impl Object {
         self.kind = match self.kind {
             shape @ ObjectKind::Shape(_) => shape,
             ObjectKind::Group(children) => {
-                // TODO
-                //   double check the bounds remain correct after moving everything around
-                //   (note: because the "outer" group contains the same children, but with extra indirection, the bounds shouldn't change)
-
-                let mut children = if children.len() > threshold {
+                let children = if children.len() >= threshold && children.len() > 1 {
                     let (left, right) = self.bounds.split();
 
                     let (left_fits, right_fits, mut neither_fits) = children.into_iter().fold(
@@ -327,8 +323,12 @@ impl Object {
                         },
                     );
 
-                    neither_fits.push(Object::group(left_fits));
-                    neither_fits.push(Object::group(right_fits));
+                    if !left_fits.is_empty() {
+                        neither_fits.push(Object::group(left_fits));
+                    }
+                    if !right_fits.is_empty() {
+                        neither_fits.push(Object::group(right_fits));
+                    }
 
                     neither_fits
                 } else {
@@ -336,7 +336,7 @@ impl Object {
                 };
 
                 let children = children
-                    .iter_mut()
+                    .into_iter()
                     .map(|child| child.optimised(threshold))
                     .collect();
 
@@ -414,7 +414,15 @@ impl Object {
         if let ObjectKind::Shape(shape) = &self.kind {
             shape
         } else {
-            panic!("Object is a group, not a shape")
+            panic!("Object is not a shape")
+        }
+    }
+
+    pub fn csg_children(&self) -> (&Box<Object>, &Box<Object>) {
+        if let ObjectKind::Csg { left, right, .. } = &self.kind {
+            (left, right)
+        } else {
+            panic!("Object is not a CSG")
         }
     }
 
