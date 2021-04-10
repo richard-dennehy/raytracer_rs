@@ -15,11 +15,18 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP add function to optimise Groups hierarchy">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP add tests for group optimisation">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benches/benchmarks/bounding_boxes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/bounding_boxes.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/performance.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/performance.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/bounds/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/bounds/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/point/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/point/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/world/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,9 +97,9 @@
       <command value="cargo bench" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.test">
-    <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
-      <option name="command" value="run --package raytracer --bin raytracer" />
+  <component name="RunManager" selected="Cargo.bench">
+    <configuration name="Run ray_tracer" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="run --package ray_tracer --bin ray_tracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -104,11 +111,10 @@
       <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test matrix::tests::unit_tests::translating_a_point_at_infinity_should_keep_the_point_at_infinity" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib matrix::tests::unit_tests::translating_a_point_at_infinity_should_keep_the_point_at_infinity -- --exact" />
+    <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -135,7 +141,6 @@
       <option name="isRedirectInput" value="false" />
       <option name="redirectInputPath" value="" />
       <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
@@ -203,18 +208,27 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.bench loop" />
       <item itemvalue="Cargo.bench" />
       <item itemvalue="Cargo.run (release)" />
       <item itemvalue="Cargo.test" />
+      <item itemvalue="Cargo.Run ray_tracer" />
       <item itemvalue="Cargo.Test world::tests::intersections::a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it" />
-      <item itemvalue="Cargo.Test matrix::tests::unit_tests::translating_a_point_at_infinity_should_keep_the_point_at_infinity" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.run (release)" />
+        <item itemvalue="Cargo.Test world::tests::intersections::a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it" />
+        <item itemvalue="Cargo.Run ray_tracer" />
       </list>
     </recent_temporary>
   </component>
@@ -367,14 +381,8 @@
       <workItem from="1617908260616" duration="2582000" />
       <workItem from="1617993432813" duration="58000" />
       <workItem from="1617993642860" duration="18000" />
-      <workItem from="1617993671832" duration="2598000" />
-    </task>
-    <task id="LOCAL-00092" summary="example: render cover image from YAML file">
-      <created>1613998684754</created>
-      <option name="number" value="00092" />
-      <option name="presentableId" value="LOCAL-00092" />
-      <option name="project" value="LOCAL" />
-      <updated>1613998684754</updated>
+      <workItem from="1617993671832" duration="2791000" />
+      <workItem from="1618050409004" duration="6066000" />
     </task>
     <task id="LOCAL-00093" summary="yaml parser: replace Vec&lt;Transform&gt; with Vec&lt;Either&lt;String, Transform&gt;&gt; to handle define references">
       <created>1614000262097</created>
@@ -712,7 +720,14 @@
       <option name="project" value="LOCAL" />
       <updated>1617910843411</updated>
     </task>
-    <option name="localTasksCounter" value="141" />
+    <task id="LOCAL-00141" summary="WIP add tests for group optimisation">
+      <created>1617996463015</created>
+      <option name="number" value="00141" />
+      <option name="presentableId" value="LOCAL-00141" />
+      <option name="project" value="LOCAL" />
+      <updated>1617996463015</updated>
+    </task>
+    <option name="localTasksCounter" value="142" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -738,7 +753,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="replace Vector3D with Normal3D for normal vectors" />
     <MESSAGE value="add test for checkerd plane acne fix" />
     <MESSAGE value="add test for checkered plane acne fix" />
     <MESSAGE value="remove unused fields from HitData" />
@@ -763,7 +777,8 @@
     <MESSAGE value="use bounding box intersections to fail fast on missed rays" />
     <MESSAGE value="add function to split bounding boxes" />
     <MESSAGE value="WIP add function to optimise Groups hierarchy" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP add function to optimise Groups hierarchy" />
+    <MESSAGE value="WIP add tests for group optimisation" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP add tests for group optimisation" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -774,9 +789,9 @@
           <option name="timeStamp" value="25" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/matrix/underlying/mod.rs</url>
-          <line>281</line>
-          <option name="timeStamp" value="27" />
+          <url>file://$PROJECT_DIR$/src/world/tests.rs</url>
+          <line>48</line>
+          <option name="timeStamp" value="29" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

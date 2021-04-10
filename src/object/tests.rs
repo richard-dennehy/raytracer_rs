@@ -1404,4 +1404,48 @@ mod optimising_groups {
         assert_eq!(right.children()[1].children().len(), 1);
         assert_eq!(right.children()[1].children()[0].id, s4_id);
     }
+
+    #[test]
+    fn optimising_a_group_with_a_high_threshold_should_have_no_effect() {
+        let left_sphere = Object::sphere().transformed(Transform::identity().translate_x(-2.0));
+        let left_id = left_sphere.id;
+
+        let right_sphere = Object::sphere().transformed(Transform::identity().translate_x(2.0));
+        let right_id = right_sphere.id;
+
+        let middle_sphere = Object::sphere();
+        let middle_id = middle_sphere.id;
+
+        let outer = Object::group(vec![left_sphere, right_sphere, middle_sphere]);
+
+        let optimised = outer.optimised(4);
+        assert_eq!(optimised.children().len(), 3);
+        assert_eq!(optimised.children()[0].id, left_id);
+        assert_eq!(optimised.children()[1].id, right_id);
+        assert_eq!(optimised.children()[2].id, middle_id);
+    }
+
+    #[test]
+    fn optimising_a_group_should_create_as_few_subgroups_as_possible() {
+        let large = Object::sphere().transformed(Transform::identity().scale_all(2.0));
+        let large_id = large.id;
+
+        let right_front =
+            Object::sphere().transformed(Transform::identity().translate_x(1.0).translate_z(-0.5));
+        let right_front_id = right_front.id;
+
+        let right_back =
+            Object::sphere().transformed(Transform::identity().translate_x(1.0).translate_z(0.5));
+        let right_back_id = right_back.id;
+
+        let group = Object::group(vec![large, right_front, right_back]);
+        let optimised = group.optimised(3);
+
+        assert_eq!(optimised.children().len(), 2);
+        assert_eq!(optimised.children()[0].id, large_id);
+
+        assert_eq!(optimised.children()[1].children().len(), 2);
+        assert_eq!(optimised.children()[1].children()[0].id, right_front_id);
+        assert_eq!(optimised.children()[1].children()[1].id, right_back_id);
+    }
 }

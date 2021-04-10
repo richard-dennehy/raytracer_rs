@@ -1,15 +1,9 @@
 extern crate ray_tracer;
 
 use ray_tracer::*;
-use std::f64::consts::PI;
-use std::num::NonZeroU16;
+use std::fs;
+use std::path::Path;
 use std::time::Instant;
-
-#[macro_use]
-extern crate nonzero_ext;
-
-const CAMERA_WIDTH: NonZeroU16 = nonzero!(1920u16);
-const CAMERA_HEIGHT: NonZeroU16 = nonzero!(1080u16);
 
 /// Notes on axes and rotation:
 /// X axis runs from left (negative values) to right (positive values) of default camera view
@@ -21,76 +15,19 @@ const CAMERA_HEIGHT: NonZeroU16 = nonzero!(1080u16);
 fn main() -> Result<(), String> {
     let timer = Instant::now();
 
+    let yaml = fs::read_to_string(
+        Path::new(env!("CARGO_MANIFEST_DIR")).join("scene_descriptions/reflect-refract.yml"),
+    )
+    .unwrap();
+
+    let mut scene = yaml_parser::parse(&yaml).unwrap();
+    scene.override_resolution(600, 600);
+
     let mut world = World::empty();
-    world.settings.sky_colour = Colour::greyscale(0.9);
+    world.lights.append(&mut scene.lights());
+    world.add(Object::group(scene.objects().unwrap()));
 
-    let cube_size = 4;
-    let spacing = 2.7;
-
-    let mut spheres = Vec::with_capacity((cube_size as usize).pow(3));
-    for x in 0..cube_size {
-        for y in 0..cube_size {
-            for z in 0..cube_size {
-                let x = x as f64;
-                let y = y as f64;
-                let z = z as f64;
-                let cube_size = cube_size as f64;
-
-                let colour = Colour::new(x / cube_size, y / cube_size, z / cube_size);
-
-                let sphere = Object::sphere()
-                    .transformed(
-                        Transform::identity()
-                            .translate_z(z * spacing)
-                            .translate_y(y * spacing)
-                            .translate_x(x * spacing),
-                    )
-                    .with_material(Material {
-                        pattern: Pattern::solid(colour),
-                        ..Default::default()
-                    });
-
-                spheres.push(sphere);
-            }
-        }
-    }
-
-    world.objects.push(Object::group(spheres));
-
-    let cube_size = cube_size as f64;
-    let approx_centre = cube_size * spacing / 2.0;
-
-    world.lights.push(Light::point(
-        Colour::greyscale(0.95),
-        Point3D::new(
-            approx_centre * 2.8,
-            approx_centre * 3.7,
-            approx_centre * 3.7,
-        ),
-    ));
-    world.lights.push(Light::point(
-        Colour::greyscale(0.95),
-        Point3D::new(
-            approx_centre * -2.8,
-            approx_centre * 3.7,
-            approx_centre * -3.7,
-        ),
-    ));
-
-    let camera = Camera::new(
-        CAMERA_WIDTH,
-        CAMERA_HEIGHT,
-        PI / 3.0,
-        Transform::view_transform(
-            Point3D::new(
-                -approx_centre * 2.2,
-                approx_centre * 2.4,
-                approx_centre * -3.2,
-            ),
-            Point3D::new(approx_centre, approx_centre - spacing, approx_centre),
-            Normal3D::POSITIVE_Y,
-        ),
-    );
+    let camera = scene.camera().unwrap();
 
     let canvas = renderer::render(world, camera);
 

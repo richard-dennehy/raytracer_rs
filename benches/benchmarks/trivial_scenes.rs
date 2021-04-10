@@ -14,7 +14,7 @@ criterion_group! {
 
 fn single_sphere_single_ray(c: &mut Criterion) {
     let mut world = single_light_world();
-    world.objects.push(Object::sphere());
+    world.add(Object::sphere());
 
     c.bench_function("cast single ray at single sphere", |b| {
         b.iter(|| {
@@ -68,7 +68,7 @@ fn single_object_full_render(c: &mut Criterion) {
         group.bench_with_input(BenchmarkId::from_parameter(name), &shape, |b, shape| {
             b.iter(|| {
                 let mut world = single_light_world();
-                world.objects.push(shape());
+                world.add(shape());
 
                 let camera = Camera::new(
                     nonzero!(1920u16),

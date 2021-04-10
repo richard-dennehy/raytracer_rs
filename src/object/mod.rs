@@ -306,6 +306,7 @@ impl Object {
             shape @ ObjectKind::Shape(_) => shape,
             ObjectKind::Group(children) => {
                 let children = if children.len() >= threshold && children.len() > 1 {
+                    // TODO test groups with planes (infinite shapes) can be optimised
                     let (left, right) = self.bounds.split();
 
                     let (left_fits, right_fits, mut neither_fits) = children.into_iter().fold(

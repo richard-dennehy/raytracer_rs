@@ -31,7 +31,7 @@ fn cover_image(c: &mut Criterion) {
 
             let mut world = World::empty();
             world.lights.append(&mut scene.lights());
-            world.objects.append(&mut scene.objects().unwrap());
+            world.add(Object::group(scene.objects().unwrap()));
 
             let camera = scene.camera().unwrap();
 
@@ -56,7 +56,7 @@ fn reflect_refract(c: &mut Criterion) {
 
             let mut world = World::empty();
             world.lights.append(&mut scene.lights());
-            world.objects.append(&mut scene.objects().unwrap());
+            world.add(Object::group(scene.objects().unwrap()));
 
             let camera = scene.camera().unwrap();
 
@@ -85,7 +85,7 @@ fn fresnel(c: &mut Criterion) {
                         ..Default::default()
                     });
 
-                world.objects.push(wall);
+                world.add(wall);
             };
 
             {
@@ -99,7 +99,7 @@ fn fresnel(c: &mut Criterion) {
                         ..Default::default()
                     });
 
-                world.objects.push(outer_glass_sphere);
+                world.add(outer_glass_sphere);
             };
 
             {
@@ -118,7 +118,7 @@ fn fresnel(c: &mut Criterion) {
                         ..Default::default()
                     });
 
-                world.objects.push(inner_air_sphere);
+                world.add(inner_air_sphere);
             };
 
             let camera = Camera::new(

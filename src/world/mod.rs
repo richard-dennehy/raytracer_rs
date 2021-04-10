@@ -7,7 +7,7 @@ use crate::{
 mod tests;
 
 pub struct World {
-    pub objects: Vec<Object>,
+    objects: Vec<Object>,
     pub lights: Vec<Light>,
     pub settings: WorldSettings,
 }
@@ -20,6 +20,9 @@ pub struct WorldSettings {
     pub sky_colour: Colour,
     /// how strongly the colour of a transparent material should affect the light passing through - works best with low values
     pub transparent_colour_tint: f64,
+    /// the soft limit of group sizes - lower values will create more, smaller, bounding boxes, which speeds up rendering of
+    /// more complex scenes, but potentially increases rendering time of very simple scenes
+    pub group_size_threshold: u8,
 }
 
 impl Default for WorldSettings {
@@ -28,6 +31,7 @@ impl Default for WorldSettings {
             recursion_depth: 5,
             sky_colour: Colour::BLACK,
             transparent_colour_tint: 0.1,
+            group_size_threshold: 4,
         }
     }
 }
@@ -59,6 +63,11 @@ impl World {
             )],
             settings: Default::default(),
         }
+    }
+
+    pub fn add(&mut self, object: Object) {
+        self.objects
+            .push(object.optimised(self.settings.group_size_threshold as _));
     }
 
     pub fn colour_at(&self, ray: Ray) -> Colour {

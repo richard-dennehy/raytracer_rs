@@ -18,12 +18,16 @@ impl BoundingBox {
     }
 
     pub fn new(min: Point3D, max: Point3D) -> Self {
-        assert!(
-            min.x() <= max.x() && min.y() <= max.y() && min.z() <= max.z(),
-            "Bounding box not correctly aligned\n{:?} to {:?}",
-            min,
-            max
+        let limit = f32::MAX as f64;
+
+        // keep the maths vaguely sane
+        let min = Point3D::new(
+            min.x().max(-limit),
+            min.y().max(-limit),
+            min.z().max(-limit),
         );
+        let max = Point3D::new(max.x().min(limit), max.y().min(limit), max.z().min(limit));
+
         BoundingBox { min, max }
     }
 
@@ -57,6 +61,7 @@ impl BoundingBox {
         !self.fully_contains(other)
     }
 
+    // TODO test plane (infinite) BBs don't break
     pub fn transformed(&self, transformation: Transform) -> Self {
         // implementation is slightly complicated because a BoundingBox must be axis-aligned, and
         // naive rotation breaks that invariant
@@ -128,6 +133,7 @@ impl BoundingBox {
         t_max >= t_min
     }
 
+    // TODO test infinite/plane BBs
     pub fn split(&self) -> (Self, Self) {
         let x_len = self.max.x() - self.min.x();
         let y_len = self.max.y() - self.min.y();

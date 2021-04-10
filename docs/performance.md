@@ -102,3 +102,12 @@ at the cost of making successful intersections slightly slower
 
 - Effort: moderate
 - Performance impact: 15-20% speedup in complex scenes with many objects; minor slowdown on single-ray intersection tests
+
+### Bounding Volume Hierarchy (splitting bounding boxes)
+Restructure complex Groups to be composed of many subgroups, rather than following a flat structure. This creates a hierarchy of
+bounding boxes within the greater bounding box, allowing for more granular bounding box collisions.
+
+- Effort: moderate
+- Performance impact: vast reduction in rendering time for very complex scenes (~97% speedup in scene with 125K objects)
+
+Note: collision detection effectively changed from O(N) to O(log2 N), where N is the number of objects in the scene

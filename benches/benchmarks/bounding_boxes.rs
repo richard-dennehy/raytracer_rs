@@ -14,7 +14,7 @@ fn single_ray_many_objects(c: &mut Criterion) {
     c.bench_function("cast single ray into scene with lots of objects", |b| {
         let mut world = World::empty();
 
-        let cube_size = 50;
+        let cube_size = 60;
         let spacing = 2.7;
         let mut spheres = Vec::with_capacity((cube_size as usize).pow(3));
 
@@ -45,7 +45,7 @@ fn single_ray_many_objects(c: &mut Criterion) {
             }
         }
 
-        world.objects.push(Object::group(spheres));
+        world.add(Object::group(spheres));
 
         let cube_size = cube_size as f64;
         let approx_centre = cube_size * spacing / 2.0;
@@ -94,7 +94,7 @@ fn single_ray_many_reflective_refractive_objects(c: &mut Criterion) {
         |b| {
             let mut world = World::empty();
 
-            let cube_size = 20;
+            let cube_size = 30;
             let spacing = 2.7;
             let mut spheres = Vec::with_capacity((cube_size as usize).pow(3));
 
@@ -128,7 +128,7 @@ fn single_ray_many_reflective_refractive_objects(c: &mut Criterion) {
                 }
             }
 
-            world.objects.push(Object::group(spheres));
+            world.add(Object::group(spheres));
 
             let cube_size = cube_size as f64;
             let approx_centre = cube_size * spacing / 2.0;

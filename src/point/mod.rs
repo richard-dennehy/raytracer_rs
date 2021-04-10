@@ -13,6 +13,7 @@ impl Point3D {
     pub const ORIGIN: Point3D = Point3D(0.0, 0.0, 0.0);
 
     pub fn new(x: f64, y: f64, z: f64) -> Self {
+        // applying transforms to infinite points breaks (turns everything to NaN)
         debug_assert!(
             x.is_finite() && y.is_finite() && z.is_finite(),
             "`x`, `y`, and `z` components must always be finite"
