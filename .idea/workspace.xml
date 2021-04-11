@@ -15,18 +15,16 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP add tests for group optimisation">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implemented bounding volume hierarchies to vastly reduce rendering time of complex scenes">
+      <change afterPath="$PROJECT_DIR$/scene_descriptions/bounding-boxes.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scene_descriptions/obj_files/dragon.obj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/bounding_boxes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/bounding_boxes.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/performance.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/performance.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/bounds/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/bounds/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/point/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/point/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/world/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/bounds/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/bounds/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,6 +71,7 @@
     <property name="WebServerToolWindowFactoryState" value="true" />
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/scene_descriptions/obj_files" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
@@ -80,6 +79,9 @@
     <property name="settings.editor.selected.configurable" value="editing.templates" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Richard\CLionProjects\raytracer\scene_descriptions\obj_files" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Richard\CLionProjects\raytracer\docs" />
       <recent name="C:\Users\Richard\CLionProjects\raytracer\benches\benchmarks" />
@@ -97,20 +99,10 @@
       <command value="cargo bench" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.bench">
-    <configuration name="Run ray_tracer" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="run --package ray_tracer --bin ray_tracer" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <option name="channel" value="DEFAULT" />
-      <option name="requiredFeatures" value="true" />
-      <option name="allFeatures" value="false" />
-      <option name="emulateTerminal" value="false" />
-      <option name="backtrace" value="SHORT" />
-      <envs />
-      <option name="isRedirectInput" value="false" />
-      <option name="redirectInputPath" value="" />
+  <component name="RunManager" selected="Cargo.test">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
@@ -131,6 +123,21 @@
     </configuration>
     <configuration name="Test world::tests::intersections::a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="command" value="test --package ray_tracer --lib world::tests::intersections::a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it -- --exact" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test yaml_parser::tests::basic_parsing::should_parse_cylinder_with_min_max_and_capped" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib yaml_parser::tests::basic_parsing::should_parse_cylinder_with_min_max_and_capped -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -208,27 +215,22 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.bench loop" />
       <item itemvalue="Cargo.bench" />
       <item itemvalue="Cargo.run (release)" />
       <item itemvalue="Cargo.test" />
-      <item itemvalue="Cargo.Run ray_tracer" />
       <item itemvalue="Cargo.Test world::tests::intersections::a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it" />
+      <item itemvalue="Cargo.Test yaml_parser::tests::basic_parsing::should_parse_cylinder_with_min_max_and_capped" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.Test yaml_parser::tests::basic_parsing::should_parse_cylinder_with_min_max_and_capped" />
         <item itemvalue="Cargo.run (release)" />
+        <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.Test world::tests::intersections::a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it" />
-        <item itemvalue="Cargo.Run ray_tracer" />
       </list>
     </recent_temporary>
   </component>
@@ -382,14 +384,8 @@
       <workItem from="1617993432813" duration="58000" />
       <workItem from="1617993642860" duration="18000" />
       <workItem from="1617993671832" duration="2791000" />
-      <workItem from="1618050409004" duration="6066000" />
-    </task>
-    <task id="LOCAL-00093" summary="yaml parser: replace Vec&lt;Transform&gt; with Vec&lt;Either&lt;String, Transform&gt;&gt; to handle define references">
-      <created>1614000262097</created>
-      <option name="number" value="00093" />
-      <option name="presentableId" value="LOCAL-00093" />
-      <option name="project" value="LOCAL" />
-      <updated>1614000262097</updated>
+      <workItem from="1618050409004" duration="6097000" />
+      <workItem from="1618139420942" duration="6701000" />
     </task>
     <task id="LOCAL-00094" summary="split yaml parser tests">
       <created>1614111965972</created>
@@ -727,7 +723,14 @@
       <option name="project" value="LOCAL" />
       <updated>1617996463015</updated>
     </task>
-    <option name="localTasksCounter" value="142" />
+    <task id="LOCAL-00142" summary="implemented bounding volume hierarchies to vastly reduce rendering time of complex scenes">
+      <created>1618056891050</created>
+      <option name="number" value="00142" />
+      <option name="presentableId" value="LOCAL-00142" />
+      <option name="project" value="LOCAL" />
+      <updated>1618056891050</updated>
+    </task>
+    <option name="localTasksCounter" value="143" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -753,7 +756,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add test for checkerd plane acne fix" />
     <MESSAGE value="add test for checkered plane acne fix" />
     <MESSAGE value="remove unused fields from HitData" />
     <MESSAGE value="improve applying object transforms" />
@@ -778,7 +780,8 @@
     <MESSAGE value="add function to split bounding boxes" />
     <MESSAGE value="WIP add function to optimise Groups hierarchy" />
     <MESSAGE value="WIP add tests for group optimisation" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP add tests for group optimisation" />
+    <MESSAGE value="implemented bounding volume hierarchies to vastly reduce rendering time of complex scenes" />
+    <option name="LAST_COMMIT_MESSAGE" value="implemented bounding volume hierarchies to vastly reduce rendering time of complex scenes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -792,6 +795,11 @@
           <url>file://$PROJECT_DIR$/src/world/tests.rs</url>
           <line>48</line>
           <option name="timeStamp" value="29" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/yaml_parser/parsers.rs</url>
+          <line>371</line>
+          <option name="timeStamp" value="31" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -303,7 +303,7 @@ transform:
         object,
         ObjectDescription {
             kind: ObjectKind::Plane,
-            material: Right(MaterialDescription {
+            material: MaterialSource::Inline(MaterialDescription {
                 pattern: Some(Left(Colour::WHITE)),
                 ambient: Some(1.0),
                 diffuse: Some(0.0),
@@ -317,7 +317,8 @@ transform:
                     y: 0.0,
                     z: 500.0
                 })
-            ]
+            ],
+            casts_shadow: true,
         }
     );
 }
@@ -347,7 +348,7 @@ transform:
         object,
         ObjectDescription {
             kind: ObjectKind::Sphere,
-            material: Right(MaterialDescription {
+            material: MaterialSource::Inline(MaterialDescription {
                 pattern: Some(Left(Colour::new(0.373, 0.404, 0.550))),
                 diffuse: Some(0.2),
                 ambient: Some(0.0),
@@ -357,7 +358,8 @@ transform:
                 transparency: Some(0.7),
                 refractive: Some(1.5),
             }),
-            transform: vec![Left("large-object".into())]
+            transform: vec![Left("large-object".into())],
+            casts_shadow: true,
         }
     );
 }
@@ -380,7 +382,7 @@ transform:
         object,
         ObjectDescription {
             kind: ObjectKind::Cube,
-            material: Left("white-material".into()),
+            material: MaterialSource::Define("white-material".into()),
             transform: vec![
                 Left("medium-object".into()),
                 Right(Transformation::Translate {
@@ -388,7 +390,146 @@ transform:
                     y: 0.0,
                     z: 0.0
                 })
-            ]
+            ],
+            casts_shadow: true,
+        }
+    );
+}
+
+#[test]
+fn should_parse_an_object_with_no_material() {
+    let input = "\
+add: cube
+transform:
+  - [ translate, 1, 1, 1 ]
+  - [ scale, 3.73335, 2.5845, 1.6283 ]";
+
+    let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+    let object = yaml.parse::<ObjectDescription>();
+    assert!(object.is_ok(), "{}", object.unwrap_err());
+    let object = object.unwrap();
+
+    assert_eq!(
+        object,
+        ObjectDescription {
+            kind: ObjectKind::Cube,
+            material: MaterialSource::Undefined,
+            transform: vec![
+                Right(Transformation::Translate {
+                    x: 1.0,
+                    y: 1.0,
+                    z: 1.0
+                }),
+                Right(Transformation::Scale {
+                    x: 3.73335,
+                    y: 2.5845,
+                    z: 1.6283
+                })
+            ],
+            casts_shadow: true
+        }
+    );
+}
+
+#[test]
+fn should_parse_an_object_with_shadows_disabled() {
+    let input = "\
+add: cube
+shadow: false
+transform:
+  - [ translate, 1, 1, 1 ]
+  - [ scale, 3.73335, 2.5845, 1.6283 ]";
+
+    let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+    let object = yaml.parse::<ObjectDescription>();
+    assert!(object.is_ok(), "{}", object.unwrap_err());
+    let object = object.unwrap();
+
+    assert_eq!(
+        object,
+        ObjectDescription {
+            kind: ObjectKind::Cube,
+            material: MaterialSource::Undefined,
+            transform: vec![
+                Right(Transformation::Translate {
+                    x: 1.0,
+                    y: 1.0,
+                    z: 1.0
+                }),
+                Right(Transformation::Scale {
+                    x: 3.73335,
+                    y: 2.5845,
+                    z: 1.6283
+                })
+            ],
+            casts_shadow: false
+        }
+    );
+}
+
+#[test]
+fn should_parse_an_object_from_a_file() {
+    let input = "\
+add: obj
+file: dragon.obj
+transform:
+    - [ translate, 0, 0.1217, 0]
+    - [ scale, 0.268, 0.268, 0.268 ]";
+
+    let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+    let object = yaml.parse::<ObjectDescription>();
+    assert!(object.is_ok(), "{}", object.unwrap_err());
+    let object = object.unwrap();
+
+    assert_eq!(
+        object,
+        ObjectDescription {
+            kind: ObjectKind::ObjFile {
+                file_name: "dragon.obj".into()
+            },
+            material: MaterialSource::Undefined,
+            transform: vec![
+                Right(Transformation::Translate {
+                    x: 0.0,
+                    y: 0.1217,
+                    z: 0.0
+                }),
+                Right(Transformation::Scale {
+                    x: 0.268,
+                    y: 0.268,
+                    z: 0.268
+                })
+            ],
+            casts_shadow: true
+        }
+    );
+}
+
+#[test]
+fn should_parse_cylinder_with_min_max_and_capped() {
+    let input = "\
+add: cylinder
+min: -0.15
+max: 0
+closed: true
+transform: []";
+
+    let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+    let object = yaml.parse::<ObjectDescription>();
+    assert!(object.is_ok(), "{}", object.unwrap_err());
+    let object = object.unwrap();
+
+    assert_eq!(
+        object,
+        ObjectDescription {
+            kind: ObjectKind::Cylinder {
+                min: Some(-0.15),
+                max: Some(0.0),
+                capped: true
+            },
+            material: MaterialSource::Undefined,
+            transform: vec![],
+            casts_shadow: true
         }
     );
 }
@@ -514,7 +655,7 @@ fn should_parse_scene_description() {
             objects: vec![
                 ObjectDescription {
                     kind: ObjectKind::Plane,
-                    material: Right(MaterialDescription {
+                    material: MaterialSource::Inline(MaterialDescription {
                         pattern: Some(Left(Colour::WHITE)),
                         ambient: Some(1.0),
                         diffuse: Some(0.0),
@@ -528,11 +669,12 @@ fn should_parse_scene_description() {
                             y: 0.0,
                             z: 500.0
                         })
-                    ]
+                    ],
+                    casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Sphere,
-                    material: Right(MaterialDescription {
+                    material: MaterialSource::Inline(MaterialDescription {
                         pattern: Some(Left(Colour::new(0.373, 0.404, 0.550))),
                         diffuse: Some(0.2),
                         ambient: Some(0.0),
@@ -542,11 +684,12 @@ fn should_parse_scene_description() {
                         transparency: Some(0.7),
                         refractive: Some(1.5),
                     }),
-                    transform: vec![Left("large-object".into())]
+                    transform: vec![Left("large-object".into())],
+                    casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: Left("white-material".into()),
+                    material: MaterialSource::Define("white-material".into()),
                     transform: vec![
                         Left("medium-object".into()),
                         Right(Transformation::Translate {
@@ -554,11 +697,12 @@ fn should_parse_scene_description() {
                             y: 0.0,
                             z: 0.0
                         })
-                    ]
+                    ],
+                    casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: Left("blue-material".into()),
+                    material: MaterialSource::Define("blue-material".into()),
                     transform: vec![
                         Left("large-object".into()),
                         Right(Transformation::Translate {
@@ -566,11 +710,12 @@ fn should_parse_scene_description() {
                             y: 1.5,
                             z: -0.5
                         })
-                    ]
+                    ],
+                    casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: Left("red-material".into()),
+                    material: MaterialSource::Define("red-material".into()),
                     transform: vec![
                         Left("large-object".into()),
                         Right(Transformation::Translate {
@@ -578,11 +723,12 @@ fn should_parse_scene_description() {
                             y: 0.0,
                             z: 4.0,
                         })
-                    ]
+                    ],
+                    casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: Left("white-material".into()),
+                    material: MaterialSource::Define("white-material".into()),
                     transform: vec![
                         Left("small-object".into()),
                         Right(Transformation::Translate {
@@ -590,11 +736,12 @@ fn should_parse_scene_description() {
                             y: 0.0,
                             z: 4.0,
                         })
-                    ]
+                    ],
+                    casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: Left("purple-material".into()),
+                    material: MaterialSource::Define("purple-material".into()),
                     transform: vec![
                         Left("medium-object".into()),
                         Right(Transformation::Translate {
@@ -602,11 +749,12 @@ fn should_parse_scene_description() {
                             y: 0.5,
                             z: 4.0,
                         })
-                    ]
+                    ],
+                    casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: Left("white-material".into()),
+                    material: MaterialSource::Define("white-material".into()),
                     transform: vec![
                         Left("medium-object".into()),
                         Right(Transformation::Translate {
@@ -614,11 +762,12 @@ fn should_parse_scene_description() {
                             y: 0.25,
                             z: 8.0,
                         })
-                    ]
+                    ],
+                    casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: Left("blue-material".into()),
+                    material: MaterialSource::Define("blue-material".into()),
                     transform: vec![
                         Left("large-object".into()),
                         Right(Transformation::Translate {
@@ -626,11 +775,12 @@ fn should_parse_scene_description() {
                             y: 1.0,
                             z: 7.5,
                         })
-                    ]
+                    ],
+                    casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: Left("red-material".into()),
+                    material: MaterialSource::Define("red-material".into()),
                     transform: vec![
                         Left("medium-object".into()),
                         Right(Transformation::Translate {
@@ -638,11 +788,12 @@ fn should_parse_scene_description() {
                             y: 2.0,
                             z: 7.5,
                         })
-                    ]
+                    ],
+                    casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: Left("white-material".into()),
+                    material: MaterialSource::Define("white-material".into()),
                     transform: vec![
                         Left("small-object".into()),
                         Right(Transformation::Translate {
@@ -650,11 +801,12 @@ fn should_parse_scene_description() {
                             y: 2.0,
                             z: 12.0,
                         })
-                    ]
+                    ],
+                    casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: Left("white-material".into()),
+                    material: MaterialSource::Define("white-material".into()),
                     transform: vec![
                         Left("small-object".into()),
                         Right(Transformation::Translate {
@@ -662,11 +814,12 @@ fn should_parse_scene_description() {
                             y: 1.0,
                             z: 9.0,
                         })
-                    ]
+                    ],
+                    casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: Left("blue-material".into()),
+                    material: MaterialSource::Define("blue-material".into()),
                     transform: vec![
                         Left("large-object".into()),
                         Right(Transformation::Translate {
@@ -674,11 +827,12 @@ fn should_parse_scene_description() {
                             y: -5.0,
                             z: 0.25,
                         })
-                    ]
+                    ],
+                    casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: Left("red-material".into()),
+                    material: MaterialSource::Define("red-material".into()),
                     transform: vec![
                         Left("large-object".into()),
                         Right(Transformation::Translate {
@@ -686,11 +840,12 @@ fn should_parse_scene_description() {
                             y: -4.0,
                             z: 0.0,
                         })
-                    ]
+                    ],
+                    casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: Left("white-material".into()),
+                    material: MaterialSource::Define("white-material".into()),
                     transform: vec![
                         Left("large-object".into()),
                         Right(Transformation::Translate {
@@ -698,11 +853,12 @@ fn should_parse_scene_description() {
                             y: -4.0,
                             z: 0.0,
                         })
-                    ]
+                    ],
+                    casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: Left("white-material".into()),
+                    material: MaterialSource::Define("white-material".into()),
                     transform: vec![
                         Left("large-object".into()),
                         Right(Transformation::Translate {
@@ -710,11 +866,12 @@ fn should_parse_scene_description() {
                             y: -4.0,
                             z: 4.0,
                         })
-                    ]
+                    ],
+                    casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: Left("purple-material".into()),
+                    material: MaterialSource::Define("purple-material".into()),
                     transform: vec![
                         Left("large-object".into()),
                         Right(Transformation::Translate {
@@ -722,11 +879,12 @@ fn should_parse_scene_description() {
                             y: -4.5,
                             z: 8.0,
                         })
-                    ]
+                    ],
+                    casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: Left("white-material".into()),
+                    material: MaterialSource::Define("white-material".into()),
                     transform: vec![
                         Left("large-object".into()),
                         Right(Transformation::Translate {
@@ -734,11 +892,12 @@ fn should_parse_scene_description() {
                             y: -8.0,
                             z: 4.0,
                         })
-                    ]
+                    ],
+                    casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: Left("white-material".into()),
+                    material: MaterialSource::Define("white-material".into()),
                     transform: vec![
                         Left("large-object".into()),
                         Right(Transformation::Translate {
@@ -746,7 +905,8 @@ fn should_parse_scene_description() {
                             y: -8.5,
                             z: 8.0,
                         })
-                    ]
+                    ],
+                    casts_shadow: true,
                 },
             ],
         }

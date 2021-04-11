@@ -10,23 +10,28 @@ pub struct BoundingBox {
 }
 
 impl BoundingBox {
+    // keep the maths vaguely functional - using INFINITY or f64::MAX breaks the calculations
+    pub const LIMIT: f64 = f32::MAX as _;
+
     pub fn infinite() -> Self {
         BoundingBox {
-            min: Point3D::new(-f64::MAX, -f64::MAX, -f64::MAX),
-            max: Point3D::new(f64::MAX, f64::MAX, f64::MAX),
+            min: Point3D::new(-Self::LIMIT, -Self::LIMIT, -Self::LIMIT),
+            max: Point3D::new(Self::LIMIT, Self::LIMIT, Self::LIMIT),
         }
     }
 
     pub fn new(min: Point3D, max: Point3D) -> Self {
-        let limit = f32::MAX as f64;
-
         // keep the maths vaguely sane
         let min = Point3D::new(
-            min.x().max(-limit),
-            min.y().max(-limit),
-            min.z().max(-limit),
+            min.x().max(-Self::LIMIT),
+            min.y().max(-Self::LIMIT),
+            min.z().max(-Self::LIMIT),
         );
-        let max = Point3D::new(max.x().min(limit), max.y().min(limit), max.z().min(limit));
+        let max = Point3D::new(
+            max.x().min(Self::LIMIT),
+            max.y().min(Self::LIMIT),
+            max.z().min(Self::LIMIT),
+        );
 
         BoundingBox { min, max }
     }

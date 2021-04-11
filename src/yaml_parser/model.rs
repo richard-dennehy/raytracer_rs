@@ -48,15 +48,26 @@ impl SceneDescription {
         self.objects
             .iter()
             .map(|desc| {
-                let object = match desc.kind {
+                let object = match &desc.kind {
                     ObjectKind::Plane => Object::plane(),
                     ObjectKind::Sphere => Object::sphere(),
                     ObjectKind::Cube => Object::cube(),
+                    ObjectKind::Cylinder { min, max, capped } => {
+                        let cylinder = Object::cylinder()
+                            .min_y(min.unwrap_or(f64::INFINITY))
+                            .max_y(max.unwrap_or(f64::INFINITY));
+
+                        let cylinder = if *capped { cylinder.capped() } else { cylinder };
+
+                        cylinder.build()
+                    }
+                    ObjectKind::ObjFile { .. } => todo!("load obj file"),
                 };
 
                 let material_description = match &desc.material {
-                    Left(reference) => self.resolve_material(reference.as_str()),
-                    Right(desc) => Ok(desc.clone()),
+                    MaterialSource::Define(reference) => self.resolve_material(reference.as_str()),
+                    MaterialSource::Inline(desc) => Ok(desc.clone()),
+                    MaterialSource::Undefined => Err(format!("A {:?} has no material", object)),
                 };
 
                 let material = material_description.map(|d| d.to_material());
@@ -303,8 +314,9 @@ impl ToMatrix for Vec<Transformation> {
 #[derive(PartialEq, Debug)]
 pub struct ObjectDescription {
     pub kind: ObjectKind,
-    pub material: Either<String, MaterialDescription>,
+    pub material: MaterialSource,
     pub transform: Transforms,
+    pub casts_shadow: bool,
 }
 
 #[derive(PartialEq, Debug)]
@@ -312,4 +324,19 @@ pub enum ObjectKind {
     Plane,
     Sphere,
     Cube,
+    Cylinder {
+        min: Option<f64>,
+        max: Option<f64>,
+        capped: bool,
+    },
+    ObjFile {
+        file_name: String,
+    },
+}
+
+#[derive(PartialEq, Debug)]
+pub enum MaterialSource {
+    Define(String),
+    Inline(MaterialDescription),
+    Undefined,
 }

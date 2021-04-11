@@ -16,7 +16,7 @@ fn main() -> Result<(), String> {
     let timer = Instant::now();
 
     let yaml = fs::read_to_string(
-        Path::new(env!("CARGO_MANIFEST_DIR")).join("scene_descriptions/reflect-refract.yml"),
+        Path::new(env!("CARGO_MANIFEST_DIR")).join("scene_descriptions/bounding-boxes.yml"),
     )
     .unwrap();
 

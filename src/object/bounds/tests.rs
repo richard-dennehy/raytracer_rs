@@ -416,6 +416,21 @@ mod unit_tests {
             assert_eq!(right.min, Point3D::new(-1.0, -2.0, 2.0));
             assert_eq!(right.max, Point3D::new(5.0, 3.0, 7.0));
         }
+
+        #[test]
+        fn splitting_an_infinite_bounding_box_should_create_a_pair_of_finite_bounding_boxes() {
+            // because "infinite" bounding boxes are only pretending
+            let infinite = BoundingBox::infinite();
+
+            let (left, right) = infinite.split();
+            let limit = BoundingBox::LIMIT;
+
+            assert_eq!(left.min, Point3D::new(-limit, -limit, -limit));
+            assert_eq!(left.max, Point3D::new(0.0, limit, limit));
+
+            assert_eq!(right.min, Point3D::new(0.0, -limit, -limit));
+            assert_eq!(right.max, Point3D::new(limit, limit, limit));
+        }
     }
 }
 

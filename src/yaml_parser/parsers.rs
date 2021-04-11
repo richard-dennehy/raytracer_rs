@@ -1,5 +1,5 @@
 use crate::yaml_parser::model::{
-    CameraDescription, Define, MaterialDescription, ObjectDescription, ObjectKind,
+    CameraDescription, Define, MaterialDescription, MaterialSource, ObjectDescription, ObjectKind,
     PatternDescription, PatternType, Transformation,
 };
 use crate::{Colour, Light, Point3D, Vector3D};
@@ -40,6 +40,15 @@ impl FromYaml for usize {
             Yaml::Integer(_) => Err("value must not be negative".into()),
             Yaml::BadValue => Err("value is undefined".into()),
             _ => Err(format!("cannot parse {:?} as an integer", yaml)),
+        }
+    }
+}
+
+impl FromYaml for bool {
+    fn from_yaml(yaml: &Yaml) -> Result<Self, String> {
+        match &yaml {
+            Yaml::Boolean(value) => Ok(*value),
+            _ => Err(format!("cannot parse {:?} as a boolean", yaml)),
         }
     }
 }
@@ -111,27 +120,51 @@ impl FromYaml for ObjectDescription {
             "plane" => ObjectKind::Plane,
             "sphere" => ObjectKind::Sphere,
             "cube" => ObjectKind::Cube,
-            // TODO other primitives
-            _ => {
-                return Err(format!(
-                    "cannot parse `{}` as Object (note: only primitives are supported)",
-                    add
-                ))
+            "cylinder" => {
+                let min = yaml["min"].parse()?;
+                let max = yaml["max"].parse()?;
+
+                let capped = yaml["closed"].parse::<Option<_>>()?.unwrap_or(false);
+
+                ObjectKind::Cylinder { min, max, capped }
             }
+            "obj" => {
+                let file_name = yaml["file"]
+                    .as_str()
+                    .ok_or_else(|| "must specify `file` name when adding an `obj`".to_string())?;
+                ObjectKind::ObjFile {
+                    file_name: file_name.to_owned(),
+                }
+            }
+            // TODO other primitives
+            _ => return Err(format!("cannot parse `{}` as an Object", add)),
         };
 
         let material = match &yaml["material"] {
-            Yaml::String(reference) => Left(reference.to_owned()),
-            description @ Yaml::Hash(_) => Right(description.parse()?),
+            Yaml::String(reference) => MaterialSource::Define(reference.to_owned()),
+            description @ Yaml::Hash(_) => MaterialSource::Inline(description.parse()?),
+            Yaml::BadValue => MaterialSource::Undefined,
             other => return Err(format!("cannot parse object material; expected an Object describing the material, or a String referencing a defined material, at {:?}", other))
         };
 
         let transform = yaml["transform"].parse()?;
 
+        let casts_shadow = match &yaml["shadow"] {
+            Yaml::Boolean(shadow) => *shadow,
+            Yaml::BadValue => true,
+            other => {
+                return Err(format!(
+                    "invalid `shadow` value; expected a boolean value, got {:?}",
+                    other
+                ))
+            }
+        };
+
         Ok(ObjectDescription {
             kind,
             material,
             transform,
+            casts_shadow,
         })
     }
 }
