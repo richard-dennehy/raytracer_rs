@@ -535,6 +535,205 @@ transform: []";
 }
 
 #[test]
+fn should_parse_adding_primitive_with_no_transform() {
+    let input = "\
+add: cylinder";
+
+    let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+    let object = yaml.parse::<ObjectDescription>();
+    assert!(object.is_ok(), "{}", object.unwrap_err());
+    let object = object.unwrap();
+
+    assert_eq!(
+        object,
+        ObjectDescription {
+            kind: ObjectKind::Cylinder {
+                min: None,
+                max: None,
+                capped: false
+            },
+            material: MaterialSource::Undefined,
+            transform: vec![],
+            casts_shadow: true
+        }
+    );
+}
+
+#[test]
+fn should_parse_add_from_define() {
+    let input = "\
+add: pedestal";
+
+    let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+    let object = yaml.parse::<ObjectDescription>();
+    assert!(object.is_ok(), "{}", object.unwrap_err());
+    let object = object.unwrap();
+
+    assert_eq!(
+        object,
+        ObjectDescription {
+            kind: ObjectKind::Reference("pedestal".to_string()),
+            material: MaterialSource::Undefined,
+            transform: vec![],
+            casts_shadow: true
+        }
+    );
+}
+
+#[test]
+fn should_parse_add_group_with_single_child() {
+    let input = "\
+add: group
+transform:
+  - [ translate, 0, 2, 0 ]
+children:
+  - add: pedestal";
+
+    let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+    let object = yaml.parse::<ObjectDescription>();
+    assert!(object.is_ok(), "{}", object.unwrap_err());
+    let object = object.unwrap();
+
+    assert_eq!(
+        object,
+        ObjectDescription {
+            kind: ObjectKind::Group {
+                children: vec![ObjectDescription {
+                    kind: ObjectKind::Reference("pedestal".to_string()),
+                    material: MaterialSource::Undefined,
+                    transform: vec![],
+                    casts_shadow: true
+                }]
+            },
+            material: MaterialSource::Undefined,
+            transform: vec![Right(Transformation::Translate {
+                x: 0.0,
+                y: 2.0,
+                z: 0.0
+            })],
+            casts_shadow: true
+        }
+    );
+}
+
+#[test]
+fn should_parse_a_group_containing_a_sub_group() {
+    let input = "\
+add: group
+transform:
+  - [ translate, 0, 2, 0 ]
+children:
+  - add: pedestal
+  - add: group
+    children:
+      - add: dragon
+        material:
+          color: [ 1, 0, 0.1 ]
+          ambient: 0.1
+          diffuse: 0.6
+          specular: 0.3
+          shininess: 15
+      - add: bbox
+        material:
+          ambient: 0
+          diffuse: 0.4
+          specular: 0
+          transparency: 0.6
+          refractive-index: 1";
+
+    let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+    let object = yaml.parse::<ObjectDescription>();
+    assert!(object.is_ok(), "{}", object.unwrap_err());
+    let object = object.unwrap();
+
+    assert_eq!(
+        object,
+        ObjectDescription {
+            kind: ObjectKind::Group {
+                children: vec![
+                    ObjectDescription {
+                        kind: ObjectKind::Reference("pedestal".to_string()),
+                        material: MaterialSource::Undefined,
+                        transform: vec![],
+                        casts_shadow: true
+                    },
+                    ObjectDescription {
+                        kind: ObjectKind::Group {
+                            children: vec![
+                                ObjectDescription {
+                                    kind: ObjectKind::Reference("dragon".into()),
+                                    material: MaterialSource::Inline(MaterialDescription {
+                                        pattern: Some(Left(Colour::new(1.0, 0.0, 0.1))),
+                                        diffuse: Some(0.6),
+                                        ambient: Some(0.1),
+                                        specular: Some(0.3),
+                                        shininess: Some(15.0),
+                                        ..Default::default()
+                                    }),
+                                    transform: vec![],
+                                    casts_shadow: true
+                                },
+                                ObjectDescription {
+                                    kind: ObjectKind::Reference("bbox".into()),
+                                    material: MaterialSource::Inline(MaterialDescription {
+                                        diffuse: Some(0.4),
+                                        ambient: Some(0.0),
+                                        specular: Some(0.0),
+                                        transparency: Some(0.6),
+                                        refractive: Some(1.0),
+                                        ..Default::default()
+                                    }),
+                                    transform: vec![],
+                                    casts_shadow: true
+                                }
+                            ]
+                        },
+                        material: MaterialSource::Undefined,
+                        transform: vec![],
+                        casts_shadow: true
+                    }
+                ]
+            },
+            material: MaterialSource::Undefined,
+            transform: vec![Right(Transformation::Translate {
+                x: 0.0,
+                y: 2.0,
+                z: 0.0
+            })],
+            casts_shadow: true
+        }
+    );
+}
+
+#[test]
+fn should_parse_an_object_define() {
+    let input = "\
+define: raw-bbox
+value:
+  add: cube
+  shadow: false
+";
+
+    let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+    let define = yaml.parse::<Define>();
+    assert!(define.is_ok(), "{}", define.unwrap_err());
+    let define = define.unwrap();
+
+    assert_eq!(
+        define,
+        Define::Object {
+            name: "raw-bbox".to_string(),
+            value: ObjectDescription {
+                kind: ObjectKind::Cube,
+                material: MaterialSource::Undefined,
+                transform: vec![],
+                casts_shadow: false
+            }
+        }
+    );
+}
+
+#[test]
 #[allow(clippy::approx_constant)] // approximation of PI/2 matches the file
 fn should_parse_scene_description() {
     let scene = include_str!(concat!(

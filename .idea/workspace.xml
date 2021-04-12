@@ -15,13 +15,8 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implemented bounding volume hierarchies to vastly reduce rendering time of complex scenes">
-      <change afterPath="$PROJECT_DIR$/scene_descriptions/bounding-boxes.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scene_descriptions/obj_files/dragon.obj" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP add parsing support for dragons YAML">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/bounds/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/bounds/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/bounds/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/bounds/tests.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" afterDir="false" />
@@ -100,11 +95,6 @@
     </option>
   </component>
   <component name="RunManager" selected="Cargo.test">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -218,18 +208,18 @@
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.bench loop" />
+      <item itemvalue="Cargo.Test world::tests::intersections::a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it" />
+      <item itemvalue="Cargo.Test yaml_parser::tests::basic_parsing::should_parse_cylinder_with_min_max_and_capped" />
       <item itemvalue="Cargo.bench" />
       <item itemvalue="Cargo.run (release)" />
       <item itemvalue="Cargo.test" />
-      <item itemvalue="Cargo.Test world::tests::intersections::a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it" />
-      <item itemvalue="Cargo.Test yaml_parser::tests::basic_parsing::should_parse_cylinder_with_min_max_and_capped" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.test" />
-        <item itemvalue="Cargo.Test yaml_parser::tests::basic_parsing::should_parse_cylinder_with_min_max_and_capped" />
         <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.bench" />
+        <item itemvalue="Cargo.Test yaml_parser::tests::basic_parsing::should_parse_cylinder_with_min_max_and_capped" />
         <item itemvalue="Cargo.Test world::tests::intersections::a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it" />
       </list>
     </recent_temporary>
@@ -385,14 +375,9 @@
       <workItem from="1617993642860" duration="18000" />
       <workItem from="1617993671832" duration="2791000" />
       <workItem from="1618050409004" duration="6097000" />
-      <workItem from="1618139420942" duration="6701000" />
-    </task>
-    <task id="LOCAL-00094" summary="split yaml parser tests">
-      <created>1614111965972</created>
-      <option name="number" value="00094" />
-      <option name="presentableId" value="LOCAL-00094" />
-      <option name="project" value="LOCAL" />
-      <updated>1614111965973</updated>
+      <workItem from="1618139420942" duration="6725000" />
+      <workItem from="1618253481102" duration="36000" />
+      <workItem from="1618253532023" duration="3004000" />
     </task>
     <task id="LOCAL-00095" summary="YAML parser: add support for stripe patterns">
       <created>1614114848170</created>
@@ -730,7 +715,14 @@
       <option name="project" value="LOCAL" />
       <updated>1618056891050</updated>
     </task>
-    <option name="localTasksCounter" value="143" />
+    <task id="LOCAL-00143" summary="WIP add parsing support for dragons YAML">
+      <created>1618146559522</created>
+      <option name="number" value="00143" />
+      <option name="presentableId" value="LOCAL-00143" />
+      <option name="project" value="LOCAL" />
+      <updated>1618146559522</updated>
+    </task>
+    <option name="localTasksCounter" value="144" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -756,7 +748,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add test for checkered plane acne fix" />
     <MESSAGE value="remove unused fields from HitData" />
     <MESSAGE value="improve applying object transforms" />
     <MESSAGE value="fix clippy suppression" />
@@ -781,7 +772,8 @@
     <MESSAGE value="WIP add function to optimise Groups hierarchy" />
     <MESSAGE value="WIP add tests for group optimisation" />
     <MESSAGE value="implemented bounding volume hierarchies to vastly reduce rendering time of complex scenes" />
-    <option name="LAST_COMMIT_MESSAGE" value="implemented bounding volume hierarchies to vastly reduce rendering time of complex scenes" />
+    <MESSAGE value="WIP add parsing support for dragons YAML" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP add parsing support for dragons YAML" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -798,7 +790,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/yaml_parser/parsers.rs</url>
-          <line>371</line>
+          <line>382</line>
           <option name="timeStamp" value="31" />
         </line-breakpoint>
       </breakpoints>

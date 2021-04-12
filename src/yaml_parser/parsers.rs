@@ -88,14 +88,21 @@ impl FromYaml for Define {
         // this is awfully brittle, but the awkward format doesn't make this easy to parse
         match value_node {
             &Yaml::Hash(_) => {
-                let extends = yaml["extend"].as_str().map(Into::into);
-                let material = value_node.parse()?;
+                if value_node["add"].as_str().is_some() {
+                    Ok(Define::Object {
+                        name,
+                        value: value_node.parse()?,
+                    })
+                } else {
+                    let extends = yaml["extend"].as_str().map(Into::into);
+                    let material = value_node.parse()?;
 
-                Ok(Define::MaterialDef {
-                    name,
-                    extends,
-                    value: material,
-                })
+                    Ok(Define::MaterialDef {
+                        name,
+                        extends,
+                        value: material,
+                    })
+                }
             }
             &Yaml::Array(_) => {
                 let transform = value_node.parse()?;
@@ -127,7 +134,9 @@ impl FromYaml for ObjectDescription {
                 let capped = yaml["closed"].parse::<Option<_>>()?.unwrap_or(false);
 
                 ObjectKind::Cylinder { min, max, capped }
-            }
+            },
+            "cone" => todo!("support cones"),
+            "triangle" => return Err("adding triangles directly not supported - use an wavefront `obj` file to import meshes".into()),
             "obj" => {
                 let file_name = yaml["file"]
                     .as_str()
@@ -136,8 +145,10 @@ impl FromYaml for ObjectDescription {
                     file_name: file_name.to_owned(),
                 }
             }
-            // TODO other primitives
-            _ => return Err(format!("cannot parse `{}` as an Object", add)),
+            "group" => {
+                ObjectKind::Group { children: yaml["children"].parse()? }
+            }
+            reference => ObjectKind::Reference(reference.to_owned()),
         };
 
         let material = match &yaml["material"] {
@@ -147,7 +158,7 @@ impl FromYaml for ObjectDescription {
             other => return Err(format!("cannot parse object material; expected an Object describing the material, or a String referencing a defined material, at {:?}", other))
         };
 
-        let transform = yaml["transform"].parse()?;
+        let transform = yaml["transform"].parse::<Option<_>>()?.unwrap_or(vec![]);
 
         let casts_shadow = match &yaml["shadow"] {
             Yaml::Boolean(shadow) => *shadow,

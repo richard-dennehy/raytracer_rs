@@ -62,6 +62,8 @@ impl SceneDescription {
                         cylinder.build()
                     }
                     ObjectKind::ObjFile { .. } => todo!("load obj file"),
+                    ObjectKind::Group { .. } => todo!("recursively resolve children"),
+                    ObjectKind::Reference(..) => todo!("resolve referenced define"),
                 };
 
                 let material_description = match &desc.material {
@@ -132,6 +134,9 @@ impl SceneDescription {
                 Define::Transform { .. } => {
                     Err(format!("{} is a transform, not a material", def.name()))
                 }
+                Define::Object { .. } => {
+                    Err(format!("{} is an object, not a material", def.name()))
+                }
             })
     }
 
@@ -145,6 +150,9 @@ impl SceneDescription {
             .and_then(|def| match def {
                 Define::MaterialDef { .. } => {
                     Err(format!("{} is a material, not a transform", name))
+                }
+                Define::Object { .. } => {
+                    Err(format!("{} is an object, not a transform", def.name()))
                 }
                 Define::Transform { value, .. } => Ok(value),
             })
@@ -187,6 +195,7 @@ pub struct CameraDescription {
 }
 
 #[derive(PartialEq, Debug)]
+// TODO might be easier to use Map<String, String> instead
 pub enum Define {
     MaterialDef {
         name: String,
@@ -197,6 +206,10 @@ pub enum Define {
         name: String,
         value: Transforms,
     },
+    Object {
+        name: String,
+        value: ObjectDescription,
+    },
 }
 
 pub type Transforms = Vec<Either<String, Transformation>>;
@@ -206,6 +219,7 @@ impl Define {
         match &self {
             Define::MaterialDef { name, .. } => name.as_str(),
             Define::Transform { name, .. } => name.as_str(),
+            Define::Object { name, .. } => name.as_str(),
         }
     }
 }
@@ -332,6 +346,10 @@ pub enum ObjectKind {
     ObjFile {
         file_name: String,
     },
+    Group {
+        children: Vec<ObjectDescription>,
+    },
+    Reference(String),
 }
 
 #[derive(PartialEq, Debug)]
