@@ -73,32 +73,9 @@ impl SceneDescription {
                 };
 
                 let material = material_description.map(|d| d.to_material());
-
-                let transform = desc
-                    .transform
-                    .iter()
-                    .map(|tf| match tf {
-                        Right(Transformation::Translate { x, y, z }) => Ok(Transform::identity()
-                            .translate_x(*x)
-                            .translate_y(*y)
-                            .translate_z(*z)),
-                        Right(Transformation::Scale { x, y, z }) => {
-                            Ok(Transform::identity().scale_x(*x).scale_y(*y).scale_z(*z))
-                        }
-                        Right(Transformation::RotationX(rads)) => {
-                            Ok(Transform::identity().rotate_x(*rads))
-                        }
-                        Right(Transformation::RotationY(rads)) => {
-                            Ok(Transform::identity().rotate_y(*rads))
-                        }
-                        Right(Transformation::RotationZ(rads)) => {
-                            Ok(Transform::identity().rotate_z(*rads))
-                        }
-                        Left(name) => self.resolve_transform(name.as_str()),
-                    })
-                    .fold(Ok(Transform::identity()), |acc, next| {
-                        acc.and_then(|lhs| next.map(|rhs| rhs * lhs))
-                    });
+                let transform = self
+                    .to_transformations(&desc.transform)
+                    .map(|tfs| tfs.to_matrix());
 
                 material
                     .and_then(|mat| transform.map(|tf| object.with_material(mat).transformed(tf)))
@@ -140,9 +117,26 @@ impl SceneDescription {
             })
     }
 
+    fn to_transformations(&self, transforms: &Transforms) -> Result<Vec<Transformation>, String> {
+        transforms
+            .iter()
+            .map(|tf| match tf {
+                Left(define) => self
+                    .resolve_transform(define)
+                    .and_then(|tfs| self.to_transformations(tfs)),
+                Right(tf) => Ok(vec![*tf]),
+            })
+            .collect::<Result<Vec<_>, _>>()
+            .map(|nested| {
+                nested
+                    .into_iter()
+                    .flat_map(|inner| inner.into_iter())
+                    .collect()
+            })
+    }
+
     // FIXME can infinite loop
-    // FIXME more: try to create function Vec<Either<String, Transform>> -> Vec<Transform>, then use `to_matrix`
-    fn resolve_transform(&self, name: &str) -> Result<Transform, String> {
+    fn resolve_transform(&self, name: &str) -> Result<&Transforms, String> {
         self.defines
             .iter()
             .find(|def| def.name() == name)
@@ -155,31 +149,6 @@ impl SceneDescription {
                     Err(format!("{} is an object, not a transform", def.name()))
                 }
                 Define::Transform { value, .. } => Ok(value),
-            })
-            .and_then(|tfs| {
-                tfs.iter()
-                    .map(|tf| match tf {
-                        Right(Transformation::Translate { x, y, z }) => Ok(Transform::identity()
-                            .translate_x(*x)
-                            .translate_y(*y)
-                            .translate_z(*z)),
-                        Right(Transformation::Scale { x, y, z }) => {
-                            Ok(Transform::identity().scale_x(*x).scale_y(*y).scale_z(*z))
-                        }
-                        Right(Transformation::RotationX(rads)) => {
-                            Ok(Transform::identity().rotate_x(*rads))
-                        }
-                        Right(Transformation::RotationY(rads)) => {
-                            Ok(Transform::identity().rotate_y(*rads))
-                        }
-                        Right(Transformation::RotationZ(rads)) => {
-                            Ok(Transform::identity().rotate_z(*rads))
-                        }
-                        Left(name) => self.resolve_transform(name.as_str()),
-                    })
-                    .fold(Ok(Transform::identity()), |acc, next| {
-                        acc.and_then(|lhs| next.map(|rhs| rhs * lhs))
-                    })
             })
     }
 }

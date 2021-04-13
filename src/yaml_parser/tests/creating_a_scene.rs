@@ -510,3 +510,56 @@ fn should_be_able_to_create_an_object_extending_a_transform_extending_another_tr
             .translate_x(4.0)
     );
 }
+
+#[test]
+fn should_be_able_to_create_a_group() {
+    let input = with_camera_description(
+        "\
+- add: group
+  transform:
+    - [ translate, 0, 2, 0 ]
+  children:
+    - add: sphere
+      material:
+        color: [ 0.373, 0.404, 0.550 ]
+    - add: cylinder
+      material:
+        color: [ 0.373, 0.404, 0.550 ]",
+    );
+
+    let scene = parse(&input);
+    assert!(scene.is_ok(), "{}", scene.unwrap_err());
+    let scene = scene.unwrap();
+
+    let objects = scene.objects();
+    assert!(objects.is_ok(), "{}", objects.unwrap_err());
+    let objects = objects.unwrap();
+
+    assert_eq!(objects.len(), 1);
+    let children = objects[0].children();
+    assert_eq!(children.len(), 2);
+
+    let sphere = &children[0];
+    assert_eq!(format!("{:?}", sphere.shape()), "Sphere");
+
+    let cylinder = &children[1];
+    assert_eq!(format!("{:?}", cylinder.shape()), "Cylinder");
+
+    assert_eq!(
+        sphere.material,
+        Material {
+            pattern: Pattern::solid(Colour::new(0.373, 0.404, 0.55)),
+            ..Default::default()
+        }
+    );
+    assert_eq!(sphere.transform(), Transform::identity().translate_y(2.0));
+
+    assert_eq!(
+        cylinder.material,
+        Material {
+            pattern: Pattern::solid(Colour::new(0.373, 0.404, 0.55)),
+            ..Default::default()
+        }
+    );
+    assert_eq!(cylinder.transform(), Transform::identity().translate_y(2.0));
+}
