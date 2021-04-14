@@ -67,6 +67,10 @@ mod parsers;
 /// - An object material may be a string referencing a define, or a material definition as described above
 /// - An object's transforms must be an array of transforms, as described above
 /// - To effectively apply the identity matrix instead (i.e. no transform), use an empty array `[]`
+/// TODO create 3 stage parser:
+///   - parse `define`s into e.g. HashMap<String, Yaml>
+///   - parse rest of file, inlining `define` references
+///   - convert parsed data into objects, lights, etc
 pub fn parse(input: &str) -> Result<SceneDescription, String> {
     match YamlLoader::load_from_str(input) {
         Ok(yaml) => {

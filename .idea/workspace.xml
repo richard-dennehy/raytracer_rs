@@ -15,8 +15,10 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP YAML parsing support for Object defines and Groups">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP update YAML parser to support dragon file&#10;&#10;- &quot;tidy up&quot; transformation conversion">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/point/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/point/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/creating_a_scene.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/creating_a_scene.rs" afterDir="false" />
     </list>
@@ -377,14 +379,8 @@
       <workItem from="1618139420942" duration="6725000" />
       <workItem from="1618253481102" duration="36000" />
       <workItem from="1618253532023" duration="3039000" />
-      <workItem from="1618340219315" duration="3076000" />
-    </task>
-    <task id="LOCAL-00096" summary="WIP extend yaml parser pattern support">
-      <created>1614200564075</created>
-      <option name="number" value="00096" />
-      <option name="presentableId" value="LOCAL-00096" />
-      <option name="project" value="LOCAL" />
-      <updated>1614200564075</updated>
+      <workItem from="1618340219315" duration="3421000" />
+      <workItem from="1618427361118" duration="2567000" />
     </task>
     <task id="LOCAL-00097" summary="add tests for yaml scene patterns">
       <created>1614284150947</created>
@@ -722,7 +718,14 @@
       <option name="project" value="LOCAL" />
       <updated>1618256571399</updated>
     </task>
-    <option name="localTasksCounter" value="145" />
+    <task id="LOCAL-00145" summary="WIP update YAML parser to support dragon file&#10;&#10;- &quot;tidy up&quot; transformation conversion">
+      <created>1618343641812</created>
+      <option name="number" value="00145" />
+      <option name="presentableId" value="LOCAL-00145" />
+      <option name="project" value="LOCAL" />
+      <updated>1618343641812</updated>
+    </task>
+    <option name="localTasksCounter" value="146" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -748,7 +751,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="improve applying object transforms" />
     <MESSAGE value="fix clippy suppression" />
     <MESSAGE value="refactor reflection/reflectance calculations" />
     <MESSAGE value="create a test scene to demonstrate disabling shadow casting for individual objects" />
@@ -773,7 +775,8 @@
     <MESSAGE value="implemented bounding volume hierarchies to vastly reduce rendering time of complex scenes" />
     <MESSAGE value="WIP add parsing support for dragons YAML" />
     <MESSAGE value="WIP YAML parsing support for Object defines and Groups" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP YAML parsing support for Object defines and Groups" />
+    <MESSAGE value="WIP update YAML parser to support dragon file&#10;&#10;- &quot;tidy up&quot; transformation conversion" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP update YAML parser to support dragon file&#10;&#10;- &quot;tidy up&quot; transformation conversion" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

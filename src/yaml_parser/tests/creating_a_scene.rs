@@ -522,7 +522,7 @@ fn should_be_able_to_create_a_group() {
     - add: sphere
       material:
         color: [ 0.373, 0.404, 0.550 ]
-    - add: cylinder
+    - add: cube
       material:
         color: [ 0.373, 0.404, 0.550 ]",
     );
@@ -542,8 +542,8 @@ fn should_be_able_to_create_a_group() {
     let sphere = &children[0];
     assert_eq!(format!("{:?}", sphere.shape()), "Sphere");
 
-    let cylinder = &children[1];
-    assert_eq!(format!("{:?}", cylinder.shape()), "Cylinder");
+    let cube = &children[1];
+    assert_eq!(format!("{:?}", cube.shape()), "Cube");
 
     assert_eq!(
         sphere.material,
@@ -555,11 +555,80 @@ fn should_be_able_to_create_a_group() {
     assert_eq!(sphere.transform(), Transform::identity().translate_y(2.0));
 
     assert_eq!(
-        cylinder.material,
+        cube.material,
         Material {
             pattern: Pattern::solid(Colour::new(0.373, 0.404, 0.55)),
             ..Default::default()
         }
     );
-    assert_eq!(cylinder.transform(), Transform::identity().translate_y(2.0));
+    assert_eq!(cube.transform(), Transform::identity().translate_y(2.0));
+}
+
+#[test]
+fn should_be_able_to_create_a_group_with_a_subgroup() {
+    let input = with_camera_description(
+        "\
+- add: group
+  children:
+    - add: sphere
+    - add: group
+      children:
+        - add: sphere",
+    );
+
+    let scene = parse(&input);
+    assert!(scene.is_ok(), "{}", scene.unwrap_err());
+    let scene = scene.unwrap();
+
+    let objects = scene.objects();
+    assert!(objects.is_ok(), "{}", objects.unwrap_err());
+    let objects = objects.unwrap();
+
+    assert_eq!(objects.len(), 1);
+    let children = objects[0].children();
+    assert_eq!(children.len(), 2);
+
+    let sphere = &children[0];
+    assert_eq!(format!("{:?}", sphere.shape()), "Sphere");
+
+    let subgroup = &children[1];
+    assert_eq!(subgroup.children().len(), 1);
+
+    let sphere = &children[1].children()[0];
+    assert_eq!(format!("{:?}", sphere.shape()), "Sphere");
+}
+
+#[test]
+fn should_be_able_to_add_group_from_define() {
+    let input = with_camera_description(
+        "\
+- define: raw-bbox
+  value:
+    add: cube
+    shadow: false
+    transform:
+      - [ translate, 1, 1, 1 ]
+
+- add: raw-bbox",
+    );
+
+    let scene = parse(&input);
+    assert!(scene.is_ok(), "{}", scene.unwrap_err());
+    let scene = scene.unwrap();
+
+    let objects = scene.objects();
+    assert!(objects.is_ok(), "{}", objects.unwrap_err());
+    let objects = objects.unwrap();
+
+    assert_eq!(objects.len(), 1);
+    let cube = &objects[0];
+    assert_eq!(format!("{:?}", cube.shape()), "Cube");
+    assert_eq!(cube.material.casts_shadow, false);
+    assert_eq!(
+        cube.transform(),
+        Transform::identity()
+            .translate_x(1.0)
+            .translate_y(1.0)
+            .translate_z(1.0)
+    );
 }

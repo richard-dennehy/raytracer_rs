@@ -45,50 +45,70 @@ impl SceneDescription {
     }
 
     pub fn objects(&self) -> Result<Vec<Object>, String> {
-        self.objects
-            .iter()
-            .map(|desc| {
-                let object = match &desc.kind {
-                    ObjectKind::Plane => Object::plane(),
-                    ObjectKind::Sphere => Object::sphere(),
-                    ObjectKind::Cube => Object::cube(),
-                    ObjectKind::Cylinder { min, max, capped } => {
-                        let cylinder = Object::cylinder()
-                            .min_y(min.unwrap_or(f64::INFINITY))
-                            .max_y(max.unwrap_or(f64::INFINITY));
+        fn inner(
+            this: &SceneDescription,
+            objects: &Vec<ObjectDescription>,
+        ) -> Result<Vec<Object>, String> {
+            objects
+                .iter()
+                .map(|desc| {
+                    let object = match &desc.kind {
+                        ObjectKind::Plane => Ok(Object::plane()),
+                        ObjectKind::Sphere => Ok(Object::sphere()),
+                        ObjectKind::Cube => Ok(Object::cube()),
+                        ObjectKind::Cylinder { min, max, capped } => {
+                            let cylinder = Object::cylinder()
+                                .min_y(min.unwrap_or(f64::INFINITY))
+                                .max_y(max.unwrap_or(f64::INFINITY));
 
-                        let cylinder = if *capped { cylinder.capped() } else { cylinder };
+                            let cylinder = if *capped { cylinder.capped() } else { cylinder };
 
-                        cylinder.build()
-                    }
-                    ObjectKind::ObjFile { .. } => todo!("load obj file"),
-                    ObjectKind::Group { .. } => todo!("recursively resolve children"),
-                    ObjectKind::Reference(..) => todo!("resolve referenced define"),
-                };
+                            Ok(cylinder.build())
+                        }
+                        ObjectKind::ObjFile { .. } => todo!("load obj file"),
+                        ObjectKind::Group { children } => inner(this, children).map(Object::group),
+                        ObjectKind::Reference(..) => todo!("resolve obj reference")
+                    };
 
-                let material_description = match &desc.material {
-                    MaterialSource::Define(reference) => self.resolve_material(reference.as_str()),
-                    MaterialSource::Inline(desc) => Ok(desc.clone()),
-                    MaterialSource::Undefined => Err(format!("A {:?} has no material", object)),
-                };
+                    let material_description = match &desc.material {
+                        MaterialSource::Define(reference) => {
+                            this.resolve_material(reference.as_str())
+                        }
+                        MaterialSource::Inline(desc) => Ok(desc.clone()),
+                        MaterialSource::Undefined => Ok(MaterialDescription::default()),
+                    };
 
-                let material = material_description.map(|d| d.to_material());
-                let transform = self
-                    .to_transformations(&desc.transform)
-                    .map(|tfs| tfs.to_matrix());
+                    let material = material_description.map(|d| d.to_material());
+                    let transform = this
+                        .to_transformations(&desc.transform)
+                        .map(|tfs| tfs.to_matrix());
 
-                material
-                    .and_then(|mat| transform.map(|tf| object.with_material(mat).transformed(tf)))
-            })
-            .collect()
+                    object.and_then(|obj| {
+                        material.and_then(|mat| {
+                            transform.map(|tf| obj.with_material(mat).transformed(tf))
+                        })
+                    })
+                })
+                .collect()
+        }
+
+        inner(self, &self.objects)
+    }
+    
+    fn resolve_object(&self, name: &str) -> Result<ObjectDescription, String> {
+        self.find(name).and_then(|def| match def {
+            Define::Object {
+                value,
+                ..
+            } => Ok(value.clone()),
+            Define::MaterialDef { .. } => Err(format!("{:?} is a material, not an object", name)),
+            Define::Transform { .. } => Err(format!("{:?} is a transform, not an object", name)),
+        })
     }
 
     // FIXME circular `extend` will infinitely loop
     fn resolve_material(&self, name: &str) -> Result<MaterialDescription, String> {
-        self.defines
-            .iter()
-            .find(|def| def.name() == name)
-            .ok_or_else(|| format!("referenced material has not been defined: {}", name))
+        self.find(name)
             .and_then(|def| match def {
                 Define::MaterialDef {
                     value,
@@ -137,10 +157,7 @@ impl SceneDescription {
 
     // FIXME can infinite loop
     fn resolve_transform(&self, name: &str) -> Result<&Transforms, String> {
-        self.defines
-            .iter()
-            .find(|def| def.name() == name)
-            .ok_or_else(|| format!("referenced transform has not been defined: {}", name))
+        self.find(name)
             .and_then(|def| match def {
                 Define::MaterialDef { .. } => {
                     Err(format!("{} is a material, not a transform", name))
@@ -150,6 +167,10 @@ impl SceneDescription {
                 }
                 Define::Transform { value, .. } => Ok(value),
             })
+    }
+
+    fn find(&self, name: &str) -> Result<&Define, String> {
+        self.defines.iter().find(|def| def.name() == name).ok_or_else(|| format!("reference has not been defined: {}", name))
     }
 }
 
@@ -294,7 +315,7 @@ impl ToMatrix for Vec<Transformation> {
     }
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 pub struct ObjectDescription {
     pub kind: ObjectKind,
     pub material: MaterialSource,
@@ -302,7 +323,7 @@ pub struct ObjectDescription {
     pub casts_shadow: bool,
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 pub enum ObjectKind {
     Plane,
     Sphere,
@@ -321,7 +342,7 @@ pub enum ObjectKind {
     Reference(String),
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 pub enum MaterialSource {
     Define(String),
     Inline(MaterialDescription),
