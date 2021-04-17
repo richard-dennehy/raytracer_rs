@@ -14,7 +14,7 @@ to: [ 6, 0, 6 ]
 up: [ -0.45, 1, 0 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let output = yaml.parse::<CameraDescription>();
+    let output = yaml.parse::<CameraDescription>(&HashMap::new());
     assert!(output.is_ok(), "{}", output.unwrap_err());
     let output = output.unwrap();
 
@@ -39,7 +39,7 @@ at: [ 50, 100, -50 ]
 intensity: [ 1, 1, 1 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let output = yaml.parse::<Light>();
+    let output = yaml.parse::<Light>(&HashMap::new());
     assert!(output.is_ok(), "{}", output.unwrap_err());
     let output = output.unwrap();
 
@@ -58,7 +58,7 @@ intensity: [ 0.2, 0.2, 0.2 ]
 ";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let output = yaml.parse::<Light>();
+    let output = yaml.parse::<Light>(&HashMap::new());
     assert!(output.is_ok(), "{}", output.unwrap_err());
     let output = output.unwrap();
 
@@ -80,26 +80,22 @@ value:
   reflective: 0.1";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let define = yaml.parse::<Define>();
+    let define = yaml.parse::<NewDefine>(&HashMap::new());
     assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
     assert_eq!(
         define,
-        Define::MaterialDef {
-            name: "white-material".into(),
-            extends: None,
-            value: MaterialDescription {
-                pattern: Some(Left(Colour::WHITE)),
-                diffuse: Some(0.7),
-                ambient: Some(0.1),
-                specular: Some(0.0),
-                shininess: None,
-                reflective: Some(0.1),
-                transparency: None,
-                refractive: None
-            }
-        }
+        NewDefine::Material(MaterialDescription {
+            pattern: Some(Left(Colour::WHITE)),
+            diffuse: Some(0.7),
+            ambient: Some(0.1),
+            specular: Some(0.0),
+            shininess: None,
+            reflective: Some(0.1),
+            transparency: None,
+            refractive: None
+        })
     );
 }
 
@@ -112,20 +108,37 @@ value:
   color: [ 0.537, 0.831, 0.914 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let define = yaml.parse::<Define>();
+    let mut defines = HashMap::new();
+    defines.insert(
+        "white-material".into(),
+        NewDefine::Material(MaterialDescription {
+            pattern: Some(Left(Colour::WHITE)),
+            diffuse: Some(0.7),
+            ambient: Some(0.1),
+            specular: Some(0.0),
+            shininess: None,
+            reflective: Some(0.1),
+            transparency: None,
+            refractive: None,
+        }),
+    );
+
+    let define = yaml.parse::<NewDefine>(&defines);
     assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
     assert_eq!(
         define,
-        Define::MaterialDef {
-            name: "blue-material".into(),
-            extends: Some("white-material".into()),
-            value: MaterialDescription {
-                pattern: Some(Left(Colour::new(0.537, 0.831, 0.914))),
-                ..Default::default()
-            }
-        }
+        NewDefine::Material(MaterialDescription {
+            pattern: Some(Left(Colour::new(0.537, 0.831, 0.914))),
+            diffuse: Some(0.7),
+            ambient: Some(0.1),
+            specular: Some(0.0),
+            shininess: None,
+            reflective: Some(0.1),
+            transparency: None,
+            refractive: None
+        })
     )
 }
 
@@ -149,35 +162,31 @@ value:
   reflective: 0.3";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let define = yaml.parse::<Define>();
+    let define = yaml.parse::<NewDefine>(&HashMap::new());
     assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
     assert_eq!(
         define,
-        Define::MaterialDef {
-            name: "wall-material".into(),
-            extends: None,
-            value: MaterialDescription {
-                pattern: Some(Right(PatternDescription {
-                    pattern_type: PatternType::Stripes,
-                    colours: (Colour::greyscale(0.45), Colour::greyscale(0.55)),
-                    transforms: Some(vec![
-                        Transformation::Scale {
-                            x: 0.25,
-                            y: 0.25,
-                            z: 0.25
-                        },
-                        Transformation::RotationY(1.5708)
-                    ])
-                })),
-                ambient: Some(0.0),
-                diffuse: Some(0.4),
-                specular: Some(0.0),
-                reflective: Some(0.3),
-                ..Default::default()
-            }
-        }
+        NewDefine::Material(MaterialDescription {
+            pattern: Some(Right(PatternDescription {
+                pattern_type: PatternType::Stripes,
+                colours: (Colour::greyscale(0.45), Colour::greyscale(0.55)),
+                transforms: Some(vec![
+                    Transformation::Scale {
+                        x: 0.25,
+                        y: 0.25,
+                        z: 0.25
+                    },
+                    Transformation::RotationY(1.5708)
+                ])
+            })),
+            ambient: Some(0.0),
+            diffuse: Some(0.4),
+            specular: Some(0.0),
+            reflective: Some(0.3),
+            ..Default::default()
+        })
     )
 }
 
@@ -195,26 +204,22 @@ value:
   reflective: 0.4";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let define = yaml.parse::<Define>();
+    let define = yaml.parse::<NewDefine>(&HashMap::new());
     assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
     assert_eq!(
         define,
-        Define::MaterialDef {
-            name: "checkered-material".into(),
-            extends: None,
-            value: MaterialDescription {
-                pattern: Some(Right(PatternDescription {
-                    pattern_type: PatternType::Checker,
-                    colours: (Colour::greyscale(0.35), Colour::greyscale(0.65)),
-                    transforms: None
-                })),
-                specular: Some(0.0),
-                reflective: Some(0.4),
-                ..Default::default()
-            }
-        }
+        NewDefine::Material(MaterialDescription {
+            pattern: Some(Right(PatternDescription {
+                pattern_type: PatternType::Checker,
+                colours: (Colour::greyscale(0.35), Colour::greyscale(0.65)),
+                transforms: None
+            })),
+            specular: Some(0.0),
+            reflective: Some(0.4),
+            ..Default::default()
+        })
     )
 }
 
@@ -227,27 +232,24 @@ value:
 - [ scale, 0.5, 0.5, 0.5 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let define = yaml.parse::<Define>();
+    let define = yaml.parse::<NewDefine>(&HashMap::new());
     assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
     assert_eq!(
         define,
-        Define::Transform {
-            name: "standard-transform".into(),
-            value: vec![
-                Right(Transformation::Translate {
-                    x: 1.0,
-                    y: -1.0,
-                    z: 1.0
-                }),
-                Right(Transformation::Scale {
-                    x: 0.5,
-                    y: 0.5,
-                    z: 0.5
-                })
-            ]
-        }
+        NewDefine::Transform(vec![
+            Transformation::Translate {
+                x: 1.0,
+                y: -1.0,
+                z: 1.0
+            },
+            Transformation::Scale {
+                x: 0.5,
+                y: 0.5,
+                z: 0.5
+            }
+        ])
     );
 }
 
@@ -260,23 +262,45 @@ value:
 - [ scale, 3.5, 3.5, 3.5 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let define = yaml.parse::<Define>();
+    let mut defines = HashMap::new();
+    defines.insert(
+        "standard-transform".into(),
+        NewDefine::Transform(vec![
+            Transformation::Translate {
+                x: 1.0,
+                y: -1.0,
+                z: 1.0,
+            },
+            Transformation::Scale {
+                x: 0.5,
+                y: 0.5,
+                z: 0.5,
+            },
+        ]),
+    );
+    let define = yaml.parse::<NewDefine>(&defines);
     assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
     assert_eq!(
         define,
-        Define::Transform {
-            name: "large-object".into(),
-            value: vec![
-                Left("standard-transform".into()),
-                Right(Transformation::Scale {
-                    x: 3.5,
-                    y: 3.5,
-                    z: 3.5
-                })
-            ]
-        }
+        NewDefine::Transform(vec![
+            Transformation::Translate {
+                x: 1.0,
+                y: -1.0,
+                z: 1.0
+            },
+            Transformation::Scale {
+                x: 0.5,
+                y: 0.5,
+                z: 0.5
+            },
+            Transformation::Scale {
+                x: 3.5,
+                y: 3.5,
+                z: 3.5
+            }
+        ])
     );
 }
 
@@ -295,7 +319,7 @@ transform:
   - [ translate, 0, 0, 500 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let object = yaml.parse::<ObjectDescription>();
+    let object = yaml.parse::<ObjectDescription>(&HashMap::new());
     assert!(object.is_ok(), "{}", object.unwrap_err());
     let object = object.unwrap();
 
@@ -303,20 +327,20 @@ transform:
         object,
         ObjectDescription {
             kind: ObjectKind::Plane,
-            material: MaterialSource::Inline(MaterialDescription {
+            material: MaterialDescription {
                 pattern: Some(Left(Colour::WHITE)),
                 ambient: Some(1.0),
                 diffuse: Some(0.0),
                 specular: Some(0.0),
                 ..Default::default()
-            }),
+            },
             transform: vec![
-                Right(Transformation::RotationX(1.5707963267948966)),
-                Right(Transformation::Translate {
+                Transformation::RotationX(1.5707963267948966),
+                Transformation::Translate {
                     x: 0.0,
                     y: 0.0,
                     z: 500.0
-                })
+                }
             ],
             casts_shadow: true,
         }
@@ -340,7 +364,28 @@ transform:
   - large-object";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let object = yaml.parse::<ObjectDescription>();
+    let mut defines = HashMap::new();
+    defines.insert(
+        "large-object".into(),
+        NewDefine::Transform(vec![
+            Transformation::Translate {
+                x: 1.0,
+                y: -1.0,
+                z: 1.0,
+            },
+            Transformation::Scale {
+                x: 0.5,
+                y: 0.5,
+                z: 0.5,
+            },
+            Transformation::Scale {
+                x: 3.5,
+                y: 3.5,
+                z: 3.5,
+            },
+        ]),
+    );
+    let object = yaml.parse::<ObjectDescription>(&defines);
     assert!(object.is_ok(), "{}", object.unwrap_err());
     let object = object.unwrap();
 
@@ -348,7 +393,7 @@ transform:
         object,
         ObjectDescription {
             kind: ObjectKind::Sphere,
-            material: MaterialSource::Inline(MaterialDescription {
+            material: MaterialDescription {
                 pattern: Some(Left(Colour::new(0.373, 0.404, 0.550))),
                 diffuse: Some(0.2),
                 ambient: Some(0.0),
@@ -357,8 +402,24 @@ transform:
                 reflective: Some(0.7),
                 transparency: Some(0.7),
                 refractive: Some(1.5),
-            }),
-            transform: vec![Left("large-object".into())],
+            },
+            transform: vec![
+                Transformation::Translate {
+                    x: 1.0,
+                    y: -1.0,
+                    z: 1.0
+                },
+                Transformation::Scale {
+                    x: 0.5,
+                    y: 0.5,
+                    z: 0.5
+                },
+                Transformation::Scale {
+                    x: 3.5,
+                    y: 3.5,
+                    z: 3.5
+                }
+            ],
             casts_shadow: true,
         }
     );
@@ -374,7 +435,42 @@ transform:
 - [ translate, 4, 0, 0 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let object = yaml.parse::<ObjectDescription>();
+    let mut defines = HashMap::new();
+    defines.insert(
+        "medium-object".into(),
+        NewDefine::Transform(vec![
+            Transformation::Translate {
+                x: 1.0,
+                y: -1.0,
+                z: 1.0,
+            },
+            Transformation::Scale {
+                x: 0.5,
+                y: 0.5,
+                z: 0.5,
+            },
+            Transformation::Scale {
+                x: 3.0,
+                y: 3.0,
+                z: 3.0,
+            },
+        ]),
+    );
+    defines.insert(
+        "white-material".into(),
+        NewDefine::Material(MaterialDescription {
+            pattern: Some(Left(Colour::WHITE)),
+            diffuse: Some(0.7),
+            ambient: Some(0.1),
+            specular: Some(0.0),
+            shininess: None,
+            reflective: Some(0.1),
+            transparency: None,
+            refractive: None,
+        }),
+    );
+
+    let object = yaml.parse::<ObjectDescription>(&defines);
     assert!(object.is_ok(), "{}", object.unwrap_err());
     let object = object.unwrap();
 
@@ -382,14 +478,37 @@ transform:
         object,
         ObjectDescription {
             kind: ObjectKind::Cube,
-            material: MaterialSource::Define("white-material".into()),
+            material: MaterialDescription {
+                pattern: Some(Left(Colour::WHITE)),
+                diffuse: Some(0.7),
+                ambient: Some(0.1),
+                specular: Some(0.0),
+                shininess: None,
+                reflective: Some(0.1),
+                transparency: None,
+                refractive: None,
+            },
             transform: vec![
-                Left("medium-object".into()),
-                Right(Transformation::Translate {
+                Transformation::Translate {
+                    x: 1.0,
+                    y: -1.0,
+                    z: 1.0
+                },
+                Transformation::Scale {
+                    x: 0.5,
+                    y: 0.5,
+                    z: 0.5
+                },
+                Transformation::Scale {
+                    x: 3.0,
+                    y: 3.0,
+                    z: 3.0
+                },
+                Transformation::Translate {
                     x: 4.0,
                     y: 0.0,
                     z: 0.0
-                })
+                }
             ],
             casts_shadow: true,
         }
@@ -405,7 +524,7 @@ transform:
   - [ scale, 3.73335, 2.5845, 1.6283 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let object = yaml.parse::<ObjectDescription>();
+    let object = yaml.parse::<ObjectDescription>(&HashMap::new());
     assert!(object.is_ok(), "{}", object.unwrap_err());
     let object = object.unwrap();
 
@@ -413,18 +532,18 @@ transform:
         object,
         ObjectDescription {
             kind: ObjectKind::Cube,
-            material: MaterialSource::Undefined,
+            material: MaterialDescription::default(),
             transform: vec![
-                Right(Transformation::Translate {
+                Transformation::Translate {
                     x: 1.0,
                     y: 1.0,
                     z: 1.0
-                }),
-                Right(Transformation::Scale {
+                },
+                Transformation::Scale {
                     x: 3.73335,
                     y: 2.5845,
                     z: 1.6283
-                })
+                }
             ],
             casts_shadow: true
         }
@@ -441,7 +560,7 @@ transform:
   - [ scale, 3.73335, 2.5845, 1.6283 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let object = yaml.parse::<ObjectDescription>();
+    let object = yaml.parse::<ObjectDescription>(&HashMap::new());
     assert!(object.is_ok(), "{}", object.unwrap_err());
     let object = object.unwrap();
 
@@ -449,18 +568,18 @@ transform:
         object,
         ObjectDescription {
             kind: ObjectKind::Cube,
-            material: MaterialSource::Undefined,
+            material: MaterialDescription::default(),
             transform: vec![
-                Right(Transformation::Translate {
+                Transformation::Translate {
                     x: 1.0,
                     y: 1.0,
                     z: 1.0
-                }),
-                Right(Transformation::Scale {
+                },
+                Transformation::Scale {
                     x: 3.73335,
                     y: 2.5845,
                     z: 1.6283
-                })
+                }
             ],
             casts_shadow: false
         }
@@ -477,7 +596,7 @@ transform:
     - [ scale, 0.268, 0.268, 0.268 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let object = yaml.parse::<ObjectDescription>();
+    let object = yaml.parse::<ObjectDescription>(&HashMap::new());
     assert!(object.is_ok(), "{}", object.unwrap_err());
     let object = object.unwrap();
 
@@ -487,18 +606,18 @@ transform:
             kind: ObjectKind::ObjFile {
                 file_name: "dragon.obj".into()
             },
-            material: MaterialSource::Undefined,
+            material: MaterialDescription::default(),
             transform: vec![
-                Right(Transformation::Translate {
+                Transformation::Translate {
                     x: 0.0,
                     y: 0.1217,
                     z: 0.0
-                }),
-                Right(Transformation::Scale {
+                },
+                Transformation::Scale {
                     x: 0.268,
                     y: 0.268,
                     z: 0.268
-                })
+                }
             ],
             casts_shadow: true
         }
@@ -515,7 +634,7 @@ closed: true
 transform: []";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let object = yaml.parse::<ObjectDescription>();
+    let object = yaml.parse::<ObjectDescription>(&HashMap::new());
     assert!(object.is_ok(), "{}", object.unwrap_err());
     let object = object.unwrap();
 
@@ -527,7 +646,7 @@ transform: []";
                 max: Some(0.0),
                 capped: true
             },
-            material: MaterialSource::Undefined,
+            material: MaterialDescription::default(),
             transform: vec![],
             casts_shadow: true
         }
@@ -540,7 +659,7 @@ fn should_parse_adding_primitive_with_no_transform() {
 add: cylinder";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let object = yaml.parse::<ObjectDescription>();
+    let object = yaml.parse::<ObjectDescription>(&HashMap::new());
     assert!(object.is_ok(), "{}", object.unwrap_err());
     let object = object.unwrap();
 
@@ -552,7 +671,7 @@ add: cylinder";
                 max: None,
                 capped: false
             },
-            material: MaterialSource::Undefined,
+            material: MaterialDescription::default(),
             transform: vec![],
             casts_shadow: true
         }
@@ -565,15 +684,34 @@ fn should_parse_add_from_define() {
 add: pedestal";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let object = yaml.parse::<ObjectDescription>();
+    let mut defines = HashMap::new();
+    defines.insert(
+        "pedestal".into(),
+        NewDefine::Object(ObjectDescription {
+            kind: ObjectKind::Cylinder {
+                min: None,
+                max: None,
+                capped: false,
+            },
+            material: Default::default(),
+            transform: vec![],
+            casts_shadow: true,
+        }),
+    );
+
+    let object = yaml.parse::<ObjectDescription>(&defines);
     assert!(object.is_ok(), "{}", object.unwrap_err());
     let object = object.unwrap();
 
     assert_eq!(
         object,
         ObjectDescription {
-            kind: ObjectKind::Reference("pedestal".to_string()),
-            material: MaterialSource::Undefined,
+            kind: ObjectKind::Cylinder {
+                min: None,
+                max: None,
+                capped: false
+            },
+            material: Default::default(),
             transform: vec![],
             casts_shadow: true
         }
@@ -587,10 +725,10 @@ add: group
 transform:
   - [ translate, 0, 2, 0 ]
 children:
-  - add: pedestal";
+  - add: cube";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let object = yaml.parse::<ObjectDescription>();
+    let object = yaml.parse::<ObjectDescription>(&HashMap::new());
     assert!(object.is_ok(), "{}", object.unwrap_err());
     let object = object.unwrap();
 
@@ -599,18 +737,18 @@ children:
         ObjectDescription {
             kind: ObjectKind::Group {
                 children: vec![ObjectDescription {
-                    kind: ObjectKind::Reference("pedestal".to_string()),
-                    material: MaterialSource::Undefined,
+                    kind: ObjectKind::Cube,
+                    material: MaterialDescription::default(),
                     transform: vec![],
                     casts_shadow: true
                 }]
             },
-            material: MaterialSource::Undefined,
-            transform: vec![Right(Transformation::Translate {
+            material: MaterialDescription::default(),
+            transform: vec![Transformation::Translate {
                 x: 0.0,
                 y: 2.0,
                 z: 0.0
-            })],
+            }],
             casts_shadow: true
         }
     );
@@ -642,7 +780,53 @@ children:
           refractive-index: 1";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let object = yaml.parse::<ObjectDescription>();
+    let mut defines = HashMap::new();
+    defines.insert(
+        "dragon".into(),
+        NewDefine::Object(ObjectDescription {
+            kind: ObjectKind::ObjFile {
+                file_name: "dragon.obj".into(),
+            },
+            material: MaterialDescription::default(),
+            transform: vec![
+                Transformation::Translate {
+                    x: 0.0,
+                    y: 0.1217,
+                    z: 0.0,
+                },
+                Transformation::Scale {
+                    x: 0.268,
+                    y: 0.268,
+                    z: 0.268,
+                },
+            ],
+            casts_shadow: true,
+        }),
+    );
+    defines.insert(
+        "pedestal".into(),
+        NewDefine::Object(ObjectDescription {
+            kind: ObjectKind::Cylinder {
+                min: Some(-0.15),
+                max: Some(0.0),
+                capped: true,
+            },
+            material: MaterialDescription::default(),
+            transform: vec![],
+            casts_shadow: true,
+        }),
+    );
+    defines.insert(
+        "bbox".into(),
+        NewDefine::Object(ObjectDescription {
+            kind: ObjectKind::Cube,
+            material: MaterialDescription::default(),
+            transform: vec![],
+            casts_shadow: false,
+        }),
+    );
+
+    let object = yaml.parse::<ObjectDescription>(&defines);
     assert!(object.is_ok(), "{}", object.unwrap_err());
     let object = object.unwrap();
 
@@ -652,8 +836,12 @@ children:
             kind: ObjectKind::Group {
                 children: vec![
                     ObjectDescription {
-                        kind: ObjectKind::Reference("pedestal".to_string()),
-                        material: MaterialSource::Undefined,
+                        kind: ObjectKind::Cylinder {
+                            min: Some(-0.15),
+                            max: Some(0.0),
+                            capped: true
+                        },
+                        material: MaterialDescription::default(),
                         transform: vec![],
                         casts_shadow: true
                     },
@@ -661,45 +849,58 @@ children:
                         kind: ObjectKind::Group {
                             children: vec![
                                 ObjectDescription {
-                                    kind: ObjectKind::Reference("dragon".into()),
-                                    material: MaterialSource::Inline(MaterialDescription {
+                                    kind: ObjectKind::ObjFile {
+                                        file_name: "dragon.obj".into(),
+                                    },
+                                    material: MaterialDescription {
                                         pattern: Some(Left(Colour::new(1.0, 0.0, 0.1))),
                                         diffuse: Some(0.6),
                                         ambient: Some(0.1),
                                         specular: Some(0.3),
                                         shininess: Some(15.0),
                                         ..Default::default()
-                                    }),
-                                    transform: vec![],
-                                    casts_shadow: true
+                                    },
+                                    transform: vec![
+                                        Transformation::Translate {
+                                            x: 0.0,
+                                            y: 0.1217,
+                                            z: 0.0,
+                                        },
+                                        Transformation::Scale {
+                                            x: 0.268,
+                                            y: 0.268,
+                                            z: 0.268,
+                                        },
+                                    ],
+                                    casts_shadow: true,
                                 },
                                 ObjectDescription {
-                                    kind: ObjectKind::Reference("bbox".into()),
-                                    material: MaterialSource::Inline(MaterialDescription {
+                                    kind: ObjectKind::Cube,
+                                    material: MaterialDescription {
                                         diffuse: Some(0.4),
                                         ambient: Some(0.0),
                                         specular: Some(0.0),
                                         transparency: Some(0.6),
                                         refractive: Some(1.0),
                                         ..Default::default()
-                                    }),
+                                    },
                                     transform: vec![],
-                                    casts_shadow: true
+                                    casts_shadow: false,
                                 }
                             ]
                         },
-                        material: MaterialSource::Undefined,
+                        material: MaterialDescription::default(),
                         transform: vec![],
                         casts_shadow: true
                     }
                 ]
             },
-            material: MaterialSource::Undefined,
-            transform: vec![Right(Transformation::Translate {
+            material: MaterialDescription::default(),
+            transform: vec![Transformation::Translate {
                 x: 0.0,
                 y: 2.0,
                 z: 0.0
-            })],
+            }],
             casts_shadow: true
         }
     );
@@ -715,21 +916,18 @@ value:
 ";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let define = yaml.parse::<Define>();
+    let define = yaml.parse::<NewDefine>(&HashMap::new());
     assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
     assert_eq!(
         define,
-        Define::Object {
-            name: "raw-bbox".to_string(),
-            value: ObjectDescription {
-                kind: ObjectKind::Cube,
-                material: MaterialSource::Undefined,
-                transform: vec![],
-                casts_shadow: false
-            }
-        }
+        NewDefine::Object(ObjectDescription {
+            kind: ObjectKind::Cube,
+            material: MaterialDescription::default(),
+            transform: vec![],
+            casts_shadow: false
+        })
     );
 }
 
@@ -744,6 +942,7 @@ fn should_parse_scene_description() {
     let output = parse(scene);
     assert!(output.is_ok(), "{}", output.unwrap_err());
     let output = output.unwrap();
+
     assert_eq!(
         output,
         SceneDescription {
@@ -765,115 +964,29 @@ fn should_parse_scene_description() {
                     position: Point3D::new(-400.0, 50.0, -10.0)
                 },
             ],
-            defines: vec![
-                Define::MaterialDef {
-                    name: "white-material".into(),
-                    extends: None,
-                    value: MaterialDescription {
-                        pattern: Some(Left(Colour::WHITE)),
-                        diffuse: Some(0.7),
-                        ambient: Some(0.1),
-                        specular: Some(0.0),
-                        reflective: Some(0.1),
-                        ..Default::default()
-                    }
-                },
-                Define::MaterialDef {
-                    name: "blue-material".into(),
-                    extends: Some("white-material".into()),
-                    value: MaterialDescription {
-                        pattern: Some(Left(Colour::new(0.537, 0.831, 0.914))),
-                        ..Default::default()
-                    }
-                },
-                Define::MaterialDef {
-                    name: "red-material".into(),
-                    extends: Some("white-material".into()),
-                    value: MaterialDescription {
-                        pattern: Some(Left(Colour::new(0.941, 0.322, 0.388))),
-                        ..Default::default()
-                    }
-                },
-                Define::MaterialDef {
-                    name: "purple-material".into(),
-                    extends: Some("white-material".into()),
-                    value: MaterialDescription {
-                        pattern: Some(Left(Colour::new(0.373, 0.404, 0.550))),
-                        ..Default::default()
-                    }
-                },
-                Define::Transform {
-                    name: "standard-transform".into(),
-                    value: vec![
-                        Right(Transformation::Translate {
-                            x: 1.0,
-                            y: -1.0,
-                            z: 1.0
-                        }),
-                        Right(Transformation::Scale {
-                            x: 0.5,
-                            y: 0.5,
-                            z: 0.5
-                        })
-                    ]
-                },
-                Define::Transform {
-                    name: "large-object".into(),
-                    value: vec![
-                        Left("standard-transform".into()),
-                        Right(Transformation::Scale {
-                            x: 3.5,
-                            y: 3.5,
-                            z: 3.5
-                        })
-                    ]
-                },
-                Define::Transform {
-                    name: "medium-object".into(),
-                    value: vec![
-                        Left("standard-transform".into()),
-                        Right(Transformation::Scale {
-                            x: 3.0,
-                            y: 3.0,
-                            z: 3.0
-                        })
-                    ]
-                },
-                Define::Transform {
-                    name: "small-object".into(),
-                    value: vec![
-                        Left("standard-transform".into()),
-                        Right(Transformation::Scale {
-                            x: 2.0,
-                            y: 2.0,
-                            z: 2.0
-                        })
-                    ]
-                },
-            ],
             objects: vec![
                 ObjectDescription {
                     kind: ObjectKind::Plane,
-                    material: MaterialSource::Inline(MaterialDescription {
+                    material: MaterialDescription {
                         pattern: Some(Left(Colour::WHITE)),
                         ambient: Some(1.0),
                         diffuse: Some(0.0),
                         specular: Some(0.0),
                         ..Default::default()
-                    }),
+                    },
                     transform: vec![
-                        Right(Transformation::RotationX(1.5707963267948966)),
-                        Right(Transformation::Translate {
+                        Transformation::RotationX(1.5707963267948966),
+                        Transformation::Translate {
                             x: 0.0,
                             y: 0.0,
                             z: 500.0
-                        })
+                        }
                     ],
                     casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Sphere,
-                    material: MaterialSource::Inline(MaterialDescription {
+                    material: MaterialDescription {
                         pattern: Some(Left(Colour::new(0.373, 0.404, 0.550))),
                         diffuse: Some(0.2),
                         ambient: Some(0.0),
@@ -882,232 +995,605 @@ fn should_parse_scene_description() {
                         reflective: Some(0.7),
                         transparency: Some(0.7),
                         refractive: Some(1.5),
-                    }),
-                    transform: vec![Left("large-object".into())],
+                    },
+                    transform: vec![
+                        Transformation::Translate {
+                            x: 1.0,
+                            y: -1.0,
+                            z: 1.0,
+                        },
+                        Transformation::Scale {
+                            x: 0.5,
+                            y: 0.5,
+                            z: 0.5,
+                        },
+                        Transformation::Scale {
+                            x: 3.5,
+                            y: 3.5,
+                            z: 3.5,
+                        },
+                    ],
                     casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: MaterialSource::Define("white-material".into()),
+                    material: MaterialDescription {
+                        pattern: Some(Left(Colour::WHITE)),
+                        ambient: Some(0.1),
+                        diffuse: Some(0.7),
+                        specular: Some(0.0),
+                        reflective: Some(0.1),
+                        ..Default::default()
+                    },
                     transform: vec![
-                        Left("medium-object".into()),
-                        Right(Transformation::Translate {
+                        Transformation::Translate {
+                            x: 1.0,
+                            y: -1.0,
+                            z: 1.0,
+                        },
+                        Transformation::Scale {
+                            x: 0.5,
+                            y: 0.5,
+                            z: 0.5,
+                        },
+                        Transformation::Scale {
+                            x: 3.0,
+                            y: 3.0,
+                            z: 3.0,
+                        },
+                        Transformation::Translate {
                             x: 4.0,
                             y: 0.0,
                             z: 0.0
-                        })
+                        }
                     ],
                     casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: MaterialSource::Define("blue-material".into()),
+                    material: MaterialDescription {
+                        pattern: Some(Left(Colour::new(0.537, 0.831, 0.914))),
+                        ambient: Some(0.1),
+                        diffuse: Some(0.7),
+                        specular: Some(0.0),
+                        reflective: Some(0.1),
+                        ..Default::default()
+                    },
                     transform: vec![
-                        Left("large-object".into()),
-                        Right(Transformation::Translate {
+                        Transformation::Translate {
+                            x: 1.0,
+                            y: -1.0,
+                            z: 1.0,
+                        },
+                        Transformation::Scale {
+                            x: 0.5,
+                            y: 0.5,
+                            z: 0.5,
+                        },
+                        Transformation::Scale {
+                            x: 3.5,
+                            y: 3.5,
+                            z: 3.5,
+                        },
+                        Transformation::Translate {
                             x: 8.5,
                             y: 1.5,
                             z: -0.5
-                        })
+                        }
                     ],
                     casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: MaterialSource::Define("red-material".into()),
+                    material: MaterialDescription {
+                        pattern: Some(Left(Colour::new(0.941, 0.322, 0.388))),
+                        ambient: Some(0.1),
+                        diffuse: Some(0.7),
+                        specular: Some(0.0),
+                        reflective: Some(0.1),
+                        ..Default::default()
+                    },
                     transform: vec![
-                        Left("large-object".into()),
-                        Right(Transformation::Translate {
+                        Transformation::Translate {
+                            x: 1.0,
+                            y: -1.0,
+                            z: 1.0,
+                        },
+                        Transformation::Scale {
+                            x: 0.5,
+                            y: 0.5,
+                            z: 0.5,
+                        },
+                        Transformation::Scale {
+                            x: 3.5,
+                            y: 3.5,
+                            z: 3.5,
+                        },
+                        Transformation::Translate {
                             x: 0.0,
                             y: 0.0,
                             z: 4.0,
-                        })
+                        }
                     ],
                     casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: MaterialSource::Define("white-material".into()),
+                    material: MaterialDescription {
+                        pattern: Some(Left(Colour::WHITE)),
+                        ambient: Some(0.1),
+                        diffuse: Some(0.7),
+                        specular: Some(0.0),
+                        reflective: Some(0.1),
+                        ..Default::default()
+                    },
                     transform: vec![
-                        Left("small-object".into()),
-                        Right(Transformation::Translate {
+                        Transformation::Translate {
+                            x: 1.0,
+                            y: -1.0,
+                            z: 1.0,
+                        },
+                        Transformation::Scale {
+                            x: 0.5,
+                            y: 0.5,
+                            z: 0.5,
+                        },
+                        Transformation::Scale {
+                            x: 2.0,
+                            y: 2.0,
+                            z: 2.0,
+                        },
+                        Transformation::Translate {
                             x: 4.0,
                             y: 0.0,
                             z: 4.0,
-                        })
+                        }
                     ],
                     casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: MaterialSource::Define("purple-material".into()),
+                    material: MaterialDescription {
+                        pattern: Some(Left(Colour::new(0.373, 0.404, 0.55))),
+                        ambient: Some(0.1),
+                        diffuse: Some(0.7),
+                        specular: Some(0.0),
+                        reflective: Some(0.1),
+                        ..Default::default()
+                    },
                     transform: vec![
-                        Left("medium-object".into()),
-                        Right(Transformation::Translate {
+                        Transformation::Translate {
+                            x: 1.0,
+                            y: -1.0,
+                            z: 1.0,
+                        },
+                        Transformation::Scale {
+                            x: 0.5,
+                            y: 0.5,
+                            z: 0.5,
+                        },
+                        Transformation::Scale {
+                            x: 3.0,
+                            y: 3.0,
+                            z: 3.0,
+                        },
+                        Transformation::Translate {
                             x: 7.5,
                             y: 0.5,
                             z: 4.0,
-                        })
+                        }
                     ],
                     casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: MaterialSource::Define("white-material".into()),
+                    material: MaterialDescription {
+                        pattern: Some(Left(Colour::WHITE)),
+                        ambient: Some(0.1),
+                        diffuse: Some(0.7),
+                        specular: Some(0.0),
+                        reflective: Some(0.1),
+                        ..Default::default()
+                    },
                     transform: vec![
-                        Left("medium-object".into()),
-                        Right(Transformation::Translate {
+                        Transformation::Translate {
+                            x: 1.0,
+                            y: -1.0,
+                            z: 1.0,
+                        },
+                        Transformation::Scale {
+                            x: 0.5,
+                            y: 0.5,
+                            z: 0.5,
+                        },
+                        Transformation::Scale {
+                            x: 3.0,
+                            y: 3.0,
+                            z: 3.0,
+                        },
+                        Transformation::Translate {
                             x: -0.25,
                             y: 0.25,
                             z: 8.0,
-                        })
+                        }
                     ],
                     casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: MaterialSource::Define("blue-material".into()),
+                    material: MaterialDescription {
+                        pattern: Some(Left(Colour::new(0.537, 0.831, 0.914))),
+                        ambient: Some(0.1),
+                        diffuse: Some(0.7),
+                        specular: Some(0.0),
+                        reflective: Some(0.1),
+                        ..Default::default()
+                    },
                     transform: vec![
-                        Left("large-object".into()),
-                        Right(Transformation::Translate {
+                        Transformation::Translate {
+                            x: 1.0,
+                            y: -1.0,
+                            z: 1.0,
+                        },
+                        Transformation::Scale {
+                            x: 0.5,
+                            y: 0.5,
+                            z: 0.5,
+                        },
+                        Transformation::Scale {
+                            x: 3.5,
+                            y: 3.5,
+                            z: 3.5,
+                        },
+                        Transformation::Translate {
                             x: 4.0,
                             y: 1.0,
                             z: 7.5,
-                        })
+                        }
                     ],
                     casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: MaterialSource::Define("red-material".into()),
+                    material: MaterialDescription {
+                        pattern: Some(Left(Colour::new(0.941, 0.322, 0.388))),
+                        ambient: Some(0.1),
+                        diffuse: Some(0.7),
+                        specular: Some(0.0),
+                        reflective: Some(0.1),
+                        ..Default::default()
+                    },
                     transform: vec![
-                        Left("medium-object".into()),
-                        Right(Transformation::Translate {
+                        Transformation::Translate {
+                            x: 1.0,
+                            y: -1.0,
+                            z: 1.0,
+                        },
+                        Transformation::Scale {
+                            x: 0.5,
+                            y: 0.5,
+                            z: 0.5,
+                        },
+                        Transformation::Scale {
+                            x: 3.0,
+                            y: 3.0,
+                            z: 3.0,
+                        },
+                        Transformation::Translate {
                             x: 10.0,
                             y: 2.0,
                             z: 7.5,
-                        })
+                        }
                     ],
                     casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: MaterialSource::Define("white-material".into()),
+                    material: MaterialDescription {
+                        pattern: Some(Left(Colour::WHITE)),
+                        ambient: Some(0.1),
+                        diffuse: Some(0.7),
+                        specular: Some(0.0),
+                        reflective: Some(0.1),
+                        ..Default::default()
+                    },
                     transform: vec![
-                        Left("small-object".into()),
-                        Right(Transformation::Translate {
+                        Transformation::Translate {
+                            x: 1.0,
+                            y: -1.0,
+                            z: 1.0,
+                        },
+                        Transformation::Scale {
+                            x: 0.5,
+                            y: 0.5,
+                            z: 0.5,
+                        },
+                        Transformation::Scale {
+                            x: 2.0,
+                            y: 2.0,
+                            z: 2.0,
+                        },
+                        Transformation::Translate {
                             x: 8.0,
                             y: 2.0,
                             z: 12.0,
-                        })
+                        }
                     ],
                     casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: MaterialSource::Define("white-material".into()),
+                    material: MaterialDescription {
+                        pattern: Some(Left(Colour::WHITE)),
+                        ambient: Some(0.1),
+                        diffuse: Some(0.7),
+                        specular: Some(0.0),
+                        reflective: Some(0.1),
+                        ..Default::default()
+                    },
                     transform: vec![
-                        Left("small-object".into()),
-                        Right(Transformation::Translate {
+                        Transformation::Translate {
+                            x: 1.0,
+                            y: -1.0,
+                            z: 1.0,
+                        },
+                        Transformation::Scale {
+                            x: 0.5,
+                            y: 0.5,
+                            z: 0.5,
+                        },
+                        Transformation::Scale {
+                            x: 2.0,
+                            y: 2.0,
+                            z: 2.0,
+                        },
+                        Transformation::Translate {
                             x: 20.0,
                             y: 1.0,
                             z: 9.0,
-                        })
+                        }
                     ],
                     casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: MaterialSource::Define("blue-material".into()),
+                    material: MaterialDescription {
+                        pattern: Some(Left(Colour::new(0.537, 0.831, 0.914))),
+                        ambient: Some(0.1),
+                        diffuse: Some(0.7),
+                        specular: Some(0.0),
+                        reflective: Some(0.1),
+                        ..Default::default()
+                    },
                     transform: vec![
-                        Left("large-object".into()),
-                        Right(Transformation::Translate {
+                        Transformation::Translate {
+                            x: 1.0,
+                            y: -1.0,
+                            z: 1.0,
+                        },
+                        Transformation::Scale {
+                            x: 0.5,
+                            y: 0.5,
+                            z: 0.5,
+                        },
+                        Transformation::Scale {
+                            x: 3.5,
+                            y: 3.5,
+                            z: 3.5,
+                        },
+                        Transformation::Translate {
                             x: -0.5,
                             y: -5.0,
                             z: 0.25,
-                        })
+                        }
                     ],
                     casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: MaterialSource::Define("red-material".into()),
+                    material: MaterialDescription {
+                        pattern: Some(Left(Colour::new(0.941, 0.322, 0.388))),
+                        ambient: Some(0.1),
+                        diffuse: Some(0.7),
+                        specular: Some(0.0),
+                        reflective: Some(0.1),
+                        ..Default::default()
+                    },
                     transform: vec![
-                        Left("large-object".into()),
-                        Right(Transformation::Translate {
+                        Transformation::Translate {
+                            x: 1.0,
+                            y: -1.0,
+                            z: 1.0,
+                        },
+                        Transformation::Scale {
+                            x: 0.5,
+                            y: 0.5,
+                            z: 0.5,
+                        },
+                        Transformation::Scale {
+                            x: 3.5,
+                            y: 3.5,
+                            z: 3.5,
+                        },
+                        Transformation::Translate {
                             x: 4.0,
                             y: -4.0,
                             z: 0.0,
-                        })
+                        }
                     ],
                     casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: MaterialSource::Define("white-material".into()),
+                    material: MaterialDescription {
+                        pattern: Some(Left(Colour::WHITE)),
+                        ambient: Some(0.1),
+                        diffuse: Some(0.7),
+                        specular: Some(0.0),
+                        reflective: Some(0.1),
+                        ..Default::default()
+                    },
                     transform: vec![
-                        Left("large-object".into()),
-                        Right(Transformation::Translate {
+                        Transformation::Translate {
+                            x: 1.0,
+                            y: -1.0,
+                            z: 1.0,
+                        },
+                        Transformation::Scale {
+                            x: 0.5,
+                            y: 0.5,
+                            z: 0.5,
+                        },
+                        Transformation::Scale {
+                            x: 3.5,
+                            y: 3.5,
+                            z: 3.5,
+                        },
+                        Transformation::Translate {
                             x: 8.5,
                             y: -4.0,
                             z: 0.0,
-                        })
+                        }
                     ],
                     casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: MaterialSource::Define("white-material".into()),
+                    material: MaterialDescription {
+                        pattern: Some(Left(Colour::WHITE)),
+                        ambient: Some(0.1),
+                        diffuse: Some(0.7),
+                        specular: Some(0.0),
+                        reflective: Some(0.1),
+                        ..Default::default()
+                    },
                     transform: vec![
-                        Left("large-object".into()),
-                        Right(Transformation::Translate {
+                        Transformation::Translate {
+                            x: 1.0,
+                            y: -1.0,
+                            z: 1.0,
+                        },
+                        Transformation::Scale {
+                            x: 0.5,
+                            y: 0.5,
+                            z: 0.5,
+                        },
+                        Transformation::Scale {
+                            x: 3.5,
+                            y: 3.5,
+                            z: 3.5,
+                        },
+                        Transformation::Translate {
                             x: 0.0,
                             y: -4.0,
                             z: 4.0,
-                        })
+                        }
                     ],
                     casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: MaterialSource::Define("purple-material".into()),
+                    material: MaterialDescription {
+                        pattern: Some(Left(Colour::new(0.373, 0.404, 0.55))),
+                        ambient: Some(0.1),
+                        diffuse: Some(0.7),
+                        specular: Some(0.0),
+                        reflective: Some(0.1),
+                        ..Default::default()
+                    },
                     transform: vec![
-                        Left("large-object".into()),
-                        Right(Transformation::Translate {
+                        Transformation::Translate {
+                            x: 1.0,
+                            y: -1.0,
+                            z: 1.0,
+                        },
+                        Transformation::Scale {
+                            x: 0.5,
+                            y: 0.5,
+                            z: 0.5,
+                        },
+                        Transformation::Scale {
+                            x: 3.5,
+                            y: 3.5,
+                            z: 3.5,
+                        },
+                        Transformation::Translate {
                             x: -0.5,
                             y: -4.5,
                             z: 8.0,
-                        })
+                        }
                     ],
                     casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: MaterialSource::Define("white-material".into()),
+                    material: MaterialDescription {
+                        pattern: Some(Left(Colour::WHITE)),
+                        ambient: Some(0.1),
+                        diffuse: Some(0.7),
+                        specular: Some(0.0),
+                        reflective: Some(0.1),
+                        ..Default::default()
+                    },
                     transform: vec![
-                        Left("large-object".into()),
-                        Right(Transformation::Translate {
+                        Transformation::Translate {
+                            x: 1.0,
+                            y: -1.0,
+                            z: 1.0,
+                        },
+                        Transformation::Scale {
+                            x: 0.5,
+                            y: 0.5,
+                            z: 0.5,
+                        },
+                        Transformation::Scale {
+                            x: 3.5,
+                            y: 3.5,
+                            z: 3.5,
+                        },
+                        Transformation::Translate {
                             x: 0.0,
                             y: -8.0,
                             z: 4.0,
-                        })
+                        }
                     ],
                     casts_shadow: true,
                 },
                 ObjectDescription {
                     kind: ObjectKind::Cube,
-                    material: MaterialSource::Define("white-material".into()),
+                    material: MaterialDescription {
+                        pattern: Some(Left(Colour::WHITE)),
+                        ambient: Some(0.1),
+                        diffuse: Some(0.7),
+                        specular: Some(0.0),
+                        reflective: Some(0.1),
+                        ..Default::default()
+                    },
                     transform: vec![
-                        Left("large-object".into()),
-                        Right(Transformation::Translate {
+                        Transformation::Translate {
+                            x: 1.0,
+                            y: -1.0,
+                            z: 1.0,
+                        },
+                        Transformation::Scale {
+                            x: 0.5,
+                            y: 0.5,
+                            z: 0.5,
+                        },
+                        Transformation::Scale {
+                            x: 3.5,
+                            y: 3.5,
+                            z: 3.5,
+                        },
+                        Transformation::Translate {
                             x: -0.5,
                             y: -8.5,
                             z: 8.0,
-                        })
+                        }
                     ],
                     casts_shadow: true,
                 },
-            ],
+            ]
         }
     );
 }

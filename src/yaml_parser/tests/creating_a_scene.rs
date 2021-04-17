@@ -623,7 +623,6 @@ fn should_be_able_to_add_group_from_define() {
     assert_eq!(objects.len(), 1);
     let cube = &objects[0];
     assert_eq!(format!("{:?}", cube.shape()), "Cube");
-    assert_eq!(cube.material.casts_shadow, false);
     assert_eq!(
         cube.transform(),
         Transform::identity()
@@ -631,4 +630,5 @@ fn should_be_able_to_add_group_from_define() {
             .translate_y(1.0)
             .translate_z(1.0)
     );
+    assert_eq!(cube.material.casts_shadow, false);
 }

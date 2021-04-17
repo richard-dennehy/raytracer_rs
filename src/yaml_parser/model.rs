@@ -7,7 +7,6 @@ use std::num::NonZeroU16;
 pub struct SceneDescription {
     pub(crate) camera: CameraDescription,
     pub(crate) lights: Vec<Light>,
-    pub(crate) defines: Vec<Define>,
     pub(crate) objects: Vec<ObjectDescription>,
 }
 
@@ -67,110 +66,17 @@ impl SceneDescription {
                         }
                         ObjectKind::ObjFile { .. } => todo!("load obj file"),
                         ObjectKind::Group { children } => inner(this, children).map(Object::group),
-                        ObjectKind::Reference(..) => todo!("resolve obj reference")
                     };
 
-                    let material_description = match &desc.material {
-                        MaterialSource::Define(reference) => {
-                            this.resolve_material(reference.as_str())
-                        }
-                        MaterialSource::Inline(desc) => Ok(desc.clone()),
-                        MaterialSource::Undefined => Ok(MaterialDescription::default()),
-                    };
+                    let material = desc.material.to_material(desc.casts_shadow);
+                    let transform = desc.transform.to_matrix();
 
-                    let material = material_description.map(|d| d.to_material());
-                    let transform = this
-                        .to_transformations(&desc.transform)
-                        .map(|tfs| tfs.to_matrix());
-
-                    object.and_then(|obj| {
-                        material.and_then(|mat| {
-                            transform.map(|tf| obj.with_material(mat).transformed(tf))
-                        })
-                    })
+                    object.map(|obj| obj.transformed(transform).with_material(material))
                 })
                 .collect()
         }
 
         inner(self, &self.objects)
-    }
-    
-    fn resolve_object(&self, name: &str) -> Result<ObjectDescription, String> {
-        self.find(name).and_then(|def| match def {
-            Define::Object {
-                value,
-                ..
-            } => Ok(value.clone()),
-            Define::MaterialDef { .. } => Err(format!("{:?} is a material, not an object", name)),
-            Define::Transform { .. } => Err(format!("{:?} is a transform, not an object", name)),
-        })
-    }
-
-    // FIXME circular `extend` will infinitely loop
-    fn resolve_material(&self, name: &str) -> Result<MaterialDescription, String> {
-        self.find(name)
-            .and_then(|def| match def {
-                Define::MaterialDef {
-                    value,
-                    extends: Some(extends),
-                    ..
-                } => {
-                    let parent = self.resolve_material(extends);
-                    parent.map(|p| MaterialDescription {
-                        pattern: value.pattern.to_owned().or(p.pattern),
-                        diffuse: value.diffuse.or(p.diffuse),
-                        ambient: value.ambient.or(p.ambient),
-                        specular: value.specular.or(p.specular),
-                        shininess: value.shininess.or(p.shininess),
-                        reflective: value.reflective.or(p.reflective),
-                        transparency: value.transparency.or(p.transparency),
-                        refractive: value.refractive.or(p.refractive),
-                    })
-                }
-                Define::MaterialDef { value, .. } => Ok(value.clone()),
-                Define::Transform { .. } => {
-                    Err(format!("{} is a transform, not a material", def.name()))
-                }
-                Define::Object { .. } => {
-                    Err(format!("{} is an object, not a material", def.name()))
-                }
-            })
-    }
-
-    fn to_transformations(&self, transforms: &Transforms) -> Result<Vec<Transformation>, String> {
-        transforms
-            .iter()
-            .map(|tf| match tf {
-                Left(define) => self
-                    .resolve_transform(define)
-                    .and_then(|tfs| self.to_transformations(tfs)),
-                Right(tf) => Ok(vec![*tf]),
-            })
-            .collect::<Result<Vec<_>, _>>()
-            .map(|nested| {
-                nested
-                    .into_iter()
-                    .flat_map(|inner| inner.into_iter())
-                    .collect()
-            })
-    }
-
-    // FIXME can infinite loop
-    fn resolve_transform(&self, name: &str) -> Result<&Transforms, String> {
-        self.find(name)
-            .and_then(|def| match def {
-                Define::MaterialDef { .. } => {
-                    Err(format!("{} is a material, not a transform", name))
-                }
-                Define::Object { .. } => {
-                    Err(format!("{} is an object, not a transform", def.name()))
-                }
-                Define::Transform { value, .. } => Ok(value),
-            })
-    }
-
-    fn find(&self, name: &str) -> Result<&Define, String> {
-        self.defines.iter().find(|def| def.name() == name).ok_or_else(|| format!("reference has not been defined: {}", name))
     }
 }
 
@@ -184,34 +90,11 @@ pub struct CameraDescription {
     pub(crate) up: Vector3D,
 }
 
-#[derive(PartialEq, Debug)]
-// TODO might be easier to use Map<String, String> instead
-pub enum Define {
-    MaterialDef {
-        name: String,
-        extends: Option<String>,
-        value: MaterialDescription,
-    },
-    Transform {
-        name: String,
-        value: Transforms,
-    },
-    Object {
-        name: String,
-        value: ObjectDescription,
-    },
-}
-
-pub type Transforms = Vec<Either<String, Transformation>>;
-
-impl Define {
-    pub fn name(&self) -> &str {
-        match &self {
-            Define::MaterialDef { name, .. } => name.as_str(),
-            Define::Transform { name, .. } => name.as_str(),
-            Define::Object { name, .. } => name.as_str(),
-        }
-    }
+#[derive(Debug, PartialEq)]
+pub enum NewDefine {
+    Material(MaterialDescription),
+    Transform(Vec<Transformation>),
+    Object(ObjectDescription),
 }
 
 #[derive(PartialEq, Debug, Default, Clone)]
@@ -227,7 +110,7 @@ pub struct MaterialDescription {
 }
 
 impl MaterialDescription {
-    fn to_material(&self) -> crate::Material {
+    fn to_material(&self, casts_shadow: bool) -> crate::Material {
         let mut material = crate::Material::default();
 
         self.pattern
@@ -247,8 +130,22 @@ impl MaterialDescription {
             .map(|transparency| material.transparency = transparency);
         self.refractive
             .map(|refractive| material.refractive = refractive);
+        material.casts_shadow = casts_shadow;
 
         material
+    }
+
+    pub(crate) fn extend(self, base: &Self) -> Self {
+        Self {
+            pattern: self.pattern.or_else(|| base.pattern.clone()),
+            diffuse: self.diffuse.or_else(|| base.diffuse),
+            ambient: self.ambient.or_else(|| base.ambient),
+            specular: self.specular.or_else(|| base.specular),
+            shininess: self.shininess.or_else(|| base.shininess),
+            reflective: self.reflective.or_else(|| base.reflective),
+            transparency: self.transparency.or_else(|| base.transparency),
+            refractive: self.refractive.or_else(|| base.refractive),
+        }
     }
 }
 
@@ -318,9 +215,36 @@ impl ToMatrix for Vec<Transformation> {
 #[derive(PartialEq, Debug, Clone)]
 pub struct ObjectDescription {
     pub kind: ObjectKind,
-    pub material: MaterialSource,
-    pub transform: Transforms,
+    pub material: MaterialDescription,
+    pub transform: Vec<Transformation>,
     pub casts_shadow: bool,
+}
+
+impl ObjectDescription {
+    pub(crate) fn extended(
+        &self,
+        material: Option<MaterialDescription>,
+        transforms: Option<Vec<Transformation>>,
+        casts_shadow: Option<bool>,
+    ) -> Self {
+        Self {
+            kind: self.kind.clone(),
+            material: match material {
+                Some(material) => self.material.clone().extend(&material),
+                None => self.material.clone(),
+            },
+            transform: match transforms {
+                Some(transforms) => self
+                    .transform
+                    .iter()
+                    .cloned()
+                    .chain(transforms.into_iter())
+                    .collect(),
+                None => self.transform.clone(),
+            },
+            casts_shadow: casts_shadow.unwrap_or(self.casts_shadow),
+        }
+    }
 }
 
 #[derive(PartialEq, Debug, Clone)]
@@ -339,12 +263,4 @@ pub enum ObjectKind {
     Group {
         children: Vec<ObjectDescription>,
     },
-    Reference(String),
-}
-
-#[derive(PartialEq, Debug, Clone)]
-pub enum MaterialSource {
-    Define(String),
-    Inline(MaterialDescription),
-    Undefined,
 }

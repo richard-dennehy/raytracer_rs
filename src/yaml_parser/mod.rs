@@ -2,6 +2,7 @@ use yaml_rust::YamlLoader;
 
 use model::*;
 use parsers::*;
+use std::collections::HashMap;
 
 #[cfg(test)]
 mod tests;
@@ -67,38 +68,36 @@ mod parsers;
 /// - An object material may be a string referencing a define, or a material definition as described above
 /// - An object's transforms must be an array of transforms, as described above
 /// - To effectively apply the identity matrix instead (i.e. no transform), use an empty array `[]`
-/// TODO create 3 stage parser:
-///   - parse `define`s into e.g. HashMap<String, Yaml>
-///   - parse rest of file, inlining `define` references
-///   - convert parsed data into objects, lights, etc
 pub fn parse(input: &str) -> Result<SceneDescription, String> {
     match YamlLoader::load_from_str(input) {
         Ok(yaml) => {
             let mut camera = None;
             let mut lights = vec![];
-            let mut defines = vec![];
+            let mut new_defines = HashMap::new();
             let mut objects = vec![];
 
             if let Some(items) = yaml[0].as_vec() {
                 for item in items {
                     match item["add"].as_str() {
                         Some("camera") => {
-                            camera = Some(item.parse()?);
+                            camera = Some(item.parse(&new_defines)?);
                             continue;
                         }
                         Some("light") => {
-                            lights.push(item.parse()?);
+                            lights.push(item.parse(&new_defines)?);
                             continue;
                         }
                         Some(_) => {
-                            objects.push(item.parse()?);
+                            objects.push(item.parse(&new_defines)?);
                             continue;
                         }
                         None => (),
                     }
 
-                    if item["define"].as_str().is_some() {
-                        defines.push(item.parse()?);
+                    if let Some(name) = item["define"].as_str() {
+                        // FIXME error on duplicate
+                        new_defines.insert(name.to_owned(), item.parse(&new_defines)?);
+
                         continue;
                     }
                 }
@@ -111,7 +110,6 @@ pub fn parse(input: &str) -> Result<SceneDescription, String> {
             Ok(SceneDescription {
                 camera,
                 lights,
-                defines,
                 objects,
             })
         }
