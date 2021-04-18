@@ -21,7 +21,7 @@ fn main() -> Result<(), String> {
     .unwrap();
 
     let mut scene = yaml_parser::parse(&yaml).unwrap();
-    scene.override_resolution(600, 600);
+    scene.override_resolution(1920, 1080);
 
     let mut world = World::empty();
     world.lights.append(&mut scene.lights());

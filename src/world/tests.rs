@@ -238,6 +238,34 @@ mod shading {
         rays.into_iter()
             .for_each(|ray| assert_eq!(world.colour_at(ray), Colour::WHITE))
     }
+
+    #[test]
+    fn setting_a_group_material_should_override_the_material_of_its_children() {
+        let mut world = World::empty();
+        world
+            .lights
+            .push(Light::point(Colour::WHITE, Point3D::new(-2.0, 0.0, 0.0)));
+
+        let sphere = Object::sphere().with_material(Material {
+            pattern: Pattern::solid(Colour::BLUE),
+            ambient: 1.0,
+            diffuse: 0.0,
+            specular: 0.0,
+            ..Default::default()
+        });
+        let group = Object::group(vec![sphere]).with_material(Material {
+            pattern: Pattern::solid(Colour::GREEN),
+            ambient: 1.0,
+            diffuse: 0.0,
+            specular: 0.0,
+            ..Default::default()
+        });
+
+        world.add(group);
+
+        let colour = world.colour_at(Ray::new(Point3D::new(-1.0, 0.0, 0.0), Normal3D::POSITIVE_X));
+        assert_eq!(colour, Colour::GREEN);
+    }
 }
 
 mod lighting {

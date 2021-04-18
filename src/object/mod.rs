@@ -358,8 +358,23 @@ impl Object {
     }
 
     pub fn with_material(mut self, material: Material) -> Self {
-        self.material = material;
+        self.apply_material(material);
         self
+    }
+
+    fn apply_material(&mut self, material: Material) {
+        match &mut self.kind {
+            ObjectKind::Group(children) => children
+                .iter_mut()
+                .for_each(|child| child.apply_material(material.clone())),
+            ObjectKind::Csg { left, right, .. } => {
+                left.apply_material(material.clone());
+                right.apply_material(material.clone());
+            }
+            _ => (),
+        }
+
+        self.material = material;
     }
 
     /// note that the provided `transform` is _combined_ with the existing transform

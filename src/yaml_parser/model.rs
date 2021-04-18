@@ -1,6 +1,7 @@
 use crate::obj_parser::ObjData;
 use crate::{
-    obj_parser, Camera, Colour, Light, Object, Pattern, Point3D, Transform, Vector, Vector3D,
+    obj_parser, Camera, Colour, Light, Material, Object, Pattern, Point3D, Transform, Vector,
+    Vector3D,
 };
 use either::Either;
 use either::Either::{Left, Right};
@@ -80,7 +81,13 @@ impl SceneDescription {
                     let material = desc.material.to_material(desc.casts_shadow);
                     let transform = desc.transform.to_matrix();
 
-                    object.map(|obj| obj.transformed(transform).with_material(material))
+                    object.map(|obj| {
+                        if material == Material::default() {
+                            obj.transformed(transform)
+                        } else {
+                            obj.transformed(transform).with_material(material)
+                        }
+                    })
                 })
                 .collect()
         }

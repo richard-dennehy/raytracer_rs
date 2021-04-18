@@ -15,15 +15,12 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP update YAML parser to support dragon file&#10;&#10;- major refactor of parser to inline define values during parsing">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="update YAML parser to support dragon file&#10;&#10;- support loading wavefront obj files from YAML">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/obj_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/obj_parser/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/obj_parser/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/obj_parser/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/world/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/tests.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/creating_a_scene.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/creating_a_scene.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,7 +95,7 @@
       <command value="cargo bench" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.test">
+  <component name="RunManager" selected="Cargo.run (release)">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -220,8 +217,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.run (release)" />
+        <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.Test yaml_parser::tests::basic_parsing::should_parse_scene_description" />
         <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.Test yaml_parser::tests::basic_parsing::should_parse_cylinder_with_min_max_and_capped" />
@@ -387,14 +384,7 @@
       <workItem from="1618514024849" duration="3156000" />
       <workItem from="1618601577438" duration="1997000" />
       <workItem from="1618653495774" duration="10765000" />
-      <workItem from="1618744478136" duration="2752000" />
-    </task>
-    <task id="LOCAL-00099" summary="set up more complex benchmarks">
-      <created>1614428829248</created>
-      <option name="number" value="00099" />
-      <option name="presentableId" value="LOCAL-00099" />
-      <option name="project" value="LOCAL" />
-      <updated>1614428829248</updated>
+      <workItem from="1618744478136" duration="3897000" />
     </task>
     <task id="LOCAL-00100" summary="parallelise rendering loop">
       <created>1614521529302</created>
@@ -732,7 +722,14 @@
       <option name="project" value="LOCAL" />
       <updated>1618664365183</updated>
     </task>
-    <option name="localTasksCounter" value="148" />
+    <task id="LOCAL-00148" summary="update YAML parser to support dragon file&#10;&#10;- support loading wavefront obj files from YAML">
+      <created>1618747256549</created>
+      <option name="number" value="00148" />
+      <option name="presentableId" value="LOCAL-00148" />
+      <option name="project" value="LOCAL" />
+      <updated>1618747256549</updated>
+    </task>
+    <option name="localTasksCounter" value="149" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -758,7 +755,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="create a test scene to demonstrate disabling shadow casting for individual objects" />
     <MESSAGE value="WIP test/improve transparent object shadow casting" />
     <MESSAGE value="WIP add world function to calculate direct light on a point" />
     <MESSAGE value="WIP fix world function to calculate direct light on a point" />
@@ -783,7 +779,8 @@
     <MESSAGE value="WIP update YAML parser to support dragon file&#10;&#10;- &quot;tidy up&quot; transformation conversion" />
     <MESSAGE value="WIP update YAML parser to support dragon file&#10;&#10;- support creating groups" />
     <MESSAGE value="WIP update YAML parser to support dragon file&#10;&#10;- major refactor of parser to inline define values during parsing" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP update YAML parser to support dragon file&#10;&#10;- major refactor of parser to inline define values during parsing" />
+    <MESSAGE value="update YAML parser to support dragon file&#10;&#10;- support loading wavefront obj files from YAML" />
+    <option name="LAST_COMMIT_MESSAGE" value="update YAML parser to support dragon file&#10;&#10;- support loading wavefront obj files from YAML" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
