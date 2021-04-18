@@ -1,6 +1,5 @@
 use crate::{Object, Point3D, Vector, Vector3D};
 use std::borrow::Borrow;
-use std::convert::TryFrom;
 use std::str::SplitWhitespace;
 
 #[cfg(test)]
@@ -105,6 +104,7 @@ struct PolygonData {
     normal: Option<usize>,
 }
 
+#[derive(Debug, PartialEq)]
 pub struct ObjData {
     vertices: Vec<Point3D>,
     normals: Vec<Vector3D>,
@@ -118,12 +118,8 @@ impl ObjData {
     fn normal(&self, index: usize) -> Option<Vector3D> {
         self.normals.get(index - 1).copied()
     }
-}
 
-impl TryFrom<ObjData> for Object {
-    type Error = String;
-
-    fn try_from(obj_data: ObjData) -> Result<Self, Self::Error> {
+    pub fn to_object(&self) -> Result<Object, String> {
         let convert_group = |group: &Group| {
             let mut triangles = vec![];
 
@@ -133,7 +129,7 @@ impl TryFrom<ObjData> for Object {
                     let mut normals = Vec::with_capacity(3);
 
                     for &(vert_index, normal_index) in face.iter() {
-                        if let Some(vertex) = obj_data.vertex(vert_index) {
+                        if let Some(vertex) = self.vertex(vert_index) {
                             vertices.push(vertex)
                         } else {
                             return Err(format!(
@@ -143,7 +139,7 @@ impl TryFrom<ObjData> for Object {
                         }
 
                         if let Some(normal_index) = normal_index {
-                            if let Some(normal) = obj_data.normal(normal_index) {
+                            if let Some(normal) = self.normal(normal_index) {
                                 normals.push(normal)
                             } else {
                                 return Err(format!(
@@ -178,10 +174,10 @@ impl TryFrom<ObjData> for Object {
             Ok(Object::group(triangles))
         };
 
-        if obj_data.groups.len() == 1 {
-            convert_group(&obj_data.groups[0])
+        if self.groups.len() == 1 {
+            convert_group(&self.groups[0])
         } else {
-            let children = obj_data
+            let children = self
                 .groups
                 .iter()
                 .map(Borrow::borrow)

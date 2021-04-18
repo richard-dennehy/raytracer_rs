@@ -95,8 +95,11 @@ pub fn parse(input: &str) -> Result<SceneDescription, String> {
                     }
 
                     if let Some(name) = item["define"].as_str() {
-                        // FIXME error on duplicate
-                        new_defines.insert(name.to_owned(), item.parse(&new_defines)?);
+                        if let Some(_) =
+                            new_defines.insert(name.to_owned(), item.parse(&new_defines)?)
+                        {
+                            return Err(format!("duplicate `define` with name {:?}", name));
+                        }
 
                         continue;
                     }

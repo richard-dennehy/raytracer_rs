@@ -2,7 +2,6 @@ use super::*;
 
 mod unit_tests {
     use super::*;
-    use std::convert::TryInto;
 
     trait VerticesExt {
         fn vertices(&self) -> Vec<usize>;
@@ -82,7 +81,7 @@ f 1 2 3 4 5";
         f 1 3 4";
 
         let out = parse(input);
-        let object: Result<Object, _> = out.try_into();
+        let object = out.to_object();
         assert!(object.is_ok(), "{}", object.unwrap_err());
         let object = object.unwrap();
 
@@ -125,7 +124,7 @@ v 0 2 0
 f 1 2 3 4 5";
 
         let out = parse(input);
-        let object: Result<Object, _> = out.try_into();
+        let object = out.to_object();
         assert!(object.is_ok(), "{}", object.unwrap_err());
         let object = object.unwrap();
 
@@ -199,7 +198,7 @@ f 1 2 3 4 5";
         f 1 3 4";
 
         let output = parse(input);
-        let object: Result<Object, _> = output.try_into();
+        let object = output.to_object();
         assert!(object.is_ok(), "{}", object.unwrap_err());
         let object = object.unwrap();
 
@@ -299,7 +298,7 @@ f 1 2 3 4 5";
         f 1/0/3 2/102/1 3/14/2";
 
         let output = parse(input);
-        let object: Result<Object, _> = output.try_into();
+        let object = output.to_object();
         assert!(object.is_ok(), "{}", object.unwrap_err());
         let object = object.unwrap();
 

@@ -1,7 +1,13 @@
-use crate::{Camera, Colour, Light, Object, Pattern, Point3D, Transform, Vector, Vector3D};
+use crate::obj_parser::ObjData;
+use crate::{
+    obj_parser, Camera, Colour, Light, Object, Pattern, Point3D, Transform, Vector, Vector3D,
+};
 use either::Either;
 use either::Either::{Left, Right};
+use std::collections::HashMap;
+use std::fs;
 use std::num::NonZeroU16;
+use std::path::Path;
 
 #[derive(Debug, PartialEq)]
 pub struct SceneDescription {
@@ -47,6 +53,7 @@ impl SceneDescription {
         fn inner(
             this: &SceneDescription,
             objects: &Vec<ObjectDescription>,
+            obj_cache: &mut HashMap<String, ObjData>,
         ) -> Result<Vec<Object>, String> {
             objects
                 .iter()
@@ -64,8 +71,10 @@ impl SceneDescription {
 
                             Ok(cylinder.build())
                         }
-                        ObjectKind::ObjFile { .. } => todo!("load obj file"),
-                        ObjectKind::Group { children } => inner(this, children).map(Object::group),
+                        ObjectKind::ObjFile { file_name } => get_or_load(obj_cache, file_name),
+                        ObjectKind::Group { children } => {
+                            inner(this, children, obj_cache).map(Object::group)
+                        }
                     };
 
                     let material = desc.material.to_material(desc.casts_shadow);
@@ -76,8 +85,31 @@ impl SceneDescription {
                 .collect()
         }
 
-        inner(self, &self.objects)
+        inner(self, &self.objects, &mut HashMap::new())
     }
+}
+
+fn get_or_load(
+    cache: &mut HashMap<String, ObjData>,
+    obj_file_name: &str,
+) -> Result<Object, String> {
+    if let Some(obj_data) = cache.get(obj_file_name) {
+        return obj_data.to_object();
+    }
+
+    let file_contents = fs::read_to_string(
+        Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("scene_descriptions")
+            .join("obj_files")
+            .join(obj_file_name),
+    )
+    .map_err(|e| e.to_string())?;
+
+    let obj_data = obj_parser::parse(&file_contents);
+    cache
+        .entry(obj_file_name.to_string())
+        .or_insert(obj_data)
+        .to_object()
 }
 
 #[derive(PartialEq, Debug)]
@@ -91,11 +123,13 @@ pub struct CameraDescription {
 }
 
 #[derive(Debug, PartialEq)]
-pub enum NewDefine {
+pub enum Define {
     Material(MaterialDescription),
     Transform(Vec<Transformation>),
     Object(ObjectDescription),
 }
+
+pub type Defines = HashMap<String, Define>;
 
 #[derive(PartialEq, Debug, Default, Clone)]
 pub struct MaterialDescription {

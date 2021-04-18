@@ -1,32 +1,28 @@
-use crate::yaml_parser::model::NewDefine;
 use crate::yaml_parser::model::{
     CameraDescription, MaterialDescription, ObjectDescription, ObjectKind, PatternDescription,
     PatternType, Transformation,
 };
+use crate::yaml_parser::model::{Define, Defines};
 use crate::{Colour, Light, Point3D, Vector3D};
 use either::Either::{Left, Right};
-use std::collections::HashMap;
 use yaml_rust::Yaml;
 
 pub trait YamlExt {
-    fn parse<T: FromYaml>(&self, defines: &HashMap<String, NewDefine>) -> Result<T, String>;
+    fn parse<T: FromYaml>(&self, defines: &Defines) -> Result<T, String>;
 }
 
 impl YamlExt for Yaml {
-    fn parse<T: FromYaml>(&self, defines: &HashMap<String, NewDefine>) -> Result<T, String> {
+    fn parse<T: FromYaml>(&self, defines: &Defines) -> Result<T, String> {
         T::from_yaml_and_defines(&self, defines)
     }
 }
 
 pub trait FromYaml: Sized {
-    fn from_yaml_and_defines(
-        yaml: &Yaml,
-        defines: &HashMap<String, NewDefine>,
-    ) -> Result<Self, String>;
+    fn from_yaml_and_defines(yaml: &Yaml, defines: &Defines) -> Result<Self, String>;
 }
 
 impl FromYaml for f64 {
-    fn from_yaml_and_defines(yaml: &Yaml, _: &HashMap<String, NewDefine>) -> Result<Self, String> {
+    fn from_yaml_and_defines(yaml: &Yaml, _: &Defines) -> Result<Self, String> {
         match &yaml {
             // yaml lib f64 parsing is lazy - this can't fail
             Yaml::Real(real) => Ok(real.parse().unwrap()),
@@ -38,7 +34,7 @@ impl FromYaml for f64 {
 }
 
 impl FromYaml for usize {
-    fn from_yaml_and_defines(yaml: &Yaml, _: &HashMap<String, NewDefine>) -> Result<Self, String> {
+    fn from_yaml_and_defines(yaml: &Yaml, _: &Defines) -> Result<Self, String> {
         match &yaml {
             Yaml::Integer(integer) if *integer >= 0 => Ok(*integer as usize),
             Yaml::Integer(_) => Err("value must not be negative".into()),
@@ -49,7 +45,7 @@ impl FromYaml for usize {
 }
 
 impl FromYaml for bool {
-    fn from_yaml_and_defines(yaml: &Yaml, _: &HashMap<String, NewDefine>) -> Result<Self, String> {
+    fn from_yaml_and_defines(yaml: &Yaml, _: &Defines) -> Result<Self, String> {
         match &yaml {
             Yaml::Boolean(value) => Ok(*value),
             _ => Err(format!("cannot parse {:?} as a boolean", yaml)),
@@ -58,10 +54,7 @@ impl FromYaml for bool {
 }
 
 impl FromYaml for (f64, f64, f64) {
-    fn from_yaml_and_defines(
-        yaml: &Yaml,
-        defines: &HashMap<String, NewDefine>,
-    ) -> Result<Self, String> {
+    fn from_yaml_and_defines(yaml: &Yaml, defines: &Defines) -> Result<Self, String> {
         if let Some(components) = yaml.as_vec() {
             if components.len() != 3 {
                 return Err("Expected an array of exactly 3 numbers".into());
@@ -85,10 +78,7 @@ impl FromYaml for (f64, f64, f64) {
 }
 
 impl FromYaml for ObjectDescription {
-    fn from_yaml_and_defines(
-        yaml: &Yaml,
-        defines: &HashMap<String, NewDefine>,
-    ) -> Result<Self, String> {
+    fn from_yaml_and_defines(yaml: &Yaml, defines: &Defines) -> Result<Self, String> {
         let add = yaml["add"].as_str().ok_or_else(|| {
             "unreachable: should not be parsing yaml as ObjectDescription if there is no `add`"
                 .to_string()
@@ -99,7 +89,7 @@ impl FromYaml for ObjectDescription {
         let casts_shadow = yaml["shadow"].parse::<Option<bool>>(defines)?;
 
         if let Some(define) = defines.get(add) {
-            if let NewDefine::Object(object) = define {
+            if let Define::Object(object) = define {
                 Ok(object.extended(material, transforms, casts_shadow))
             } else {
                 Err(format!("`define` {:?} is not an object", add))
@@ -144,10 +134,7 @@ impl FromYaml for ObjectDescription {
 }
 
 impl FromYaml for Vec<Transformation> {
-    fn from_yaml_and_defines(
-        yaml: &Yaml,
-        defines: &HashMap<String, NewDefine>,
-    ) -> Result<Self, String> {
+    fn from_yaml_and_defines(yaml: &Yaml, defines: &Defines) -> Result<Self, String> {
         use Transformation::*;
 
         let mut transforms = Vec::new();
@@ -220,7 +207,7 @@ impl FromYaml for Vec<Transformation> {
                 }
                 &Yaml::String(reference) => {
                     if let Some(define) = defines.get(reference) {
-                        if let NewDefine::Transform(tfs) = define {
+                        if let Define::Transform(tfs) = define {
                             tfs.iter().for_each(|tf| transforms.push(tf.clone()))
                         }
                     }
@@ -237,14 +224,8 @@ impl FromYaml for Vec<Transformation> {
 }
 
 impl FromYaml for MaterialDescription {
-    fn from_yaml_and_defines(
-        yaml: &Yaml,
-        defines: &HashMap<String, NewDefine>,
-    ) -> Result<Self, String> {
-        fn parse(
-            yaml: &Yaml,
-            defines: &HashMap<String, NewDefine>,
-        ) -> Result<MaterialDescription, String> {
+    fn from_yaml_and_defines(yaml: &Yaml, defines: &Defines) -> Result<Self, String> {
+        fn parse(yaml: &Yaml, defines: &Defines) -> Result<MaterialDescription, String> {
             let pattern = if yaml["color"].as_vec().is_some() {
                 let colour = yaml["color"].parse(defines)?;
                 Some(Left(colour))
@@ -275,7 +256,7 @@ impl FromYaml for MaterialDescription {
         // material is a simple reference to a define
         if let Some(reference) = yaml.as_str() {
             if let Some(define) = defines.get(reference) {
-                if let NewDefine::Material(material) = define {
+                if let Define::Material(material) = define {
                     Ok(material.clone())
                 } else {
                     Err(format!("`define` {:?} is not a material", reference))
@@ -292,7 +273,7 @@ impl FromYaml for MaterialDescription {
 
             if let Some(extends) = yaml["extend"].as_str() {
                 if let Some(define) = defines.get(extends) {
-                    if let NewDefine::Material(base) = define {
+                    if let Define::Material(base) = define {
                         Ok(overrides.extend(base))
                     } else {
                         Err(format!("`define` {:?} is not a material", extends))
@@ -308,10 +289,7 @@ impl FromYaml for MaterialDescription {
 }
 
 impl FromYaml for CameraDescription {
-    fn from_yaml_and_defines(
-        yaml: &Yaml,
-        defines: &HashMap<String, NewDefine>,
-    ) -> Result<Self, String> {
+    fn from_yaml_and_defines(yaml: &Yaml, defines: &Defines) -> Result<Self, String> {
         let width = yaml["width"].parse(defines)?;
         let height = yaml["height"].parse(defines)?;
         let field_of_view = yaml["field-of-view"].parse(defines)?;
@@ -331,10 +309,7 @@ impl FromYaml for CameraDescription {
 }
 
 impl FromYaml for Light {
-    fn from_yaml_and_defines(
-        yaml: &Yaml,
-        defines: &HashMap<String, NewDefine>,
-    ) -> Result<Self, String> {
+    fn from_yaml_and_defines(yaml: &Yaml, defines: &Defines) -> Result<Self, String> {
         let colour = yaml["intensity"].parse(defines)?;
         let position = yaml["at"].parse(defines)?;
 
@@ -343,10 +318,7 @@ impl FromYaml for Light {
 }
 
 impl FromYaml for PatternDescription {
-    fn from_yaml_and_defines(
-        yaml: &Yaml,
-        defines: &HashMap<String, NewDefine>,
-    ) -> Result<Self, String> {
+    fn from_yaml_and_defines(yaml: &Yaml, defines: &Defines) -> Result<Self, String> {
         let pattern_type = match yaml["type"].as_str() {
             Some("stripes") => PatternType::Stripes,
             Some("checkers") => PatternType::Checker,
@@ -369,16 +341,13 @@ impl FromYaml for PatternDescription {
     }
 }
 
-impl FromYaml for NewDefine {
-    fn from_yaml_and_defines(
-        yaml: &Yaml,
-        defines: &HashMap<String, NewDefine>,
-    ) -> Result<Self, String> {
+impl FromYaml for Define {
+    fn from_yaml_and_defines(yaml: &Yaml, defines: &Defines) -> Result<Self, String> {
         // array of transforms or hash of material or hash of object
         match &yaml["value"] {
-            array @ Yaml::Array(_) => Ok(NewDefine::Transform(array.parse(defines)?)),
-            hash @ Yaml::Hash(_) if hash["add"].as_str().is_some() => Ok(NewDefine::Object(hash.parse(defines)?)),
-            Yaml::Hash(_) => Ok(NewDefine::Material(yaml.parse(defines)?)),
+            array @ Yaml::Array(_) => Ok(Define::Transform(array.parse(defines)?)),
+            hash @ Yaml::Hash(_) if hash["add"].as_str().is_some() => Ok(Define::Object(hash.parse(defines)?)),
+            Yaml::Hash(_) => Ok(Define::Material(yaml.parse(defines)?)),
             _ => Err("expected `define` `value` to be an array of transforms, or a hash describing a material or an object".into())
         }
     }
@@ -387,28 +356,19 @@ impl FromYaml for NewDefine {
 // there's no way of implementing these generically without conflicting with Option, as that _also_
 // defines From<(f64, f64, f64)> (or at least, From<T>)
 impl FromYaml for Colour {
-    fn from_yaml_and_defines(
-        yaml: &Yaml,
-        defines: &HashMap<String, NewDefine>,
-    ) -> Result<Self, String> {
+    fn from_yaml_and_defines(yaml: &Yaml, defines: &Defines) -> Result<Self, String> {
         yaml.parse(defines).map(|(r, g, b)| Self::new(r, g, b))
     }
 }
 
 impl FromYaml for Point3D {
-    fn from_yaml_and_defines(
-        yaml: &Yaml,
-        defines: &HashMap<String, NewDefine>,
-    ) -> Result<Self, String> {
+    fn from_yaml_and_defines(yaml: &Yaml, defines: &Defines) -> Result<Self, String> {
         yaml.parse(defines).map(|(x, y, z)| Self::new(x, y, z))
     }
 }
 
 impl FromYaml for Vector3D {
-    fn from_yaml_and_defines(
-        yaml: &Yaml,
-        defines: &HashMap<String, NewDefine>,
-    ) -> Result<Self, String> {
+    fn from_yaml_and_defines(yaml: &Yaml, defines: &Defines) -> Result<Self, String> {
         yaml.parse(defines).map(|(x, y, z)| Self::new(x, y, z))
     }
 }
@@ -417,10 +377,7 @@ impl<T> FromYaml for Option<T>
 where
     T: FromYaml,
 {
-    fn from_yaml_and_defines(
-        yaml: &Yaml,
-        defines: &HashMap<String, NewDefine>,
-    ) -> Result<Self, String> {
+    fn from_yaml_and_defines(yaml: &Yaml, defines: &Defines) -> Result<Self, String> {
         if yaml.is_badvalue() {
             Ok(None)
         } else {
@@ -433,10 +390,7 @@ impl<T> FromYaml for Vec<T>
 where
     T: FromYaml,
 {
-    fn from_yaml_and_defines(
-        yaml: &Yaml,
-        defines: &HashMap<String, NewDefine>,
-    ) -> Result<Self, String> {
+    fn from_yaml_and_defines(yaml: &Yaml, defines: &Defines) -> Result<Self, String> {
         match &yaml {
             Yaml::Array(array) => array
                 .iter()

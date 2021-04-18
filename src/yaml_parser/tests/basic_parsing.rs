@@ -80,13 +80,13 @@ value:
   reflective: 0.1";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let define = yaml.parse::<NewDefine>(&HashMap::new());
+    let define = yaml.parse::<Define>(&HashMap::new());
     assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
     assert_eq!(
         define,
-        NewDefine::Material(MaterialDescription {
+        Define::Material(MaterialDescription {
             pattern: Some(Left(Colour::WHITE)),
             diffuse: Some(0.7),
             ambient: Some(0.1),
@@ -111,7 +111,7 @@ value:
     let mut defines = HashMap::new();
     defines.insert(
         "white-material".into(),
-        NewDefine::Material(MaterialDescription {
+        Define::Material(MaterialDescription {
             pattern: Some(Left(Colour::WHITE)),
             diffuse: Some(0.7),
             ambient: Some(0.1),
@@ -123,13 +123,13 @@ value:
         }),
     );
 
-    let define = yaml.parse::<NewDefine>(&defines);
+    let define = yaml.parse::<Define>(&defines);
     assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
     assert_eq!(
         define,
-        NewDefine::Material(MaterialDescription {
+        Define::Material(MaterialDescription {
             pattern: Some(Left(Colour::new(0.537, 0.831, 0.914))),
             diffuse: Some(0.7),
             ambient: Some(0.1),
@@ -162,13 +162,13 @@ value:
   reflective: 0.3";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let define = yaml.parse::<NewDefine>(&HashMap::new());
+    let define = yaml.parse::<Define>(&HashMap::new());
     assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
     assert_eq!(
         define,
-        NewDefine::Material(MaterialDescription {
+        Define::Material(MaterialDescription {
             pattern: Some(Right(PatternDescription {
                 pattern_type: PatternType::Stripes,
                 colours: (Colour::greyscale(0.45), Colour::greyscale(0.55)),
@@ -204,13 +204,13 @@ value:
   reflective: 0.4";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let define = yaml.parse::<NewDefine>(&HashMap::new());
+    let define = yaml.parse::<Define>(&HashMap::new());
     assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
     assert_eq!(
         define,
-        NewDefine::Material(MaterialDescription {
+        Define::Material(MaterialDescription {
             pattern: Some(Right(PatternDescription {
                 pattern_type: PatternType::Checker,
                 colours: (Colour::greyscale(0.35), Colour::greyscale(0.65)),
@@ -232,13 +232,13 @@ value:
 - [ scale, 0.5, 0.5, 0.5 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let define = yaml.parse::<NewDefine>(&HashMap::new());
+    let define = yaml.parse::<Define>(&HashMap::new());
     assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
     assert_eq!(
         define,
-        NewDefine::Transform(vec![
+        Define::Transform(vec![
             Transformation::Translate {
                 x: 1.0,
                 y: -1.0,
@@ -265,7 +265,7 @@ value:
     let mut defines = HashMap::new();
     defines.insert(
         "standard-transform".into(),
-        NewDefine::Transform(vec![
+        Define::Transform(vec![
             Transformation::Translate {
                 x: 1.0,
                 y: -1.0,
@@ -278,13 +278,13 @@ value:
             },
         ]),
     );
-    let define = yaml.parse::<NewDefine>(&defines);
+    let define = yaml.parse::<Define>(&defines);
     assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
     assert_eq!(
         define,
-        NewDefine::Transform(vec![
+        Define::Transform(vec![
             Transformation::Translate {
                 x: 1.0,
                 y: -1.0,
@@ -367,7 +367,7 @@ transform:
     let mut defines = HashMap::new();
     defines.insert(
         "large-object".into(),
-        NewDefine::Transform(vec![
+        Define::Transform(vec![
             Transformation::Translate {
                 x: 1.0,
                 y: -1.0,
@@ -438,7 +438,7 @@ transform:
     let mut defines = HashMap::new();
     defines.insert(
         "medium-object".into(),
-        NewDefine::Transform(vec![
+        Define::Transform(vec![
             Transformation::Translate {
                 x: 1.0,
                 y: -1.0,
@@ -458,7 +458,7 @@ transform:
     );
     defines.insert(
         "white-material".into(),
-        NewDefine::Material(MaterialDescription {
+        Define::Material(MaterialDescription {
             pattern: Some(Left(Colour::WHITE)),
             diffuse: Some(0.7),
             ambient: Some(0.1),
@@ -687,7 +687,7 @@ add: pedestal";
     let mut defines = HashMap::new();
     defines.insert(
         "pedestal".into(),
-        NewDefine::Object(ObjectDescription {
+        Define::Object(ObjectDescription {
             kind: ObjectKind::Cylinder {
                 min: None,
                 max: None,
@@ -783,7 +783,7 @@ children:
     let mut defines = HashMap::new();
     defines.insert(
         "dragon".into(),
-        NewDefine::Object(ObjectDescription {
+        Define::Object(ObjectDescription {
             kind: ObjectKind::ObjFile {
                 file_name: "dragon.obj".into(),
             },
@@ -805,7 +805,7 @@ children:
     );
     defines.insert(
         "pedestal".into(),
-        NewDefine::Object(ObjectDescription {
+        Define::Object(ObjectDescription {
             kind: ObjectKind::Cylinder {
                 min: Some(-0.15),
                 max: Some(0.0),
@@ -818,7 +818,7 @@ children:
     );
     defines.insert(
         "bbox".into(),
-        NewDefine::Object(ObjectDescription {
+        Define::Object(ObjectDescription {
             kind: ObjectKind::Cube,
             material: MaterialDescription::default(),
             transform: vec![],
@@ -916,13 +916,13 @@ value:
 ";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let define = yaml.parse::<NewDefine>(&HashMap::new());
+    let define = yaml.parse::<Define>(&HashMap::new());
     assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
     assert_eq!(
         define,
-        NewDefine::Object(ObjectDescription {
+        Define::Object(ObjectDescription {
             kind: ObjectKind::Cube,
             material: MaterialDescription::default(),
             transform: vec![],
@@ -1593,7 +1593,7 @@ fn should_parse_scene_description() {
                     ],
                     casts_shadow: true,
                 },
-            ]
+            ],
         }
     );
 }

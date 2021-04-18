@@ -632,3 +632,40 @@ fn should_be_able_to_add_group_from_define() {
     );
     assert_eq!(cube.material.casts_shadow, false);
 }
+
+#[test]
+fn should_be_able_to_add_an_object_from_a_define_and_override_the_material() {
+    let input = with_camera_description(
+        "\
+- define: raw-bbox
+  value:
+    add: cube
+    shadow: false
+    transform:
+      - [ translate, 1, 1, 1 ]
+
+- add: raw-bbox
+  material:
+    color: [ 1, 0, 0 ]",
+    );
+
+    let scene = parse(&input);
+    assert!(scene.is_ok(), "{}", scene.unwrap_err());
+    let scene = scene.unwrap();
+
+    let objects = scene.objects();
+    assert!(objects.is_ok(), "{}", objects.unwrap_err());
+    let objects = objects.unwrap();
+
+    assert_eq!(objects.len(), 1);
+    let cube = &objects[0];
+    assert_eq!(format!("{:?}", cube.shape()), "Cube");
+    assert_eq!(
+        cube.material,
+        Material {
+            pattern: Pattern::solid(Colour::RED),
+            casts_shadow: false,
+            ..Default::default()
+        }
+    );
+}
