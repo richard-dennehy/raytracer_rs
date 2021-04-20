@@ -15,9 +15,10 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="allow group materials to override children">
-      <change afterPath="$PROJECT_DIR$/src/yaml_parser/README.md" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP write README for YAML parser">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -203,11 +204,6 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.bench loop" />
@@ -387,14 +383,8 @@
       <workItem from="1618601577438" duration="1997000" />
       <workItem from="1618653495774" duration="10765000" />
       <workItem from="1618744478136" duration="4676000" />
-      <workItem from="1618858165712" duration="2031000" />
-    </task>
-    <task id="LOCAL-00101" summary="update build flags">
-      <created>1614523488420</created>
-      <option name="number" value="00101" />
-      <option name="presentableId" value="LOCAL-00101" />
-      <option name="project" value="LOCAL" />
-      <updated>1614523488421</updated>
+      <workItem from="1618858165712" duration="2047000" />
+      <workItem from="1618944562265" duration="2307000" />
     </task>
     <task id="LOCAL-00102" summary="reduce overhead of rendering loop">
       <created>1614630705565</created>
@@ -732,7 +722,14 @@
       <option name="project" value="LOCAL" />
       <updated>1618748495877</updated>
     </task>
-    <option name="localTasksCounter" value="150" />
+    <task id="LOCAL-00150" summary="WIP write README for YAML parser">
+      <created>1618860211930</created>
+      <option name="number" value="00150" />
+      <option name="presentableId" value="LOCAL-00150" />
+      <option name="project" value="LOCAL" />
+      <updated>1618860211930</updated>
+    </task>
+    <option name="localTasksCounter" value="151" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -758,7 +755,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP add world function to calculate direct light on a point" />
     <MESSAGE value="WIP fix world function to calculate direct light on a point" />
     <MESSAGE value="allow light to partially pass through transparent objects" />
     <MESSAGE value="WIP allow transparent material colour to affect light transmission" />
@@ -783,7 +779,8 @@
     <MESSAGE value="WIP update YAML parser to support dragon file&#10;&#10;- major refactor of parser to inline define values during parsing" />
     <MESSAGE value="update YAML parser to support dragon file&#10;&#10;- support loading wavefront obj files from YAML" />
     <MESSAGE value="allow group materials to override children" />
-    <option name="LAST_COMMIT_MESSAGE" value="allow group materials to override children" />
+    <MESSAGE value="WIP write README for YAML parser" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP write README for YAML parser" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
