@@ -45,9 +45,9 @@ impl Camera {
         }
     }
 
-    pub fn ray_at(&self, x: u16, y: u16) -> Ray {
-        let x_offset = (x as f64 + 0.5) * self.pixel_size;
-        let y_offset = (y as f64 + 0.5) * self.pixel_size;
+    pub fn ray_at(&self, x: u16, y: u16, x_offset: f64, y_offset: f64) -> Ray {
+        let x_offset = (x as f64 + x_offset) * self.pixel_size;
+        let y_offset = (y as f64 + y_offset) * self.pixel_size;
 
         let world_x = self.half_canvas_width - x_offset;
         let world_y = self.half_canvas_height - y_offset;

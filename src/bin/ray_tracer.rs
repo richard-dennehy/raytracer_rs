@@ -1,8 +1,8 @@
 extern crate ray_tracer;
 
+use nonzero_ext::nonzero;
 use ray_tracer::*;
-use std::fs;
-use std::path::Path;
+use std::f64::consts::PI;
 use std::time::Instant;
 
 /// Notes on axes and rotation:
@@ -15,21 +15,28 @@ use std::time::Instant;
 fn main() -> Result<(), String> {
     let timer = Instant::now();
 
-    let yaml = fs::read_to_string(
-        Path::new(env!("CARGO_MANIFEST_DIR")).join("scene_descriptions/bounding-boxes.yml"),
-    )
-    .unwrap();
-
-    let mut scene = yaml_parser::parse(&yaml).unwrap();
-    scene.override_resolution(1920, 1080);
-
     let mut world = World::empty();
-    world.lights.append(&mut scene.lights());
-    world.add(Object::group(scene.objects().unwrap()));
+    world
+        .lights
+        .push(Light::point(Colour::WHITE, Point3D::new(10.0, 5.0, 0.0)));
 
-    let camera = scene.camera().unwrap();
+    world.add(Object::plane().with_material(Material {
+        pattern: Pattern::checkers(Colour::BLACK, Colour::WHITE),
+        ..Default::default()
+    }));
 
-    let canvas = renderer::render(world, camera);
+    let camera = Camera::new(
+        nonzero!(1920u16),
+        nonzero!(1080u16),
+        PI / 3.0,
+        Transform::view_transform(
+            Point3D::new(0.0, 5.0, 0.0),
+            Point3D::new(0.0, 0.0, 10.0),
+            Normal3D::POSITIVE_Y,
+        ),
+    );
+
+    let canvas = renderer::render(world, camera, nonzero!(64u8));
 
     println!("Rendered at {:.2?}", timer.elapsed());
 

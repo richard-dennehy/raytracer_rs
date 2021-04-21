@@ -71,6 +71,10 @@ impl Colour {
     pub fn intensity(&self) -> f64 {
         self.red() + self.blue() + self.green()
     }
+
+    pub fn average(self, other: Self) -> Self {
+        (self + other) * 0.5
+    }
 }
 
 impl Default for Colour {

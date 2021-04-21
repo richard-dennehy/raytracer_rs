@@ -15,10 +15,15 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP write README for YAML parser">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="document YAML format in README file">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/camera/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/camera/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/colour/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/colour/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -384,14 +389,8 @@
       <workItem from="1618653495774" duration="10765000" />
       <workItem from="1618744478136" duration="4676000" />
       <workItem from="1618858165712" duration="2047000" />
-      <workItem from="1618944562265" duration="2307000" />
-    </task>
-    <task id="LOCAL-00102" summary="reduce overhead of rendering loop">
-      <created>1614630705565</created>
-      <option name="number" value="00102" />
-      <option name="presentableId" value="LOCAL-00102" />
-      <option name="project" value="LOCAL" />
-      <updated>1614630705565</updated>
+      <workItem from="1618944562265" duration="2359000" />
+      <workItem from="1619034554204" duration="2305000" />
     </task>
     <task id="LOCAL-00103" summary="reduce number of benchmarks">
       <created>1614717046967</created>
@@ -729,7 +728,14 @@
       <option name="project" value="LOCAL" />
       <updated>1618860211930</updated>
     </task>
-    <option name="localTasksCounter" value="151" />
+    <task id="LOCAL-00151" summary="document YAML format in README file">
+      <created>1618946888463</created>
+      <option name="number" value="00151" />
+      <option name="presentableId" value="LOCAL-00151" />
+      <option name="project" value="LOCAL" />
+      <updated>1618946888464</updated>
+    </task>
+    <option name="localTasksCounter" value="152" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -755,7 +761,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP fix world function to calculate direct light on a point" />
     <MESSAGE value="allow light to partially pass through transparent objects" />
     <MESSAGE value="WIP allow transparent material colour to affect light transmission" />
     <MESSAGE value="WIP (slightly less) allow transparent material colour to affect light transmission" />
@@ -780,7 +785,8 @@
     <MESSAGE value="update YAML parser to support dragon file&#10;&#10;- support loading wavefront obj files from YAML" />
     <MESSAGE value="allow group materials to override children" />
     <MESSAGE value="WIP write README for YAML parser" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP write README for YAML parser" />
+    <MESSAGE value="document YAML format in README file" />
+    <option name="LAST_COMMIT_MESSAGE" value="document YAML format in README file" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
