@@ -1,28 +1,101 @@
 use crate::{Camera, Canvas, World};
-use rand::Rng;
-use std::num::NonZeroU8;
+use std::slice::Iter;
 
 #[cfg(test)]
 mod tests;
 
-pub fn render(world: World, camera: Camera, samples: NonZeroU8) -> Canvas {
+pub fn render(world: World, camera: Camera, subsamples: Subsamples) -> Canvas {
     let mut canvas =
         Canvas::new(camera.width(), camera.height()).expect("Camera dimensions are too large");
 
     canvas.draw(|x, y| {
         let centre_colour = world.colour_at(camera.ray_at(x, y, 0.5, 0.5));
 
-        // faster to generate a single `rng` instance as opposed to once per sample
-        let mut rng = rand::thread_rng();
-        let mut random_offset = || rng.gen::<f64>();
-
-        (0..samples.get() - 1)
-            .into_iter()
-            .fold(centre_colour, |acc, _| {
-                let sample = world.colour_at(camera.ray_at(x, y, random_offset(), random_offset()));
+        subsamples
+            .offsets()
+            .fold(centre_colour, |acc, (x_offset, y_offset)| {
+                let sample = world.colour_at(camera.ray_at(x, y, *x_offset, *y_offset));
                 acc.average(sample)
             })
     });
 
     canvas
+}
+
+pub enum Subsamples {
+    /// only exact centre of pixel
+    None,
+    /// centre and four corners
+    X4,
+    /// centre, corners, and mid-points between corners (the centre of each edge)
+    X8,
+    /// centre, corners, edge mid-points, and halfway point between each point and the centre
+    X16,
+}
+
+impl Subsamples {
+    const TOP_LEFT: (f64, f64) = (0.0, 0.0);
+    const TOP_MIDDLE: (f64, f64) = (0.5, 0.0);
+    const TOP_RIGHT: (f64, f64) = (1.0, 0.0);
+
+    const BOTTOM_LEFT: (f64, f64) = (0.0, 1.0);
+    const BOTTOM_MIDDLE: (f64, f64) = (0.5, 1.0);
+    const BOTTOM_RIGHT: (f64, f64) = (1.0, 1.0);
+
+    const LEFT_MIDDLE: (f64, f64) = (0.0, 0.5);
+    const RIGHT_MIDDLE: (f64, f64) = (1.0, 0.5);
+
+    const TOP_LEFT_HALFWAY: (f64, f64) = (0.25, 0.25);
+    const TOP_MIDDLE_HALFWAY: (f64, f64) = (0.5, 0.25);
+    const TOP_RIGHT_HALFWAY: (f64, f64) = (0.75, 0.25);
+
+    const BOTTOM_LEFT_HALFWAY: (f64, f64) = (0.25, 0.75);
+    const BOTTOM_MIDDLE_HALFWAY: (f64, f64) = (0.5, 0.75);
+    const BOTTOM_RIGHT_HALFWAY: (f64, f64) = (0.75, 0.75);
+
+    const LEFT_MIDDLE_HALFWAY: (f64, f64) = (0.25, 0.5);
+    const RIGHT_MIDDLE_HALFWAY: (f64, f64) = (0.75, 0.5);
+
+    pub fn offsets(&self) -> Iter<(f64, f64)> {
+        match self {
+            Subsamples::None => [].iter(),
+            Subsamples::X4 => [
+                Self::TOP_LEFT,
+                Self::TOP_RIGHT,
+                Self::BOTTOM_LEFT,
+                Self::BOTTOM_RIGHT,
+            ]
+            .iter(),
+            Subsamples::X8 => [
+                Self::TOP_LEFT,
+                Self::TOP_MIDDLE,
+                Self::TOP_RIGHT,
+                Self::BOTTOM_LEFT,
+                Self::BOTTOM_MIDDLE,
+                Self::BOTTOM_RIGHT,
+                Self::LEFT_MIDDLE,
+                Self::RIGHT_MIDDLE,
+            ]
+            .iter(),
+            Subsamples::X16 => [
+                Self::TOP_LEFT,
+                Self::TOP_MIDDLE,
+                Self::TOP_RIGHT,
+                Self::BOTTOM_LEFT,
+                Self::BOTTOM_MIDDLE,
+                Self::BOTTOM_RIGHT,
+                Self::LEFT_MIDDLE,
+                Self::RIGHT_MIDDLE,
+                Self::TOP_LEFT_HALFWAY,
+                Self::TOP_MIDDLE_HALFWAY,
+                Self::TOP_RIGHT_HALFWAY,
+                Self::BOTTOM_LEFT_HALFWAY,
+                Self::BOTTOM_MIDDLE_HALFWAY,
+                Self::BOTTOM_RIGHT_HALFWAY,
+                Self::LEFT_MIDDLE_HALFWAY,
+                Self::RIGHT_MIDDLE_HALFWAY,
+            ]
+            .iter(),
+        }
+    }
 }

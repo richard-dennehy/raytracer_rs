@@ -631,7 +631,6 @@ dependencies = [
  "image",
  "nonzero_ext",
  "proptest",
- "rand",
  "rayon",
  "yaml-rust",
 ]
