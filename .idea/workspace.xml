@@ -15,12 +15,10 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP Subsample anti-aliasing">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="Implement subsample anti-aliasing">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -389,13 +387,7 @@
       <workItem from="1618944562265" duration="2359000" />
       <workItem from="1619034554204" duration="2320000" />
       <workItem from="1619117968781" duration="2346000" />
-    </task>
-    <task id="LOCAL-00104" summary="WIP refactor transformation matrix to pre-calculate determinant">
-      <created>1614804309465</created>
-      <option name="number" value="00104" />
-      <option name="presentableId" value="LOCAL-00104" />
-      <option name="project" value="LOCAL" />
-      <updated>1614804309465</updated>
+      <workItem from="1619206108228" duration="2468000" />
     </task>
     <task id="LOCAL-00105" summary="still WIP refactor transformation matrix to pre-calculate determinant">
       <created>1614889311695</created>
@@ -733,7 +725,14 @@
       <option name="project" value="LOCAL" />
       <updated>1619036876313</updated>
     </task>
-    <option name="localTasksCounter" value="153" />
+    <task id="LOCAL-00153" summary="Implement subsample anti-aliasing">
+      <created>1619206159732</created>
+      <option name="number" value="00153" />
+      <option name="presentableId" value="LOCAL-00153" />
+      <option name="project" value="LOCAL" />
+      <updated>1619206159732</updated>
+    </task>
+    <option name="localTasksCounter" value="154" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -759,7 +758,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP allow transparent material colour to affect light transmission" />
     <MESSAGE value="WIP (slightly less) allow transparent material colour to affect light transmission" />
     <MESSAGE value="add tests for tinted shadows" />
     <MESSAGE value="move parallel rendering into canvas" />
@@ -784,7 +782,8 @@
     <MESSAGE value="WIP write README for YAML parser" />
     <MESSAGE value="document YAML format in README file" />
     <MESSAGE value="WIP Subsample anti-aliasing" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP Subsample anti-aliasing" />
+    <MESSAGE value="Implement subsample anti-aliasing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implement subsample anti-aliasing" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

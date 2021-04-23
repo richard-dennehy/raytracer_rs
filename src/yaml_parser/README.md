@@ -12,7 +12,7 @@ All scenes must have a camera (otherwise there's no perspective to render from) 
 
 A camera description must contain:
  - `width` and `height` (positive integers)
- - a `field-of-view` (in radians, i.e. `2.0` is 360 degrees)
+ - a `field-of-view` (in radians, i.e. `3.1415[..]` is 180 degrees)
  - `from` (the camera's position), `to` (the focal point), and `up`, as arrays of 3 floating point numbers
 
 ### Example
@@ -215,7 +215,7 @@ Individual transformations in the array take effect in the order they are define
 A transform may be one of:
  - A string value referencing a `define`
  - A `translate` - an array of four values, where the first value is `translate`, and the remaining three are the `x`, `y`, and `z` values
- - A rotation - an array of two values: a string `rotate-x`, `rotate-y`, or `rotate-z`, and a value in **radians** i.e. `2` will rotate 360 degrees
+ - A rotation - an array of two values: a string `rotate-x`, `rotate-y`, or `rotate-z`, and a value in **radians** i.e. `3.1415[..]` will rotate 180 degrees
  - A `scale` - an array of four values, where the first value is `scale`, and the remaining three are the `x`, `y`, and `z` factors
 
 Shear transforms are not currently supported.
