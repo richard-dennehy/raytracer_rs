@@ -15,15 +15,9 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="example for cylinder acne">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="fix acne on cylinder caps">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/camera/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/camera/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/matrix/underlying/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/underlying/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/cylinder.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cylinder.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/world/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -398,14 +392,7 @@
       <workItem from="1619034554204" duration="2320000" />
       <workItem from="1619117968781" duration="2346000" />
       <workItem from="1619206108228" duration="2491000" />
-      <workItem from="1619262875318" duration="1849000" />
-    </task>
-    <task id="LOCAL-00106" summary="pre-calculate Transform inverse">
-      <created>1614984267978</created>
-      <option name="number" value="00106" />
-      <option name="presentableId" value="LOCAL-00106" />
-      <option name="project" value="LOCAL" />
-      <updated>1614984267978</updated>
+      <workItem from="1619262875318" duration="3998000" />
     </task>
     <task id="LOCAL-00107" summary="WIP refactor Transform fluent API">
       <created>1615035304563</created>
@@ -743,7 +730,14 @@
       <option name="project" value="LOCAL" />
       <updated>1619208599581</updated>
     </task>
-    <option name="localTasksCounter" value="155" />
+    <task id="LOCAL-00155" summary="fix acne on cylinder caps">
+      <created>1619265016245</created>
+      <option name="number" value="00155" />
+      <option name="presentableId" value="LOCAL-00155" />
+      <option name="project" value="LOCAL" />
+      <updated>1619265016245</updated>
+    </task>
+    <option name="localTasksCounter" value="156" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -769,7 +763,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add tests for tinted shadows" />
     <MESSAGE value="move parallel rendering into canvas" />
     <MESSAGE value="failed attempt to convert to 1D Vector in Canvas (causes regression)" />
     <MESSAGE value="introduce benchmarks for scenes with lots of objects" />
@@ -794,7 +787,8 @@
     <MESSAGE value="WIP Subsample anti-aliasing" />
     <MESSAGE value="Implement subsample anti-aliasing" />
     <MESSAGE value="example for cylinder acne" />
-    <option name="LAST_COMMIT_MESSAGE" value="example for cylinder acne" />
+    <MESSAGE value="fix acne on cylinder caps" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix acne on cylinder caps" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

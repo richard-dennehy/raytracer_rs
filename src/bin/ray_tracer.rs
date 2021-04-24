@@ -2,8 +2,6 @@ extern crate ray_tracer;
 
 use ray_tracer::renderer::Subsamples;
 use ray_tracer::*;
-use std::fs;
-use std::path::Path;
 use std::time::Instant;
 
 /// Notes on axes and rotation:
@@ -16,20 +14,60 @@ use std::time::Instant;
 fn main() -> Result<(), String> {
     let timer = Instant::now();
 
-    let yaml = fs::read_to_string(
-        Path::new(env!("CARGO_MANIFEST_DIR")).join("scene_descriptions/bounding-boxes.yml"),
-    )
-    .unwrap();
-
-    let mut scene = yaml_parser::parse(&yaml).unwrap();
-    scene.override_resolution(1920, 1080);
-
     let mut world = World::empty();
-    world.lights.append(&mut scene.lights());
-    world.add(Object::group(scene.objects().unwrap()));
 
-    let camera = scene.camera().unwrap();
+    world.lights.push(Light::point(
+        Colour::WHITE,
+        Point3D::new(-10.0, 100.0, -100.0),
+    ));
 
+    let pedestal = Object::cylinder()
+        .min_y(-0.15)
+        .max_y(0.0)
+        .capped()
+        .build()
+        .with_material(Material {
+            pattern: Pattern::solid(Colour::RED),
+            ambient: 0.0,
+            specular: 0.0,
+            diffuse: 1.0,
+            ..Default::default()
+        });
+    world.add(pedestal);
+
+    let glass_box = Object::cube()
+        .with_material(Material {
+            pattern: Pattern::solid(Colour::greyscale(0.1)),
+            casts_shadow: false,
+            ambient: 0.0,
+            diffuse: 1.0,
+            specular: 0.0,
+            transparency: 0.9,
+            refractive: 1.0,
+            ..Default::default()
+        })
+        .transformed(
+            Transform::identity()
+                .scale_x(0.5002689)
+                .scale_y(0.346323)
+                .scale_z(0.2181922)
+                .translate_x(-0.0338752)
+                .translate_y(0.346323)
+                .translate_z(0.0598042),
+        );
+
+    world.add(glass_box);
+
+    let camera = Camera::new(
+        nonzero_ext::nonzero!(1920u16),
+        nonzero_ext::nonzero!(1080u16),
+        1.2,
+        Transform::view_transform(
+            Point3D::new(0.0, 2.5, -10.0),
+            Point3D::new(0.0, 1.0, 0.0),
+            Normal3D::POSITIVE_Y,
+        ),
+    );
     let canvas = renderer::render(world, camera, Subsamples::None);
 
     println!("Rendered at {:.2?}", timer.elapsed());
