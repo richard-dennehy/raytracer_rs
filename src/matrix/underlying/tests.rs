@@ -343,7 +343,7 @@ mod property_tests {
             // rounding errors become significant
             fn assert_close_enough(f: f64, s: f64) {
                 assert!(
-                    approx_eq!(f64, f, s, epsilon = f32::EPSILON as f64),
+                    approx_eq!(f64, f, s, epsilon = (f32::EPSILON as f64) * 2.0),
                     "not approximately equal: {} != {}",
                     f,
                     s

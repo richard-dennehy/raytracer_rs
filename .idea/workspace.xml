@@ -15,10 +15,15 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="Implement subsample anti-aliasing">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="example for cylinder acne">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/camera/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/camera/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/matrix/underlying/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/underlying/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/cylinder.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cylinder.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/world/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,8 +115,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test yaml_parser::tests::basic_parsing::should_parse_cylinder_with_min_max_and_capped" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib yaml_parser::tests::basic_parsing::should_parse_cylinder_with_min_max_and_capped -- --exact" />
+    <configuration name="Test world::tests::shading::a_capped_cylinder_should_not_have_acne" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib world::tests::shading::a_capped_cylinder_should_not_have_acne -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -204,22 +209,27 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.bench loop" />
-      <item itemvalue="Cargo.Test yaml_parser::tests::basic_parsing::should_parse_cylinder_with_min_max_and_capped" />
       <item itemvalue="Cargo.bench" />
       <item itemvalue="Cargo.run (release)" />
       <item itemvalue="Cargo.test" />
       <item itemvalue="Cargo.Test yaml_parser::tests::basic_parsing::should_parse_scene_description" />
+      <item itemvalue="Cargo.Test world::tests::shading::a_capped_cylinder_should_not_have_acne" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.Test world::tests::shading::a_capped_cylinder_should_not_have_acne" />
         <item itemvalue="Cargo.Test yaml_parser::tests::basic_parsing::should_parse_scene_description" />
         <item itemvalue="Cargo.bench" />
-        <item itemvalue="Cargo.Test yaml_parser::tests::basic_parsing::should_parse_cylinder_with_min_max_and_capped" />
       </list>
     </recent_temporary>
   </component>
@@ -387,14 +397,8 @@
       <workItem from="1618944562265" duration="2359000" />
       <workItem from="1619034554204" duration="2320000" />
       <workItem from="1619117968781" duration="2346000" />
-      <workItem from="1619206108228" duration="2468000" />
-    </task>
-    <task id="LOCAL-00105" summary="still WIP refactor transformation matrix to pre-calculate determinant">
-      <created>1614889311695</created>
-      <option name="number" value="00105" />
-      <option name="presentableId" value="LOCAL-00105" />
-      <option name="project" value="LOCAL" />
-      <updated>1614889311699</updated>
+      <workItem from="1619206108228" duration="2491000" />
+      <workItem from="1619262875318" duration="1849000" />
     </task>
     <task id="LOCAL-00106" summary="pre-calculate Transform inverse">
       <created>1614984267978</created>
@@ -732,7 +736,14 @@
       <option name="project" value="LOCAL" />
       <updated>1619206159732</updated>
     </task>
-    <option name="localTasksCounter" value="154" />
+    <task id="LOCAL-00154" summary="example for cylinder acne">
+      <created>1619208599581</created>
+      <option name="number" value="00154" />
+      <option name="presentableId" value="LOCAL-00154" />
+      <option name="project" value="LOCAL" />
+      <updated>1619208599581</updated>
+    </task>
+    <option name="localTasksCounter" value="155" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -758,7 +769,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP (slightly less) allow transparent material colour to affect light transmission" />
     <MESSAGE value="add tests for tinted shadows" />
     <MESSAGE value="move parallel rendering into canvas" />
     <MESSAGE value="failed attempt to convert to 1D Vector in Canvas (causes regression)" />
@@ -783,7 +793,8 @@
     <MESSAGE value="document YAML format in README file" />
     <MESSAGE value="WIP Subsample anti-aliasing" />
     <MESSAGE value="Implement subsample anti-aliasing" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implement subsample anti-aliasing" />
+    <MESSAGE value="example for cylinder acne" />
+    <option name="LAST_COMMIT_MESSAGE" value="example for cylinder acne" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -797,6 +808,26 @@
           <url>file://$PROJECT_DIR$/src/world/tests.rs</url>
           <line>48</line>
           <option name="timeStamp" value="29" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/object/mod.rs</url>
+          <line>253</line>
+          <option name="timeStamp" value="33" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/world/mod.rs</url>
+          <line>141</line>
+          <option name="timeStamp" value="44" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/object/cylinder.rs</url>
+          <line>59</line>
+          <option name="timeStamp" value="45" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/ray/mod.rs</url>
+          <line>84</line>
+          <option name="timeStamp" value="46" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

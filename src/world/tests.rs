@@ -232,7 +232,7 @@ mod shading {
         let rays = (0..5)
             .into_iter()
             .flat_map(|x| (0..5).into_iter().map(move |y| (x, y)))
-            .map(|(x, y)| camera.ray_at(x, y))
+            .map(|(x, y)| camera.ray_at(x, y, 0.5, 0.5))
             .collect::<Vec<_>>();
 
         rays.into_iter()
@@ -265,6 +265,70 @@ mod shading {
 
         let colour = world.colour_at(Ray::new(Point3D::new(-1.0, 0.0, 0.0), Normal3D::POSITIVE_X));
         assert_eq!(colour, Colour::GREEN);
+    }
+
+    #[test]
+    fn a_capped_cylinder_should_not_have_acne() {
+        let mut world = World::empty();
+        world.lights.push(Light::point(
+            Colour::WHITE,
+            Point3D::new(-10.0, 100.0, -100.0),
+        ));
+
+        let pedestal = Object::cylinder()
+            .min_y(-0.15)
+            .max_y(0.0)
+            .capped()
+            .build()
+            .transformed(Transform::identity().scale_x(30.0).scale_z(30.0))
+            .with_material(Material {
+                pattern: Pattern::solid(Colour::RED),
+                ambient: 0.0,
+                specular: 0.0,
+                diffuse: 1.0,
+                ..Default::default()
+            });
+
+        world.add(pedestal);
+
+        let camera = Camera::new(
+            nonzero_ext::nonzero!(1920u16),
+            nonzero_ext::nonzero!(1080u16),
+            1.2,
+            Transform::view_transform(
+                Point3D::new(0.0, 2.5, -10.0),
+                Point3D::new(0.0, 1.0, 0.0),
+                Normal3D::POSITIVE_Y,
+            ),
+        );
+
+        let expected = Colour::new(0.6957377128787232, 0.0, 0.0);
+
+        let colour = world.colour_at(camera.ray_at(62, 592, 0.5, 0.5));
+        assert!(
+            approx_eq!(Colour, colour, expected, epsilon = f32::EPSILON as f64),
+            "{:?} != {:?}",
+            expected,
+            colour
+        );
+
+        let expected = Colour::new(0.6957372881303316, 0.0, 0.0);
+        let colour = world.colour_at(camera.ray_at(63, 592, 0.5, 0.5));
+        assert!(
+            approx_eq!(Colour, colour, expected, epsilon = f32::EPSILON as f64),
+            "{:?} != {:?}",
+            expected,
+            colour
+        );
+
+        let expected = Colour::new(0.6957368602150138, 0.0, 0.0);
+        let colour = world.colour_at(camera.ray_at(64, 592, 0.5, 0.5));
+        assert!(
+            approx_eq!(Colour, colour, expected, epsilon = f32::EPSILON as f64),
+            "{:?} != {:?}",
+            expected,
+            colour
+        );
     }
 }
 
@@ -704,7 +768,7 @@ mod transparency {
                 Normal3D::POSITIVE_Y,
             ),
         );
-        let ray = camera.ray_at(550, 450);
+        let ray = camera.ray_at(550, 450, 0.5, 0.5);
 
         let slightly_red = Colour::new(0.8358840839713972, 0.7392412057309325, 0.7392412057309325);
         assert_eq!(world.colour_at(ray), slightly_red);
@@ -753,7 +817,7 @@ mod transparency {
                 Normal3D::POSITIVE_Y,
             ),
         );
-        let ray = camera.ray_at(550, 450);
+        let ray = camera.ray_at(550, 450, 0.5, 0.5);
 
         let slightly_yellow =
             Colour::new(0.7392412057309325, 0.7875626448511649, 0.7875626448511649);

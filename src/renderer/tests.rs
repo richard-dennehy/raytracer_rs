@@ -20,7 +20,7 @@ mod unit_tests {
             view_transform,
         );
 
-        let canvas = render(World::default(), camera);
+        let canvas = render(World::default(), camera, Subsamples::None);
         let expected = Colour::new(
             0.38066119308103435,
             0.47582649135129296,

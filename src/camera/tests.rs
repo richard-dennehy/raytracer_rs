@@ -37,7 +37,7 @@ mod unit_tests {
             Transform::identity(),
         );
 
-        let ray = camera.ray_at(100, 50);
+        let ray = camera.ray_at(100, 50, 0.5, 0.5);
         assert_eq!(ray.origin, Point3D::new(0.0, 0.0, 0.0));
         assert!(approx_eq!(
             Vector3D,
@@ -56,7 +56,7 @@ mod unit_tests {
             Transform::identity(),
         );
 
-        let ray = camera.ray_at(0, 0);
+        let ray = camera.ray_at(0, 0, 0.5, 0.5);
         assert_eq!(ray.origin, Point3D::new(0.0, 0.0, 0.0));
         assert!(
             approx_eq!(
@@ -83,7 +83,7 @@ mod unit_tests {
             transform,
         );
 
-        let ray = camera.ray_at(100, 50);
+        let ray = camera.ray_at(100, 50, 0.5, 0.5);
         assert_eq!(ray.origin, Point3D::new(0.0, 2.0, -5.0));
         assert!(
             approx_eq!(

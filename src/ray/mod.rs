@@ -77,7 +77,8 @@ impl<'obj> HitData<'obj> {
         let eye = -ray.direction.normalised();
         let normal = intersection.with.normal_at(point, intersection.uv);
 
-        let inside = normal.dot(eye) < 0.0;
+        let dot = normal.dot(eye);
+        let inside = dot < 0.0;
 
         let normal = if inside { -normal } else { normal };
         let offset = normal * (f32::EPSILON as f64); // f64 epsilon isn't sufficient to compensate for rounding errors
