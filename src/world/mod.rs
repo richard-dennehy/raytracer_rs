@@ -71,13 +71,13 @@ impl World {
     }
 
     pub fn colour_at(&self, ray: Ray) -> Colour {
-        fn inner(this: &World, ray: Ray, limit: u8) -> Colour {
+        fn inner(this: &World, ray: Ray, last_hit: Option<u32>, limit: u8) -> Colour {
             if limit == 0 {
                 return Colour::BLACK;
             }
 
             let intersections = this.intersect(&ray);
-            if let Some(hit) = intersections.hit() {
+            if let Some(hit) = intersections.hit(last_hit) {
                 let hit_data = HitData::from(&ray, hit, intersections);
                 let surface = this.shade_hit(&hit_data);
 
@@ -87,7 +87,8 @@ impl World {
                     let reflection_vector =
                         ray.direction.normalised().reflect_through(hit_data.normal);
                     let reflection = Ray::new(hit_data.over_point, reflection_vector);
-                    inner(this, reflection, limit - 1) * hit_data.object.material.reflective
+                    inner(this, reflection, Some(hit_data.object.id()), limit - 1)
+                        * hit_data.object.material.reflective
                 };
 
                 if hit_data.object.material.transparency == 0.0 {
@@ -105,7 +106,7 @@ impl World {
                         let refracted_ray =
                             Ray::new(hit_data.under_point, refracted_direction.normalised());
 
-                        inner(this, refracted_ray, limit - 1)
+                        inner(this, refracted_ray, Some(hit_data.object.id()), limit - 1)
                             * hit_data.object.material.transparency
                     };
 
@@ -123,7 +124,7 @@ impl World {
             }
         }
 
-        inner(self, ray, self.settings.recursion_depth)
+        inner(self, ray, None, self.settings.recursion_depth)
     }
 
     fn intersect(&self, ray: &Ray) -> Intersections {
@@ -137,14 +138,15 @@ impl World {
         self.lights
             .iter()
             .map(|light| {
-                let direct_light = self.direct_light(hit_data.over_point, light);
+                let direct_light =
+                    self.direct_light(hit_data.over_point, light, hit_data.object.id());
 
                 hit_data.colour(direct_light, light)
             })
             .sum()
     }
 
-    fn direct_light(&self, point: Point3D, light: &Light) -> Colour {
+    fn direct_light(&self, point: Point3D, light: &Light, target_id: u32) -> Colour {
         let light_vector = light.position() - point;
         let light_distance = light_vector.magnitude();
         let light_vector = light_vector.normalised();
@@ -153,6 +155,7 @@ impl World {
 
         self.intersect(&ray)
             .into_iter()
+            .filter(|i| i.with.id() != target_id || i.t >= (f32::EPSILON as f64))
             .filter(|i| i.t >= 0.0 && i.t < light_distance)
             .fold(light.colour(), |light, hit| {
                 if light == Colour::BLACK {

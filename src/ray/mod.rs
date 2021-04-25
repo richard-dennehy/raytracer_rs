@@ -1,6 +1,5 @@
 use crate::matrix::Matrix4D;
 use crate::{Colour, Light, Normal3D, Object, Point3D, Vector, Vector3D};
-use std::slice::Iter;
 use std::vec::IntoIter;
 
 #[cfg(test)]
@@ -77,13 +76,11 @@ impl<'obj> HitData<'obj> {
         let eye = -ray.direction.normalised();
         let normal = intersection.with.normal_at(point, intersection.uv);
 
-        let dot = normal.dot(eye);
-        let inside = dot < 0.0;
+        let inside = normal.dot(eye) < 0.0;
 
         let normal = if inside { -normal } else { normal };
-        let offset = normal * (f32::EPSILON as f64); // f64 epsilon isn't sufficient to compensate for rounding errors
-        let over_point = point + offset;
-        let under_point = point - offset;
+        let over_point = point;
+        let under_point = point;
 
         // calculate refraction changes from entering one material and exiting another (including the empty space)
         let mut entered_refractive = 1.0;
@@ -239,8 +236,14 @@ impl<'scene> Intersections<'scene> {
         self.0.is_empty()
     }
 
-    pub fn hit(&self) -> Option<Intersection<'scene>> {
-        self.0.iter().find(|&intersect| intersect.t >= 0.0).cloned()
+    pub fn hit(&self, last: Option<u32>) -> Option<Intersection<'scene>> {
+        self.0
+            .iter()
+            .filter(|&intersect| {
+                Some(intersect.with.id()) != last || intersect.t >= (f32::EPSILON as f64)
+            })
+            .find(|&intersect| intersect.t >= 0.0)
+            .cloned()
     }
 
     pub fn append(&mut self, mut other: Intersections<'scene>) {
@@ -254,10 +257,6 @@ impl<'scene> Intersections<'scene> {
 
     pub fn into_iter(self) -> IntoIter<Intersection<'scene>> {
         self.0.into_iter()
-    }
-
-    pub fn iter(&self) -> Iter<Intersection<'scene>> {
-        self.0.iter()
     }
 
     fn sort(&mut self) {

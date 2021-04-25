@@ -104,7 +104,7 @@ mod shading {
             .expect("Default world should have objects");
 
         let intersections = sphere.intersect(&ray);
-        let intersection = intersections.hit();
+        let intersection = intersections.hit(None);
         assert!(intersection.is_some());
         let intersection = intersection.unwrap();
 
@@ -328,6 +328,94 @@ mod shading {
             "{:?} != {:?}",
             expected,
             colour
+        );
+    }
+
+    #[test]
+    fn overlapping_objects_should_not_have_acne() {
+        let mut world = World::empty();
+
+        world.lights.push(Light::point(
+            Colour::WHITE,
+            Point3D::new(-10.0, 100.0, -100.0),
+        ));
+
+        let pedestal = Object::cylinder()
+            .min_y(-0.15)
+            .max_y(0.0)
+            .capped()
+            .build()
+            .with_material(Material {
+                pattern: Pattern::solid(Colour::RED),
+                ambient: 0.0,
+                specular: 0.0,
+                diffuse: 1.0,
+                ..Default::default()
+            });
+        world.add(pedestal);
+
+        let glass_box = Object::cube()
+            .with_material(Material {
+                pattern: Pattern::solid(Colour::greyscale(0.1)),
+                casts_shadow: false,
+                ambient: 0.0,
+                diffuse: 1.0,
+                specular: 0.0,
+                transparency: 0.9,
+                refractive: 1.0,
+                ..Default::default()
+            })
+            .transformed(
+                Transform::identity()
+                    .scale_x(0.5002689)
+                    .scale_y(0.346323)
+                    .scale_z(0.2181922)
+                    .translate_x(-0.0338752)
+                    .translate_y(0.346323)
+                    .translate_z(0.0598042),
+            );
+
+        world.add(glass_box);
+
+        let camera = Camera::new(
+            nonzero_ext::nonzero!(1920u16),
+            nonzero_ext::nonzero!(1080u16),
+            1.2,
+            Transform::view_transform(
+                Point3D::new(0.0, 2.5, -10.0),
+                Point3D::new(0.0, 1.0, 0.0),
+                Normal3D::POSITIVE_Y,
+            ),
+        );
+
+        // let expected = Colour::new(0.7050813513879224, 0.07052098992794008, 0.07052098992794008);
+        // let actual = world.colour_at(camera.ray_at(889, 669, 0.5, 0.5));
+        //
+        // assert!(
+        //     approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
+        //     "{:?} != {:?}",
+        //     expected,
+        //     actual
+        // );
+
+        let expected = Colour::new(0.7050813513879224, 0.07052098992794008, 0.07052098992794008);
+        let actual = world.colour_at(camera.ray_at(890, 669, 0.5, 0.5));
+
+        assert!(
+            approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
+            "{:?} != {:?}",
+            expected,
+            actual
+        );
+
+        let expected = Colour::new(0.7050813513879224, 0.07052098992794008, 0.07052098992794008);
+        let actual = world.colour_at(camera.ray_at(891, 669, 0.5, 0.5));
+
+        assert!(
+            approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
+            "{:?} != {:?}",
+            expected,
+            actual
         );
     }
 }

@@ -22,7 +22,7 @@ mod ray_unit_tests {
             Intersection::new(1.0, &sphere),
             Intersection::new(2.0, &sphere),
         ]);
-        let hit = intersections.hit();
+        let hit = intersections.hit(None);
 
         assert!(hit.is_some());
         let hit = hit.unwrap();
@@ -38,7 +38,7 @@ mod ray_unit_tests {
             Intersection::new(-1.0, &sphere),
             Intersection::new(1.0, &sphere),
         ]);
-        let hit = intersections.hit();
+        let hit = intersections.hit(None);
 
         assert!(hit.is_some());
         let hit = hit.unwrap();
@@ -54,7 +54,7 @@ mod ray_unit_tests {
             Intersection::new(-2.0, &sphere),
             Intersection::new(-1.0, &sphere),
         ]);
-        let hit = intersections.hit();
+        let hit = intersections.hit(None);
 
         assert!(hit.is_none());
     }
@@ -68,7 +68,7 @@ mod ray_unit_tests {
             Intersection::new(-3.0, &sphere),
             Intersection::new(2.0, &sphere),
         ]);
-        let hit = intersections.hit();
+        let hit = intersections.hit(None);
 
         assert!(hit.is_some());
         let hit = hit.unwrap();
@@ -311,7 +311,7 @@ mod ray_unit_tests {
         );
         let ray = Ray::new(Point3D::new(-0.2, 0.3, -2.0), Normal3D::POSITIVE_Z);
         let intersections = triangle.intersect(&ray);
-        let intersection = intersections.hit();
+        let intersection = intersections.hit(None);
         assert!(intersection.is_some());
         let hit = HitData::from(&ray, intersection.unwrap(), intersections);
         assert_eq!(
@@ -332,7 +332,7 @@ mod ray_unit_tests {
         let ray = Ray::new(Point3D::new(0.0, 0.0, SQRT_2 / 2.0), Normal3D::POSITIVE_Y);
 
         let intersections = shape.intersect(&ray);
-        let intersection = intersections.hit();
+        let intersection = intersections.hit(None);
         assert!(intersection.is_some());
         let intersection = intersection.unwrap();
 
@@ -357,7 +357,7 @@ mod ray_unit_tests {
         let ray = Ray::new(Point3D::new(0.0, 0.0, 0.0), Normal3D::POSITIVE_Y);
 
         let intersections = shape.intersect(&ray);
-        let intersection = intersections.hit();
+        let intersection = intersections.hit(None);
         assert!(intersection.is_some());
         let intersection = intersection.unwrap();
 
@@ -383,7 +383,7 @@ mod ray_unit_tests {
         let ray = Ray::new(Point3D::new(0.0, 0.99, -2.0), Normal3D::POSITIVE_Z);
 
         let intersections = shape.intersect(&ray);
-        let intersection = intersections.hit();
+        let intersection = intersections.hit(None);
         assert!(intersection.is_some());
         let intersection = intersection.unwrap();
 
@@ -394,5 +394,33 @@ mod ray_unit_tests {
                 .reflectance(hit_data.entered_refractive, hit_data.exited_refractive),
             0.4888143830387389
         );
+    }
+
+    #[test]
+    fn an_intersection_with_the_same_object_at_a_zero_time_should_not_be_a_hit() {
+        let first = Object::plane();
+        let second = Object::plane().transformed(Transform::identity().translate_y(0.1));
+
+        let ray = Ray::new(Point3D::ORIGIN, Normal3D::POSITIVE_Y);
+
+        let intersections = first.intersect(&ray).join(second.intersect(&ray));
+        assert_eq!(intersections.len(), 2);
+
+        let hit = intersections.hit(Some(first.id()));
+        assert!(hit.is_some());
+        assert_eq!(hit.unwrap().with.id(), second.id());
+    }
+
+    #[test]
+    fn an_intersection_with_the_same_object_at_a_non_zero_t_should_be_a_hit() {
+        let object = Object::cube();
+        let ray = Ray::new(Point3D::new(0.0, 0.0, -1.0), Normal3D::POSITIVE_Z);
+
+        let intersections = object.intersect(&ray);
+        assert_eq!(intersections.len(), 2);
+
+        let hit = intersections.hit(Some(object.id()));
+        assert!(hit.is_some());
+        assert_eq!(hit.unwrap().t, 2.0);
     }
 }

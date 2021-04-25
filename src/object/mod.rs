@@ -521,6 +521,7 @@ impl Shape for Plane {
 }
 
 #[derive(Debug, PartialEq)]
+// a 2x2x2 cube, centred at the world Origin
 struct Cube;
 impl Shape for Cube {
     fn object_bounds(&self) -> BoundingBox {
