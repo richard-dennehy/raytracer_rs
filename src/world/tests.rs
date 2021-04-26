@@ -388,32 +388,32 @@ mod shading {
             ),
         );
 
-        // let expected = Colour::new(0.7050813513879224, 0.07052098992794008, 0.07052098992794008);
-        // let actual = world.colour_at(camera.ray_at(889, 669, 0.5, 0.5));
-        //
-        // assert!(
-        //     approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
-        //     "{:?} != {:?}",
-        //     expected,
-        //     actual
-        // );
-
         let expected = Colour::new(0.7050813513879224, 0.07052098992794008, 0.07052098992794008);
-        let actual = world.colour_at(camera.ray_at(890, 669, 0.5, 0.5));
+        let actual = world.colour_at(camera.ray_at(889, 669, 0.5, 0.5));
 
         assert!(
             approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
-            "{:?} != {:?}",
+            "{:?} != {:?} (left)",
             expected,
             actual
         );
 
-        let expected = Colour::new(0.7050813513879224, 0.07052098992794008, 0.07052098992794008);
+        let expected = Colour::new(0.7050788713728109, 0.13397655953467352, 0.13397655953467352);
+        let actual = world.colour_at(camera.ray_at(890, 669, 0.5, 0.5));
+
+        assert!(
+            approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
+            "{:?} != {:?} (middle)",
+            expected,
+            actual
+        );
+
+        let expected = Colour::new(0.7050763886303489, 0.07052050406256043, 0.07052050406256043);
         let actual = world.colour_at(camera.ray_at(891, 669, 0.5, 0.5));
 
         assert!(
             approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
-            "{:?} != {:?}",
+            "{:?} != {:?} (right)",
             expected,
             actual
         );
@@ -858,7 +858,7 @@ mod transparency {
         );
         let ray = camera.ray_at(550, 450, 0.5, 0.5);
 
-        let slightly_red = Colour::new(0.8358840839713972, 0.7392412057309325, 0.7392412057309325);
+        let slightly_red = Colour::new(0.8358840861549649, 0.7392412074801862, 0.7392412074801862);
         assert_eq!(world.colour_at(ray), slightly_red);
     }
 
@@ -908,7 +908,7 @@ mod transparency {
         let ray = camera.ray_at(550, 450, 0.5, 0.5);
 
         let slightly_yellow =
-            Colour::new(0.7392412057309325, 0.7875626448511649, 0.7875626448511649);
+            Colour::new(0.7392412074801862, 0.7875626468175756, 0.7875626468175756);
         assert_eq!(world.colour_at(ray), slightly_yellow);
     }
 }

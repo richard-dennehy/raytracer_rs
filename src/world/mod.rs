@@ -86,7 +86,7 @@ impl World {
                 } else {
                     let reflection_vector =
                         ray.direction.normalised().reflect_through(hit_data.normal);
-                    let reflection = Ray::new(hit_data.over_point, reflection_vector);
+                    let reflection = Ray::new(hit_data.point, reflection_vector);
                     inner(this, reflection, Some(hit_data.object.id()), limit - 1)
                         * hit_data.object.material.reflective
                 };
@@ -104,7 +104,7 @@ impl World {
                             reflection_data.refraction_vector(hit_data.normal, hit_data.eye);
 
                         let refracted_ray =
-                            Ray::new(hit_data.under_point, refracted_direction.normalised());
+                            Ray::new(hit_data.point, refracted_direction.normalised());
 
                         inner(this, refracted_ray, Some(hit_data.object.id()), limit - 1)
                             * hit_data.object.material.transparency
@@ -138,8 +138,7 @@ impl World {
         self.lights
             .iter()
             .map(|light| {
-                let direct_light =
-                    self.direct_light(hit_data.over_point, light, hit_data.object.id());
+                let direct_light = self.direct_light(hit_data.point, light, hit_data.object.id());
 
                 hit_data.colour(direct_light, light)
             })
@@ -149,6 +148,12 @@ impl World {
     fn direct_light(&self, point: Point3D, light: &Light, target_id: u32) -> Colour {
         let light_vector = light.position() - point;
         let light_distance = light_vector.magnitude();
+
+        // if light source is exactly at the intersection point, use full intensity
+        if light_distance <= (f32::EPSILON as f64) {
+            return light.colour();
+        }
+
         let light_vector = light_vector.normalised();
 
         let ray = Ray::new(point, light_vector);

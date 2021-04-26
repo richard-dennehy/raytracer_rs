@@ -116,26 +116,14 @@ mod ray_unit_tests {
         assert!(
             approx_eq!(
                 Point3D,
-                data.over_point,
+                data.point,
                 Point3D::new(0.0, 0.0, -1.0),
                 epsilon = f32::EPSILON as f64
             ),
             "{:?} != {:?}",
-            data.over_point,
+            data.point,
             Point3D::new(0.0, 0.0, -1.0)
         );
-        assert!(
-            approx_eq!(
-                Point3D,
-                data.under_point,
-                Point3D::new(0.0, 0.0, -1.0),
-                epsilon = f32::EPSILON as f64
-            ),
-            "{:?} != {:?}",
-            data.over_point,
-            Point3D::new(0.0, 0.0, -1.0)
-        );
-        assert!(data.over_point.z() < data.under_point.z());
 
         assert_eq!(data.eye, Normal3D::NEGATIVE_Z);
         assert_eq!(data.normal, Normal3D::NEGATIVE_Z);
@@ -157,57 +145,17 @@ mod ray_unit_tests {
         assert!(
             approx_eq!(
                 Point3D,
-                data.over_point,
+                data.point,
                 Point3D::new(0.0, 0.0, 1.0),
                 epsilon = f32::EPSILON as f64
             ),
             "{:?} != {:?}",
-            data.over_point,
+            data.point,
             Point3D::new(0.0, 0.0, 1.0)
         );
-        assert!(
-            approx_eq!(
-                Point3D,
-                data.under_point,
-                Point3D::new(0.0, 0.0, 1.0),
-                epsilon = f32::EPSILON as f64
-            ),
-            "{:?} != {:?}",
-            data.under_point,
-            Point3D::new(0.0, 0.0, 1.0)
-        );
-        assert!(data.over_point.z() < data.under_point.z());
 
         assert_eq!(data.eye, Normal3D::NEGATIVE_Z);
         assert_eq!(data.normal, Normal3D::NEGATIVE_Z);
-    }
-
-    #[test]
-    fn the_hit_data_should_contain_offset_point_for_shadow_calculations() {
-        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z);
-        let sphere = Object::sphere().transformed(Transform::identity().translate_z(1.0));
-
-        let intersections = sphere.intersect(&ray);
-        assert_eq!(intersections.len(), 2);
-
-        let intersection = intersections.0[0].clone();
-        let data = HitData::from(&ray, intersection, intersections);
-        assert!(data.over_point.z() < -f64::EPSILON / 2.0);
-        assert!(data.under_point.z() > data.over_point.z());
-    }
-
-    #[test]
-    fn the_hit_data_should_contain_an_under_offset_point_for_refraction_calculations() {
-        let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z);
-        let sphere = Object::sphere().transformed(Transform::identity().translate_z(1.0));
-
-        let intersections = sphere.intersect(&ray);
-        assert_eq!(intersections.len(), 2);
-
-        let intersection = intersections.0[0].clone();
-        let data = HitData::from(&ray, intersection, intersections);
-        assert!(data.under_point.z() > -f64::EPSILON / 2.0);
-        assert!(data.over_point.z() < data.under_point.z());
     }
 
     #[test]

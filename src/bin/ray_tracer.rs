@@ -2,6 +2,7 @@ extern crate ray_tracer;
 
 use ray_tracer::renderer::Subsamples;
 use ray_tracer::*;
+use std::f64::consts::PI;
 use std::time::Instant;
 
 /// Notes on axes and rotation:
@@ -15,48 +16,18 @@ fn main() -> Result<(), String> {
     let timer = Instant::now();
 
     let mut world = World::empty();
-
     world.lights.push(Light::point(
         Colour::WHITE,
-        Point3D::new(-10.0, 100.0, -100.0),
+        Point3D::new(-10.0, 10.0, -10.0),
     ));
-
-    let pedestal = Object::cylinder()
-        .min_y(-0.15)
-        .max_y(0.0)
-        .capped()
-        .build()
-        .with_material(Material {
-            pattern: Pattern::solid(Colour::RED),
-            ambient: 0.0,
-            specular: 0.0,
-            diffuse: 1.0,
-            ..Default::default()
-        });
-    world.add(pedestal);
-
-    let glass_box = Object::cube()
-        .with_material(Material {
-            pattern: Pattern::solid(Colour::greyscale(0.1)),
-            casts_shadow: false,
-            ambient: 0.0,
-            diffuse: 1.0,
-            specular: 0.0,
-            transparency: 0.9,
-            refractive: 1.0,
-            ..Default::default()
-        })
-        .transformed(
-            Transform::identity()
-                .scale_x(0.5002689)
-                .scale_y(0.346323)
-                .scale_z(0.2181922)
-                .translate_x(-0.0338752)
-                .translate_y(0.346323)
-                .translate_z(0.0598042),
-        );
-
-    world.add(glass_box);
+    world.add(
+        Object::plane()
+            .transformed(Transform::identity().rotate_x(-PI / 4.0))
+            .with_material(Material {
+                pattern: Pattern::checkers(Colour::WHITE, Colour::BLACK),
+                ..Default::default()
+            }),
+    );
 
     let camera = Camera::new(
         nonzero_ext::nonzero!(1920u16),

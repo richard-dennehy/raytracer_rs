@@ -213,6 +213,34 @@ mod unit_tests {
             Colour::WHITE
         );
     }
+
+    #[test]
+    fn a_checkers_pattern_should_round_very_small_fractions_to_the_nearest_integer_rather_than_flooring(
+    ) {
+        let pattern = Pattern::checkers(Colour::WHITE, Colour::BLACK);
+
+        assert_eq!(pattern.colour_at(Point3D::ORIGIN), Colour::WHITE);
+        assert_eq!(
+            pattern.colour_at(Point3D::new(f64::EPSILON, f64::EPSILON, -f64::EPSILON)),
+            Colour::WHITE
+        );
+
+        let slightly_larger = 1.0 + f64::EPSILON;
+        let slightly_smaller = 1.0 - f64::EPSILON;
+
+        assert_eq!(
+            pattern.colour_at(Point3D::new(1.0, 1.0, 1.0)),
+            Colour::BLACK
+        );
+        assert_eq!(
+            pattern.colour_at(Point3D::new(
+                slightly_smaller,
+                slightly_larger,
+                slightly_larger
+            )),
+            Colour::BLACK
+        );
+    }
 }
 
 mod property_tests {

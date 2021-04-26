@@ -60,8 +60,7 @@ pub struct HitData<'obj> {
     pub object: &'obj Object,
     pub eye: Normal3D,
     pub normal: Normal3D,
-    pub over_point: Point3D,
-    pub under_point: Point3D,
+    pub point: Point3D,
     pub entered_refractive: f64,
     pub exited_refractive: f64,
 }
@@ -79,8 +78,6 @@ impl<'obj> HitData<'obj> {
         let inside = normal.dot(eye) < 0.0;
 
         let normal = if inside { -normal } else { normal };
-        let over_point = point;
-        let under_point = point;
 
         // calculate refraction changes from entering one material and exiting another (including the empty space)
         let mut entered_refractive = 1.0;
@@ -120,8 +117,7 @@ impl<'obj> HitData<'obj> {
             object: intersection.with,
             eye,
             normal,
-            over_point,
-            under_point,
+            point,
             entered_refractive,
             exited_refractive,
         }
@@ -129,7 +125,7 @@ impl<'obj> HitData<'obj> {
 
     pub fn colour(&self, direct_light: Colour, light_source: &Light) -> Colour {
         self.object.colour_at(
-            self.over_point,
+            self.point,
             direct_light,
             self.eye,
             self.normal,

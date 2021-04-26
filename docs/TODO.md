@@ -4,3 +4,4 @@
 - Use [approx](https://docs.rs/approx/0.4.0/approx/index.html) instead of `float_cmp`
 - Separate primitives and composites
 - Fix acne in `dragon` scene reflective pedestals
+- Truncate colour precision to e.g. 5 sigfig in tests

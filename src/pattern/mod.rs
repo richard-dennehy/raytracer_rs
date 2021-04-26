@@ -70,6 +70,20 @@ impl Pattern {
 
         let (x, y, z, _) = inverse * object_point;
 
+        // Adjust very small fractions such that when floored, they effectively round to the nearest integer, rather than rounding down.
+        // This prevents acne caused by floating point errors (e.g. `-f64::EPSILON` should ideally floor to 0.0, rather than -1.0)
+        let nudge = |f: f64| {
+            let delta = f.ceil() - f;
+
+            if delta != 0.0 && delta <= (f32::EPSILON as f64) {
+                f + (f32::EPSILON as f64)
+            } else {
+                f
+            }
+        };
+
+        let (x, y, z) = (nudge(x), nudge(y), nudge(z));
+
         match self.kind {
             Solid(colour) => colour,
             Striped(primary, _) if x.floor() % 2.0 == 0.0 => primary,
