@@ -83,7 +83,7 @@ fn single_ray_many_objects(c: &mut Criterion) {
         );
 
         b.iter(|| {
-            black_box(world.colour_at(camera.ray_at(400, 400)));
+            black_box(world.colour_at(camera.ray_at(400, 400, 0.5, 0.5)));
         })
     });
 }
@@ -166,7 +166,7 @@ fn single_ray_many_reflective_refractive_objects(c: &mut Criterion) {
             );
 
             b.iter(|| {
-                black_box(world.colour_at(camera.ray_at(400, 400)));
+                black_box(world.colour_at(camera.ray_at(400, 400, 0.5, 0.5)));
             })
         },
     );

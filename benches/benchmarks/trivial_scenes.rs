@@ -1,5 +1,6 @@
 use criterion::{criterion_group, BenchmarkId, Criterion};
 use nonzero_ext::*;
+use ray_tracer::renderer::Subsamples;
 use ray_tracer::{
     renderer, Camera, Colour, Light, Normal3D, Object, Point3D, Ray, Transform, World,
 };
@@ -43,7 +44,7 @@ fn empty_scene_full_render(c: &mut Criterion) {
                 ),
             );
 
-            renderer::render(world, camera);
+            renderer::render(world, camera, Subsamples::None);
         })
     });
 }
@@ -81,7 +82,7 @@ fn single_object_full_render(c: &mut Criterion) {
                     ),
                 );
 
-                renderer::render(world, camera);
+                renderer::render(world, camera, Subsamples::None);
             })
         });
     }

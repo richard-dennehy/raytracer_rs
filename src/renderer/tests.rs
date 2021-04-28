@@ -1,6 +1,6 @@
 use super::*;
 
-mod unit_tests {
+mod rendering {
     use super::*;
     use crate::{Colour, Normal3D, Point3D, Transform};
     use std::f64::consts::PI;
@@ -34,5 +34,56 @@ mod unit_tests {
             expected,
             actual
         );
+    }
+}
+
+mod samples {
+    use super::*;
+
+    #[test]
+    fn a_sample_grid_of_1_should_cast_a_single_ray_at_the_centre() {
+        let samples = Samples::new(1);
+        let mut offsets = samples.offsets();
+        assert_eq!(offsets.next().unwrap(), &(0.5, 0.5));
+        assert_eq!(offsets.next(), None);
+    }
+
+    #[test]
+    fn a_sample_grid_of_2_should_cast_4_rays() {
+        let samples = Samples::new(2);
+        let mut offsets = samples.offsets();
+        assert_eq!(offsets.next().unwrap(), &(0.25, 0.25));
+        assert_eq!(offsets.next().unwrap(), &(0.75, 0.25));
+        assert_eq!(offsets.next().unwrap(), &(0.25, 0.75));
+        assert_eq!(offsets.next().unwrap(), &(0.75, 0.75));
+        assert_eq!(offsets.next(), None);
+    }
+
+    #[test]
+    fn a_sample_grid_of_4_should_cast_16_rays() {
+        let samples = Samples::new(4);
+        let mut offsets = samples.offsets();
+
+        assert_eq!(offsets.next().unwrap(), &(0.125, 0.125));
+        assert_eq!(offsets.next().unwrap(), &(0.375, 0.125));
+        assert_eq!(offsets.next().unwrap(), &(0.625, 0.125));
+        assert_eq!(offsets.next().unwrap(), &(0.875, 0.125));
+
+        assert_eq!(offsets.next().unwrap(), &(0.125, 0.375));
+        assert_eq!(offsets.next().unwrap(), &(0.375, 0.375));
+        assert_eq!(offsets.next().unwrap(), &(0.625, 0.375));
+        assert_eq!(offsets.next().unwrap(), &(0.875, 0.375));
+
+        assert_eq!(offsets.next().unwrap(), &(0.125, 0.625));
+        assert_eq!(offsets.next().unwrap(), &(0.375, 0.625));
+        assert_eq!(offsets.next().unwrap(), &(0.625, 0.625));
+        assert_eq!(offsets.next().unwrap(), &(0.875, 0.625));
+
+        assert_eq!(offsets.next().unwrap(), &(0.125, 0.875));
+        assert_eq!(offsets.next().unwrap(), &(0.375, 0.875));
+        assert_eq!(offsets.next().unwrap(), &(0.625, 0.875));
+        assert_eq!(offsets.next().unwrap(), &(0.875, 0.875));
+
+        assert_eq!(offsets.next(), None);
     }
 }

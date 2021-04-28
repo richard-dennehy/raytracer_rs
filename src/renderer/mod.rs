@@ -99,3 +99,30 @@ impl Subsamples {
         }
     }
 }
+
+struct Samples {
+    offsets: Vec<(f64, f64)>,
+}
+
+impl Samples {
+    pub fn new(grid_size: u8) -> Self {
+        let initial = 1.0 / (grid_size * 2) as f64;
+        let increment = 1.0 / grid_size as f64;
+
+        let offsets = (0..grid_size)
+            .flat_map(|y| (0..grid_size).map(move |x| (x, y)))
+            .map(|(x, y)| {
+                (
+                    initial + (x as f64) * increment,
+                    initial + (y as f64) * increment,
+                )
+            })
+            .collect();
+
+        Self { offsets }
+    }
+
+    fn offsets(&self) -> Iter<(f64, f64)> {
+        self.offsets.iter()
+    }
+}

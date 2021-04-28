@@ -15,16 +15,13 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP fix acne in overlapping transparent objects">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="remove over_point and under_point and exclude duplicate intersections from hit calculations">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pattern/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pattern/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/world/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/world/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benches/benchmarks/bounding_boxes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/bounding_boxes.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -100,6 +97,11 @@
     </option>
   </component>
   <component name="RunManager" selected="Cargo.test">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -116,8 +118,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test pattern::tests::unit_tests::a_checkers_pattern_should_round_very_small_fractions_to_the_nearest_integer_rather_than_flooring" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib pattern::tests::unit_tests::a_checkers_pattern_should_round_very_small_fractions_to_the_nearest_integer_rather_than_flooring -- --exact" />
+    <configuration name="Test renderer::tests::samples::a_sample_grid_of_2_should_cast_4_rays" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib renderer::tests::samples::a_sample_grid_of_2_should_cast_4_rays -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -131,8 +133,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test world::tests::intersections::a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib world::tests::intersections::a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it -- --exact" />
+    <configuration name="Test renderer::tests::samples::a_sample_grid_of_4_should_cast_16_rays" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib renderer::tests::samples::a_sample_grid_of_4_should_cast_16_rays -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -146,8 +148,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test world::tests::shading::a_checker_pattern_on_a_rotated_plane_should_not_have_noise" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib world::tests::shading::a_checker_pattern_on_a_rotated_plane_should_not_have_noise -- --exact" />
+    <configuration name="bench" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="bench" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -158,22 +160,6 @@
       <option name="isRedirectInput" value="false" />
       <option name="redirectInputPath" value="" />
       <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="bench loop" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
-      <option name="command" value="bench -- empty" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <option name="channel" value="DEFAULT" />
-      <option name="requiredFeatures" value="true" />
-      <option name="allFeatures" value="false" />
-      <option name="emulateTerminal" value="false" />
-      <option name="backtrace" value="SHORT" />
-      <envs />
-      <option name="isRedirectInput" value="false" />
-      <option name="redirectInputPath" value="" />
-      <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
@@ -209,27 +195,21 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
-      <item itemvalue="Cargo.bench loop" />
       <item itemvalue="Cargo.run (release)" />
       <item itemvalue="Cargo.test" />
-      <item itemvalue="Cargo.Test world::tests::intersections::a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it" />
-      <item itemvalue="Cargo.Test world::tests::shading::a_checker_pattern_on_a_rotated_plane_should_not_have_noise" />
-      <item itemvalue="Cargo.Test pattern::tests::unit_tests::a_checkers_pattern_should_round_very_small_fractions_to_the_nearest_integer_rather_than_flooring" />
+      <item itemvalue="Cargo.bench" />
+      <item itemvalue="Cargo.Test renderer::tests::samples::a_sample_grid_of_2_should_cast_4_rays" />
+      <item itemvalue="Cargo.Test renderer::tests::samples::a_sample_grid_of_4_should_cast_16_rays" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.Test renderer::tests::samples::a_sample_grid_of_4_should_cast_16_rays" />
+        <item itemvalue="Cargo.Test renderer::tests::samples::a_sample_grid_of_2_should_cast_4_rays" />
+        <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.run (release)" />
-        <item itemvalue="Cargo.Test pattern::tests::unit_tests::a_checkers_pattern_should_round_very_small_fractions_to_the_nearest_integer_rather_than_flooring" />
-        <item itemvalue="Cargo.Test world::tests::shading::a_checker_pattern_on_a_rotated_plane_should_not_have_noise" />
-        <item itemvalue="Cargo.Test world::tests::intersections::a_hit_on_an_opaque_object_should_not_include_the_colour_of_objects_behind_it" />
       </list>
     </recent_temporary>
   </component>
@@ -401,14 +381,8 @@
       <workItem from="1619262875318" duration="4264000" />
       <workItem from="1619347346894" duration="4052000" />
       <workItem from="1619463794835" duration="19000" />
-      <workItem from="1619463829880" duration="4668000" />
-    </task>
-    <task id="LOCAL-00109" summary="add property test for translation matrix inversion">
-      <created>1615236086919</created>
-      <option name="number" value="00109" />
-      <option name="presentableId" value="LOCAL-00109" />
-      <option name="project" value="LOCAL" />
-      <updated>1615236086920</updated>
+      <workItem from="1619463829880" duration="4746000" />
+      <workItem from="1619636475681" duration="3181000" />
     </task>
     <task id="LOCAL-00110" summary="add property tests for inverting transformations">
       <created>1615320591676</created>
@@ -746,7 +720,14 @@
       <option name="project" value="LOCAL" />
       <updated>1619351741424</updated>
     </task>
-    <option name="localTasksCounter" value="158" />
+    <task id="LOCAL-00158" summary="remove over_point and under_point and exclude duplicate intersections from hit calculations">
+      <created>1619468572832</created>
+      <option name="number" value="00158" />
+      <option name="presentableId" value="LOCAL-00158" />
+      <option name="project" value="LOCAL" />
+      <updated>1619468572832</updated>
+    </task>
+    <option name="localTasksCounter" value="159" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -772,7 +753,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="introduce benchmarks for scenes with lots of objects" />
     <MESSAGE value="implement bounding boxes for primitive objects" />
     <MESSAGE value="implement basic bounding box operations" />
     <MESSAGE value="implement bounding box transformations" />
@@ -797,7 +777,8 @@
     <MESSAGE value="fix acne on cylinder caps" />
     <MESSAGE value="example for acne on overlapping transparent object" />
     <MESSAGE value="WIP fix acne in overlapping transparent objects" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP fix acne in overlapping transparent objects" />
+    <MESSAGE value="remove over_point and under_point and exclude duplicate intersections from hit calculations" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove over_point and under_point and exclude duplicate intersections from hit calculations" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -821,6 +802,11 @@
           <url>file://$PROJECT_DIR$/src/pattern/mod.rs</url>
           <line>80</line>
           <option name="timeStamp" value="65" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/renderer/mod.rs</url>
+          <line>125</line>
+          <option name="timeStamp" value="67" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
