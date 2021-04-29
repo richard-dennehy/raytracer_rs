@@ -15,13 +15,13 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="remove over_point and under_point and exclude duplicate intersections from hit calculations">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP support arbitrary anti-aliasing samples">
+      <change afterPath="$PROJECT_DIR$/benches/benchmarks/anti_aliasing.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/bounding_boxes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/bounding_boxes.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benches/bench_main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/bench_main.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benches/benchmarks/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/renderer/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,12 +96,7 @@
       <command value="cargo bench" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.test">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="Cargo.bench">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -195,6 +190,11 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.run (release)" />
@@ -205,11 +205,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.bench" />
+        <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.Test renderer::tests::samples::a_sample_grid_of_4_should_cast_16_rays" />
         <item itemvalue="Cargo.Test renderer::tests::samples::a_sample_grid_of_2_should_cast_4_rays" />
-        <item itemvalue="Cargo.bench" />
-        <item itemvalue="Cargo.run (release)" />
       </list>
     </recent_temporary>
   </component>
@@ -382,14 +382,8 @@
       <workItem from="1619347346894" duration="4052000" />
       <workItem from="1619463794835" duration="19000" />
       <workItem from="1619463829880" duration="4746000" />
-      <workItem from="1619636475681" duration="3181000" />
-    </task>
-    <task id="LOCAL-00110" summary="add property tests for inverting transformations">
-      <created>1615320591676</created>
-      <option name="number" value="00110" />
-      <option name="presentableId" value="LOCAL-00110" />
-      <option name="project" value="LOCAL" />
-      <updated>1615320591676</updated>
+      <workItem from="1619636475681" duration="3227000" />
+      <workItem from="1619718998520" duration="2802000" />
     </task>
     <task id="LOCAL-00111" summary="add property tests for transformation behaviour">
       <created>1615409595835</created>
@@ -727,7 +721,14 @@
       <option name="project" value="LOCAL" />
       <updated>1619468572832</updated>
     </task>
-    <option name="localTasksCounter" value="159" />
+    <task id="LOCAL-00159" summary="WIP support arbitrary anti-aliasing samples">
+      <created>1619645803529</created>
+      <option name="number" value="00159" />
+      <option name="presentableId" value="LOCAL-00159" />
+      <option name="project" value="LOCAL" />
+      <updated>1619645803529</updated>
+    </task>
+    <option name="localTasksCounter" value="160" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -753,7 +754,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="implement bounding boxes for primitive objects" />
     <MESSAGE value="implement basic bounding box operations" />
     <MESSAGE value="implement bounding box transformations" />
     <MESSAGE value="implement bounding boxes for transformed and composite objects" />
@@ -778,7 +778,8 @@
     <MESSAGE value="example for acne on overlapping transparent object" />
     <MESSAGE value="WIP fix acne in overlapping transparent objects" />
     <MESSAGE value="remove over_point and under_point and exclude duplicate intersections from hit calculations" />
-    <option name="LAST_COMMIT_MESSAGE" value="remove over_point and under_point and exclude duplicate intersections from hit calculations" />
+    <MESSAGE value="WIP support arbitrary anti-aliasing samples" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP support arbitrary anti-aliasing samples" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -805,7 +806,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/renderer/mod.rs</url>
-          <line>125</line>
+          <line>143</line>
           <option name="timeStamp" value="67" />
         </line-breakpoint>
       </breakpoints>

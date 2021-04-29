@@ -1,4 +1,6 @@
 use crate::{Camera, Canvas, World};
+use std::fmt;
+use std::fmt::{Display, Formatter};
 use std::slice::Iter;
 
 #[cfg(test)]
@@ -22,6 +24,7 @@ pub fn render(world: World, camera: Camera, subsamples: Subsamples) -> Canvas {
     canvas
 }
 
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub enum Subsamples {
     /// only exact centre of pixel
     None,
@@ -97,6 +100,21 @@ impl Subsamples {
             ]
             .iter(),
         }
+    }
+}
+
+impl Display for Subsamples {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        writeln!(
+            f,
+            "{}",
+            match self {
+                Subsamples::None => "none",
+                Subsamples::X4 => "X4",
+                Subsamples::X8 => "X8",
+                Subsamples::X16 => "X16",
+            }
+        )
     }
 }
 

@@ -9,24 +9,54 @@ use std::time::Instant;
 /// X axis runs from left (negative values) to right (positive values) of default camera view
 /// Y axis runs from bottom (negative values) to top (positive values) of default camera view
 /// Z axis runs from behind/closer (negative values) to in front/away (positive values) of default camera view i.e. larger +Z values move objects away from the camera; smaller +Z values keep objects close
-/// Rotation in positive X rotates the far side (+Z) down (+Y), and the near side (-Z) up (-Y), therefore rotation in X should normally be negative
-/// Rotation in positive Y moves the right side (+X) closer to the camera and the left side (-X) further from the camera
+/// Rotation in positive X rotates the far side (+Z) down (-Y), and the near side (-Z) up (+Y), therefore rotation in X should normally be negative
+/// Rotation in positive Y moves the right side (+X) closer to the camera (-Z) and the left side (-X) further from the camera (+Z)
 
 fn main() -> Result<(), String> {
     let timer = Instant::now();
 
     let mut world = World::empty();
-    world.lights.push(Light::point(
-        Colour::WHITE,
-        Point3D::new(-10.0, 10.0, -10.0),
-    ));
+    world
+        .lights
+        .push(Light::point(Colour::WHITE, Point3D::new(5.0, 10.0, -10.0)));
+    world.add(Object::plane().with_material(Material {
+        pattern: Pattern::checkers(Colour::WHITE, Colour::BLACK),
+        ..Default::default()
+    }));
+    world.add(
+        Object::sphere()
+            .with_material(Material {
+                pattern: Pattern::solid(Colour::RED),
+                ..Default::default()
+            })
+            .transformed(Transform::identity().translate_y(1.0).translate_z(-2.0)),
+    );
     world.add(
         Object::plane()
-            .transformed(Transform::identity().rotate_x(-PI / 4.0))
             .with_material(Material {
-                pattern: Pattern::checkers(Colour::WHITE, Colour::BLACK),
+                pattern: Pattern::solid(Colour::new(0.1, 0.1, 0.6)),
                 ..Default::default()
-            }),
+            })
+            .transformed(
+                Transform::identity()
+                    .rotate_x(-PI / 2.0)
+                    .rotate_y(-PI / 3.0)
+                    .translate_z(7.5),
+            ),
+    );
+    world.add(
+        Object::plane()
+            .with_material(Material {
+                pattern: Pattern::solid(Colour::BLACK),
+                reflective: 0.9,
+                ..Default::default()
+            })
+            .transformed(
+                Transform::identity()
+                    .rotate_x(-PI / 2.0)
+                    .rotate_y(PI / 5.0)
+                    .translate_z(7.5),
+            ),
     );
 
     let camera = Camera::new(
