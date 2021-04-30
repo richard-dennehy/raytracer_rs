@@ -111,3 +111,10 @@ bounding boxes within the greater bounding box, allowing for more granular bound
 - Performance impact: vast reduction in rendering time for very complex scenes (~97% speedup in scene with 125K objects)
 
 Note: collision detection effectively changed from O(N) to O(log2 N), where N is the number of objects in the scene
+
+### Anti-Aliasing Corner Check
+Given that most pixels in a scene don't require or benefit from anti-aliasing (especially the skybox), 
+check the 4 corners of the pixel first, before casting the rest of the rays, to see if the colour is identical.
+
+- Effort: small; localised to renderer
+- Performance impact: Up to 40% speedup in scenes with lots of skybox visible; smaller speedup (~6%) in more complex scenes

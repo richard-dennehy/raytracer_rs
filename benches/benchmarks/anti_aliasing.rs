@@ -1,5 +1,5 @@
 use criterion::{criterion_group, BenchmarkId, Criterion};
-use ray_tracer::renderer::Subsamples;
+use ray_tracer::renderer::Samples;
 use ray_tracer::{
     renderer, Camera, Colour, Light, Material, Normal3D, Object, Pattern, Point3D, Transform, World,
 };
@@ -17,13 +17,13 @@ fn single_sphere(c: &mut Criterion) {
     group.sample_size(20);
 
     for samples in IntoIter::new([
-        Subsamples::None,
-        Subsamples::X4,
-        Subsamples::X8,
-        Subsamples::X16,
+        Samples::single(),
+        Samples::grid(nonzero_ext::nonzero!(2u8)),
+        Samples::grid(nonzero_ext::nonzero!(3u8)),
+        Samples::grid(nonzero_ext::nonzero!(4u8)),
     ]) {
         group.bench_with_input(
-            BenchmarkId::from_parameter(samples),
+            BenchmarkId::from_parameter(&samples),
             &samples,
             |b, samples| {
                 b.iter(|| {
@@ -35,8 +35,8 @@ fn single_sphere(c: &mut Criterion) {
                     world.add(Object::sphere());
 
                     let camera = Camera::new(
-                        nonzero_ext::nonzero!(800u16),
-                        nonzero_ext::nonzero!(800u16),
+                        nonzero_ext::nonzero!(600u16),
+                        nonzero_ext::nonzero!(600u16),
                         PI / 3.0,
                         Transform::view_transform(
                             Point3D::new(0.0, 1.0, -5.0),
@@ -45,7 +45,7 @@ fn single_sphere(c: &mut Criterion) {
                         ),
                     );
 
-                    renderer::render(world, camera, *samples);
+                    renderer::render(world, camera, samples);
                 });
             },
         );
@@ -57,13 +57,13 @@ fn basic_scene(c: &mut Criterion) {
     group.sample_size(10);
 
     for samples in IntoIter::new([
-        Subsamples::None,
-        Subsamples::X4,
-        Subsamples::X8,
-        Subsamples::X16,
+        Samples::single(),
+        Samples::grid(nonzero_ext::nonzero!(2u8)),
+        Samples::grid(nonzero_ext::nonzero!(3u8)),
+        Samples::grid(nonzero_ext::nonzero!(4u8)),
     ]) {
         group.bench_with_input(
-            BenchmarkId::from_parameter(samples),
+            BenchmarkId::from_parameter(&samples),
             &samples,
             |b, samples| {
                 b.iter(|| {
@@ -112,8 +112,8 @@ fn basic_scene(c: &mut Criterion) {
                     );
 
                     let camera = Camera::new(
-                        nonzero_ext::nonzero!(800u16),
-                        nonzero_ext::nonzero!(800u16),
+                        nonzero_ext::nonzero!(400u16),
+                        nonzero_ext::nonzero!(400u16),
                         1.2,
                         Transform::view_transform(
                             Point3D::new(0.0, 2.5, -10.0),
@@ -122,7 +122,7 @@ fn basic_scene(c: &mut Criterion) {
                         ),
                     );
 
-                    renderer::render(world, camera, *samples);
+                    renderer::render(world, camera, samples);
                 });
             },
         );

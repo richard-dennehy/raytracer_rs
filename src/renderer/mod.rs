@@ -1,21 +1,33 @@
 use crate::{Camera, Canvas, World};
 use std::fmt;
 use std::fmt::{Display, Formatter};
+use std::num::NonZeroU8;
 use std::slice::Iter;
 
 #[cfg(test)]
 mod tests;
 
-pub fn render(world: World, camera: Camera, subsamples: Subsamples) -> Canvas {
+pub fn render(world: World, camera: Camera, samples: &Samples) -> Canvas {
     let mut canvas =
         Canvas::new(camera.width(), camera.height()).expect("Camera dimensions are too large");
 
     canvas.draw(|x, y| {
-        let centre_colour = world.colour_at(camera.ray_at(x, y, 0.5, 0.5));
+        let mut corners = samples.corner_offsets();
+        let (x_offset, y_offset) = corners.next().unwrap();
+        let top_left = world.colour_at(camera.ray_at(x, y, *x_offset, *y_offset));
 
-        subsamples
-            .offsets()
-            .fold(centre_colour, |acc, (x_offset, y_offset)| {
+        let corner_avg = corners.fold(top_left, |acc, (x_offset, y_offset)| {
+            let sample = world.colour_at(camera.ray_at(x, y, *x_offset, *y_offset));
+            acc.average(sample)
+        });
+
+        if corner_avg == top_left {
+            return top_left;
+        }
+
+        samples
+            .inner_offsets()
+            .fold(corner_avg, |acc, (x_offset, y_offset)| {
                 let sample = world.colour_at(camera.ray_at(x, y, *x_offset, *y_offset));
                 acc.average(sample)
             })
@@ -24,111 +36,43 @@ pub fn render(world: World, camera: Camera, subsamples: Subsamples) -> Canvas {
     canvas
 }
 
-#[derive(Debug, PartialEq, Clone, Copy)]
-pub enum Subsamples {
-    /// only exact centre of pixel
-    None,
-    /// centre and four corners
-    X4,
-    /// centre, corners, and mid-points between corners (the centre of each edge)
-    X8,
-    /// centre, corners, edge mid-points, and halfway point between each point and the centre
-    X16,
-}
-
-impl Subsamples {
-    const TOP_LEFT: (f64, f64) = (0.0, 0.0);
-    const TOP_MIDDLE: (f64, f64) = (0.5, 0.0);
-    const TOP_RIGHT: (f64, f64) = (1.0, 0.0);
-
-    const BOTTOM_LEFT: (f64, f64) = (0.0, 1.0);
-    const BOTTOM_MIDDLE: (f64, f64) = (0.5, 1.0);
-    const BOTTOM_RIGHT: (f64, f64) = (1.0, 1.0);
-
-    const LEFT_MIDDLE: (f64, f64) = (0.0, 0.5);
-    const RIGHT_MIDDLE: (f64, f64) = (1.0, 0.5);
-
-    const TOP_LEFT_HALFWAY: (f64, f64) = (0.25, 0.25);
-    const TOP_MIDDLE_HALFWAY: (f64, f64) = (0.5, 0.25);
-    const TOP_RIGHT_HALFWAY: (f64, f64) = (0.75, 0.25);
-
-    const BOTTOM_LEFT_HALFWAY: (f64, f64) = (0.25, 0.75);
-    const BOTTOM_MIDDLE_HALFWAY: (f64, f64) = (0.5, 0.75);
-    const BOTTOM_RIGHT_HALFWAY: (f64, f64) = (0.75, 0.75);
-
-    const LEFT_MIDDLE_HALFWAY: (f64, f64) = (0.25, 0.5);
-    const RIGHT_MIDDLE_HALFWAY: (f64, f64) = (0.75, 0.5);
-
-    pub fn offsets(&self) -> Iter<(f64, f64)> {
-        match self {
-            Subsamples::None => [].iter(),
-            Subsamples::X4 => [
-                Self::TOP_LEFT,
-                Self::TOP_RIGHT,
-                Self::BOTTOM_LEFT,
-                Self::BOTTOM_RIGHT,
-            ]
-            .iter(),
-            Subsamples::X8 => [
-                Self::TOP_LEFT,
-                Self::TOP_MIDDLE,
-                Self::TOP_RIGHT,
-                Self::BOTTOM_LEFT,
-                Self::BOTTOM_MIDDLE,
-                Self::BOTTOM_RIGHT,
-                Self::LEFT_MIDDLE,
-                Self::RIGHT_MIDDLE,
-            ]
-            .iter(),
-            Subsamples::X16 => [
-                Self::TOP_LEFT,
-                Self::TOP_MIDDLE,
-                Self::TOP_RIGHT,
-                Self::BOTTOM_LEFT,
-                Self::BOTTOM_MIDDLE,
-                Self::BOTTOM_RIGHT,
-                Self::LEFT_MIDDLE,
-                Self::RIGHT_MIDDLE,
-                Self::TOP_LEFT_HALFWAY,
-                Self::TOP_MIDDLE_HALFWAY,
-                Self::TOP_RIGHT_HALFWAY,
-                Self::BOTTOM_LEFT_HALFWAY,
-                Self::BOTTOM_MIDDLE_HALFWAY,
-                Self::BOTTOM_RIGHT_HALFWAY,
-                Self::LEFT_MIDDLE_HALFWAY,
-                Self::RIGHT_MIDDLE_HALFWAY,
-            ]
-            .iter(),
-        }
-    }
-}
-
-impl Display for Subsamples {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        writeln!(
-            f,
-            "{}",
-            match self {
-                Subsamples::None => "none",
-                Subsamples::X4 => "X4",
-                Subsamples::X8 => "X8",
-                Subsamples::X16 => "X16",
-            }
-        )
-    }
-}
-
-struct Samples {
-    offsets: Vec<(f64, f64)>,
+#[derive(Debug, PartialEq)]
+pub struct Samples {
+    inner: Vec<(f64, f64)>,
+    // FIXME at most 4, use inline Vector type
+    corners: Vec<(f64, f64)>,
 }
 
 impl Samples {
-    pub fn new(grid_size: u8) -> Self {
+    pub fn single() -> Self {
+        Self {
+            inner: vec![],
+            corners: vec![(0.5, 0.5)],
+        }
+    }
+
+    pub fn grid(grid_size: NonZeroU8) -> Self {
+        let grid_size = grid_size.get();
+
+        if grid_size == 1 {
+            return Self::single();
+        }
+
         let initial = 1.0 / (grid_size * 2) as f64;
         let increment = 1.0 / grid_size as f64;
 
+        let max = initial + (increment * (grid_size - 1) as f64);
+        let corners = vec![
+            (initial, initial),
+            (max, initial),
+            (initial, max),
+            (max, max),
+        ];
+
         let offsets = (0..grid_size)
             .flat_map(|y| (0..grid_size).map(move |x| (x, y)))
+            // exclude corners
+            .filter(|(x, y)| (*x != 0 && *x != grid_size - 1) || (*y != 0 && *y != grid_size - 1))
             .map(|(x, y)| {
                 (
                     initial + (x as f64) * increment,
@@ -137,10 +81,23 @@ impl Samples {
             })
             .collect();
 
-        Self { offsets }
+        Self {
+            inner: offsets,
+            corners,
+        }
     }
 
-    fn offsets(&self) -> Iter<(f64, f64)> {
-        self.offsets.iter()
+    fn inner_offsets(&self) -> Iter<(f64, f64)> {
+        self.inner.iter()
+    }
+
+    fn corner_offsets(&self) -> Iter<(f64, f64)> {
+        self.corners.iter()
+    }
+}
+
+impl Display for Samples {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        writeln!(f, "X{}", self.inner.len() + self.corners.len())
     }
 }

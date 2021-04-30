@@ -1,6 +1,6 @@
 use criterion::{criterion_group, Criterion};
 use nonzero_ext::*;
-use ray_tracer::renderer::Subsamples;
+use ray_tracer::renderer::Samples;
 use ray_tracer::{
     renderer, yaml_parser, Camera, Colour, Light, Material, Normal3D, Object, Pattern, Point3D,
     Transform, World,
@@ -36,7 +36,7 @@ fn cover_image(c: &mut Criterion) {
 
             let camera = scene.camera().unwrap();
 
-            renderer::render(world, camera, Subsamples::None);
+            renderer::render(world, camera, &Samples::single());
         })
     });
 }
@@ -61,7 +61,7 @@ fn reflect_refract(c: &mut Criterion) {
 
             let camera = scene.camera().unwrap();
 
-            renderer::render(world, camera, Subsamples::None);
+            renderer::render(world, camera, &Samples::single());
         })
     });
 }
@@ -133,7 +133,7 @@ fn fresnel(c: &mut Criterion) {
                 ),
             );
 
-            renderer::render(world, camera, Subsamples::None);
+            renderer::render(world, camera, &Samples::single());
         })
     });
 }

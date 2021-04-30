@@ -1,6 +1,6 @@
 extern crate ray_tracer;
 
-use ray_tracer::renderer::Subsamples;
+use ray_tracer::renderer::Samples;
 use ray_tracer::*;
 use std::f64::consts::PI;
 use std::time::Instant;
@@ -69,7 +69,7 @@ fn main() -> Result<(), String> {
             Normal3D::POSITIVE_Y,
         ),
     );
-    let canvas = renderer::render(world, camera, Subsamples::None);
+    let canvas = renderer::render(world, camera, &Samples::grid(nonzero_ext::nonzero!(4u8)));
 
     println!("Rendered at {:.2?}", timer.elapsed());
 

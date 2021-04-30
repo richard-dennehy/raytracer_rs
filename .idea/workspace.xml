@@ -15,13 +15,14 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP support arbitrary anti-aliasing samples">
-      <change afterPath="$PROJECT_DIR$/benches/benchmarks/anti_aliasing.rs" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP add benchmarks for anti-aliasing">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/bench_main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/bench_main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benches/benchmarks/anti_aliasing.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/anti_aliasing.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/renderer/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,7 +97,7 @@
       <command value="cargo bench" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.bench">
+  <component name="RunManager" selected="Cargo.run (release)">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -190,11 +191,6 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.run (release)" />
@@ -205,9 +201,9 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.Test renderer::tests::samples::a_sample_grid_of_4_should_cast_16_rays" />
         <item itemvalue="Cargo.Test renderer::tests::samples::a_sample_grid_of_2_should_cast_4_rays" />
       </list>
@@ -383,14 +379,8 @@
       <workItem from="1619463794835" duration="19000" />
       <workItem from="1619463829880" duration="4746000" />
       <workItem from="1619636475681" duration="3227000" />
-      <workItem from="1619718998520" duration="2802000" />
-    </task>
-    <task id="LOCAL-00111" summary="add property tests for transformation behaviour">
-      <created>1615409595835</created>
-      <option name="number" value="00111" />
-      <option name="presentableId" value="LOCAL-00111" />
-      <option name="project" value="LOCAL" />
-      <updated>1615409595835</updated>
+      <workItem from="1619718998520" duration="3077000" />
+      <workItem from="1619807485164" duration="4679000" />
     </task>
     <task id="LOCAL-00112" summary="reduce size of Transform and panic on creation if matrix is not invertible">
       <created>1615503248986</created>
@@ -728,7 +718,14 @@
       <option name="project" value="LOCAL" />
       <updated>1619645803529</updated>
     </task>
-    <option name="localTasksCounter" value="160" />
+    <task id="LOCAL-00160" summary="WIP add benchmarks for anti-aliasing">
+      <created>1619722073237</created>
+      <option name="number" value="00160" />
+      <option name="presentableId" value="LOCAL-00160" />
+      <option name="project" value="LOCAL" />
+      <updated>1619722073238</updated>
+    </task>
+    <option name="localTasksCounter" value="161" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -754,7 +751,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="implement basic bounding box operations" />
     <MESSAGE value="implement bounding box transformations" />
     <MESSAGE value="implement bounding boxes for transformed and composite objects" />
     <MESSAGE value="use bounding box intersections to fail fast on missed rays" />
@@ -779,7 +775,8 @@
     <MESSAGE value="WIP fix acne in overlapping transparent objects" />
     <MESSAGE value="remove over_point and under_point and exclude duplicate intersections from hit calculations" />
     <MESSAGE value="WIP support arbitrary anti-aliasing samples" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP support arbitrary anti-aliasing samples" />
+    <MESSAGE value="WIP add benchmarks for anti-aliasing" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP add benchmarks for anti-aliasing" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -803,11 +800,6 @@
           <url>file://$PROJECT_DIR$/src/pattern/mod.rs</url>
           <line>80</line>
           <option name="timeStamp" value="65" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/renderer/mod.rs</url>
-          <line>143</line>
-          <option name="timeStamp" value="67" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
