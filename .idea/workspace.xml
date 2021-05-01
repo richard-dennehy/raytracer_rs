@@ -15,14 +15,12 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP add benchmarks for anti-aliasing">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="check corners first to reduce redundant work when anti-aliasing scenes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/anti_aliasing.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/anti_aliasing.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/performance.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/performance.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/colour/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/colour/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/colour/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/colour/tests.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/renderer/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -114,8 +112,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test renderer::tests::samples::a_sample_grid_of_2_should_cast_4_rays" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib renderer::tests::samples::a_sample_grid_of_2_should_cast_4_rays -- --exact" />
+    <configuration name="Test colour::tests::unit_tests::two_colours_with_an_unnoticeably_different_red_should_be_similar" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib colour::tests::unit_tests::two_colours_with_an_unnoticeably_different_red_should_be_similar -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -191,21 +189,26 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.run (release)" />
       <item itemvalue="Cargo.test" />
       <item itemvalue="Cargo.bench" />
-      <item itemvalue="Cargo.Test renderer::tests::samples::a_sample_grid_of_2_should_cast_4_rays" />
       <item itemvalue="Cargo.Test renderer::tests::samples::a_sample_grid_of_4_should_cast_16_rays" />
+      <item itemvalue="Cargo.Test colour::tests::unit_tests::two_colours_with_an_unnoticeably_different_red_should_be_similar" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.Test colour::tests::unit_tests::two_colours_with_an_unnoticeably_different_red_should_be_similar" />
         <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.Test renderer::tests::samples::a_sample_grid_of_4_should_cast_16_rays" />
-        <item itemvalue="Cargo.Test renderer::tests::samples::a_sample_grid_of_2_should_cast_4_rays" />
       </list>
     </recent_temporary>
   </component>
@@ -380,14 +383,8 @@
       <workItem from="1619463829880" duration="4746000" />
       <workItem from="1619636475681" duration="3227000" />
       <workItem from="1619718998520" duration="3077000" />
-      <workItem from="1619807485164" duration="4679000" />
-    </task>
-    <task id="LOCAL-00112" summary="reduce size of Transform and panic on creation if matrix is not invertible">
-      <created>1615503248986</created>
-      <option name="number" value="00112" />
-      <option name="presentableId" value="LOCAL-00112" />
-      <option name="project" value="LOCAL" />
-      <updated>1615503248986</updated>
+      <workItem from="1619807485164" duration="4974000" />
+      <workItem from="1619868312552" duration="2262000" />
     </task>
     <task id="LOCAL-00113" summary="WIP create distinct type for normalised Vectors">
       <created>1615642576365</created>
@@ -725,7 +722,14 @@
       <option name="project" value="LOCAL" />
       <updated>1619722073238</updated>
     </task>
-    <option name="localTasksCounter" value="161" />
+    <task id="LOCAL-00161" summary="check corners first to reduce redundant work when anti-aliasing scenes">
+      <created>1619812458439</created>
+      <option name="number" value="00161" />
+      <option name="presentableId" value="LOCAL-00161" />
+      <option name="project" value="LOCAL" />
+      <updated>1619812458440</updated>
+    </task>
+    <option name="localTasksCounter" value="162" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -751,7 +755,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="implement bounding box transformations" />
     <MESSAGE value="implement bounding boxes for transformed and composite objects" />
     <MESSAGE value="use bounding box intersections to fail fast on missed rays" />
     <MESSAGE value="add function to split bounding boxes" />
@@ -776,7 +779,8 @@
     <MESSAGE value="remove over_point and under_point and exclude duplicate intersections from hit calculations" />
     <MESSAGE value="WIP support arbitrary anti-aliasing samples" />
     <MESSAGE value="WIP add benchmarks for anti-aliasing" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP add benchmarks for anti-aliasing" />
+    <MESSAGE value="check corners first to reduce redundant work when anti-aliasing scenes" />
+    <option name="LAST_COMMIT_MESSAGE" value="check corners first to reduce redundant work when anti-aliasing scenes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

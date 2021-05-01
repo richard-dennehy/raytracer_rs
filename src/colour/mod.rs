@@ -75,6 +75,16 @@ impl Colour {
     pub fn average(self, other: Self) -> Self {
         (self + other) * 0.5
     }
+
+    /// returns `true` when `self` is imperceptibly different to `other` i.e. when the colours are
+    /// interchangeable
+    ///
+    /// assumes RGB colour range of 0-255
+    pub fn is_similar_to(&self, other: &Self) -> bool {
+        (self.red() * 255.0) as usize == (other.red() * 255.0) as usize
+            && (self.green() * 255.0) as usize == (other.green() * 255.0) as usize
+            && (self.blue() * 255.0) as usize == (other.blue() * 255.0) as usize
+    }
 }
 
 impl Default for Colour {

@@ -21,7 +21,7 @@ pub fn render(world: World, camera: Camera, samples: &Samples) -> Canvas {
             acc.average(sample)
         });
 
-        if corner_avg == top_left {
+        if corner_avg.is_similar_to(&top_left) {
             return top_left;
         }
 

@@ -118,3 +118,11 @@ check the 4 corners of the pixel first, before casting the rest of the rays, to 
 
 - Effort: small; localised to renderer
 - Performance impact: Up to 40% speedup in scenes with lots of skybox visible; smaller speedup (~6%) in more complex scenes
+
+### Improved AA Corner Check
+Building on the above, check if the first 4 samples are _perceptibly_ different, i.e. if there's any difference that would affect the final image.
+
+Given that most ray offsets will have very slightly different colours due to the light reflection model, this will potentially save a lot of redundant work.
+
+- Effort: small; add helper function to `Colour` and use it instead of simple equality check
+- Performance impact: slight regression (~3%) in low sample renders (X1 and X4) due to extra calculations; significant speedup in high sample renders (50% in X16)

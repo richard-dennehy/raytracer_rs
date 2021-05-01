@@ -60,6 +60,100 @@ mod unit_tests {
         assert_eq!(product.green(), 0.2);
         assert!(approx_eq!(f64, product.blue(), 0.04));
     }
+
+    #[test]
+    fn two_colours_with_an_unnoticeably_different_red_should_be_similar() {
+        let first = Colour::new(0.999, 0.0, 0.0);
+        let second = Colour::new(0.998, 0.0, 0.0);
+
+        assert_eq!(
+            (first.red() * 255.0) as usize,
+            (second.red() * 255.0) as usize
+        );
+
+        assert!(first.is_similar_to(&second));
+    }
+
+    #[test]
+    fn two_colours_with_an_unnoticeably_different_green_should_be_similar() {
+        let first = Colour::new(0.0, 0.499, 0.0);
+        let second = Colour::new(0.0, 0.4998, 0.0);
+
+        assert_eq!(
+            (first.green() * 255.0) as usize,
+            (second.green() * 255.0) as usize
+        );
+
+        assert!(first.is_similar_to(&second));
+    }
+
+    #[test]
+    fn two_colours_with_an_unnoticeably_different_blue_should_be_similar() {
+        let first = Colour::new(0.0, 0.0, 0.0);
+        let second = Colour::new(0.0, 0.0, 0.001);
+
+        assert_eq!(
+            (first.blue() * 255.0) as usize,
+            (second.blue() * 255.0) as usize
+        );
+
+        assert!(first.is_similar_to(&second));
+    }
+
+    #[test]
+    fn two_colours_with_an_unnoticeably_different_red_green_and_blue_should_be_similar() {
+        let first = Colour::new(0.999, 0.501, 0.0);
+        let second = Colour::new(0.998, 0.499, 0.001);
+
+        assert_eq!(
+            (first.red() * 255.0) as usize,
+            (second.red() * 255.0) as usize
+        );
+        assert_eq!(
+            (first.green() * 255.0) as usize,
+            (second.green() * 255.0) as usize
+        );
+        assert_eq!(
+            (first.blue() * 255.0) as usize,
+            (second.blue() * 255.0) as usize
+        );
+
+        assert!(first.is_similar_to(&second));
+    }
+
+    #[test]
+    fn two_colours_with_a_small_but_noticeable_difference_should_not_be_similar() {
+        let first = Colour::new(0.999, 0.502, 0.0);
+        let second = Colour::new(0.996, 0.499, 0.01);
+
+        assert_ne!(
+            (first.red() * 255.0) as usize,
+            (second.red() * 255.0) as usize
+        );
+        assert_ne!(
+            (first.blue() * 255.0) as usize,
+            (second.blue() * 255.0) as usize
+        );
+        assert_ne!(
+            (first.green() * 255.0) as usize,
+            (second.green() * 255.0) as usize
+        );
+
+        assert!(!first.is_similar_to(&second));
+    }
+
+    #[test]
+    fn a_colour_with_a_red_of_1_and_a_colour_with_a_red_less_than_1_should_not_be_similar() {
+        let first = Colour::new(1.0, 0.0, 0.0);
+        let second = Colour::new(0.999999999, 0.0, 0.0);
+
+        assert_ne!(
+            (first.red() * 255.0) as usize,
+            (second.red() * 255.0) as usize
+        );
+
+        assert!(!first.is_similar_to(&second));
+    }
 }
 
 mod property_tests {
