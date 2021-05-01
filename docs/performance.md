@@ -126,3 +126,11 @@ Given that most ray offsets will have very slightly different colours due to the
 
 - Effort: small; add helper function to `Colour` and use it instead of simple equality check
 - Performance impact: slight regression (~3%) in low sample renders (X1 and X4) due to extra calculations; significant speedup in high sample renders (50% in X16)
+
+### Early Return On Low AA Samples
+Return early when sample counts are low (1 and 4) to avoid pointless mildly expensive checks.
+
+- Effort: trivial
+- Performance impact: very minor improvement on low sample count scenes with lots of skybox visible with "less than 5 samples" early return; no impact on other scenes
+
+Note: adding basic "1 sample" early return has no noticeable effect

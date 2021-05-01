@@ -1,4 +1,4 @@
-use crate::{Camera, Canvas, World};
+use crate::{Camera, Canvas, Colour, World};
 use std::fmt;
 use std::fmt::{Display, Formatter};
 use std::num::NonZeroU8;
@@ -16,21 +16,18 @@ pub fn render(world: World, camera: Camera, samples: &Samples) -> Canvas {
         let (x_offset, y_offset) = corners.next().unwrap();
         let top_left = world.colour_at(camera.ray_at(x, y, *x_offset, *y_offset));
 
-        let corner_avg = corners.fold(top_left, |acc, (x_offset, y_offset)| {
+        let average_samples = |acc: Colour, (x_offset, y_offset): &(f64, f64)| {
             let sample = world.colour_at(camera.ray_at(x, y, *x_offset, *y_offset));
             acc.average(sample)
-        });
+        };
 
-        if corner_avg.is_similar_to(&top_left) {
+        let corner_avg = corners.fold(top_left, average_samples);
+
+        if samples.inner_samples() == 0 || corner_avg.is_similar_to(&top_left) {
             return top_left;
         }
 
-        samples
-            .inner_offsets()
-            .fold(corner_avg, |acc, (x_offset, y_offset)| {
-                let sample = world.colour_at(camera.ray_at(x, y, *x_offset, *y_offset));
-                acc.average(sample)
-            })
+        samples.inner_offsets().fold(corner_avg, average_samples)
     });
 
     canvas
@@ -94,10 +91,18 @@ impl Samples {
     fn corner_offsets(&self) -> Iter<(f64, f64)> {
         self.corners.iter()
     }
+
+    fn samples(&self) -> usize {
+        self.inner.len() + self.corners.len()
+    }
+
+    fn inner_samples(&self) -> usize {
+        self.inner.len()
+    }
 }
 
 impl Display for Samples {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        writeln!(f, "X{}", self.inner.len() + self.corners.len())
+        writeln!(f, "X{}", self.samples())
     }
 }
