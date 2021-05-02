@@ -1,8 +1,10 @@
 extern crate ray_tracer;
 
+use image::imageops::FilterType;
 use ray_tracer::renderer::Samples;
 use ray_tracer::*;
-use std::f64::consts::PI;
+use std::fs;
+use std::path::Path;
 use std::time::Instant;
 
 /// Notes on axes and rotation:
@@ -15,66 +17,29 @@ use std::time::Instant;
 fn main() -> Result<(), String> {
     let timer = Instant::now();
 
-    let mut world = World::empty();
-    world
-        .lights
-        .push(Light::point(Colour::WHITE, Point3D::new(5.0, 10.0, -10.0)));
-    world.add(Object::plane().with_material(Material {
-        pattern: Pattern::checkers(Colour::WHITE, Colour::BLACK),
-        ..Default::default()
-    }));
-    world.add(
-        Object::sphere()
-            .with_material(Material {
-                pattern: Pattern::solid(Colour::RED),
-                ..Default::default()
-            })
-            .transformed(Transform::identity().translate_y(1.0).translate_z(-2.0)),
-    );
-    world.add(
-        Object::plane()
-            .with_material(Material {
-                pattern: Pattern::solid(Colour::new(0.1, 0.1, 0.6)),
-                ..Default::default()
-            })
-            .transformed(
-                Transform::identity()
-                    .rotate_x(-PI / 2.0)
-                    .rotate_y(-PI / 3.0)
-                    .translate_z(7.5),
-            ),
-    );
-    world.add(
-        Object::plane()
-            .with_material(Material {
-                pattern: Pattern::solid(Colour::BLACK),
-                reflective: 0.9,
-                ..Default::default()
-            })
-            .transformed(
-                Transform::identity()
-                    .rotate_x(-PI / 2.0)
-                    .rotate_y(PI / 5.0)
-                    .translate_z(7.5),
-            ),
-    );
+    let yaml = fs::read_to_string(
+        Path::new(env!("CARGO_MANIFEST_DIR")).join("scene_descriptions/bounding-boxes.yml"),
+    )
+    .unwrap();
 
-    let camera = Camera::new(
-        nonzero_ext::nonzero!(1920u16),
-        nonzero_ext::nonzero!(1080u16),
-        1.2,
-        Transform::view_transform(
-            Point3D::new(0.0, 2.5, -10.0),
-            Point3D::new(0.0, 1.0, 0.0),
-            Normal3D::POSITIVE_Y,
-        ),
-    );
-    let canvas = renderer::render(world, camera, &Samples::grid(nonzero_ext::nonzero!(4u8)));
+    let mut scene = yaml_parser::parse(&yaml).unwrap();
+    scene.override_resolution(3840, 2160);
+
+    let mut world = World::empty();
+    world.lights.append(&mut scene.lights());
+    world.add(Object::group(scene.objects().unwrap()));
+
+    let camera = scene.camera().unwrap();
+
+    let canvas = renderer::render(world, camera, &Samples::grid(nonzero_ext::nonzero!(3u8)));
 
     println!("Rendered at {:.2?}", timer.elapsed());
 
-    let image = image_writer::write(canvas);
-    image.save("out.png").expect("failed to write output file");
+    let supersampled = image_writer::write(canvas);
+    let resized = image::imageops::resize(&supersampled, 1920, 1080, FilterType::Nearest);
+    resized
+        .save("out.png")
+        .expect("failed to write output file");
 
     println!("Completed at {:.2?}", timer.elapsed());
 

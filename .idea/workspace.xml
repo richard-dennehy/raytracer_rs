@@ -15,10 +15,12 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="use more lenient equality check when using AA corner optimisation">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add early return for renders with less than 5 samples per pixel">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/performance.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/performance.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/canvas/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/canvas/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -187,11 +189,6 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.run (release)" />
@@ -203,9 +200,9 @@
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.run (release)" />
+        <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.Test colour::tests::unit_tests::two_colours_with_an_unnoticeably_different_red_should_be_similar" />
-        <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.Test renderer::tests::samples::a_sample_grid_of_4_should_cast_16_rays" />
       </list>
     </recent_temporary>
@@ -382,14 +379,8 @@
       <workItem from="1619636475681" duration="3227000" />
       <workItem from="1619718998520" duration="3077000" />
       <workItem from="1619807485164" duration="4974000" />
-      <workItem from="1619868312552" duration="3837000" />
-    </task>
-    <task id="LOCAL-00114" summary="WIP replace Vector3D with Normal3D for normal vectors">
-      <created>1615729563461</created>
-      <option name="number" value="00114" />
-      <option name="presentableId" value="LOCAL-00114" />
-      <option name="project" value="LOCAL" />
-      <updated>1615729563462</updated>
+      <workItem from="1619868312552" duration="5553000" />
+      <workItem from="1619951073131" duration="2378000" />
     </task>
     <task id="LOCAL-00115" summary="replace Vector3D with Normal3D for normal vectors">
       <created>1615850299966</created>
@@ -727,7 +718,14 @@
       <option name="project" value="LOCAL" />
       <updated>1619870708290</updated>
     </task>
-    <option name="localTasksCounter" value="163" />
+    <task id="LOCAL-00163" summary="add early return for renders with less than 5 samples per pixel">
+      <created>1619872180473</created>
+      <option name="number" value="00163" />
+      <option name="presentableId" value="LOCAL-00163" />
+      <option name="project" value="LOCAL" />
+      <updated>1619872180473</updated>
+    </task>
+    <option name="localTasksCounter" value="164" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -753,7 +751,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="use bounding box intersections to fail fast on missed rays" />
     <MESSAGE value="add function to split bounding boxes" />
     <MESSAGE value="WIP add function to optimise Groups hierarchy" />
     <MESSAGE value="WIP add tests for group optimisation" />
@@ -778,7 +775,8 @@
     <MESSAGE value="WIP add benchmarks for anti-aliasing" />
     <MESSAGE value="check corners first to reduce redundant work when anti-aliasing scenes" />
     <MESSAGE value="use more lenient equality check when using AA corner optimisation" />
-    <option name="LAST_COMMIT_MESSAGE" value="use more lenient equality check when using AA corner optimisation" />
+    <MESSAGE value="add early return for renders with less than 5 samples per pixel" />
+    <option name="LAST_COMMIT_MESSAGE" value="add early return for renders with less than 5 samples per pixel" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
