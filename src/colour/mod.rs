@@ -105,6 +105,14 @@ impl Add<Colour> for Colour {
     }
 }
 
+impl Add<&Colour> for &Colour {
+    type Output = Colour;
+
+    fn add(self, rhs: &Colour) -> Self::Output {
+        *self + *rhs
+    }
+}
+
 impl Sub<Colour> for Colour {
     type Output = Colour;
 
@@ -122,6 +130,14 @@ impl Mul<f64> for Colour {
 
     fn mul(self, rhs: f64) -> Self::Output {
         Colour(self.red() * rhs, self.green() * rhs, self.blue() * rhs)
+    }
+}
+
+impl Mul<f64> for &Colour {
+    type Output = Colour;
+
+    fn mul(self, rhs: f64) -> Self::Output {
+        *self * rhs
     }
 }
 
