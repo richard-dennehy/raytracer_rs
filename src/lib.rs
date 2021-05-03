@@ -40,7 +40,7 @@ mod object;
 pub use object::Object;
 
 mod pattern;
-pub use pattern::Pattern;
+pub use pattern::*;
 
 pub mod image_writer;
 

@@ -1,4 +1,4 @@
-use crate::pattern::Kind::{Checkers, Gradient, Ring, Solid, Striped};
+use crate::pattern::Kind::{Checkers, Gradient, Ring, Solid, Striped, Texture};
 use crate::{Colour, Point3D, Transform, Vector};
 use std::f64::consts::PI;
 
@@ -28,12 +28,12 @@ enum Kind {
 }
 
 #[derive(Clone, Debug, PartialEq)]
-enum UvMap {
+pub enum UvMap {
     Spherical,
 }
 
 #[derive(Clone, Debug, PartialEq)]
-struct UvPattern {
+pub struct UvPattern {
     kind: UvPatternKind,
     width: f64,
     height: f64,
@@ -83,6 +83,13 @@ impl Pattern {
         }
     }
 
+    pub fn texture(uv_pattern: UvPattern, uv_map: UvMap) -> Self {
+        Pattern {
+            kind: Texture { uv_map, uv_pattern },
+            transform: Transform::identity(),
+        }
+    }
+
     pub fn with_transform(mut self, transform: Transform) -> Self {
         self.transform = transform;
         self
@@ -94,18 +101,6 @@ impl Pattern {
         let inverse = self.transform.inverse();
 
         let (x, y, z, _) = inverse * object_point;
-
-        // Adjust very small fractions such that when floored, they effectively round to the nearest integer, rather than rounding down.
-        // This prevents acne caused by floating point errors (e.g. `-f64::EPSILON` should ideally floor to 0.0, rather than -1.0)
-        let nudge = |f: f64| {
-            let delta = f.ceil() - f;
-
-            if delta != 0.0 && delta <= (f32::EPSILON as f64) {
-                f + (f32::EPSILON as f64)
-            } else {
-                f
-            }
-        };
 
         let (x, y, z) = (nudge(x), nudge(y), nudge(z));
 
@@ -125,28 +120,71 @@ impl Pattern {
     }
 }
 
+impl UvPattern {
+    pub fn checkers(primary: Colour, secondary: Colour) -> Self {
+        UvPattern {
+            kind: UvPatternKind::Checkers(primary, secondary),
+            width: 1.0,
+            height: 1.0,
+        }
+    }
+
+    pub fn width(mut self, width: f64) -> Self {
+        self.width = width;
+        self
+    }
+
+    pub fn height(mut self, height: f64) -> Self {
+        self.height = height;
+        self
+    }
+}
+
 impl UvMap {
     fn uv(&self, point: Point3D) -> (f64, f64) {
-        let theta = point.x().atan2(point.z());
-        let r = (point - Point3D::ORIGIN).magnitude();
-        let phi = (point.y() / r).acos();
-        let raw_u = theta / (2.0 * PI);
-        let u = 1.0 - (raw_u + 0.5);
-        let v = (1.0 - phi) / PI;
+        match self {
+            UvMap::Spherical => {
+                // See https://en.wikipedia.org/wiki/Spherical_coordinate_system noting this uses _mathematical_ notation
 
-        (u, v)
+                // azimuthal angle - this is backwards but gets corrected later
+                let theta = point.x().atan2(point.z());
+                // given the centre is at the world origin, the radius is given by the magnitude of the vector
+                // from the world origin to the point
+                let r = (point - Point3D::ORIGIN).magnitude();
+                // polar angle
+                let phi = (point.y() / r).acos();
+                let raw_u = theta / (2.0 * PI);
+                // corrects backwards azimuthal angle
+                let u = 1.0 - (raw_u + 0.5);
+                // subtract from 1 to invert `v` such that 1 is the northernmost point
+                let v = 1.0 - (phi / PI);
+
+                (u, v)
+            }
+        }
     }
 }
 
 impl UvPattern {
-    // TODO check that this doesn't need nudging
     fn colour_at(&self, (u, v): (f64, f64)) -> Colour {
-        let u = (u * self.width).floor();
-        let v = (v * self.height).floor();
+        let u = (nudge(u) * self.width).floor();
+        let v = (nudge(v) * self.height).floor();
 
         match self.kind {
             UvPatternKind::Checkers(primary, _) if (u + v) % 2.0 <= f64::EPSILON => primary,
             UvPatternKind::Checkers(_, secondary) => secondary,
         }
+    }
+}
+
+/// Adjust very small fractions such that when floored, they effectively round to the nearest integer, rather than rounding down.
+/// This prevents acne caused by floating point errors (e.g. `-f64::EPSILON` should ideally floor to 0.0, rather than -1.0)
+fn nudge(f: f64) -> f64 {
+    let delta = f.ceil() - f;
+
+    if delta != 0.0 && delta <= (f32::EPSILON as f64) {
+        f + (f32::EPSILON as f64)
+    } else {
+        f
     }
 }

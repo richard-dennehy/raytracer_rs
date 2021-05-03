@@ -2,7 +2,7 @@ use super::*;
 
 mod unit_tests {
     use super::*;
-    use std::f64::consts::PI;
+    use std::f64::consts::{PI, SQRT_2};
 
     #[test]
     fn a_striped_pattern_uses_the_primary_colour_on_even_x_integer_values() {
@@ -240,6 +240,79 @@ mod unit_tests {
             )),
             Colour::BLACK
         );
+    }
+
+    #[test]
+    fn a_checker_uv_pattern_alternates_between_the_two_colours() {
+        let pattern = UvPattern {
+            kind: UvPatternKind::Checkers(Colour::BLACK, Colour::WHITE),
+            width: 2.0,
+            height: 2.0,
+        };
+
+        vec![
+            (0.0, 0.0, Colour::BLACK),
+            (0.5, 0.0, Colour::WHITE),
+            (0.0, 0.5, Colour::WHITE),
+            (0.5, 0.5, Colour::BLACK),
+            (1.0, 1.0, Colour::BLACK),
+        ]
+        .into_iter()
+        .for_each(|(u, v, expected)| assert_eq!(pattern.colour_at((u, v)), expected))
+    }
+
+    #[test]
+    fn a_checker_uv_pattern_should_handle_slight_floating_point_errors_correctly() {
+        let pattern = UvPattern {
+            kind: UvPatternKind::Checkers(Colour::BLACK, Colour::WHITE),
+            width: 2.0,
+            height: 2.0,
+        };
+
+        assert_eq!(pattern.colour_at((1.0, 1.0)), Colour::BLACK);
+        assert_eq!(pattern.colour_at((1.0, 1.0 - f64::EPSILON)), Colour::BLACK);
+    }
+
+    #[test]
+    fn a_spherical_uv_map_should_convert_3d_points_to_2d_uv() {
+        vec![
+            (Point3D::new(0.0, 0.0, -1.0), (0.0, 0.5)),
+            (Point3D::new(1.0, 0.0, 0.0), (0.25, 0.5)),
+            (Point3D::new(0.0, 0.0, 1.0), (0.5, 0.5)),
+            (Point3D::new(-1.0, 0.0, 0.0), (0.75, 0.5)),
+            (Point3D::new(0.0, 1.0, 0.0), (0.5, 1.0)),
+            (Point3D::new(0.0, -1.0, 0.0), (0.5, 0.0)),
+            (Point3D::new(SQRT_2 / 2.0, SQRT_2 / 2.0, 0.0), (0.25, 0.75)),
+        ]
+        .into_iter()
+        .for_each(|(point, (u, v))| {
+            assert_eq!(UvMap::Spherical.uv(point), (u, v));
+        })
+    }
+
+    #[test]
+    fn a_uv_checker_pattern_and_spherical_map_should_alternate_colours_across_a_sphere() {
+        let pattern = Pattern::texture(
+            UvPattern::checkers(Colour::BLACK, Colour::WHITE)
+                .width(16.0)
+                .height(8.0),
+            UvMap::Spherical,
+        );
+
+        vec![
+            (Point3D::new(0.4315, 0.4670, 0.7719), Colour::WHITE),
+            (Point3D::new(-0.9654, 0.2552, -0.0534), Colour::BLACK),
+            (Point3D::new(0.1039, 0.7090, 0.6975), Colour::WHITE),
+            (Point3D::new(-0.4986, -0.7856, -0.3663), Colour::BLACK),
+            (Point3D::new(-0.0317, -0.9395, 0.3411), Colour::BLACK),
+            (Point3D::new(0.4809, -0.7721, 0.4154), Colour::BLACK),
+            (Point3D::new(0.0285, -0.9612, -0.2745), Colour::BLACK),
+            (Point3D::new(-0.5734, -0.2162, -0.7903), Colour::WHITE),
+            (Point3D::new(0.7688, -0.1470, 0.6223), Colour::BLACK),
+            (Point3D::new(-0.7652, 0.2175, 0.6060), Colour::BLACK),
+        ]
+        .into_iter()
+        .for_each(|(point, expected)| assert_eq!(pattern.colour_at(point), expected))
     }
 }
 

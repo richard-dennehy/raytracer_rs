@@ -15,10 +15,12 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="added progress bar and experiment with supersampling">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP implement texture mapping">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/colour/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/colour/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pattern/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pattern/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -187,6 +189,11 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.run (release)" />
@@ -198,8 +205,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.run (release)" />
-        <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.Test colour::tests::unit_tests::two_colours_with_an_unnoticeably_different_red_should_be_similar" />
         <item itemvalue="Cargo.Test renderer::tests::samples::a_sample_grid_of_4_should_cast_16_rays" />
       </list>
@@ -378,14 +385,8 @@
       <workItem from="1619718998520" duration="3077000" />
       <workItem from="1619807485164" duration="4974000" />
       <workItem from="1619868312552" duration="5553000" />
-      <workItem from="1619951073131" duration="4195000" />
-    </task>
-    <task id="LOCAL-00116" summary="add test for checkerd plane acne fix">
-      <created>1616021138453</created>
-      <option name="number" value="00116" />
-      <option name="presentableId" value="LOCAL-00116" />
-      <option name="project" value="LOCAL" />
-      <updated>1616021138453</updated>
+      <workItem from="1619951073131" duration="4212000" />
+      <workItem from="1620042431314" duration="2874000" />
     </task>
     <task id="LOCAL-00117" summary="add test for checkerd plane acne fix">
       <created>1616021143491</created>
@@ -723,7 +724,14 @@
       <option name="project" value="LOCAL" />
       <updated>1619953505763</updated>
     </task>
-    <option name="localTasksCounter" value="165" />
+    <task id="LOCAL-00165" summary="WIP implement texture mapping">
+      <created>1619955300391</created>
+      <option name="number" value="00165" />
+      <option name="presentableId" value="LOCAL-00165" />
+      <option name="project" value="LOCAL" />
+      <updated>1619955300391</updated>
+    </task>
+    <option name="localTasksCounter" value="166" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -749,7 +757,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP add function to optimise Groups hierarchy" />
     <MESSAGE value="WIP add tests for group optimisation" />
     <MESSAGE value="implemented bounding volume hierarchies to vastly reduce rendering time of complex scenes" />
     <MESSAGE value="WIP add parsing support for dragons YAML" />
@@ -774,7 +781,8 @@
     <MESSAGE value="use more lenient equality check when using AA corner optimisation" />
     <MESSAGE value="add early return for renders with less than 5 samples per pixel" />
     <MESSAGE value="added progress bar and experiment with supersampling" />
-    <option name="LAST_COMMIT_MESSAGE" value="added progress bar and experiment with supersampling" />
+    <MESSAGE value="WIP implement texture mapping" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP implement texture mapping" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
