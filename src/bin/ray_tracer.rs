@@ -21,15 +21,21 @@ fn main() -> Result<(), String> {
         .push(Light::point(Colour::WHITE, Point3D::new(10.0, 10.0, -10.0)));
 
     world.add(
-        Object::sphere().with_material(Material {
-            pattern: Pattern::texture(
-                UvPattern::checkers(Colour::WHITE, Colour::GREEN)
-                    .width(20.0)
-                    .height(10.0),
-                UvMap::Spherical,
-            ),
-            ..Default::default()
-        }),
+        Object::cylinder()
+            .max_y(1.0)
+            .min_y(-1.0)
+            .capped()
+            .build()
+            .with_material(Material {
+                pattern: Pattern::texture(
+                    UvPattern::checkers(Colour::WHITE, Colour::new(0.0, 0.5, 0.0))
+                        .width(20.0)
+                        .height(10.0),
+                    UvMap::Cylindrical,
+                ),
+                ..Default::default()
+            })
+            .transformed(Transform::identity().rotate_x(-PI / 4.0)),
     );
 
     let camera = Camera::new(

@@ -30,6 +30,8 @@ enum Kind {
 #[derive(Clone, Debug, PartialEq)]
 pub enum UvMap {
     Spherical,
+    Planar,
+    Cylindrical,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -42,6 +44,13 @@ pub struct UvPattern {
 #[derive(Clone, Debug, PartialEq)]
 enum UvPatternKind {
     Checkers(Colour, Colour),
+    AlignmentCheck {
+        main: Colour,
+        top_left: Colour,
+        top_right: Colour,
+        bottom_left: Colour,
+        bottom_right: Colour,
+    },
 }
 
 impl Pattern {
@@ -161,18 +170,57 @@ impl UvMap {
 
                 (u, v)
             }
+            UvMap::Planar => (point.x().rem_euclid(1.0), point.z().rem_euclid(1.0)),
+            UvMap::Cylindrical => {
+                // FIXME doesn't work properly on the caps
+                // similar to spherical map on the sides
+
+                // azimuthal angle
+                let theta = point.x().atan2(point.z());
+                let raw_u = theta / (2.0 * PI);
+                // corrects backwards azimuthal angle
+                let u = 1.0 - (raw_u + 0.5);
+
+                let v = point.y().rem_euclid(1.0);
+                (u, v)
+            }
         }
     }
 }
 
 impl UvPattern {
     fn colour_at(&self, (u, v): (f64, f64)) -> Colour {
-        let u = (nudge(u) * self.width).floor();
-        let v = (nudge(v) * self.height).floor();
+        let u = nudge(u) * self.width;
+        let v = nudge(v) * self.height;
 
         match self.kind {
-            UvPatternKind::Checkers(primary, _) if (u + v) % 2.0 <= f64::EPSILON => primary,
+            UvPatternKind::Checkers(primary, _)
+                if (u.floor() + v.floor()) % 2.0 <= f64::EPSILON =>
+            {
+                primary
+            }
             UvPatternKind::Checkers(_, secondary) => secondary,
+            UvPatternKind::AlignmentCheck { top_left, .. }
+                if (u - 0.2) <= f64::EPSILON && (v + 0.2) >= 1.0 =>
+            {
+                top_left
+            }
+            UvPatternKind::AlignmentCheck { top_right, .. }
+                if (u + 0.2) >= 1.0 && (v + 0.2) >= 1.0 =>
+            {
+                top_right
+            }
+            UvPatternKind::AlignmentCheck { bottom_left, .. }
+                if (u - 0.2) <= f64::EPSILON && (v - 0.2) <= f64::EPSILON =>
+            {
+                bottom_left
+            }
+            UvPatternKind::AlignmentCheck { bottom_right, .. }
+                if (u + 0.2) >= 1.0 && (v - 0.2) <= f64::EPSILON =>
+            {
+                bottom_right
+            }
+            UvPatternKind::AlignmentCheck { main, .. } => main,
         }
     }
 }

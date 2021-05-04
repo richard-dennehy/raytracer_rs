@@ -2,7 +2,7 @@ use super::*;
 
 mod unit_tests {
     use super::*;
-    use std::f64::consts::{PI, SQRT_2};
+    use std::f64::consts::{FRAC_1_SQRT_2, PI, SQRT_2};
 
     #[test]
     fn a_striped_pattern_uses_the_primary_colour_on_even_x_integer_values() {
@@ -313,6 +313,82 @@ mod unit_tests {
         ]
         .into_iter()
         .for_each(|(point, expected)| assert_eq!(pattern.colour_at(point), expected))
+    }
+
+    #[test]
+    fn a_planar_map_should_project_3d_points_onto_a_2d_plane() {
+        vec![
+            (Point3D::new(0.25, 0.0, 0.5), (0.25, 0.5)),
+            (Point3D::new(0.25, 0.0, -0.25), (0.25, 0.75)),
+            (Point3D::new(0.25, 0.5, -0.25), (0.25, 0.75)),
+            (Point3D::new(1.25, 0.0, 0.5), (0.25, 0.5)),
+            (Point3D::new(0.25, 0.0, -1.75), (0.25, 0.25)),
+            (Point3D::new(1.0, 0.0, -1.0), (0.0, 0.0)),
+            (Point3D::ORIGIN, (0.0, 0.0)),
+        ]
+        .into_iter()
+        .for_each(|(point, (u, v))| {
+            assert_eq!(UvMap::Planar.uv(point), (u, v));
+        })
+    }
+
+    #[test]
+    fn a_cylindrical_map_should_project_3d_points_onto_an_unwrapped_cylinder() {
+        vec![
+            (Point3D::new(0.0, 0.0, -1.0), (0.0, 0.0)),
+            (Point3D::new(0.0, 0.5, -1.0), (0.0, 0.5)),
+            (Point3D::new(0.0, 1.0, -1.0), (0.0, 0.0)),
+            (
+                Point3D::new(FRAC_1_SQRT_2, 0.5, -FRAC_1_SQRT_2),
+                (0.125, 0.5),
+            ),
+            (Point3D::new(1.0, 0.5, 0.0), (0.25, 0.5)),
+            (
+                Point3D::new(FRAC_1_SQRT_2, 0.5, FRAC_1_SQRT_2),
+                (0.375, 0.5),
+            ),
+            (Point3D::new(0.0, -0.25, 1.0), (0.5, 0.75)),
+            (
+                Point3D::new(-FRAC_1_SQRT_2, 0.5, FRAC_1_SQRT_2),
+                (0.625, 0.5),
+            ),
+            (Point3D::new(-1.0, 1.25, 0.0), (0.75, 0.25)),
+            (
+                Point3D::new(-FRAC_1_SQRT_2, 0.5, -FRAC_1_SQRT_2),
+                (0.875, 0.5),
+            ),
+        ]
+        .into_iter()
+        .for_each(|(point, (u, v))| {
+            assert_eq!(UvMap::Cylindrical.uv(point), (u, v));
+        })
+    }
+
+    #[test]
+    fn an_alignment_check_pattern_should_have_different_colours_in_each_corner() {
+        let pattern = UvPattern {
+            kind: UvPatternKind::AlignmentCheck {
+                main: Colour::WHITE,
+                top_left: Colour::RED,
+                top_right: Colour::new(1.0, 1.0, 0.0),
+                bottom_left: Colour::GREEN,
+                bottom_right: Colour::new(0.0, 1.0, 1.0),
+            },
+            width: 1.0,
+            height: 1.0,
+        };
+
+        vec![
+            ((0.5, 0.5), Colour::WHITE),
+            ((0.1, 0.9), Colour::RED),
+            ((0.9, 0.9), Colour::new(1.0, 1.0, 0.0)),
+            ((0.1, 0.1), Colour::GREEN),
+            ((0.9, 0.1), Colour::new(0.0, 1.0, 1.0)),
+        ]
+        .into_iter()
+        .for_each(|((u, v), expected)| {
+            assert_eq!(pattern.colour_at((u, v)), expected);
+        })
     }
 }
 

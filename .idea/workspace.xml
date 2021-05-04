@@ -15,10 +15,9 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP implement texture mapping">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implement spherical texture mapping">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pattern/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pattern/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/tests.rs" afterDir="false" />
     </list>
@@ -95,7 +94,12 @@
       <command value="cargo bench" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.run (release)">
+  <component name="RunManager" selected="Cargo.Test pattern::tests::unit_tests::an_alignment_check_pattern_should_have_different_colours_in_each_corner">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -127,8 +131,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test renderer::tests::samples::a_sample_grid_of_4_should_cast_16_rays" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib renderer::tests::samples::a_sample_grid_of_4_should_cast_16_rays -- --exact" />
+    <configuration name="Test pattern::tests::unit_tests::an_alignment_check_pattern_should_have_different_colours_in_each_corner" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib pattern::tests::unit_tests::an_alignment_check_pattern_should_have_different_colours_in_each_corner -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -189,26 +193,21 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.run (release)" />
       <item itemvalue="Cargo.test" />
       <item itemvalue="Cargo.bench" />
-      <item itemvalue="Cargo.Test renderer::tests::samples::a_sample_grid_of_4_should_cast_16_rays" />
       <item itemvalue="Cargo.Test colour::tests::unit_tests::two_colours_with_an_unnoticeably_different_red_should_be_similar" />
+      <item itemvalue="Cargo.Test pattern::tests::unit_tests::an_alignment_check_pattern_should_have_different_colours_in_each_corner" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.run (release)" />
+        <item itemvalue="Cargo.Test pattern::tests::unit_tests::an_alignment_check_pattern_should_have_different_colours_in_each_corner" />
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.Test colour::tests::unit_tests::two_colours_with_an_unnoticeably_different_red_should_be_similar" />
-        <item itemvalue="Cargo.Test renderer::tests::samples::a_sample_grid_of_4_should_cast_16_rays" />
       </list>
     </recent_temporary>
   </component>
@@ -386,14 +385,8 @@
       <workItem from="1619807485164" duration="4974000" />
       <workItem from="1619868312552" duration="5553000" />
       <workItem from="1619951073131" duration="4212000" />
-      <workItem from="1620042431314" duration="2874000" />
-    </task>
-    <task id="LOCAL-00117" summary="add test for checkerd plane acne fix">
-      <created>1616021143491</created>
-      <option name="number" value="00117" />
-      <option name="presentableId" value="LOCAL-00117" />
-      <option name="project" value="LOCAL" />
-      <updated>1616021143491</updated>
+      <workItem from="1620042431314" duration="3118000" />
+      <workItem from="1620163451608" duration="1732000" />
     </task>
     <task id="LOCAL-00118" summary="add test for checkered plane acne fix">
       <created>1616021148418</created>
@@ -731,7 +724,14 @@
       <option name="project" value="LOCAL" />
       <updated>1619955300391</updated>
     </task>
-    <option name="localTasksCounter" value="166" />
+    <task id="LOCAL-00166" summary="implement spherical texture mapping">
+      <created>1620045540601</created>
+      <option name="number" value="00166" />
+      <option name="presentableId" value="LOCAL-00166" />
+      <option name="project" value="LOCAL" />
+      <updated>1620045540601</updated>
+    </task>
+    <option name="localTasksCounter" value="167" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -757,7 +757,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP add tests for group optimisation" />
     <MESSAGE value="implemented bounding volume hierarchies to vastly reduce rendering time of complex scenes" />
     <MESSAGE value="WIP add parsing support for dragons YAML" />
     <MESSAGE value="WIP YAML parsing support for Object defines and Groups" />
@@ -782,7 +781,8 @@
     <MESSAGE value="add early return for renders with less than 5 samples per pixel" />
     <MESSAGE value="added progress bar and experiment with supersampling" />
     <MESSAGE value="WIP implement texture mapping" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP implement texture mapping" />
+    <MESSAGE value="implement spherical texture mapping" />
+    <option name="LAST_COMMIT_MESSAGE" value="implement spherical texture mapping" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
