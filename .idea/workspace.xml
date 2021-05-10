@@ -15,9 +15,9 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implement spherical texture mapping">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implement planar and cylindrical uv mapping">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pattern/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pattern/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/tests.rs" afterDir="false" />
     </list>
@@ -94,7 +94,7 @@
       <command value="cargo bench" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.Test pattern::tests::unit_tests::an_alignment_check_pattern_should_have_different_colours_in_each_corner">
+  <component name="RunManager" selected="Cargo.Test pattern::tests::unit_tests::a_cubic_texture_should_map_cube_points_onto_one_of_6_faces">
     <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -116,8 +116,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test colour::tests::unit_tests::two_colours_with_an_unnoticeably_different_red_should_be_similar" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib colour::tests::unit_tests::two_colours_with_an_unnoticeably_different_red_should_be_similar -- --exact" />
+    <configuration name="Test pattern::tests::unit_tests::a_cubic_texture_should_map_cube_points_onto_one_of_6_faces" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib pattern::tests::unit_tests::a_cubic_texture_should_map_cube_points_onto_one_of_6_faces -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -198,16 +198,16 @@
       <item itemvalue="Cargo.run (release)" />
       <item itemvalue="Cargo.test" />
       <item itemvalue="Cargo.bench" />
-      <item itemvalue="Cargo.Test colour::tests::unit_tests::two_colours_with_an_unnoticeably_different_red_should_be_similar" />
       <item itemvalue="Cargo.Test pattern::tests::unit_tests::an_alignment_check_pattern_should_have_different_colours_in_each_corner" />
+      <item itemvalue="Cargo.Test pattern::tests::unit_tests::a_cubic_texture_should_map_cube_points_onto_one_of_6_faces" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.Test pattern::tests::unit_tests::an_alignment_check_pattern_should_have_different_colours_in_each_corner" />
+        <item itemvalue="Cargo.Test pattern::tests::unit_tests::a_cubic_texture_should_map_cube_points_onto_one_of_6_faces" />
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.Test pattern::tests::unit_tests::an_alignment_check_pattern_should_have_different_colours_in_each_corner" />
         <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.bench" />
-        <item itemvalue="Cargo.Test colour::tests::unit_tests::two_colours_with_an_unnoticeably_different_red_should_be_similar" />
       </list>
     </recent_temporary>
   </component>
@@ -386,14 +386,9 @@
       <workItem from="1619868312552" duration="5553000" />
       <workItem from="1619951073131" duration="4212000" />
       <workItem from="1620042431314" duration="3118000" />
-      <workItem from="1620163451608" duration="1732000" />
-    </task>
-    <task id="LOCAL-00118" summary="add test for checkered plane acne fix">
-      <created>1616021148418</created>
-      <option name="number" value="00118" />
-      <option name="presentableId" value="LOCAL-00118" />
-      <option name="project" value="LOCAL" />
-      <updated>1616021148418</updated>
+      <workItem from="1620163451608" duration="1991000" />
+      <workItem from="1620240587638" duration="1708000" />
+      <workItem from="1620669456578" duration="3489000" />
     </task>
     <task id="LOCAL-00119" summary="remove unused fields from HitData">
       <created>1616107150636</created>
@@ -731,7 +726,14 @@
       <option name="project" value="LOCAL" />
       <updated>1620045540601</updated>
     </task>
-    <option name="localTasksCounter" value="167" />
+    <task id="LOCAL-00167" summary="implement planar and cylindrical uv mapping">
+      <created>1620165444067</created>
+      <option name="number" value="00167" />
+      <option name="presentableId" value="LOCAL-00167" />
+      <option name="project" value="LOCAL" />
+      <updated>1620165444067</updated>
+    </task>
+    <option name="localTasksCounter" value="168" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -757,7 +759,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="implemented bounding volume hierarchies to vastly reduce rendering time of complex scenes" />
     <MESSAGE value="WIP add parsing support for dragons YAML" />
     <MESSAGE value="WIP YAML parsing support for Object defines and Groups" />
     <MESSAGE value="WIP update YAML parser to support dragon file&#10;&#10;- &quot;tidy up&quot; transformation conversion" />
@@ -782,7 +783,8 @@
     <MESSAGE value="added progress bar and experiment with supersampling" />
     <MESSAGE value="WIP implement texture mapping" />
     <MESSAGE value="implement spherical texture mapping" />
-    <option name="LAST_COMMIT_MESSAGE" value="implement spherical texture mapping" />
+    <MESSAGE value="implement planar and cylindrical uv mapping" />
+    <option name="LAST_COMMIT_MESSAGE" value="implement planar and cylindrical uv mapping" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -796,6 +798,11 @@
           <url>file://$PROJECT_DIR$/src/world/mod.rs</url>
           <line>108</line>
           <option name="timeStamp" value="50" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/pattern/mod.rs</url>
+          <line>316</line>
+          <option name="timeStamp" value="51" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

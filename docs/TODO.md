@@ -3,5 +3,7 @@
 - Use small vec type optimised for common case of few intersections e.g. `smallvec`
 - Use [approx](https://docs.rs/approx/0.4.0/approx/index.html) instead of `float_cmp`
 - Separate primitives and composites
-- Fix acne in `dragon` scene reflective pedestals
 - Truncate colour precision to e.g. 5 sigfig in tests
+- Check floating point modulo operations (may need to use euclid instead)
+- Check smooth triangle bounding box
+- https://forum.raytracerchallenge.com/thread/203/performance-tips-clarifications-book-errata

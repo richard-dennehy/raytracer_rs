@@ -1,4 +1,4 @@
-use crate::pattern::Kind::{Checkers, Gradient, Ring, Solid, Striped, Texture};
+use crate::pattern::Kind::{Checkers, CubicTexture, Gradient, Ring, Solid, Striped, Texture};
 use crate::{Colour, Point3D, Transform, Vector};
 use std::f64::consts::PI;
 
@@ -24,6 +24,14 @@ enum Kind {
     Texture {
         uv_map: UvMap,
         uv_pattern: UvPattern,
+    },
+    CubicTexture {
+        left: UvPattern,
+        right: UvPattern,
+        front: UvPattern,
+        back: UvPattern,
+        top: UvPattern,
+        bottom: UvPattern,
     },
 }
 
@@ -99,6 +107,27 @@ impl Pattern {
         }
     }
 
+    pub fn cubic_texture(
+        left: UvPattern,
+        right: UvPattern,
+        front: UvPattern,
+        back: UvPattern,
+        top: UvPattern,
+        bottom: UvPattern,
+    ) -> Self {
+        Pattern {
+            kind: CubicTexture {
+                left,
+                right,
+                front,
+                back,
+                top,
+                bottom,
+            },
+            transform: Transform::identity(),
+        }
+    }
+
     pub fn with_transform(mut self, transform: Transform) -> Self {
         self.transform = transform;
         self
@@ -125,7 +154,59 @@ impl Pattern {
             Texture { uv_map, uv_pattern } => {
                 uv_pattern.colour_at(uv_map.uv(Point3D::new(x, y, z)))
             }
+            CubicTexture {
+                left,
+                right,
+                front,
+                back,
+                top,
+                bottom,
+            } => cubic_colour_at(Point3D::new(x, y, z), left, right, front, back, top, bottom),
         }
+    }
+}
+
+fn cubic_colour_at(
+    point: Point3D,
+    left: &UvPattern,
+    right: &UvPattern,
+    front: &UvPattern,
+    back: &UvPattern,
+    top: &UvPattern,
+    bottom: &UvPattern,
+) -> Colour {
+    let largest = point.x().abs().max(point.y().abs().max(point.z().abs()));
+
+    if largest == point.x() {
+        let u = (1.0 - point.z()).rem_euclid(2.0) / 2.0;
+        let v = (1.0 + point.y()).rem_euclid(2.0) / 2.0;
+
+        right.colour_at((u, v))
+    } else if largest == -point.x() {
+        let u = (1.0 + point.z()).rem_euclid(2.0) / 2.0;
+        let v = (1.0 + point.y()).rem_euclid(2.0) / 2.0;
+
+        left.colour_at((u, v))
+    } else if largest == point.y() {
+        let u = (1.0 - point.z()).rem_euclid(2.0) / 2.0;
+        let v = (1.0 + point.x()).rem_euclid(2.0) / 2.0;
+
+        top.colour_at((u, v))
+    } else if largest == -point.y() {
+        let u = (1.0 + point.z()).rem_euclid(2.0) / 2.0;
+        let v = (1.0 + point.x()).rem_euclid(2.0) / 2.0;
+
+        bottom.colour_at((u, v))
+    } else if largest == point.z() {
+        let u = (1.0 + point.y()).rem_euclid(2.0) / 2.0;
+        let v = (1.0 + point.x()).rem_euclid(2.0) / 2.0;
+
+        front.colour_at((u, v))
+    } else {
+        let u = (1.0 + point.y()).rem_euclid(2.0) / 2.0;
+        let v = (1.0 - point.x()).rem_euclid(2.0) / 2.0;
+
+        back.colour_at((u, v))
     }
 }
 
@@ -133,6 +214,26 @@ impl UvPattern {
     pub fn checkers(primary: Colour, secondary: Colour) -> Self {
         UvPattern {
             kind: UvPatternKind::Checkers(primary, secondary),
+            width: 1.0,
+            height: 1.0,
+        }
+    }
+
+    pub fn alignment_check(
+        main: Colour,
+        top_left: Colour,
+        top_right: Colour,
+        bottom_left: Colour,
+        bottom_right: Colour,
+    ) -> Self {
+        UvPattern {
+            kind: UvPatternKind::AlignmentCheck {
+                main,
+                top_left,
+                top_right,
+                bottom_left,
+                bottom_right,
+            },
             width: 1.0,
             height: 1.0,
         }
@@ -201,22 +302,22 @@ impl UvPattern {
             }
             UvPatternKind::Checkers(_, secondary) => secondary,
             UvPatternKind::AlignmentCheck { top_left, .. }
-                if (u - 0.2) <= f64::EPSILON && (v + 0.2) >= 1.0 =>
+                if (u.fract() - 0.2) <= f64::EPSILON && (v.fract() + 0.2) >= 1.0 =>
             {
                 top_left
             }
             UvPatternKind::AlignmentCheck { top_right, .. }
-                if (u + 0.2) >= 1.0 && (v + 0.2) >= 1.0 =>
+                if (u.fract() + 0.2) >= 1.0 && (v.fract() + 0.2) >= 1.0 =>
             {
                 top_right
             }
             UvPatternKind::AlignmentCheck { bottom_left, .. }
-                if (u - 0.2) <= f64::EPSILON && (v - 0.2) <= f64::EPSILON =>
+                if (u.fract() - 0.2) <= f64::EPSILON && (v.fract() - 0.2) <= f64::EPSILON =>
             {
                 bottom_left
             }
             UvPatternKind::AlignmentCheck { bottom_right, .. }
-                if (u + 0.2) >= 1.0 && (v - 0.2) <= f64::EPSILON =>
+                if (u.fract() + 0.2) >= 1.0 && (v.fract() - 0.2) <= f64::EPSILON =>
             {
                 bottom_right
             }

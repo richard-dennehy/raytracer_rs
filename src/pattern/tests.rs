@@ -390,6 +390,106 @@ mod unit_tests {
             assert_eq!(pattern.colour_at((u, v)), expected);
         })
     }
+
+    #[test]
+    fn an_alignment_check_pattern_should_tesselate_correctly() {
+        let pattern = UvPattern {
+            kind: UvPatternKind::AlignmentCheck {
+                main: Colour::WHITE,
+                top_left: Colour::RED,
+                top_right: Colour::new(1.0, 1.0, 0.0),
+                bottom_left: Colour::GREEN,
+                bottom_right: Colour::new(0.0, 1.0, 1.0),
+            },
+            width: 1.0,
+            height: 1.0,
+        };
+
+        assert_eq!(pattern.colour_at((1.1, 1.1)), Colour::GREEN);
+    }
+
+    #[test]
+    fn a_cubic_texture_should_map_cube_points_onto_one_of_6_faces() {
+        let pattern = Pattern::cubic_texture(
+            UvPattern::alignment_check(
+                Colour::new(1.0, 1.0, 0.0),
+                Colour::new(0.0, 1.0, 1.0),
+                Colour::RED,
+                Colour::BLUE,
+                Colour::new(1.0, 0.5, 0.0),
+            ),
+            UvPattern::alignment_check(
+                Colour::RED,
+                Colour::new(1.0, 1.0, 0.0),
+                Colour::new(1.0, 0.0, 1.0),
+                Colour::GREEN,
+                Colour::WHITE,
+            ),
+            UvPattern::alignment_check(
+                Colour::new(0.0, 1.0, 1.0),
+                Colour::RED,
+                Colour::new(1.0, 1.0, 0.0),
+                Colour::new(1.0, 0.5, 0.0),
+                Colour::GREEN,
+            ),
+            UvPattern::alignment_check(
+                Colour::GREEN,
+                Colour::new(1.0, 0.0, 1.0),
+                Colour::new(0.0, 1.0, 1.0),
+                Colour::WHITE,
+                Colour::BLUE,
+            ),
+            UvPattern::alignment_check(
+                Colour::new(1.0, 0.5, 0.0),
+                Colour::new(0.0, 1.0, 1.0),
+                Colour::new(1.0, 0.0, 1.0),
+                Colour::RED,
+                Colour::new(1.0, 1.0, 0.0),
+            ),
+            UvPattern::alignment_check(
+                Colour::new(1.0, 1.0, 0.0),
+                Colour::new(1.0, 0.5, 0.0),
+                Colour::GREEN,
+                Colour::BLUE,
+                Colour::WHITE,
+            ),
+        );
+
+        vec![
+            (Point3D::new(-1.0, 0.0, 0.0), Colour::new(1.0, 1.0, 0.0)),
+            (Point3D::new(-1.0, 0.9, -0.9), Colour::new(0.0, 1.0, 1.0)),
+            (Point3D::new(-1.0, 0.9, 0.9), Colour::RED),
+            (Point3D::new(-1.0, -0.9, -0.9), Colour::BLUE),
+            (Point3D::new(-1.0, -0.9, 0.9), Colour::new(1.0, 0.5, 0.0)),
+            (Point3D::new(0.0, 0.0, 1.0), Colour::new(0.0, 1.0, 1.0)),
+            (Point3D::new(-0.9, 0.9, 1.0), Colour::RED),
+            (Point3D::new(0.9, 0.9, 1.0), Colour::new(1.0, 1.0, 0.0)),
+            (Point3D::new(-0.9, -0.9, 1.0), Colour::new(1.0, 0.5, 0.0)),
+            (Point3D::new(0.9, -0.9, 1.0), Colour::GREEN),
+            (Point3D::new(1.0, 0.0, 0.0), Colour::RED),
+            (Point3D::new(1.0, 0.9, 0.9), Colour::new(1.0, 1.0, 0.0)),
+            (Point3D::new(1.0, 0.9, -0.9), Colour::new(1.0, 0.0, 1.0)),
+            (Point3D::new(1.0, -0.9, 0.9), Colour::GREEN),
+            (Point3D::new(1.0, -0.9, -0.9), Colour::WHITE),
+            (Point3D::new(0.0, 0.0, -1.0), Colour::GREEN),
+            (Point3D::new(0.9, 0.9, -1.0), Colour::new(1.0, 0.0, 1.0)),
+            (Point3D::new(-0.9, 0.9, -1.0), Colour::new(0.0, 1.0, 1.0)),
+            (Point3D::new(0.9, -0.9, -1.0), Colour::WHITE),
+            (Point3D::new(-0.9, -0.9, -1.0), Colour::BLUE),
+            (Point3D::new(0.0, 1.0, 0.0), Colour::new(1.0, 0.5, 0.0)),
+            (Point3D::new(-0.9, 1.0, -0.9), Colour::new(0.0, 1.0, 1.0)),
+            (Point3D::new(0.9, 1.0, -0.9), Colour::new(1.0, 0.0, 1.0)),
+            (Point3D::new(-0.9, 1.0, 0.9), Colour::RED),
+            (Point3D::new(0.9, 1.0, 0.9), Colour::new(1.0, 1.0, 0.0)),
+            (Point3D::new(0.0, -1.0, 0.0), Colour::new(1.0, 0.0, 1.0)),
+            (Point3D::new(-0.9, -1.0, 0.9), Colour::new(1.0, 0.5, 0.0)),
+            (Point3D::new(0.9, -1.0, 0.9), Colour::GREEN),
+            (Point3D::new(-0.9, -1.0, -0.9), Colour::BLUE),
+            (Point3D::new(0.9, -1.0, -0.9), Colour::WHITE),
+        ]
+        .into_iter()
+        .for_each(|(point, expected)| assert_eq!(pattern.colour_at(point), expected))
+    }
 }
 
 mod property_tests {
