@@ -188,23 +188,23 @@ fn cubic_colour_at(
 
         left.colour_at((u, v))
     } else if largest == point.y() {
-        let u = (1.0 - point.z()).rem_euclid(2.0) / 2.0;
-        let v = (1.0 + point.x()).rem_euclid(2.0) / 2.0;
+        let u = (1.0 + point.x()).rem_euclid(2.0) / 2.0;
+        let v = (1.0 - point.z()).rem_euclid(2.0) / 2.0;
 
         top.colour_at((u, v))
     } else if largest == -point.y() {
-        let u = (1.0 + point.z()).rem_euclid(2.0) / 2.0;
-        let v = (1.0 + point.x()).rem_euclid(2.0) / 2.0;
+        let u = (1.0 + point.x()).rem_euclid(2.0) / 2.0;
+        let v = (1.0 + point.z()).rem_euclid(2.0) / 2.0;
 
         bottom.colour_at((u, v))
     } else if largest == point.z() {
-        let u = (1.0 + point.y()).rem_euclid(2.0) / 2.0;
-        let v = (1.0 + point.x()).rem_euclid(2.0) / 2.0;
+        let u = (1.0 + point.x()).rem_euclid(2.0) / 2.0;
+        let v = (1.0 + point.y()).rem_euclid(2.0) / 2.0;
 
         front.colour_at((u, v))
     } else {
-        let u = (1.0 + point.y()).rem_euclid(2.0) / 2.0;
-        let v = (1.0 - point.x()).rem_euclid(2.0) / 2.0;
+        let u = (1.0 - point.x()).rem_euclid(2.0) / 2.0;
+        let v = (1.0 + point.y()).rem_euclid(2.0) / 2.0;
 
         back.colour_at((u, v))
     }

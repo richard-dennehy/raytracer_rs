@@ -408,6 +408,7 @@ mod unit_tests {
         assert_eq!(pattern.colour_at((1.1, 1.1)), Colour::GREEN);
     }
 
+    #[rustfmt::skip]
     #[test]
     fn a_cubic_texture_should_map_cube_points_onto_one_of_6_faces() {
         let pattern = Pattern::cubic_texture(
@@ -447,7 +448,7 @@ mod unit_tests {
                 Colour::new(1.0, 1.0, 0.0),
             ),
             UvPattern::alignment_check(
-                Colour::new(1.0, 1.0, 0.0),
+                Colour::new(1.0, 0.0, 1.0),
                 Colour::new(1.0, 0.5, 0.0),
                 Colour::GREEN,
                 Colour::BLUE,
@@ -456,39 +457,41 @@ mod unit_tests {
         );
 
         vec![
-            (Point3D::new(-1.0, 0.0, 0.0), Colour::new(1.0, 1.0, 0.0)),
-            (Point3D::new(-1.0, 0.9, -0.9), Colour::new(0.0, 1.0, 1.0)),
-            (Point3D::new(-1.0, 0.9, 0.9), Colour::RED),
-            (Point3D::new(-1.0, -0.9, -0.9), Colour::BLUE),
-            (Point3D::new(-1.0, -0.9, 0.9), Colour::new(1.0, 0.5, 0.0)),
-            (Point3D::new(0.0, 0.0, 1.0), Colour::new(0.0, 1.0, 1.0)),
-            (Point3D::new(-0.9, 0.9, 1.0), Colour::RED),
-            (Point3D::new(0.9, 0.9, 1.0), Colour::new(1.0, 1.0, 0.0)),
-            (Point3D::new(-0.9, -0.9, 1.0), Colour::new(1.0, 0.5, 0.0)),
-            (Point3D::new(0.9, -0.9, 1.0), Colour::GREEN),
-            (Point3D::new(1.0, 0.0, 0.0), Colour::RED),
-            (Point3D::new(1.0, 0.9, 0.9), Colour::new(1.0, 1.0, 0.0)),
-            (Point3D::new(1.0, 0.9, -0.9), Colour::new(1.0, 0.0, 1.0)),
-            (Point3D::new(1.0, -0.9, 0.9), Colour::GREEN),
-            (Point3D::new(1.0, -0.9, -0.9), Colour::WHITE),
-            (Point3D::new(0.0, 0.0, -1.0), Colour::GREEN),
-            (Point3D::new(0.9, 0.9, -1.0), Colour::new(1.0, 0.0, 1.0)),
-            (Point3D::new(-0.9, 0.9, -1.0), Colour::new(0.0, 1.0, 1.0)),
-            (Point3D::new(0.9, -0.9, -1.0), Colour::WHITE),
-            (Point3D::new(-0.9, -0.9, -1.0), Colour::BLUE),
-            (Point3D::new(0.0, 1.0, 0.0), Colour::new(1.0, 0.5, 0.0)),
-            (Point3D::new(-0.9, 1.0, -0.9), Colour::new(0.0, 1.0, 1.0)),
-            (Point3D::new(0.9, 1.0, -0.9), Colour::new(1.0, 0.0, 1.0)),
-            (Point3D::new(-0.9, 1.0, 0.9), Colour::RED),
-            (Point3D::new(0.9, 1.0, 0.9), Colour::new(1.0, 1.0, 0.0)),
-            (Point3D::new(0.0, -1.0, 0.0), Colour::new(1.0, 0.0, 1.0)),
-            (Point3D::new(-0.9, -1.0, 0.9), Colour::new(1.0, 0.5, 0.0)),
-            (Point3D::new(0.9, -1.0, 0.9), Colour::GREEN),
-            (Point3D::new(-0.9, -1.0, -0.9), Colour::BLUE),
-            (Point3D::new(0.9, -1.0, -0.9), Colour::WHITE),
+            ("left", Point3D::new(-1.0, 0.0, 0.0), Colour::new(1.0, 1.0, 0.0)),
+            ("left", Point3D::new(-1.0, 0.9, -0.9), Colour::new(0.0, 1.0, 1.0)),
+            ("left", Point3D::new(-1.0, 0.9, 0.9), Colour::RED),
+            ("left", Point3D::new(-1.0, -0.9, -0.9), Colour::BLUE),
+            ("left", Point3D::new(-1.0, -0.9, 0.9), Colour::new(1.0, 0.5, 0.0)),
+            ("front", Point3D::new(0.0, 0.0, 1.0), Colour::new(0.0, 1.0, 1.0)),
+            ("front", Point3D::new(-0.9, 0.9, 1.0), Colour::RED),
+            ("front", Point3D::new(0.9, 0.9, 1.0), Colour::new(1.0, 1.0, 0.0)),
+            ("front", Point3D::new(-0.9, -0.9, 1.0), Colour::new(1.0, 0.5, 0.0)),
+            ("front", Point3D::new(0.9, -0.9, 1.0), Colour::GREEN),
+            ("right", Point3D::new(1.0, 0.0, 0.0), Colour::RED),
+            ("right", Point3D::new(1.0, 0.9, 0.9), Colour::new(1.0, 1.0, 0.0)),
+            ("right", Point3D::new(1.0, 0.9, -0.9), Colour::new(1.0, 0.0, 1.0)),
+            ("right", Point3D::new(1.0, -0.9, 0.9), Colour::GREEN),
+            ("right", Point3D::new(1.0, -0.9, -0.9), Colour::WHITE),
+            ("back", Point3D::new(0.0, 0.0, -1.0), Colour::GREEN),
+            ("back", Point3D::new(0.9, 0.9, -1.0), Colour::new(1.0, 0.0, 1.0)),
+            ("back", Point3D::new(-0.9, 0.9, -1.0), Colour::new(0.0, 1.0, 1.0)),
+            ("back", Point3D::new(0.9, -0.9, -1.0), Colour::WHITE),
+            ("back", Point3D::new(-0.9, -0.9, -1.0), Colour::BLUE),
+            ("top", Point3D::new(0.0, 1.0, 0.0), Colour::new(1.0, 0.5, 0.0)),
+            ("top", Point3D::new(-0.9, 1.0, -0.9), Colour::new(0.0, 1.0, 1.0)),
+            ("top", Point3D::new(0.9, 1.0, -0.9), Colour::new(1.0, 0.0, 1.0)),
+            ("top", Point3D::new(-0.9, 1.0, 0.9), Colour::RED),
+            ("top", Point3D::new(0.9, 1.0, 0.9), Colour::new(1.0, 1.0, 0.0)),
+            ("bottom", Point3D::new(0.0, -1.0, 0.0), Colour::new(1.0, 0.0, 1.0)),
+            ("bottom", Point3D::new(-0.9, -1.0, 0.9), Colour::new(1.0, 0.5, 0.0)),
+            ("bottom", Point3D::new(0.9, -1.0, 0.9), Colour::GREEN),
+            ("bottom", Point3D::new(-0.9, -1.0, -0.9), Colour::BLUE),
+            ("bottom", Point3D::new(0.9, -1.0, -0.9), Colour::WHITE),
         ]
         .into_iter()
-        .for_each(|(point, expected)| assert_eq!(pattern.colour_at(point), expected))
+        .for_each(|(side, point, expected)| {
+            assert_eq!(pattern.colour_at(point), expected, "{} side", side)
+        })
     }
 }
 
