@@ -3,6 +3,7 @@ extern crate ray_tracer;
 use ray_tracer::renderer::Samples;
 use ray_tracer::*;
 use std::f64::consts::PI;
+use std::path::Path;
 use std::time::Instant;
 
 /// Notes on axes and rotation:
@@ -20,22 +21,18 @@ fn main() -> Result<(), String> {
         .lights
         .push(Light::point(Colour::WHITE, Point3D::new(10.0, 10.0, -10.0)));
 
+    let texture =
+        image::open(Path::new(env!("CARGO_MANIFEST_DIR")).join("textures/earthmap1k.jpg"))
+            .unwrap()
+            .to_rgb8();
+
     world.add(
-        Object::cylinder()
-            .max_y(1.0)
-            .min_y(-1.0)
-            .capped()
-            .build()
+        Object::sphere()
             .with_material(Material {
-                pattern: Pattern::texture(
-                    UvPattern::checkers(Colour::WHITE, Colour::new(0.0, 0.5, 0.0))
-                        .width(20.0)
-                        .height(10.0),
-                    UvMap::Cylindrical,
-                ),
+                pattern: Pattern::texture(UvPattern::image(texture), UvMap::Spherical),
                 ..Default::default()
             })
-            .transformed(Transform::identity().rotate_x(-PI / 4.0)),
+            .transformed(Transform::identity().rotate_y(PI)),
     );
 
     let camera = Camera::new(

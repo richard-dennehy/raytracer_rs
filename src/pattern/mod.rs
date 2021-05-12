@@ -1,5 +1,6 @@
 use crate::pattern::Kind::{Checkers, CubicTexture, Gradient, Ring, Solid, Striped, Texture};
 use crate::{Colour, Point3D, Transform, Vector};
+use image::RgbImage;
 use std::f64::consts::PI;
 
 #[cfg(test)]
@@ -59,6 +60,7 @@ enum UvPatternKind {
         bottom_left: Colour,
         bottom_right: Colour,
     },
+    Image(RgbImage),
 }
 
 impl Pattern {
@@ -239,6 +241,14 @@ impl UvPattern {
         }
     }
 
+    pub fn image(img: RgbImage) -> Self {
+        UvPattern {
+            kind: UvPatternKind::Image(img),
+            width: 1.0,
+            height: 1.0,
+        }
+    }
+
     pub fn width(mut self, width: f64) -> Self {
         self.width = width;
         self
@@ -294,34 +304,47 @@ impl UvPattern {
         let u = nudge(u) * self.width;
         let v = nudge(v) * self.height;
 
-        match self.kind {
+        match &self.kind {
             UvPatternKind::Checkers(primary, _)
                 if (u.floor() + v.floor()) % 2.0 <= f64::EPSILON =>
             {
-                primary
+                *primary
             }
-            UvPatternKind::Checkers(_, secondary) => secondary,
+            UvPatternKind::Checkers(_, secondary) => *secondary,
             UvPatternKind::AlignmentCheck { top_left, .. }
                 if (u.fract() - 0.2) <= f64::EPSILON && (v.fract() + 0.2) >= 1.0 =>
             {
-                top_left
+                *top_left
             }
             UvPatternKind::AlignmentCheck { top_right, .. }
                 if (u.fract() + 0.2) >= 1.0 && (v.fract() + 0.2) >= 1.0 =>
             {
-                top_right
+                *top_right
             }
             UvPatternKind::AlignmentCheck { bottom_left, .. }
                 if (u.fract() - 0.2) <= f64::EPSILON && (v.fract() - 0.2) <= f64::EPSILON =>
             {
-                bottom_left
+                *bottom_left
             }
             UvPatternKind::AlignmentCheck { bottom_right, .. }
                 if (u.fract() + 0.2) >= 1.0 && (v.fract() - 0.2) <= f64::EPSILON =>
             {
-                bottom_right
+                *bottom_right
             }
-            UvPatternKind::AlignmentCheck { main, .. } => main,
+            UvPatternKind::AlignmentCheck { main, .. } => *main,
+            UvPatternKind::Image(img) => {
+                let v = 1.0 - v;
+
+                let x = u * (img.width() - 1) as f64;
+                let y = v * (img.height() - 1) as f64;
+
+                let pixel = img.get_pixel(x.round() as _, y.round() as _);
+                Colour::new(
+                    pixel.0[0] as f64 / 255.0,
+                    pixel.0[1] as f64 / 255.0,
+                    pixel.0[2] as f64 / 255.0,
+                )
+            }
         }
     }
 }
