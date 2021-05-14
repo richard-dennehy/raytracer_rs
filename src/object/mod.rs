@@ -19,6 +19,7 @@ use triangle::Triangle;
 
 mod bounds;
 use bounds::BoundingBox;
+use std::f64::consts::PI;
 
 #[derive(Debug)]
 pub struct Object {
@@ -241,6 +242,7 @@ impl Object {
             Point3D::new(x, y, z)
         };
 
+        // TODO get UV when material pattern is UV
         material.pattern.colour_at(object_point)
     }
 
@@ -456,6 +458,8 @@ pub trait Shape: Debug + Sync {
         parent: &'parent Object,
         with: Ray,
     ) -> Vec<Intersection<'parent>>;
+
+    fn uv_at(&self, point: Point3D) -> (f64, f64);
 }
 
 #[derive(Debug, PartialEq)]
@@ -489,6 +493,25 @@ impl Shape for Sphere {
             vec![]
         }
     }
+
+    fn uv_at(&self, point: Point3D) -> (f64, f64) {
+        // See https://en.wikipedia.org/wiki/Spherical_coordinate_system noting this uses _mathematical_ notation
+
+        // azimuthal angle - this is backwards but gets corrected later
+        let theta = point.x().atan2(point.z());
+        // given the centre is at the world origin, the radius is given by the magnitude of the vector
+        // from the world origin to the point
+        let r = (point - Point3D::ORIGIN).magnitude();
+        // polar angle
+        let phi = (point.y() / r).acos();
+        let raw_u = theta / (2.0 * PI);
+        // corrects backwards azimuthal angle
+        let u = 1.0 - (raw_u + 0.5);
+        // subtract from 1 to invert `v` such that 1 is the northernmost point
+        let v = 1.0 - (phi / PI);
+
+        (u, v)
+    }
 }
 
 #[derive(Debug, PartialEq)]
@@ -518,10 +541,14 @@ impl Shape for Plane {
         let t = -with.origin.y() / with.direction.y();
         vec![Intersection::new(t, parent)]
     }
+
+    fn uv_at(&self, point: Point3D) -> (f64, f64) {
+        (point.x().rem_euclid(1.0), point.z().rem_euclid(1.0))
+    }
 }
 
 #[derive(Debug, PartialEq)]
-// a 2x2x2 cube, centred at the world Origin
+// a 2x2x2 cube, centred at the world Origin (i.e. from (-1, -1, -1) to (1, 1, 1))
 struct Cube;
 impl Shape for Cube {
     fn object_bounds(&self) -> BoundingBox {
@@ -572,6 +599,55 @@ impl Shape for Cube {
                 Intersection::new(t_min, parent),
                 Intersection::new(t_max, parent),
             ]
+        }
+    }
+
+    /// ranges from u <- 0..3 and v <- 0..4 such that:
+    ///  - u <- 1..2; v <- 0..1 maps to the top face
+    ///  - u <- 1..2; v <- 1..2 maps to the right face
+    ///  - u <- 0..1; v <- 2..3 maps to the front face
+    ///  - u <- 1..2; v <- 2..3 maps to the bottom face
+    ///  - u <- 2..3; v <- 2..3 maps to the back face
+    ///  - u <- 1..2; v <- 3..4 maps to the left face
+    fn uv_at(&self, point: Point3D) -> (f64, f64) {
+        let largest = point.x().abs().max(point.y().abs().max(point.z().abs()));
+
+        if largest == point.x() {
+            // right face
+            let u = (1.0 - point.z()).rem_euclid(2.0) / 2.0;
+            let v = (1.0 + point.y()).rem_euclid(2.0) / 2.0;
+
+            (u + 1.0, v + 1.0)
+        } else if largest == -point.x() {
+            // left face
+            let u = (1.0 + point.z()).rem_euclid(2.0) / 2.0;
+            let v = (1.0 + point.y()).rem_euclid(2.0) / 2.0;
+
+            (u + 1.0, v + 3.0)
+        } else if largest == point.y() {
+            // top face
+            let u = (1.0 + point.x()).rem_euclid(2.0) / 2.0;
+            let v = (1.0 - point.z()).rem_euclid(2.0) / 2.0;
+
+            (u + 1.0, v)
+        } else if largest == -point.y() {
+            // bottom face
+            let u = (1.0 + point.x()).rem_euclid(2.0) / 2.0;
+            let v = (1.0 + point.z()).rem_euclid(2.0) / 2.0;
+
+            (u + 1.0, v + 2.0)
+        } else if largest == point.z() {
+            // front face
+            let u = (1.0 + point.x()).rem_euclid(2.0) / 2.0;
+            let v = (1.0 + point.y()).rem_euclid(2.0) / 2.0;
+
+            (u, v + 2.0)
+        } else {
+            // back face
+            let u = (1.0 - point.x()).rem_euclid(2.0) / 2.0;
+            let v = (1.0 + point.y()).rem_euclid(2.0) / 2.0;
+
+            (u + 2.0, v + 2.0)
         }
     }
 }

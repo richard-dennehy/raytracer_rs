@@ -15,11 +15,13 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implement cubic UV mapping">
-      <change afterPath="$PROJECT_DIR$/textures/earthmap1k.jpg" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implement image mapping">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pattern/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/cone.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cone.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/cylinder.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cylinder.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/triangle.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,11 +98,6 @@
     </option>
   </component>
   <component name="RunManager" selected="Cargo.run (release)">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -391,14 +388,9 @@
       <workItem from="1620240587638" duration="1708000" />
       <workItem from="1620669456578" duration="3543000" />
       <workItem from="1620756647998" duration="2575000" />
-      <workItem from="1620843327348" duration="3277000" />
-    </task>
-    <task id="LOCAL-00121" summary="fix clippy suppression">
-      <created>1616184607773</created>
-      <option name="number" value="00121" />
-      <option name="presentableId" value="LOCAL-00121" />
-      <option name="project" value="LOCAL" />
-      <updated>1616184607773</updated>
+      <workItem from="1620843327348" duration="3409000" />
+      <workItem from="1620928752909" duration="1545000" />
+      <workItem from="1621016885563" duration="2395000" />
     </task>
     <task id="LOCAL-00122" summary="refactor reflection/reflectance calculations">
       <created>1616244898700</created>
@@ -736,7 +728,14 @@
       <option name="project" value="LOCAL" />
       <updated>1620759218787</updated>
     </task>
-    <option name="localTasksCounter" value="170" />
+    <task id="LOCAL-00170" summary="implement image mapping">
+      <created>1620847297201</created>
+      <option name="number" value="00170" />
+      <option name="presentableId" value="LOCAL-00170" />
+      <option name="project" value="LOCAL" />
+      <updated>1620847297202</updated>
+    </task>
+    <option name="localTasksCounter" value="171" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -762,7 +761,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP update YAML parser to support dragon file&#10;&#10;- &quot;tidy up&quot; transformation conversion" />
     <MESSAGE value="WIP update YAML parser to support dragon file&#10;&#10;- support creating groups" />
     <MESSAGE value="WIP update YAML parser to support dragon file&#10;&#10;- major refactor of parser to inline define values during parsing" />
     <MESSAGE value="update YAML parser to support dragon file&#10;&#10;- support loading wavefront obj files from YAML" />
@@ -787,7 +785,8 @@
     <MESSAGE value="implement planar and cylindrical uv mapping" />
     <MESSAGE value="WIP cubic mapping" />
     <MESSAGE value="implement cubic UV mapping" />
-    <option name="LAST_COMMIT_MESSAGE" value="implement cubic UV mapping" />
+    <MESSAGE value="implement image mapping" />
+    <option name="LAST_COMMIT_MESSAGE" value="implement image mapping" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -801,36 +800,6 @@
           <url>file://$PROJECT_DIR$/src/world/mod.rs</url>
           <line>108</line>
           <option name="timeStamp" value="50" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/pattern/mod.rs</url>
-          <line>183</line>
-          <option name="timeStamp" value="53" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/pattern/mod.rs</url>
-          <line>188</line>
-          <option name="timeStamp" value="54" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/pattern/mod.rs</url>
-          <line>193</line>
-          <option name="timeStamp" value="55" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/pattern/mod.rs</url>
-          <line>198</line>
-          <option name="timeStamp" value="56" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/pattern/mod.rs</url>
-          <line>203</line>
-          <option name="timeStamp" value="57" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/pattern/mod.rs</url>
-          <line>208</line>
-          <option name="timeStamp" value="58" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

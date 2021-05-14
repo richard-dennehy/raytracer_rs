@@ -96,6 +96,24 @@ impl Shape for Cylinder {
 
         ts
     }
+
+    /// ranges from u <- 0..3 and v <- 0..1 such that:
+    ///  - u <- 0..1 maps to the sides of the cylinder
+    ///  - u <- 1..2 maps to the top cap of the cylinder
+    ///  - u <- 2..3 maps to the bottom cap of the cylinder
+    fn uv_at(&self, point: Point3D) -> (f64, f64) {
+        // FIXME doesn't work properly on the caps
+        // similar to spherical map on the sides
+
+        // azimuthal angle
+        let theta = point.x().atan2(point.z());
+        let raw_u = theta / (2.0 * PI);
+        // corrects backwards azimuthal angle
+        let u = 1.0 - (raw_u + 0.5);
+
+        let v = point.y().rem_euclid(1.0);
+        (u, v)
+    }
 }
 
 pub struct CylinderBuilder {

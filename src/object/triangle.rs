@@ -124,4 +124,8 @@ impl Shape for Triangle {
             vec![Intersection::new(t, parent)]
         }
     }
+
+    fn uv_at(&self, point: Point3D) -> (f64, f64) {
+        todo!()
+    }
 }
