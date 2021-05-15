@@ -1,6 +1,7 @@
 use crate::object::bounds::BoundingBox;
 use crate::object::Shape;
 use crate::{Intersection, Normal3D, Object, Point3D, Ray, Vector, Vector3D};
+use std::f64::consts::PI;
 
 #[derive(Debug, PartialEq)]
 pub struct Cylinder {

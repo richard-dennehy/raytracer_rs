@@ -15,13 +15,13 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implement image mapping">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP move UV mapping to Shape implementations">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/cone.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cone.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/cylinder.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cylinder.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/triangle.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pattern/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -390,14 +390,8 @@
       <workItem from="1620756647998" duration="2575000" />
       <workItem from="1620843327348" duration="3409000" />
       <workItem from="1620928752909" duration="1545000" />
-      <workItem from="1621016885563" duration="2395000" />
-    </task>
-    <task id="LOCAL-00122" summary="refactor reflection/reflectance calculations">
-      <created>1616244898700</created>
-      <option name="number" value="00122" />
-      <option name="presentableId" value="LOCAL-00122" />
-      <option name="project" value="LOCAL" />
-      <updated>1616244898701</updated>
+      <workItem from="1621016885563" duration="2412000" />
+      <workItem from="1621072214051" duration="3783000" />
     </task>
     <task id="LOCAL-00123" summary="create a test scene to demonstrate disabling shadow casting for individual objects">
       <created>1616333436782</created>
@@ -735,7 +729,14 @@
       <option name="project" value="LOCAL" />
       <updated>1620847297202</updated>
     </task>
-    <option name="localTasksCounter" value="171" />
+    <task id="LOCAL-00171" summary="WIP move UV mapping to Shape implementations">
+      <created>1621019299159</created>
+      <option name="number" value="00171" />
+      <option name="presentableId" value="LOCAL-00171" />
+      <option name="project" value="LOCAL" />
+      <updated>1621019299159</updated>
+    </task>
+    <option name="localTasksCounter" value="172" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -761,7 +762,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP update YAML parser to support dragon file&#10;&#10;- support creating groups" />
     <MESSAGE value="WIP update YAML parser to support dragon file&#10;&#10;- major refactor of parser to inline define values during parsing" />
     <MESSAGE value="update YAML parser to support dragon file&#10;&#10;- support loading wavefront obj files from YAML" />
     <MESSAGE value="allow group materials to override children" />
@@ -786,14 +786,15 @@
     <MESSAGE value="WIP cubic mapping" />
     <MESSAGE value="implement cubic UV mapping" />
     <MESSAGE value="implement image mapping" />
-    <option name="LAST_COMMIT_MESSAGE" value="implement image mapping" />
+    <MESSAGE value="WIP move UV mapping to Shape implementations" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP move UV mapping to Shape implementations" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/object/cylinder.rs</url>
-          <line>59</line>
+          <line>60</line>
           <option name="timeStamp" value="45" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">

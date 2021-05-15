@@ -242,8 +242,18 @@ impl Object {
             Point3D::new(x, y, z)
         };
 
-        // TODO get UV when material pattern is UV
-        material.pattern.colour_at(object_point)
+        if self.material.pattern.is_uv_based() {
+            // TODO test this doesn't break when groups/csgs are involved
+            let uv = match &self.kind {
+                ObjectKind::Shape(shape) => shape.uv_at(object_point),
+                ObjectKind::Group(_) => panic!("cannot UV map a group"),
+                ObjectKind::Csg { .. } => panic!("cannot UV map a CSG"),
+            };
+
+            material.pattern.colour_at_uv(uv)
+        } else {
+            material.pattern.colour_at(object_point)
+        }
     }
 
     pub fn intersect(&self, with: &Ray) -> Intersections {

@@ -21,18 +21,23 @@ fn main() -> Result<(), String> {
         .lights
         .push(Light::point(Colour::WHITE, Point3D::new(10.0, 10.0, -10.0)));
 
-    let texture =
-        image::open(Path::new(env!("CARGO_MANIFEST_DIR")).join("textures/earthmap1k.jpg"))
-            .unwrap()
-            .to_rgb8();
-
     world.add(
-        Object::sphere()
+        Object::cylinder()
+            .min_y(-1.0)
+            .max_y(1.0)
+            .build()
             .with_material(Material {
-                pattern: Pattern::texture(UvPattern::image(texture), UvMap::Spherical),
+                pattern: Pattern::texture(
+                    UvPattern::checkers(
+                        Colour::new(0.0, 0.5, 0.0),
+                        Colour::WHITE,
+                        nonzero_ext::nonzero!(20usize),
+                        nonzero_ext::nonzero!(5usize),
+                    ),
+                    UvMap::Cylindrical,
+                ),
                 ..Default::default()
-            })
-            .transformed(Transform::identity().rotate_y(PI)),
+            }),
     );
 
     let camera = Camera::new(
@@ -40,7 +45,7 @@ fn main() -> Result<(), String> {
         nonzero_ext::nonzero!(1080u16),
         PI / 3.0,
         Transform::view_transform(
-            Point3D::new(0.0, 0.0, -5.0),
+            Point3D::new(0.0, 1.0, -5.0),
             Point3D::ORIGIN,
             Normal3D::POSITIVE_Y,
         ),

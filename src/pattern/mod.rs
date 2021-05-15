@@ -1,7 +1,8 @@
-use crate::pattern::Kind::{Checkers, CubicTexture, Gradient, Ring, Solid, Striped, Texture};
+use crate::pattern::Kind::{Checkers, CubicTexture, Gradient, Ring, Solid, Striped, Texture, Uv};
 use crate::{Colour, Point3D, Transform, Vector};
 use image::RgbImage;
 use std::f64::consts::PI;
+use std::num::NonZeroUsize;
 
 #[cfg(test)]
 mod tests;
@@ -34,6 +35,7 @@ enum Kind {
         top: UvPattern,
         bottom: UvPattern,
     },
+    Uv(UvPattern),
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -46,8 +48,8 @@ pub enum UvMap {
 #[derive(Clone, Debug, PartialEq)]
 pub struct UvPattern {
     kind: UvPatternKind,
-    width: f64,
-    height: f64,
+    width: usize,
+    height: usize,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -130,6 +132,13 @@ impl Pattern {
         }
     }
 
+    pub fn uv(pattern: UvPattern) -> Self {
+        Pattern {
+            kind: Uv(pattern),
+            transform: Transform::identity(),
+        }
+    }
+
     pub fn with_transform(mut self, transform: Transform) -> Self {
         self.transform = transform;
         self
@@ -164,7 +173,19 @@ impl Pattern {
                 top,
                 bottom,
             } => cubic_colour_at(Point3D::new(x, y, z), left, right, front, back, top, bottom),
+            Uv(_) => panic!("pattern is UV based"),
         }
+    }
+
+    pub fn colour_at_uv(&self, uv: (f64, f64)) -> Colour {
+        match &self.kind {
+            Uv(pattern) => pattern.colour_at(uv),
+            _ => panic!("pattern is not UV based"),
+        }
+    }
+
+    pub fn is_uv_based(&self) -> bool {
+        matches!(self.kind, Uv(_))
     }
 }
 
@@ -213,11 +234,16 @@ fn cubic_colour_at(
 }
 
 impl UvPattern {
-    pub fn checkers(primary: Colour, secondary: Colour) -> Self {
+    pub fn checkers(
+        primary: Colour,
+        secondary: Colour,
+        width: NonZeroUsize,
+        height: NonZeroUsize,
+    ) -> Self {
         UvPattern {
             kind: UvPatternKind::Checkers(primary, secondary),
-            width: 1.0,
-            height: 1.0,
+            width: width.get(),
+            height: height.get(),
         }
     }
 
@@ -236,27 +262,17 @@ impl UvPattern {
                 bottom_left,
                 bottom_right,
             },
-            width: 1.0,
-            height: 1.0,
+            width: 1,
+            height: 1,
         }
     }
 
     pub fn image(img: RgbImage) -> Self {
         UvPattern {
             kind: UvPatternKind::Image(img),
-            width: 1.0,
-            height: 1.0,
+            width: 1,
+            height: 1,
         }
-    }
-
-    pub fn width(mut self, width: f64) -> Self {
-        self.width = width;
-        self
-    }
-
-    pub fn height(mut self, height: f64) -> Self {
-        self.height = height;
-        self
     }
 }
 
@@ -301,8 +317,8 @@ impl UvMap {
 
 impl UvPattern {
     fn colour_at(&self, (u, v): (f64, f64)) -> Colour {
-        let u = nudge(u) * self.width;
-        let v = nudge(v) * self.height;
+        let u = nudge(u) * self.width as f64;
+        let v = nudge(v) * self.height as f64;
 
         match &self.kind {
             UvPatternKind::Checkers(primary, _)

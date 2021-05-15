@@ -126,6 +126,7 @@ impl Shape for Triangle {
     }
 
     fn uv_at(&self, point: Point3D) -> (f64, f64) {
+        // TODO should be like plane UV but on arbitrary axes (given by the edges???)
         todo!()
     }
 }
