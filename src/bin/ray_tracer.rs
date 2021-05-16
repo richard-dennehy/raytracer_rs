@@ -3,7 +3,6 @@ extern crate ray_tracer;
 use ray_tracer::renderer::Samples;
 use ray_tracer::*;
 use std::f64::consts::PI;
-use std::path::Path;
 use std::time::Instant;
 
 /// Notes on axes and rotation:
@@ -21,31 +20,60 @@ fn main() -> Result<(), String> {
         .lights
         .push(Light::point(Colour::WHITE, Point3D::new(10.0, 10.0, -10.0)));
 
-    world.add(
-        Object::cylinder()
-            .min_y(-1.0)
-            .max_y(1.0)
-            .build()
-            .with_material(Material {
-                pattern: Pattern::texture(
-                    UvPattern::checkers(
-                        Colour::new(0.0, 0.5, 0.0),
-                        Colour::WHITE,
-                        nonzero_ext::nonzero!(20usize),
-                        nonzero_ext::nonzero!(5usize),
-                    ),
-                    UvMap::Cylindrical,
-                ),
-                ..Default::default()
-            }),
-    );
+    world.add(Object::cube().with_material(Material {
+        pattern: Pattern::uv(UvPattern::cubic(
+            UvPattern::alignment_check(
+                Colour::new(0.0, 1.0, 1.0),
+                Colour::RED,
+                Colour::new(1.0, 1.0, 0.0),
+                Colour::new(1.0, 0.5, 0.0),
+                Colour::GREEN,
+            ),
+            UvPattern::alignment_check(
+                Colour::GREEN,
+                Colour::new(1.0, 0.0, 1.0),
+                Colour::new(0.0, 1.0, 1.0),
+                Colour::WHITE,
+                Colour::BLUE,
+            ),
+            UvPattern::alignment_check(
+                Colour::new(1.0, 1.0, 0.0),
+                Colour::new(0.0, 1.0, 1.0),
+                Colour::RED,
+                Colour::BLUE,
+                Colour::new(1.0, 0.5, 0.0),
+            ),
+            UvPattern::alignment_check(
+                Colour::RED,
+                Colour::new(1.0, 1.0, 0.0),
+                Colour::new(1.0, 0.0, 1.0),
+                Colour::GREEN,
+                Colour::WHITE,
+            ),
+            UvPattern::alignment_check(
+                Colour::new(1.0, 0.5, 0.0),
+                Colour::new(0.0, 1.0, 1.0),
+                Colour::new(1.0, 0.0, 1.0),
+                Colour::RED,
+                Colour::new(1.0, 1.0, 0.0),
+            ),
+            UvPattern::alignment_check(
+                Colour::new(1.0, 0.0, 1.0),
+                Colour::new(1.0, 0.5, 0.0),
+                Colour::GREEN,
+                Colour::BLUE,
+                Colour::WHITE,
+            ),
+        )),
+        ..Default::default()
+    }));
 
     let camera = Camera::new(
         nonzero_ext::nonzero!(1920u16),
         nonzero_ext::nonzero!(1080u16),
         PI / 3.0,
         Transform::view_transform(
-            Point3D::new(0.0, 1.0, -5.0),
+            Point3D::new(3.0, 3.0, -5.0),
             Point3D::ORIGIN,
             Normal3D::POSITIVE_Y,
         ),

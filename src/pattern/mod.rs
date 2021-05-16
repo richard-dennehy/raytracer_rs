@@ -63,6 +63,14 @@ enum UvPatternKind {
         bottom_right: Colour,
     },
     Image(RgbImage),
+    Cubic {
+        front: Box<UvPattern>,
+        back: Box<UvPattern>,
+        left: Box<UvPattern>,
+        right: Box<UvPattern>,
+        top: Box<UvPattern>,
+        bottom: Box<UvPattern>,
+    },
 }
 
 impl Pattern {
@@ -247,6 +255,28 @@ impl UvPattern {
         }
     }
 
+    pub fn cubic(
+        front: UvPattern,
+        back: UvPattern,
+        left: UvPattern,
+        right: UvPattern,
+        top: UvPattern,
+        bottom: UvPattern,
+    ) -> Self {
+        UvPattern {
+            kind: UvPatternKind::Cubic {
+                front: Box::new(front),
+                back: Box::new(back),
+                left: Box::new(left),
+                right: Box::new(right),
+                top: Box::new(top),
+                bottom: Box::new(bottom),
+            },
+            width: 1,
+            height: 1,
+        }
+    }
+
     pub fn alignment_check(
         main: Colour,
         top_left: Colour,
@@ -360,6 +390,31 @@ impl UvPattern {
                     pixel.0[1] as f64 / 255.0,
                     pixel.0[2] as f64 / 255.0,
                 )
+            }
+            UvPatternKind::Cubic { .. } if u < 0.0 || v < 0.0 || u > 3.0 || v > 4.0 => {
+                panic!("UV coordinates out of bounds for Cubic UV Map {:?}", (u, v))
+            }
+            UvPatternKind::Cubic { front, .. } if u <= 1.0 && v >= 2.0 && v <= 3.0 => {
+                front.colour_at((u, v - 2.0))
+            }
+            UvPatternKind::Cubic { .. } if u <= 1.0 => {
+                panic!("UV coordinates out of bounds for Cubic UV Map {:?}", (u, v))
+            }
+            UvPatternKind::Cubic { left, .. } if u <= 2.0 && v >= 3.0 => {
+                left.colour_at((u - 1.0, v - 3.0))
+            }
+            UvPatternKind::Cubic { bottom, .. } if u <= 2.0 && v >= 2.0 => {
+                bottom.colour_at((u - 1.0, v - 2.0))
+            }
+            UvPatternKind::Cubic { right, .. } if u <= 2.0 && v >= 1.0 => {
+                right.colour_at((u - 1.0, v - 1.0))
+            }
+            UvPatternKind::Cubic { top, .. } if u <= 2.0 => top.colour_at((u - 1.0, v)),
+            UvPatternKind::Cubic { back, .. } if u >= 2.0 && v <= 3.0 && v >= 2.0 => {
+                back.colour_at((u - 2.0, v - 2.0))
+            }
+            UvPatternKind::Cubic { .. } => {
+                panic!("UV coordinates out of bounds for Cubic UV Map {:?}", (u, v))
             }
         }
     }
