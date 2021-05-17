@@ -72,7 +72,7 @@ mod shape_tests {
         let sphere = Object::sphere()
             .transformed(Transform::identity().translate_x(1.0))
             .with_material(Material {
-                pattern: Pattern::striped(Colour::WHITE, Colour::BLACK),
+                kind: MaterialKind::Pattern(Pattern::striped(Colour::WHITE, Colour::BLACK)),
                 ambient: 1.0,
                 diffuse: 0.0,
                 specular: 0.0,
@@ -99,7 +99,7 @@ mod shape_tests {
         let sphere = Object::sphere()
             .transformed(Transform::identity().rotate_y(PI))
             .with_material(Material {
-                pattern: Pattern::striped(Colour::WHITE, Colour::BLACK),
+                kind: MaterialKind::Pattern(Pattern::striped(Colour::WHITE, Colour::BLACK)),
                 ambient: 1.0,
                 diffuse: 0.0,
                 specular: 0.0,
@@ -288,7 +288,7 @@ mod sphere_tests {
     fn lighting_a_point_on_the_left_hemisphere_of_a_default_sphere_with_a_default_stripe_pattern_should_use_the_secondary_colour(
     ) {
         let sphere = Object::sphere().with_material(Material {
-            pattern: Pattern::striped(Colour::WHITE, Colour::BLACK),
+            kind: MaterialKind::Pattern(Pattern::striped(Colour::WHITE, Colour::BLACK)),
             ambient: 1.0,
             diffuse: 0.0,
             specular: 0.0,
@@ -314,7 +314,7 @@ mod sphere_tests {
     fn lighting_a_point_on_the_right_hemisphere_of_a_default_sphere_with_a_default_stripe_pattern_should_use_the_primary_colour(
     ) {
         let sphere = Object::sphere().with_material(Material {
-            pattern: Pattern::striped(Colour::WHITE, Colour::BLACK),
+            kind: MaterialKind::Pattern(Pattern::striped(Colour::WHITE, Colour::BLACK)),
             ambient: 1.0,
             diffuse: 0.0,
             specular: 0.0,

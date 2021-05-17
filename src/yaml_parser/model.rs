@@ -1,3 +1,4 @@
+use crate::material::MaterialKind;
 use crate::obj_parser::ObjData;
 use crate::{
     obj_parser, Camera, Colour, Light, Material, Object, Pattern, Point3D, Transform, Vector,
@@ -157,8 +158,8 @@ impl MaterialDescription {
         self.pattern
             .to_owned()
             .map(|pattern_desc| match pattern_desc {
-                Left(colour) => material.pattern = Pattern::solid(colour),
-                Right(pattern) => material.pattern = pattern.to_pattern(),
+                Left(colour) => material.kind = MaterialKind::Solid(colour),
+                Right(pattern) => material.kind = MaterialKind::Pattern(pattern.to_pattern()),
             });
         self.diffuse.map(|diffuse| material.diffuse = diffuse);
         self.ambient.map(|ambient| material.ambient = ambient);

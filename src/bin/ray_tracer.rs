@@ -21,7 +21,7 @@ fn main() -> Result<(), String> {
         .push(Light::point(Colour::WHITE, Point3D::new(10.0, 10.0, -10.0)));
 
     world.add(Object::cube().with_material(Material {
-        pattern: Pattern::uv(UvPattern::cubic(
+        kind: MaterialKind::Uv(UvPattern::cubic(
             UvPattern::alignment_check(
                 Colour::new(0.0, 1.0, 1.0),
                 Colour::RED,

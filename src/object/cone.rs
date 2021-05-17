@@ -113,7 +113,7 @@ impl Shape for Cone {
 
     /// ranges from u <- 0..2 and v <- 0..1 such that u <- 0..1 maps to the sides of the cone,
     /// and u <- 1..2 maps to the base of the cone (if it has one)
-    fn uv_at(&self, point: Point3D) -> (f64, f64) {
+    fn uv_at(&self, _point: Point3D) -> (f64, f64) {
         // TODO map the sides onto a circle (try to avoid distortion somehow)
         todo!()
     }

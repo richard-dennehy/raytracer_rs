@@ -1,8 +1,9 @@
-use crate::pattern::Kind::{Checkers, CubicTexture, Gradient, Ring, Solid, Striped, Texture, Uv};
+use crate::pattern::Kind::{Checkers, CubicTexture, Gradient, Ring, Solid, Striped, Texture};
 use crate::{Colour, Point3D, Transform, Vector};
 use image::RgbImage;
 use std::f64::consts::PI;
 use std::num::NonZeroUsize;
+use std::sync::Arc;
 
 #[cfg(test)]
 mod tests;
@@ -35,7 +36,6 @@ enum Kind {
         top: UvPattern,
         bottom: UvPattern,
     },
-    Uv(UvPattern),
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -62,7 +62,7 @@ enum UvPatternKind {
         bottom_left: Colour,
         bottom_right: Colour,
     },
-    Image(RgbImage),
+    Image(Arc<RgbImage>),
     Cubic {
         front: Box<UvPattern>,
         back: Box<UvPattern>,
@@ -140,13 +140,6 @@ impl Pattern {
         }
     }
 
-    pub fn uv(pattern: UvPattern) -> Self {
-        Pattern {
-            kind: Uv(pattern),
-            transform: Transform::identity(),
-        }
-    }
-
     pub fn with_transform(mut self, transform: Transform) -> Self {
         self.transform = transform;
         self
@@ -181,19 +174,7 @@ impl Pattern {
                 top,
                 bottom,
             } => cubic_colour_at(Point3D::new(x, y, z), left, right, front, back, top, bottom),
-            Uv(_) => panic!("pattern is UV based"),
         }
-    }
-
-    pub fn colour_at_uv(&self, uv: (f64, f64)) -> Colour {
-        match &self.kind {
-            Uv(pattern) => pattern.colour_at(uv),
-            _ => panic!("pattern is not UV based"),
-        }
-    }
-
-    pub fn is_uv_based(&self) -> bool {
-        matches!(self.kind, Uv(_))
     }
 }
 
@@ -297,7 +278,7 @@ impl UvPattern {
         }
     }
 
-    pub fn image(img: RgbImage) -> Self {
+    pub fn image(img: Arc<RgbImage>) -> Self {
         UvPattern {
             kind: UvPatternKind::Image(img),
             width: 1,
@@ -346,7 +327,7 @@ impl UvMap {
 }
 
 impl UvPattern {
-    fn colour_at(&self, (u, v): (f64, f64)) -> Colour {
+    pub fn colour_at(&self, (u, v): (f64, f64)) -> Colour {
         let u = nudge(u) * self.width as f64;
         let v = nudge(v) * self.height as f64;
 

@@ -37,7 +37,7 @@ mod intersections {
                     ambient: 1.0,
                     specular: 0.0,
                     diffuse: 0.0,
-                    pattern: Pattern::solid(Colour::new(0.1, 0.1, 0.1)),
+                    kind: MaterialKind::Solid(Colour::new(0.1, 0.1, 0.1)),
                     transparency: 0.0,
                     ..Default::default()
                 })
@@ -48,7 +48,7 @@ mod intersections {
         {
             let back = Object::sphere()
                 .with_material(Material {
-                    pattern: Pattern::solid(Colour::GREEN),
+                    kind: MaterialKind::Solid(Colour::GREEN),
                     ambient: 1.0,
                     diffuse: 0.0,
                     specular: 0.0,
@@ -69,7 +69,7 @@ mod intersections {
 
 mod shading {
     use super::*;
-    use crate::{Camera, Normal3D};
+    use crate::{Camera, Normal3D, Pattern};
     use std::f64::consts::PI;
 
     #[test]
@@ -159,7 +159,7 @@ mod shading {
 
         let csg = Object::csg_difference(
             Object::cube().with_material(Material {
-                pattern: Pattern::solid(Colour::new(0.9, 0.9, 0.0)),
+                kind: MaterialKind::Solid(Colour::new(0.9, 0.9, 0.0)),
                 ..Default::default()
             }),
             Object::sphere()
@@ -170,7 +170,7 @@ mod shading {
                         .translate_z(-0.5),
                 )
                 .with_material(Material {
-                    pattern: Pattern::solid(Colour::WHITE),
+                    kind: MaterialKind::Solid(Colour::WHITE),
                     ambient: 0.01,
                     ..Default::default()
                 }),
@@ -208,7 +208,7 @@ mod shading {
             Object::plane()
                 .transformed(Transform::identity().rotate_x(-PI / 4.0))
                 .with_material(Material {
-                    pattern: Pattern::checkers(Colour::WHITE, Colour::BLACK),
+                    kind: MaterialKind::Pattern(Pattern::checkers(Colour::WHITE, Colour::BLACK)),
                     // ensure lighting doesn't affect colours
                     ambient: 1.0,
                     specular: 0.0,
@@ -247,14 +247,14 @@ mod shading {
             .push(Light::point(Colour::WHITE, Point3D::new(-2.0, 0.0, 0.0)));
 
         let sphere = Object::sphere().with_material(Material {
-            pattern: Pattern::solid(Colour::BLUE),
+            kind: MaterialKind::Solid(Colour::BLUE),
             ambient: 1.0,
             diffuse: 0.0,
             specular: 0.0,
             ..Default::default()
         });
         let group = Object::group(vec![sphere]).with_material(Material {
-            pattern: Pattern::solid(Colour::GREEN),
+            kind: MaterialKind::Solid(Colour::GREEN),
             ambient: 1.0,
             diffuse: 0.0,
             specular: 0.0,
@@ -282,7 +282,7 @@ mod shading {
             .build()
             .transformed(Transform::identity().scale_x(30.0).scale_z(30.0))
             .with_material(Material {
-                pattern: Pattern::solid(Colour::RED),
+                kind: MaterialKind::Solid(Colour::RED),
                 ambient: 0.0,
                 specular: 0.0,
                 diffuse: 1.0,
@@ -346,7 +346,7 @@ mod shading {
             .capped()
             .build()
             .with_material(Material {
-                pattern: Pattern::solid(Colour::RED),
+                kind: MaterialKind::Solid(Colour::RED),
                 ambient: 0.0,
                 specular: 0.0,
                 diffuse: 1.0,
@@ -356,7 +356,7 @@ mod shading {
 
         let glass_box = Object::cube()
             .with_material(Material {
-                pattern: Pattern::solid(Colour::greyscale(0.1)),
+                kind: MaterialKind::Solid(Colour::greyscale(0.1)),
                 casts_shadow: false,
                 ambient: 0.0,
                 diffuse: 1.0,
@@ -437,7 +437,7 @@ mod lighting {
             Object::sphere()
                 .transformed(Transform::identity().translate_z(-7.5))
                 .with_material(Material {
-                    pattern: Pattern::solid(Colour::BLUE),
+                    kind: MaterialKind::Solid(Colour::BLUE),
                     ..Default::default()
                 }),
         );
@@ -546,7 +546,7 @@ mod reflection_and_refraction {
             let ball = Object::sphere()
                 .transformed(Transform::identity().translate_y(-3.5).translate_z(-0.5))
                 .with_material(Material {
-                    pattern: Pattern::solid(Colour::RED),
+                    kind: MaterialKind::Solid(Colour::RED),
                     ambient: 0.5,
                     ..Default::default()
                 });
@@ -586,7 +586,7 @@ mod transparency {
                     ambient: 1.0,
                     specular: 0.0,
                     diffuse: 0.0,
-                    pattern: Pattern::solid(Colour::BLACK),
+                    kind: MaterialKind::Solid(Colour::BLACK),
                     transparency: 1.0,
                     refractive: 1.0,
                     ..Default::default()
@@ -598,7 +598,7 @@ mod transparency {
         {
             let back = Object::sphere()
                 .with_material(Material {
-                    pattern: Pattern::solid(Colour::GREEN),
+                    kind: MaterialKind::Solid(Colour::GREEN),
                     ambient: 1.0,
                     diffuse: 0.0,
                     specular: 0.0,
@@ -635,7 +635,7 @@ mod transparency {
             let ball = Object::sphere()
                 .transformed(Transform::identity().translate_y(-3.5).translate_z(-0.5))
                 .with_material(Material {
-                    pattern: Pattern::solid(Colour::RED),
+                    kind: MaterialKind::Solid(Colour::RED),
                     ambient: 0.5,
                     ..Default::default()
                 });
@@ -671,7 +671,7 @@ mod transparency {
             let wall = Object::plane()
                 .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(5.0))
                 .with_material(Material {
-                    pattern: Pattern::solid(Colour::BLUE),
+                    kind: MaterialKind::Solid(Colour::BLUE),
                     ambient: 1.0,
                     ..Default::default()
                 });
@@ -683,7 +683,7 @@ mod transparency {
             let glass_sphere = Object::sphere()
                 .transformed(Transform::identity().translate_z(1.0))
                 .with_material(Material {
-                    pattern: Pattern::solid(Colour::new(0.05, 0.05, 0.05)),
+                    kind: MaterialKind::Solid(Colour::new(0.05, 0.05, 0.05)),
                     transparency: 1.0,
                     ..Default::default()
                 });
@@ -714,7 +714,7 @@ mod transparency {
             Object::plane()
                 .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(2.0))
                 .with_material(Material {
-                    pattern: Pattern::solid(Colour::WHITE),
+                    kind: MaterialKind::Solid(Colour::WHITE),
                     // ensure the material colour should be 100% white iff light reaches it
                     ambient: 0.0,
                     diffuse: 1.0,
@@ -726,7 +726,7 @@ mod transparency {
             Object::plane()
                 .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(1.0))
                 .with_material(Material {
-                    pattern: Pattern::solid(Colour::BLACK),
+                    kind: MaterialKind::Solid(Colour::BLACK),
                     // prevent light reflections from transparent plane
                     specular: 0.0,
                     transparency: 1.0,
@@ -749,7 +749,7 @@ mod transparency {
             Object::plane()
                 .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(2.0))
                 .with_material(Material {
-                    pattern: Pattern::solid(Colour::WHITE),
+                    kind: MaterialKind::Solid(Colour::WHITE),
                     // ensure the material colour should be 100% white iff light reaches it
                     ambient: 0.0,
                     diffuse: 1.0,
@@ -761,7 +761,7 @@ mod transparency {
             Object::plane()
                 .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(1.0))
                 .with_material(Material {
-                    pattern: Pattern::solid(Colour::BLACK),
+                    kind: MaterialKind::Solid(Colour::BLACK),
                     // prevent light reflections from transparent plane
                     specular: 0.0,
                     transparency: 1.0,
@@ -785,7 +785,7 @@ mod transparency {
             Object::plane()
                 .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(2.0))
                 .with_material(Material {
-                    pattern: Pattern::solid(Colour::WHITE),
+                    kind: MaterialKind::Solid(Colour::WHITE),
                     // ensure the material colour should be 100% white iff light reaches it
                     ambient: 0.0,
                     diffuse: 1.0,
@@ -797,7 +797,7 @@ mod transparency {
             Object::plane()
                 .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(1.0))
                 .with_material(Material {
-                    pattern: Pattern::solid(Colour::BLACK),
+                    kind: MaterialKind::Solid(Colour::BLACK),
                     // prevent light reflections from semi-transparent plane
                     specular: 0.0,
                     transparency: 0.5,
@@ -821,7 +821,7 @@ mod transparency {
             .push(Light::point(Colour::WHITE, Point3D::new(-6.0, 15.0, -8.0)));
 
         let floor = Object::plane().with_material(Material {
-            pattern: Pattern::solid(Colour::WHITE),
+            kind: MaterialKind::Solid(Colour::WHITE),
             diffuse: 0.9,
             // have to crank the ambient up so it actually appears white rather than grey
             ambient: 0.35,
@@ -838,7 +838,7 @@ mod transparency {
                     .translate_y(3.0),
             )
             .with_material(Material {
-                pattern: Pattern::solid(Colour::new(0.33, 0.0, 0.0)),
+                kind: MaterialKind::Solid(Colour::new(0.33, 0.0, 0.0)),
                 transparency: 0.9,
                 ..Default::default()
             });
@@ -870,7 +870,7 @@ mod transparency {
             .push(Light::point(Colour::WHITE, Point3D::new(-6.0, 15.0, -8.0)));
 
         let floor = Object::plane().with_material(Material {
-            pattern: Pattern::solid(Colour::WHITE),
+            kind: MaterialKind::Solid(Colour::WHITE),
             diffuse: 0.9,
             // have to crank the ambient up so it actually appears white rather than grey
             ambient: 0.35,
@@ -887,7 +887,7 @@ mod transparency {
                     .translate_y(3.0),
             )
             .with_material(Material {
-                pattern: Pattern::solid(Colour::new(0.0, 0.33, 0.33)),
+                kind: MaterialKind::Solid(Colour::new(0.0, 0.33, 0.33)),
                 transparency: 0.9,
                 ..Default::default()
             });

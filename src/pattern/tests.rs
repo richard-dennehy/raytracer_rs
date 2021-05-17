@@ -246,8 +246,8 @@ mod unit_tests {
     fn a_checker_uv_pattern_alternates_between_the_two_colours() {
         let pattern = UvPattern {
             kind: UvPatternKind::Checkers(Colour::BLACK, Colour::WHITE),
-            width: 2.0,
-            height: 2.0,
+            width: 2,
+            height: 2,
         };
 
         vec![
@@ -265,8 +265,8 @@ mod unit_tests {
     fn a_checker_uv_pattern_should_handle_slight_floating_point_errors_correctly() {
         let pattern = UvPattern {
             kind: UvPatternKind::Checkers(Colour::BLACK, Colour::WHITE),
-            width: 2.0,
-            height: 2.0,
+            width: 2,
+            height: 2,
         };
 
         assert_eq!(pattern.colour_at((1.0, 1.0)), Colour::BLACK);
@@ -293,9 +293,12 @@ mod unit_tests {
     #[test]
     fn a_uv_checker_pattern_and_spherical_map_should_alternate_colours_across_a_sphere() {
         let pattern = Pattern::texture(
-            UvPattern::checkers(Colour::BLACK, Colour::WHITE)
-                .width(16.0)
-                .height(8.0),
+            UvPattern::checkers(
+                Colour::BLACK,
+                Colour::WHITE,
+                nonzero_ext::nonzero!(16_usize),
+                nonzero_ext::nonzero!(8_usize),
+            ),
             UvMap::Spherical,
         );
 
@@ -374,8 +377,8 @@ mod unit_tests {
                 bottom_left: Colour::GREEN,
                 bottom_right: Colour::new(0.0, 1.0, 1.0),
             },
-            width: 1.0,
-            height: 1.0,
+            width: 1,
+            height: 1,
         };
 
         vec![
@@ -401,8 +404,8 @@ mod unit_tests {
                 bottom_left: Colour::GREEN,
                 bottom_right: Colour::new(0.0, 1.0, 1.0),
             },
-            width: 1.0,
-            height: 1.0,
+            width: 1,
+            height: 1,
         };
 
         assert_eq!(pattern.colour_at((1.1, 1.1)), Colour::GREEN);

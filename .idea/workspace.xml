@@ -15,10 +15,21 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP move UV mapping to Shape implementations">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP implement cubic UV by stitching 6 face UVs together">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/material/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/material/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/cone.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cone.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/triangle.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pattern/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pattern/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/world/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/world/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/creating_a_scene.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/creating_a_scene.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,7 +105,7 @@
       <command value="cargo bench" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.run (release)">
+  <component name="RunManager" selected="Cargo.test">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -198,8 +209,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.Test pattern::tests::unit_tests::a_cubic_texture_should_map_cube_points_onto_one_of_6_faces" />
         <item itemvalue="Cargo.Test pattern::tests::unit_tests::an_alignment_check_pattern_should_have_different_colours_in_each_corner" />
         <item itemvalue="Cargo.bench" />
@@ -389,14 +400,8 @@
       <workItem from="1620928752909" duration="1545000" />
       <workItem from="1621016885563" duration="2412000" />
       <workItem from="1621072214051" duration="3857000" />
-      <workItem from="1621154306679" duration="2982000" />
-    </task>
-    <task id="LOCAL-00124" summary="WIP test/improve transparent object shadow casting">
-      <created>1616446280865</created>
-      <option name="number" value="00124" />
-      <option name="presentableId" value="LOCAL-00124" />
-      <option name="project" value="LOCAL" />
-      <updated>1616446280865</updated>
+      <workItem from="1621154306679" duration="3014000" />
+      <workItem from="1621277640227" duration="1362000" />
     </task>
     <task id="LOCAL-00125" summary="WIP add world function to calculate direct light on a point">
       <created>1616531595974</created>
@@ -734,7 +739,14 @@
       <option name="project" value="LOCAL" />
       <updated>1621076069796</updated>
     </task>
-    <option name="localTasksCounter" value="173" />
+    <task id="LOCAL-00173" summary="WIP implement cubic UV by stitching 6 face UVs together">
+      <created>1621157319804</created>
+      <option name="number" value="00173" />
+      <option name="presentableId" value="LOCAL-00173" />
+      <option name="project" value="LOCAL" />
+      <updated>1621157319805</updated>
+    </task>
+    <option name="localTasksCounter" value="174" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -760,7 +772,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP update YAML parser to support dragon file&#10;&#10;- major refactor of parser to inline define values during parsing" />
     <MESSAGE value="update YAML parser to support dragon file&#10;&#10;- support loading wavefront obj files from YAML" />
     <MESSAGE value="allow group materials to override children" />
     <MESSAGE value="WIP write README for YAML parser" />
@@ -785,7 +796,8 @@
     <MESSAGE value="implement cubic UV mapping" />
     <MESSAGE value="implement image mapping" />
     <MESSAGE value="WIP move UV mapping to Shape implementations" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP move UV mapping to Shape implementations" />
+    <MESSAGE value="WIP implement cubic UV by stitching 6 face UVs together" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP implement cubic UV by stitching 6 face UVs together" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -797,7 +809,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/world/mod.rs</url>
-          <line>108</line>
+          <line>107</line>
           <option name="timeStamp" value="50" />
         </line-breakpoint>
       </breakpoints>

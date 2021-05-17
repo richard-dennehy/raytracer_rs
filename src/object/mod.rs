@@ -18,6 +18,7 @@ mod triangle;
 use triangle::Triangle;
 
 mod bounds;
+use crate::material::MaterialKind;
 use bounds::BoundingBox;
 use std::f64::consts::PI;
 
@@ -233,8 +234,6 @@ impl Object {
     ///
     /// Intended for use by transparency/shadow calculations
     pub fn raw_colour_at(&self, point: Point3D) -> Colour {
-        let material = &self.material;
-
         let object_point = {
             let inverse = self.transform.inverse();
 
@@ -242,17 +241,18 @@ impl Object {
             Point3D::new(x, y, z)
         };
 
-        if self.material.pattern.is_uv_based() {
-            // TODO test this doesn't break when groups/csgs are involved
-            let uv = match &self.kind {
-                ObjectKind::Shape(shape) => shape.uv_at(object_point),
-                ObjectKind::Group(_) => panic!("cannot UV map a group"),
-                ObjectKind::Csg { .. } => panic!("cannot UV map a CSG"),
-            };
+        match &self.material.kind {
+            MaterialKind::Pattern(pattern) => pattern.colour_at(object_point),
+            MaterialKind::Solid(colour) => *colour,
+            MaterialKind::Uv(uv_pattern) => {
+                let uv = match &self.kind {
+                    ObjectKind::Shape(shape) => shape.uv_at(object_point),
+                    ObjectKind::Group(_) => panic!("cannot UV map a group"),
+                    ObjectKind::Csg { .. } => panic!("cannot UV map a CSG"),
+                };
 
-            material.pattern.colour_at_uv(uv)
-        } else {
-            material.pattern.colour_at(object_point)
+                uv_pattern.colour_at(uv)
+            }
         }
     }
 

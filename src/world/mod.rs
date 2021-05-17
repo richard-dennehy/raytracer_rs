@@ -1,7 +1,6 @@
+use crate::material::MaterialKind;
 use crate::ray::HitData;
-use crate::{
-    Colour, Intersections, Light, Material, Object, Pattern, Point3D, Ray, Transform, Vector,
-};
+use crate::{Colour, Intersections, Light, Material, Object, Point3D, Ray, Transform, Vector};
 
 #[cfg(test)]
 mod tests;
@@ -49,7 +48,7 @@ impl World {
         World {
             objects: vec![
                 Object::sphere().with_material(Material {
-                    pattern: Pattern::solid(Colour::new(0.8, 1.0, 0.6)),
+                    kind: MaterialKind::Solid(Colour::new(0.8, 1.0, 0.6)),
                     ambient: 0.1,
                     diffuse: 0.7,
                     specular: 0.2,

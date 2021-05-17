@@ -26,7 +26,7 @@ mod light;
 pub use light::Light;
 
 mod material;
-pub use material::Material;
+pub use material::{Material, MaterialKind};
 
 mod world;
 pub use world::World;

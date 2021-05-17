@@ -1,5 +1,7 @@
 use super::*;
-use crate::{Camera, Colour, Material, Pattern, Point3D, Transform, Vector, Vector3D};
+use crate::{
+    Camera, Colour, Material, MaterialKind, Pattern, Point3D, Transform, Vector, Vector3D,
+};
 use nonzero_ext::nonzero;
 
 fn with_camera_description(rest: &str) -> String {
@@ -68,7 +70,7 @@ fn should_be_able_to_create_a_simple_object_with_a_colour_and_no_transforms() {
     assert_eq!(
         objects[0].material,
         Material {
-            pattern: Pattern::solid(Colour::new(0.373, 0.404, 0.55)),
+            kind: MaterialKind::Solid(Colour::new(0.373, 0.404, 0.55)),
             ..Default::default()
         }
     );
@@ -104,7 +106,10 @@ fn should_be_able_to_create_an_object_with_a_checker_pattern() {
     assert_eq!(
         objects[0].material,
         Material {
-            pattern: Pattern::checkers(Colour::greyscale(0.35), Colour::greyscale(0.65)),
+            kind: MaterialKind::Pattern(Pattern::checkers(
+                Colour::greyscale(0.35),
+                Colour::greyscale(0.65)
+            )),
             specular: 0.0,
             reflective: 0.4,
             ..Default::default()
@@ -148,8 +153,10 @@ fn should_be_able_to_create_an_object_with_a_pattern_with_a_transform() {
     assert_eq!(
         objects[0].material,
         Material {
-            pattern: Pattern::striped(Colour::greyscale(0.45), Colour::greyscale(0.55))
-                .with_transform(Transform::identity().rotate_y(1.5708).scale_all(0.25)),
+            kind: MaterialKind::Pattern(
+                Pattern::striped(Colour::greyscale(0.45), Colour::greyscale(0.55))
+                    .with_transform(Transform::identity().rotate_y(1.5708).scale_all(0.25))
+            ),
             ambient: 0.0,
             diffuse: 0.4,
             specular: 0.0,
@@ -190,7 +197,7 @@ fn should_be_able_to_create_an_object_referencing_a_defined_material() {
     assert_eq!(
         objects[0].material,
         Material {
-            pattern: Pattern::solid(Colour::WHITE),
+            kind: MaterialKind::Solid(Colour::WHITE),
             diffuse: 0.7,
             ambient: 0.1,
             specular: 0.0,
@@ -236,7 +243,7 @@ fn should_be_to_create_an_object_with_a_material_extending_another_material() {
     assert_eq!(
         objects[0].material,
         Material {
-            pattern: Pattern::solid(Colour::new(0.537, 0.831, 0.914)),
+            kind: MaterialKind::Solid(Colour::new(0.537, 0.831, 0.914)),
             diffuse: 0.7,
             ambient: 0.1,
             specular: 0.0,
@@ -287,7 +294,7 @@ fn should_create_an_object_with_a_material_extending_a_material_extending_anothe
     assert_eq!(
         objects[0].material,
         Material {
-            pattern: Pattern::solid(Colour::new(0.537, 0.831, 0.914)),
+            kind: MaterialKind::Solid(Colour::new(0.537, 0.831, 0.914)),
             diffuse: 0.7,
             ambient: 0.1,
             specular: 0.0,
@@ -323,7 +330,7 @@ fn should_be_able_to_create_an_object_with_a_single_transform() {
     assert_eq!(
         objects[0].material,
         Material {
-            pattern: Pattern::solid(Colour::new(0.373, 0.404, 0.55)),
+            kind: MaterialKind::Solid(Colour::new(0.373, 0.404, 0.55)),
             ..Default::default()
         }
     );
@@ -358,7 +365,7 @@ fn should_be_able_to_create_an_object_with_multiple_transforms() {
     assert_eq!(
         objects[0].material,
         Material {
-            pattern: Pattern::solid(Colour::new(0.373, 0.404, 0.55)),
+            kind: MaterialKind::Solid(Colour::new(0.373, 0.404, 0.55)),
             ..Default::default()
         }
     );
@@ -401,7 +408,7 @@ fn should_be_able_to_create_an_object_referencing_a_defined_transform() {
     assert_eq!(
         objects[0].material,
         Material {
-            pattern: Pattern::solid(Colour::new(0.373, 0.404, 0.55)),
+            kind: MaterialKind::Solid(Colour::new(0.373, 0.404, 0.55)),
             ..Default::default()
         }
     );
@@ -445,7 +452,7 @@ fn should_be_able_to_create_an_object_extending_a_defined_transform() {
     assert_eq!(
         objects[0].material,
         Material {
-            pattern: Pattern::solid(Colour::new(0.373, 0.404, 0.55)),
+            kind: MaterialKind::Solid(Colour::new(0.373, 0.404, 0.55)),
             ..Default::default()
         }
     );
@@ -495,7 +502,7 @@ fn should_be_able_to_create_an_object_extending_a_transform_extending_another_tr
     assert_eq!(
         objects[0].material,
         Material {
-            pattern: Pattern::solid(Colour::new(0.373, 0.404, 0.55)),
+            kind: MaterialKind::Solid(Colour::new(0.373, 0.404, 0.55)),
             ..Default::default()
         }
     );
@@ -548,7 +555,7 @@ fn should_be_able_to_create_a_group() {
     assert_eq!(
         sphere.material,
         Material {
-            pattern: Pattern::solid(Colour::new(0.373, 0.404, 0.55)),
+            kind: MaterialKind::Solid(Colour::new(0.373, 0.404, 0.55)),
             ..Default::default()
         }
     );
@@ -557,7 +564,7 @@ fn should_be_able_to_create_a_group() {
     assert_eq!(
         cube.material,
         Material {
-            pattern: Pattern::solid(Colour::new(0.373, 0.404, 0.55)),
+            kind: MaterialKind::Solid(Colour::new(0.373, 0.404, 0.55)),
             ..Default::default()
         }
     );
@@ -663,7 +670,7 @@ fn should_be_able_to_add_an_object_from_a_define_and_override_the_material() {
     assert_eq!(
         cube.material,
         Material {
-            pattern: Pattern::solid(Colour::RED),
+            kind: MaterialKind::Solid(Colour::RED),
             casts_shadow: false,
             ..Default::default()
         }

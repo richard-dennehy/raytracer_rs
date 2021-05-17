@@ -1,8 +1,8 @@
-use crate::{Colour, Pattern};
+use crate::{Colour, Pattern, UvPattern};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Material {
-    pub pattern: Pattern,
+    pub kind: MaterialKind,
     pub ambient: f64,
     pub diffuse: f64,
     pub specular: f64,
@@ -13,10 +13,17 @@ pub struct Material {
     pub casts_shadow: bool,
 }
 
+#[derive(Clone, Debug, PartialEq)]
+pub enum MaterialKind {
+    Pattern(Pattern),
+    Uv(UvPattern),
+    Solid(Colour),
+}
+
 impl Default for Material {
     fn default() -> Self {
         Material {
-            pattern: Pattern::solid(Colour::WHITE),
+            kind: MaterialKind::Solid(Colour::WHITE),
             ambient: 0.1,
             diffuse: 0.9,
             specular: 0.9,
