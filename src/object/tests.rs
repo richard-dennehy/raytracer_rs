@@ -125,6 +125,7 @@ mod shape_tests {
 mod sphere_tests {
     use super::*;
     use crate::Pattern;
+    use std::f64::consts::SQRT_2;
 
     #[test]
     fn should_be_able_to_calculate_the_normal_on_the_x_axis() {
@@ -335,6 +336,21 @@ mod sphere_tests {
             Colour::WHITE
         );
     }
+
+    #[test]
+    fn uv_mapping_a_sphere_should_project_points_onto_a_plane() {
+        vec![
+            (Point3D::new(0.0, 0.0, -1.0), (0.0, 0.5)),
+            (Point3D::new(1.0, 0.0, 0.0), (0.25, 0.5)),
+            (Point3D::new(0.0, 0.0, 1.0), (0.5, 0.5)),
+            (Point3D::new(-1.0, 0.0, 0.0), (0.75, 0.5)),
+            (Point3D::new(0.0, 1.0, 0.0), (0.5, 1.0)),
+            (Point3D::new(0.0, -1.0, 0.0), (0.5, 0.0)),
+            (Point3D::new(SQRT_2 / 2.0, SQRT_2 / 2.0, 0.0), (0.25, 0.75)),
+        ]
+        .into_iter()
+        .for_each(|(point, uv)| assert_eq!(Sphere.uv_at(point), uv))
+    }
 }
 
 mod plane_tests {
@@ -410,6 +426,23 @@ mod plane_tests {
         assert_eq!(intersections.len(), 1);
 
         assert_eq!(intersections.underlying()[0].t, 1.0);
+    }
+
+    #[test]
+    fn uv_mapping_a_plane_should_return_the_fraction_of_the_x_and_z() {
+        vec![
+            (Point3D::new(0.25, 0.0, 0.5), (0.25, 0.5)),
+            (Point3D::new(0.25, 0.0, -0.25), (0.25, 0.75)),
+            (Point3D::new(0.25, 0.5, -0.25), (0.25, 0.75)),
+            (Point3D::new(1.25, 0.0, 0.5), (0.25, 0.5)),
+            (Point3D::new(0.25, 0.0, -1.75), (0.25, 0.25)),
+            (Point3D::new(1.0, 0.0, -1.0), (0.0, 0.0)),
+            (Point3D::ORIGIN, (0.0, 0.0)),
+        ]
+        .into_iter()
+        .for_each(|(point, (u, v))| {
+            assert_eq!(Plane.uv_at(point), (u, v));
+        })
     }
 }
 
@@ -536,6 +569,47 @@ mod cube_tests {
         .for_each(|(point, normal)| {
             assert_eq!(Object::cube().normal_at(point, None), normal);
         })
+    }
+
+    #[rustfmt::skip]
+    #[test]
+    fn uv_mapping_a_cube_should_project_points_onto_one_of_six_planes() {
+        vec![
+            ("left",   Point3D::new(-1.0, 0.0, 0.0),   (1.5, 3.5)), // u <- 1..2; v <- 3..4
+            ("left",   Point3D::new(-1.0, 0.9, -0.9),  (1.05, 3.95)),
+            ("left",   Point3D::new(-1.0, 0.9, 0.9),   (1.95, 3.95)),
+            ("left",   Point3D::new(-1.0, -0.9, -0.9), (1.05, 3.05)),
+            ("left",   Point3D::new(-1.0, -0.9, 0.9),  (1.95, 3.05)),
+            ("front",  Point3D::new(0.0, 0.0, 1.0),    (0.0, 0.0)), // u <- 0..1; v <- 2..3
+            ("front",  Point3D::new(-0.9, 0.9, 1.0),   (0.0, 0.0)),
+            ("front",  Point3D::new(0.9, 0.9, 1.0),    (0.0, 0.0)),
+            ("front",  Point3D::new(-0.9, -0.9, 1.0),  (0.0, 0.0)),
+            ("front",  Point3D::new(0.9, -0.9, 1.0),   (0.0, 0.0)),
+            ("right",  Point3D::new(1.0, 0.0, 0.0),    (0.0, 0.0)), // u <- 1..2; v <- 1..2
+            ("right",  Point3D::new(1.0, 0.9, 0.9),    (0.0, 0.0)),
+            ("right",  Point3D::new(1.0, 0.9, -0.9),   (0.0, 0.0)),
+            ("right",  Point3D::new(1.0, -0.9, 0.9),   (0.0, 0.0)),
+            ("right",  Point3D::new(1.0, -0.9, -0.9),  (0.0, 0.0)),
+            ("back",   Point3D::new(0.0, 0.0, -1.0),   (0.0, 0.0)), // u <- 2..3; v <- 2..3
+            ("back",   Point3D::new(0.9, 0.9, -1.0),   (0.0, 0.0)),
+            ("back",   Point3D::new(-0.9, 0.9, -1.0),  (0.0, 0.0)),
+            ("back",   Point3D::new(0.9, -0.9, -1.0),  (0.0, 0.0)),
+            ("back",   Point3D::new(-0.9, -0.9, -1.0), (0.0, 0.0)),
+            ("top",    Point3D::new(0.0, 1.0, 0.0),    (0.0, 0.0)), // u <- 1..2; v <- 0..1
+            ("top",    Point3D::new(-0.9, 1.0, -0.9),  (0.0, 0.0)),
+            ("top",    Point3D::new(0.9, 1.0, -0.9),   (0.0, 0.0)),
+            ("top",    Point3D::new(-0.9, 1.0, 0.9),   (0.0, 0.0)),
+            ("top",    Point3D::new(0.9, 1.0, 0.9),    (0.0, 0.0)),
+            ("bottom", Point3D::new(0.0, -1.0, 0.0),   (0.0, 0.0)), // u <- 1..2; v <- 2..3
+            ("bottom", Point3D::new(-0.9, -1.0, 0.9),  (0.0, 0.0)),
+            ("bottom", Point3D::new(0.9, -1.0, 0.9),   (0.0, 0.0)),
+            ("bottom", Point3D::new(-0.9, -1.0, -0.9), (0.0, 0.0)),
+            ("bottom", Point3D::new(0.9, -1.0, -0.9),  (0.0, 0.0)),
+        ]
+            .into_iter()
+            .for_each(|(side, point, uv)| {
+                assert_eq!(Cube.uv_at(point), uv, "{} side", side);
+            })
     }
 }
 

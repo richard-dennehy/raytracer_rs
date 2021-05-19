@@ -7,4 +7,3 @@
 - Check floating point modulo operations (may need to use euclid instead)
 - Check smooth triangle bounding box
 - https://forum.raytracerchallenge.com/thread/203/performance-tips-clarifications-book-errata
-- Use Image reference instead of owned in Texture Map
