@@ -15,9 +15,8 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP improve UV mapping&#10;&#10;create MaterialKind for Pattern, Colour, and UV; and use Arc for Image textures">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP improve UV mapping&#10;&#10;WIP add tests for Shape UV mapping">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -392,14 +391,8 @@
       <workItem from="1621154306679" duration="3014000" />
       <workItem from="1621277640227" duration="1742000" />
       <workItem from="1621374265234" duration="12000" />
-      <workItem from="1621447034242" duration="2638000" />
-    </task>
-    <task id="LOCAL-00127" summary="allow light to partially pass through transparent objects">
-      <created>1616704601133</created>
-      <option name="number" value="00127" />
-      <option name="presentableId" value="LOCAL-00127" />
-      <option name="project" value="LOCAL" />
-      <updated>1616704601133</updated>
+      <workItem from="1621447034242" duration="2782000" />
+      <workItem from="1621545185690" duration="1255000" />
     </task>
     <task id="LOCAL-00128" summary="WIP allow transparent material colour to affect light transmission">
       <created>1616792343368</created>
@@ -737,7 +730,14 @@
       <option name="project" value="LOCAL" />
       <updated>1621279381285</updated>
     </task>
-    <option name="localTasksCounter" value="176" />
+    <task id="LOCAL-00176" summary="WIP improve UV mapping&#10;&#10;WIP add tests for Shape UV mapping">
+      <created>1621449817304</created>
+      <option name="number" value="00176" />
+      <option name="presentableId" value="LOCAL-00176" />
+      <option name="project" value="LOCAL" />
+      <updated>1621449817304</updated>
+    </task>
+    <option name="localTasksCounter" value="177" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -763,7 +763,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP write README for YAML parser" />
     <MESSAGE value="document YAML format in README file" />
     <MESSAGE value="WIP Subsample anti-aliasing" />
     <MESSAGE value="Implement subsample anti-aliasing" />
@@ -788,7 +787,8 @@
     <MESSAGE value="WIP implement cubic UV by stitching 6 face UVs together" />
     <MESSAGE value="WIP improve UV mapping&#10;&#10; - create MaterialKind for Pattern, Colour, and UV; and use Arc for Image textures" />
     <MESSAGE value="WIP improve UV mapping&#10;&#10;create MaterialKind for Pattern, Colour, and UV; and use Arc for Image textures" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP improve UV mapping&#10;&#10;create MaterialKind for Pattern, Colour, and UV; and use Arc for Image textures" />
+    <MESSAGE value="WIP improve UV mapping&#10;&#10;WIP add tests for Shape UV mapping" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP improve UV mapping&#10;&#10;WIP add tests for Shape UV mapping" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
