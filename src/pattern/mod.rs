@@ -1,7 +1,6 @@
-use crate::pattern::Kind::{Checkers, CubicTexture, Gradient, Ring, Solid, Striped, Texture};
-use crate::{Colour, Point3D, Transform, Vector};
+use crate::pattern::Kind::{Checkers, Gradient, Ring, Solid, Striped};
+use crate::{Colour, Point3D, Transform};
 use image::RgbImage;
-use std::f64::consts::PI;
 use std::num::NonZeroUsize;
 use std::sync::Arc;
 
@@ -18,31 +17,9 @@ pub struct Pattern {
 enum Kind {
     Solid(Colour),
     Striped(Colour, Colour),
-    Gradient {
-        from: Colour,
-        delta: Colour,
-    },
+    Gradient { from: Colour, delta: Colour },
     Ring(Colour, Colour),
     Checkers(Colour, Colour),
-    Texture {
-        uv_map: UvMap,
-        uv_pattern: UvPattern,
-    },
-    CubicTexture {
-        left: UvPattern,
-        right: UvPattern,
-        front: UvPattern,
-        back: UvPattern,
-        top: UvPattern,
-        bottom: UvPattern,
-    },
-}
-
-#[derive(Clone, Debug, PartialEq)]
-pub enum UvMap {
-    Spherical,
-    Planar,
-    Cylindrical,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -112,34 +89,6 @@ impl Pattern {
         }
     }
 
-    pub fn texture(uv_pattern: UvPattern, uv_map: UvMap) -> Self {
-        Pattern {
-            kind: Texture { uv_map, uv_pattern },
-            transform: Transform::identity(),
-        }
-    }
-
-    pub fn cubic_texture(
-        left: UvPattern,
-        right: UvPattern,
-        front: UvPattern,
-        back: UvPattern,
-        top: UvPattern,
-        bottom: UvPattern,
-    ) -> Self {
-        Pattern {
-            kind: CubicTexture {
-                left,
-                right,
-                front,
-                back,
-                top,
-                bottom,
-            },
-            transform: Transform::identity(),
-        }
-    }
-
     pub fn with_transform(mut self, transform: Transform) -> Self {
         self.transform = transform;
         self
@@ -163,62 +112,7 @@ impl Pattern {
             Ring(_, secondary) => *secondary,
             Checkers(primary, _) if (x.floor() + y.floor() + z.floor()) % 2.0 == 0.0 => *primary,
             Checkers(_, secondary) => *secondary,
-            Texture { uv_map, uv_pattern } => {
-                uv_pattern.colour_at(uv_map.uv(Point3D::new(x, y, z)))
-            }
-            CubicTexture {
-                left,
-                right,
-                front,
-                back,
-                top,
-                bottom,
-            } => cubic_colour_at(Point3D::new(x, y, z), left, right, front, back, top, bottom),
         }
-    }
-}
-
-fn cubic_colour_at(
-    point: Point3D,
-    left: &UvPattern,
-    right: &UvPattern,
-    front: &UvPattern,
-    back: &UvPattern,
-    top: &UvPattern,
-    bottom: &UvPattern,
-) -> Colour {
-    let largest = point.x().abs().max(point.y().abs().max(point.z().abs()));
-
-    if largest == point.x() {
-        let u = (1.0 - point.z()).rem_euclid(2.0) / 2.0;
-        let v = (1.0 + point.y()).rem_euclid(2.0) / 2.0;
-
-        right.colour_at((u, v))
-    } else if largest == -point.x() {
-        let u = (1.0 + point.z()).rem_euclid(2.0) / 2.0;
-        let v = (1.0 + point.y()).rem_euclid(2.0) / 2.0;
-
-        left.colour_at((u, v))
-    } else if largest == point.y() {
-        let u = (1.0 + point.x()).rem_euclid(2.0) / 2.0;
-        let v = (1.0 - point.z()).rem_euclid(2.0) / 2.0;
-
-        top.colour_at((u, v))
-    } else if largest == -point.y() {
-        let u = (1.0 + point.x()).rem_euclid(2.0) / 2.0;
-        let v = (1.0 + point.z()).rem_euclid(2.0) / 2.0;
-
-        bottom.colour_at((u, v))
-    } else if largest == point.z() {
-        let u = (1.0 + point.x()).rem_euclid(2.0) / 2.0;
-        let v = (1.0 + point.y()).rem_euclid(2.0) / 2.0;
-
-        front.colour_at((u, v))
-    } else {
-        let u = (1.0 - point.x()).rem_euclid(2.0) / 2.0;
-        let v = (1.0 + point.y()).rem_euclid(2.0) / 2.0;
-
-        back.colour_at((u, v))
     }
 }
 
@@ -283,45 +177,6 @@ impl UvPattern {
             kind: UvPatternKind::Image(img),
             width: 1,
             height: 1,
-        }
-    }
-}
-
-impl UvMap {
-    fn uv(&self, point: Point3D) -> (f64, f64) {
-        match self {
-            UvMap::Spherical => {
-                // See https://en.wikipedia.org/wiki/Spherical_coordinate_system noting this uses _mathematical_ notation
-
-                // azimuthal angle - this is backwards but gets corrected later
-                let theta = point.x().atan2(point.z());
-                // given the centre is at the world origin, the radius is given by the magnitude of the vector
-                // from the world origin to the point
-                let r = (point - Point3D::ORIGIN).magnitude();
-                // polar angle
-                let phi = (point.y() / r).acos();
-                let raw_u = theta / (2.0 * PI);
-                // corrects backwards azimuthal angle
-                let u = 1.0 - (raw_u + 0.5);
-                // subtract from 1 to invert `v` such that 1 is the northernmost point
-                let v = 1.0 - (phi / PI);
-
-                (u, v)
-            }
-            UvMap::Planar => (point.x().rem_euclid(1.0), point.z().rem_euclid(1.0)),
-            UvMap::Cylindrical => {
-                // FIXME doesn't work properly on the caps
-                // similar to spherical map on the sides
-
-                // azimuthal angle
-                let theta = point.x().atan2(point.z());
-                let raw_u = theta / (2.0 * PI);
-                // corrects backwards azimuthal angle
-                let u = 1.0 - (raw_u + 0.5);
-
-                let v = point.y().rem_euclid(1.0);
-                (u, v)
-            }
         }
     }
 }

@@ -2,7 +2,7 @@ use super::*;
 
 mod unit_tests {
     use super::*;
-    use std::f64::consts::{FRAC_1_SQRT_2, PI, SQRT_2};
+    use std::f64::consts::PI;
 
     #[test]
     fn a_striped_pattern_uses_the_primary_colour_on_even_x_integer_values() {
@@ -274,100 +274,6 @@ mod unit_tests {
     }
 
     #[test]
-    fn a_spherical_uv_map_should_convert_3d_points_to_2d_uv() {
-        vec![
-            (Point3D::new(0.0, 0.0, -1.0), (0.0, 0.5)),
-            (Point3D::new(1.0, 0.0, 0.0), (0.25, 0.5)),
-            (Point3D::new(0.0, 0.0, 1.0), (0.5, 0.5)),
-            (Point3D::new(-1.0, 0.0, 0.0), (0.75, 0.5)),
-            (Point3D::new(0.0, 1.0, 0.0), (0.5, 1.0)),
-            (Point3D::new(0.0, -1.0, 0.0), (0.5, 0.0)),
-            (Point3D::new(SQRT_2 / 2.0, SQRT_2 / 2.0, 0.0), (0.25, 0.75)),
-        ]
-        .into_iter()
-        .for_each(|(point, (u, v))| {
-            assert_eq!(UvMap::Spherical.uv(point), (u, v));
-        })
-    }
-
-    #[test]
-    fn a_uv_checker_pattern_and_spherical_map_should_alternate_colours_across_a_sphere() {
-        let pattern = Pattern::texture(
-            UvPattern::checkers(
-                Colour::BLACK,
-                Colour::WHITE,
-                nonzero_ext::nonzero!(16_usize),
-                nonzero_ext::nonzero!(8_usize),
-            ),
-            UvMap::Spherical,
-        );
-
-        vec![
-            (Point3D::new(0.4315, 0.4670, 0.7719), Colour::WHITE),
-            (Point3D::new(-0.9654, 0.2552, -0.0534), Colour::BLACK),
-            (Point3D::new(0.1039, 0.7090, 0.6975), Colour::WHITE),
-            (Point3D::new(-0.4986, -0.7856, -0.3663), Colour::BLACK),
-            (Point3D::new(-0.0317, -0.9395, 0.3411), Colour::BLACK),
-            (Point3D::new(0.4809, -0.7721, 0.4154), Colour::BLACK),
-            (Point3D::new(0.0285, -0.9612, -0.2745), Colour::BLACK),
-            (Point3D::new(-0.5734, -0.2162, -0.7903), Colour::WHITE),
-            (Point3D::new(0.7688, -0.1470, 0.6223), Colour::BLACK),
-            (Point3D::new(-0.7652, 0.2175, 0.6060), Colour::BLACK),
-        ]
-        .into_iter()
-        .for_each(|(point, expected)| assert_eq!(pattern.colour_at(point), expected))
-    }
-
-    #[test]
-    fn a_planar_map_should_project_3d_points_onto_a_2d_plane() {
-        vec![
-            (Point3D::new(0.25, 0.0, 0.5), (0.25, 0.5)),
-            (Point3D::new(0.25, 0.0, -0.25), (0.25, 0.75)),
-            (Point3D::new(0.25, 0.5, -0.25), (0.25, 0.75)),
-            (Point3D::new(1.25, 0.0, 0.5), (0.25, 0.5)),
-            (Point3D::new(0.25, 0.0, -1.75), (0.25, 0.25)),
-            (Point3D::new(1.0, 0.0, -1.0), (0.0, 0.0)),
-            (Point3D::ORIGIN, (0.0, 0.0)),
-        ]
-        .into_iter()
-        .for_each(|(point, (u, v))| {
-            assert_eq!(UvMap::Planar.uv(point), (u, v));
-        })
-    }
-
-    #[test]
-    fn a_cylindrical_map_should_project_3d_points_onto_an_unwrapped_cylinder() {
-        vec![
-            (Point3D::new(0.0, 0.0, -1.0), (0.0, 0.0)),
-            (Point3D::new(0.0, 0.5, -1.0), (0.0, 0.5)),
-            (Point3D::new(0.0, 1.0, -1.0), (0.0, 0.0)),
-            (
-                Point3D::new(FRAC_1_SQRT_2, 0.5, -FRAC_1_SQRT_2),
-                (0.125, 0.5),
-            ),
-            (Point3D::new(1.0, 0.5, 0.0), (0.25, 0.5)),
-            (
-                Point3D::new(FRAC_1_SQRT_2, 0.5, FRAC_1_SQRT_2),
-                (0.375, 0.5),
-            ),
-            (Point3D::new(0.0, -0.25, 1.0), (0.5, 0.75)),
-            (
-                Point3D::new(-FRAC_1_SQRT_2, 0.5, FRAC_1_SQRT_2),
-                (0.625, 0.5),
-            ),
-            (Point3D::new(-1.0, 1.25, 0.0), (0.75, 0.25)),
-            (
-                Point3D::new(-FRAC_1_SQRT_2, 0.5, -FRAC_1_SQRT_2),
-                (0.875, 0.5),
-            ),
-        ]
-        .into_iter()
-        .for_each(|(point, (u, v))| {
-            assert_eq!(UvMap::Cylindrical.uv(point), (u, v));
-        })
-    }
-
-    #[test]
     fn an_alignment_check_pattern_should_have_different_colours_in_each_corner() {
         let pattern = UvPattern {
             kind: UvPatternKind::AlignmentCheck {
@@ -413,22 +319,8 @@ mod unit_tests {
 
     #[rustfmt::skip]
     #[test]
-    fn a_cubic_texture_should_map_cube_points_onto_one_of_6_faces() {
-        let pattern = Pattern::cubic_texture(
-            UvPattern::alignment_check(
-                Colour::new(1.0, 1.0, 0.0),
-                Colour::new(0.0, 1.0, 1.0),
-                Colour::RED,
-                Colour::BLUE,
-                Colour::new(1.0, 0.5, 0.0),
-            ),
-            UvPattern::alignment_check(
-                Colour::RED,
-                Colour::new(1.0, 1.0, 0.0),
-                Colour::new(1.0, 0.0, 1.0),
-                Colour::GREEN,
-                Colour::WHITE,
-            ),
+    fn a_cubic_uv_should_map_uvs_to_one_of_six_faces() {
+        let uv = UvPattern::cubic(
             UvPattern::alignment_check(
                 Colour::new(0.0, 1.0, 1.0),
                 Colour::RED,
@@ -442,6 +334,20 @@ mod unit_tests {
                 Colour::new(0.0, 1.0, 1.0),
                 Colour::WHITE,
                 Colour::BLUE,
+            ),
+            UvPattern::alignment_check(
+                Colour::new(1.0, 1.0, 0.0),
+                Colour::new(0.0, 1.0, 1.0),
+                Colour::RED,
+                Colour::BLUE,
+                Colour::new(1.0, 0.5, 0.0),
+            ),
+            UvPattern::alignment_check(
+                Colour::RED,
+                Colour::new(1.0, 1.0, 0.0),
+                Colour::new(1.0, 0.0, 1.0),
+                Colour::GREEN,
+                Colour::WHITE,
             ),
             UvPattern::alignment_check(
                 Colour::new(1.0, 0.5, 0.0),
@@ -458,43 +364,43 @@ mod unit_tests {
                 Colour::WHITE,
             ),
         );
-
+        
         vec![
-            ("left", Point3D::new(-1.0, 0.0, 0.0), Colour::new(1.0, 1.0, 0.0)),
-            ("left", Point3D::new(-1.0, 0.9, -0.9), Colour::new(0.0, 1.0, 1.0)),
-            ("left", Point3D::new(-1.0, 0.9, 0.9), Colour::RED),
-            ("left", Point3D::new(-1.0, -0.9, -0.9), Colour::BLUE),
-            ("left", Point3D::new(-1.0, -0.9, 0.9), Colour::new(1.0, 0.5, 0.0)),
-            ("front", Point3D::new(0.0, 0.0, 1.0), Colour::new(0.0, 1.0, 1.0)),
-            ("front", Point3D::new(-0.9, 0.9, 1.0), Colour::RED),
-            ("front", Point3D::new(0.9, 0.9, 1.0), Colour::new(1.0, 1.0, 0.0)),
-            ("front", Point3D::new(-0.9, -0.9, 1.0), Colour::new(1.0, 0.5, 0.0)),
-            ("front", Point3D::new(0.9, -0.9, 1.0), Colour::GREEN),
-            ("right", Point3D::new(1.0, 0.0, 0.0), Colour::RED),
-            ("right", Point3D::new(1.0, 0.9, 0.9), Colour::new(1.0, 1.0, 0.0)),
-            ("right", Point3D::new(1.0, 0.9, -0.9), Colour::new(1.0, 0.0, 1.0)),
-            ("right", Point3D::new(1.0, -0.9, 0.9), Colour::GREEN),
-            ("right", Point3D::new(1.0, -0.9, -0.9), Colour::WHITE),
-            ("back", Point3D::new(0.0, 0.0, -1.0), Colour::GREEN),
-            ("back", Point3D::new(0.9, 0.9, -1.0), Colour::new(1.0, 0.0, 1.0)),
-            ("back", Point3D::new(-0.9, 0.9, -1.0), Colour::new(0.0, 1.0, 1.0)),
-            ("back", Point3D::new(0.9, -0.9, -1.0), Colour::WHITE),
-            ("back", Point3D::new(-0.9, -0.9, -1.0), Colour::BLUE),
-            ("top", Point3D::new(0.0, 1.0, 0.0), Colour::new(1.0, 0.5, 0.0)),
-            ("top", Point3D::new(-0.9, 1.0, -0.9), Colour::new(0.0, 1.0, 1.0)),
-            ("top", Point3D::new(0.9, 1.0, -0.9), Colour::new(1.0, 0.0, 1.0)),
-            ("top", Point3D::new(-0.9, 1.0, 0.9), Colour::RED),
-            ("top", Point3D::new(0.9, 1.0, 0.9), Colour::new(1.0, 1.0, 0.0)),
-            ("bottom", Point3D::new(0.0, -1.0, 0.0), Colour::new(1.0, 0.0, 1.0)),
-            ("bottom", Point3D::new(-0.9, -1.0, 0.9), Colour::new(1.0, 0.5, 0.0)),
-            ("bottom", Point3D::new(0.9, -1.0, 0.9), Colour::GREEN),
-            ("bottom", Point3D::new(-0.9, -1.0, -0.9), Colour::BLUE),
-            ("bottom", Point3D::new(0.9, -1.0, -0.9), Colour::WHITE),
+            ("left",   (1.5, 3.5), Colour::new(1.0, 1.0, 0.0)),
+            ("left",   (1.05, 3.95), Colour::new(0.0, 1.0, 1.0)),
+            ("left",   (1.95, 3.95), Colour::RED),
+            ("left",   (1.05, 3.05), Colour::BLUE),
+            ("left",   (1.95, 3.05), Colour::new(1.0, 0.5, 0.0)),
+            ("front",  (0.5, 2.5), Colour::new(0.0, 1.0, 1.0)),
+            ("front",  (0.05, 2.95), Colour::RED),
+            ("front",  (0.95, 2.95), Colour::new(1.0, 1.0, 0.0)),
+            ("front",  (0.05, 2.05), Colour::new(1.0, 0.5, 0.0)),
+            ("front",  (0.95, 2.05), Colour::GREEN),
+            ("right",  (1.5, 1.5), Colour::RED),
+            ("right",  (1.05, 1.95), Colour::new(1.0, 1.0, 0.0)),
+            ("right",  (1.95, 1.95), Colour::new(1.0, 0.0, 1.0)),
+            ("right",  (1.05, 1.05), Colour::GREEN),
+            ("right",  (1.95, 1.05), Colour::WHITE),
+            ("back",   (2.5, 2.5), Colour::GREEN),
+            ("back",   (2.05, 2.95), Colour::new(1.0, 0.0, 1.0)),
+            ("back",   (2.95, 2.95), Colour::new(0.0, 1.0, 1.0)),
+            ("back",   (2.05, 2.05), Colour::WHITE),
+            ("back",   (2.95, 2.05), Colour::BLUE),
+            ("top",    (1.5, 0.5), Colour::new(1.0, 0.5, 0.0)),
+            ("top",    (1.05, 0.95), Colour::new(0.0, 1.0, 1.0)),
+            ("top",    (1.95, 0.95), Colour::new(1.0, 0.0, 1.0)),
+            ("top",    (1.05, 0.05), Colour::RED),
+            ("top",    (1.95, 0.05), Colour::new(1.0, 1.0, 0.0)),
+            ("bottom", (1.5, 2.5), Colour::new(1.0, 0.0, 1.0)),
+            ("bottom", (1.05, 2.95), Colour::new(1.0, 0.5, 0.0)),
+            ("bottom", (1.95, 2.95), Colour::GREEN),
+            ("bottom", (1.05, 2.05), Colour::BLUE),
+            ("bottom", (1.95, 2.05), Colour::WHITE),
         ]
-        .into_iter()
-        .for_each(|(side, point, expected)| {
-            assert_eq!(pattern.colour_at(point), expected, "{} side", side)
-        })
+            .into_iter()
+            .for_each(|(side, (u, v), expected)| {
+                assert_eq!(uv.colour_at((u, v)), expected, "{} side", side)
+            })
     }
 }
 

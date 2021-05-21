@@ -15,9 +15,10 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP improve UV mapping&#10;&#10;WIP add tests for Shape UV mapping">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP improve UV mapping&#10;&#10;WIP add for Cube and Cylinder UV mapping">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pattern/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pattern/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,6 +62,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="RunOnceActivity.cidr.known.project.marker" value="true" />
+    <property name="TODO_SCOPE" value="All Places" />
     <property name="WebServerToolWindowFactoryState" value="true" />
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
@@ -110,8 +112,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test pattern::tests::unit_tests::a_cubic_texture_should_map_cube_points_onto_one_of_6_faces" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib pattern::tests::unit_tests::a_cubic_texture_should_map_cube_points_onto_one_of_6_faces -- --exact" />
+    <configuration name="Test pattern::tests::unit_tests::a_cubic_uv_should_map_uvs_to_one_of_six_faces" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib pattern::tests::unit_tests::a_cubic_uv_should_map_uvs_to_one_of_six_faces -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -187,21 +189,26 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
-      <item itemvalue="Cargo.Test pattern::tests::unit_tests::a_cubic_texture_should_map_cube_points_onto_one_of_6_faces" />
       <item itemvalue="Cargo.Test pattern::tests::unit_tests::an_alignment_check_pattern_should_have_different_colours_in_each_corner" />
       <item itemvalue="Cargo.bench" />
       <item itemvalue="Cargo.run (release)" />
       <item itemvalue="Cargo.test" />
+      <item itemvalue="Cargo.Test pattern::tests::unit_tests::a_cubic_uv_should_map_uvs_to_one_of_six_faces" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.Test pattern::tests::unit_tests::a_cubic_uv_should_map_uvs_to_one_of_six_faces" />
         <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.Test pattern::tests::unit_tests::an_alignment_check_pattern_should_have_different_colours_in_each_corner" />
-        <item itemvalue="Cargo.Test pattern::tests::unit_tests::a_cubic_texture_should_map_cube_points_onto_one_of_6_faces" />
       </list>
     </recent_temporary>
   </component>
@@ -392,14 +399,8 @@
       <workItem from="1621277640227" duration="1742000" />
       <workItem from="1621374265234" duration="12000" />
       <workItem from="1621447034242" duration="2782000" />
-      <workItem from="1621545185690" duration="1255000" />
-    </task>
-    <task id="LOCAL-00128" summary="WIP allow transparent material colour to affect light transmission">
-      <created>1616792343368</created>
-      <option name="number" value="00128" />
-      <option name="presentableId" value="LOCAL-00128" />
-      <option name="project" value="LOCAL" />
-      <updated>1616792343368</updated>
+      <workItem from="1621545185690" duration="1325000" />
+      <workItem from="1621619864739" duration="1633000" />
     </task>
     <task id="LOCAL-00129" summary="WIP (slightly less) allow transparent material colour to affect light transmission">
       <created>1616849845537</created>
@@ -737,7 +738,14 @@
       <option name="project" value="LOCAL" />
       <updated>1621449817304</updated>
     </task>
-    <option name="localTasksCounter" value="177" />
+    <task id="LOCAL-00177" summary="WIP improve UV mapping&#10;&#10;WIP add for Cube and Cylinder UV mapping">
+      <created>1621546510744</created>
+      <option name="number" value="00177" />
+      <option name="presentableId" value="LOCAL-00177" />
+      <option name="project" value="LOCAL" />
+      <updated>1621546510744</updated>
+    </task>
+    <option name="localTasksCounter" value="178" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -763,7 +771,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="document YAML format in README file" />
     <MESSAGE value="WIP Subsample anti-aliasing" />
     <MESSAGE value="Implement subsample anti-aliasing" />
     <MESSAGE value="example for cylinder acne" />
@@ -788,7 +795,8 @@
     <MESSAGE value="WIP improve UV mapping&#10;&#10; - create MaterialKind for Pattern, Colour, and UV; and use Arc for Image textures" />
     <MESSAGE value="WIP improve UV mapping&#10;&#10;create MaterialKind for Pattern, Colour, and UV; and use Arc for Image textures" />
     <MESSAGE value="WIP improve UV mapping&#10;&#10;WIP add tests for Shape UV mapping" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP improve UV mapping&#10;&#10;WIP add tests for Shape UV mapping" />
+    <MESSAGE value="WIP improve UV mapping&#10;&#10;WIP add for Cube and Cylinder UV mapping" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP improve UV mapping&#10;&#10;WIP add for Cube and Cylinder UV mapping" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
