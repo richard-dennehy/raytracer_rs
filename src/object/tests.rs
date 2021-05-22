@@ -798,7 +798,7 @@ mod cylinder_tests {
     #[rustfmt::skip]
     #[test]
     fn uv_mapping_a_unit_cylinder_should_project_points_on_the_sides_onto_a_plane() {
-        let cylinder = Object::cylinder().max_y(1.0).min_y(0.0).build();
+        let cylinder = Object::cylinder().min_y(0.0).max_y(1.0).build();
         
         vec![
             (Point3D::new(0.0, 0.0, -1.0),                      (0.0, 0.0)),
@@ -818,7 +818,30 @@ mod cylinder_tests {
             })
     }
 
-    // todo caps; infinite cylinder?
+    #[rustfmt::skip]
+    #[test]
+    fn uv_mapping_the_caps_of_a_capped_cylinder_should_project_points_onto_a_circle_on_a_plane() {
+        let cylinder = Object::cylinder().min_y(0.0).max_y(1.0).capped().build();
+
+        vec![
+            (Point3D::new(0.0, 1.0, 0.0), (1.5, 0.5)),
+            (Point3D::new(-1.0, 1.0, 0.0), (1.0, 0.5)),
+            (Point3D::new(1.0, 1.0, 0.0), (2.0, 0.5)),
+            (Point3D::new(0.0, 1.0, -1.0), (1.5, 1.0)),
+            (Point3D::new(0.0, 1.0, 1.0), (1.5, 0.0)),
+            (Point3D::new(FRAC_1_SQRT_2, 1.0, FRAC_1_SQRT_2), (1.8535533905932737, 0.1464466094067262)),
+            (Point3D::new(0.0, 0.0, 0.0), (2.5, 0.5)),
+            (Point3D::new(-1.0, 0.0, 0.0), (2.0, 0.5)),
+            (Point3D::new(1.0, 0.0, 0.0), (3.0, 0.5)),
+            (Point3D::new(0.0, 0.0, -1.0), (2.5, 0.0)),
+            (Point3D::new(0.0, 0.0, 1.0), (2.5, 1.0)),
+            (Point3D::new(FRAC_1_SQRT_2, 0.0, FRAC_1_SQRT_2), (2.853553390593274, 0.8535533905932737)),
+        ]
+        .into_iter()
+        .for_each(|(point, (u, v))| {
+            assert_eq!(cylinder.shape().uv_at(point), (u, v));
+        })
+    }
 }
 
 mod cone_tests {

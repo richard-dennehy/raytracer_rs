@@ -103,8 +103,19 @@ impl Shape for Cylinder {
     ///  - u <- 1..2 maps to the top cap of the cylinder
     ///  - u <- 2..3 maps to the bottom cap of the cylinder
     fn uv_at(&self, point: Point3D) -> (f64, f64) {
-        // FIXME doesn't work properly on the caps
-        // similar to spherical map on the sides
+        if self.capped && ((self.max_y - point.y()).abs() <= f32::EPSILON as f64) {
+            let u = (point.x() + 1.0) / 2.0;
+            let v = (1.0 - point.z()) / 2.0;
+
+            return (u + 1.0, v);
+        }
+
+        if self.capped && ((self.min_y - point.y()).abs() <= f32::EPSILON as f64) {
+            let u = (point.x() + 1.0) / 2.0;
+            let v = (point.z() + 1.0) / 2.0;
+
+            return (u + 2.0, v);
+        }
 
         // azimuthal angle
         let theta = point.x().atan2(point.z());

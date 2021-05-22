@@ -40,11 +40,17 @@ enum UvPatternKind {
         bottom_right: Colour,
     },
     Image(Arc<RgbImage>),
+    // TODO use e.g. Map<UvRange, UvPattern> instead
     Cubic {
         front: Box<UvPattern>,
         back: Box<UvPattern>,
         left: Box<UvPattern>,
         right: Box<UvPattern>,
+        top: Box<UvPattern>,
+        bottom: Box<UvPattern>,
+    },
+    CappedCylinder {
+        sides: Box<UvPattern>,
         top: Box<UvPattern>,
         bottom: Box<UvPattern>,
     },
@@ -152,6 +158,18 @@ impl UvPattern {
         }
     }
 
+    pub fn capped_cylinder(sides: UvPattern, top: UvPattern, bottom: UvPattern) -> Self {
+        UvPattern {
+            kind: UvPatternKind::CappedCylinder {
+                sides: Box::new(sides),
+                top: Box::new(top),
+                bottom: Box::new(bottom),
+            },
+            width: 1,
+            height: 1,
+        }
+    }
+
     pub fn alignment_check(
         main: Colour,
         top_left: Colour,
@@ -251,6 +269,19 @@ impl UvPattern {
             }
             UvPatternKind::Cubic { .. } => {
                 panic!("UV coordinates out of bounds for Cubic UV Map {:?}", (u, v))
+            }
+            UvPatternKind::CappedCylinder { sides, .. } if u <= 1.0 && v <= 1.0 => {
+                sides.colour_at((u, v))
+            }
+            UvPatternKind::CappedCylinder { top, .. } if u <= 2.0 => top.colour_at((u - 1.0, v)),
+            UvPatternKind::CappedCylinder { bottom, .. } if u <= 3.0 => {
+                bottom.colour_at((u - 2.0, v))
+            }
+            UvPatternKind::CappedCylinder { .. } => {
+                panic!(
+                    "UV coordinates out of bounds for Capped Cylinder UV Map {:?}",
+                    (u, v)
+                )
             }
         }
     }
