@@ -47,7 +47,34 @@ fn main() -> Result<(), String> {
                     ),
                 )),
                 ..Default::default()
-            }),
+            })
+            .transformed(Transform::identity().translate_x(-2.0)),
+    );
+
+    world.add(
+        Object::cone()
+            .min_y(-1.0)
+            .max_y(1.0)
+            .capped()
+            .build()
+            .with_material(Material {
+                kind: MaterialKind::Uv(UvPattern::capped_cylinder(
+                    checkers(
+                        nonzero_ext::nonzero!(4_usize),
+                        nonzero_ext::nonzero!(2_usize),
+                    ),
+                    checkers(
+                        nonzero_ext::nonzero!(2_usize),
+                        nonzero_ext::nonzero!(2_usize),
+                    ),
+                    checkers(
+                        nonzero_ext::nonzero!(2_usize),
+                        nonzero_ext::nonzero!(2_usize),
+                    ),
+                )),
+                ..Default::default()
+            })
+            .transformed(Transform::identity().translate_x(2.0)),
     );
 
     let camera = Camera::new(
@@ -55,7 +82,7 @@ fn main() -> Result<(), String> {
         nonzero_ext::nonzero!(1080u16),
         PI / 3.0,
         Transform::view_transform(
-            Point3D::new(6.0, -3.0, -5.0),
+            Point3D::new(6.0, 3.0, -5.0),
             Point3D::ORIGIN,
             Normal3D::POSITIVE_Y,
         ),

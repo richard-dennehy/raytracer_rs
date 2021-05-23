@@ -15,12 +15,13 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP improve UV mapping&#10;&#10;remove old UV mapping">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP improve UV mapping&#10;&#10;fix cylinder mapping to work correctly on caps">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/cone.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cone.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/cylinder.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cylinder.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pattern/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,11 +99,6 @@
     </option>
   </component>
   <component name="RunManager" selected="Cargo.run (release)">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -119,38 +115,38 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Test object::tests::cone_tests::uv_mapping_a_unit_cone_should_project_points_on_the_sides_onto_a_plane" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib object::tests::cone_tests::uv_mapping_a_unit_cone_should_project_points_on_the_sides_onto_a_plane -- --exact" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test object::tests::cone_tests::uv_mapping_the_caps_of_a_capped_cone_should_project_points_onto_a_circle_on_a_plane" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib object::tests::cone_tests::uv_mapping_the_caps_of_a_capped_cone_should_project_points_onto_a_circle_on_a_plane -- --exact" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Test object::tests::cylinder_tests::uv_mapping_the_caps_of_a_capped_cylinder_should_project_points_onto_a_circle_on_a_plane" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="command" value="test --package ray_tracer --lib object::tests::cylinder_tests::uv_mapping_the_caps_of_a_capped_cylinder_should_project_points_onto_a_circle_on_a_plane -- --exact" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <option name="channel" value="DEFAULT" />
-      <option name="requiredFeatures" value="true" />
-      <option name="allFeatures" value="false" />
-      <option name="emulateTerminal" value="false" />
-      <option name="backtrace" value="SHORT" />
-      <envs />
-      <option name="isRedirectInput" value="false" />
-      <option name="redirectInputPath" value="" />
-      <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Test pattern::tests::unit_tests::a_cubic_uv_should_map_uvs_to_one_of_six_faces" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib pattern::tests::unit_tests::a_cubic_uv_should_map_uvs_to_one_of_six_faces -- --exact" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <option name="channel" value="DEFAULT" />
-      <option name="requiredFeatures" value="true" />
-      <option name="allFeatures" value="false" />
-      <option name="emulateTerminal" value="false" />
-      <option name="backtrace" value="SHORT" />
-      <envs />
-      <option name="isRedirectInput" value="false" />
-      <option name="redirectInputPath" value="" />
-      <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="bench" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="bench" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -196,21 +192,26 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
-      <item itemvalue="Cargo.bench" />
       <item itemvalue="Cargo.run (release)" />
       <item itemvalue="Cargo.test" />
-      <item itemvalue="Cargo.Test pattern::tests::unit_tests::a_cubic_uv_should_map_uvs_to_one_of_six_faces" />
       <item itemvalue="Cargo.Test object::tests::cylinder_tests::uv_mapping_the_caps_of_a_capped_cylinder_should_project_points_onto_a_circle_on_a_plane" />
+      <item itemvalue="Cargo.Test object::tests::cone_tests::uv_mapping_a_unit_cone_should_project_points_on_the_sides_onto_a_plane" />
+      <item itemvalue="Cargo.Test object::tests::cone_tests::uv_mapping_the_caps_of_a_capped_cone_should_project_points_onto_a_circle_on_a_plane" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.run (release)" />
-        <item itemvalue="Cargo.Test object::tests::cylinder_tests::uv_mapping_the_caps_of_a_capped_cylinder_should_project_points_onto_a_circle_on_a_plane" />
         <item itemvalue="Cargo.test" />
-        <item itemvalue="Cargo.Test pattern::tests::unit_tests::a_cubic_uv_should_map_uvs_to_one_of_six_faces" />
-        <item itemvalue="Cargo.bench" />
+        <item itemvalue="Cargo.Test object::tests::cone_tests::uv_mapping_the_caps_of_a_capped_cone_should_project_points_onto_a_circle_on_a_plane" />
+        <item itemvalue="Cargo.Test object::tests::cone_tests::uv_mapping_a_unit_cone_should_project_points_on_the_sides_onto_a_plane" />
+        <item itemvalue="Cargo.Test object::tests::cylinder_tests::uv_mapping_the_caps_of_a_capped_cylinder_should_project_points_onto_a_circle_on_a_plane" />
       </list>
     </recent_temporary>
   </component>
@@ -403,14 +404,8 @@
       <workItem from="1621447034242" duration="2782000" />
       <workItem from="1621545185690" duration="1325000" />
       <workItem from="1621619864739" duration="2566000" />
-      <workItem from="1621679547590" duration="2892000" />
-    </task>
-    <task id="LOCAL-00130" summary="add tests for tinted shadows">
-      <created>1616935484486</created>
-      <option name="number" value="00130" />
-      <option name="presentableId" value="LOCAL-00130" />
-      <option name="project" value="LOCAL" />
-      <updated>1616935484487</updated>
+      <workItem from="1621679547590" duration="3713000" />
+      <workItem from="1621766158306" duration="2640000" />
     </task>
     <task id="LOCAL-00131" summary="move parallel rendering into canvas">
       <created>1617047145427</created>
@@ -748,7 +743,14 @@
       <option name="project" value="LOCAL" />
       <updated>1621621603589</updated>
     </task>
-    <option name="localTasksCounter" value="179" />
+    <task id="LOCAL-00179" summary="WIP improve UV mapping&#10;&#10;fix cylinder mapping to work correctly on caps">
+      <created>1621684362201</created>
+      <option name="number" value="00179" />
+      <option name="presentableId" value="LOCAL-00179" />
+      <option name="project" value="LOCAL" />
+      <updated>1621684362201</updated>
+    </task>
+    <option name="localTasksCounter" value="180" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -774,7 +776,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Implement subsample anti-aliasing" />
     <MESSAGE value="example for cylinder acne" />
     <MESSAGE value="fix acne on cylinder caps" />
     <MESSAGE value="example for acne on overlapping transparent object" />
@@ -799,14 +800,15 @@
     <MESSAGE value="WIP improve UV mapping&#10;&#10;WIP add tests for Shape UV mapping" />
     <MESSAGE value="WIP improve UV mapping&#10;&#10;WIP add for Cube and Cylinder UV mapping" />
     <MESSAGE value="WIP improve UV mapping&#10;&#10;remove old UV mapping" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP improve UV mapping&#10;&#10;remove old UV mapping" />
+    <MESSAGE value="WIP improve UV mapping&#10;&#10;fix cylinder mapping to work correctly on caps" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP improve UV mapping&#10;&#10;fix cylinder mapping to work correctly on caps" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/object/cylinder.rs</url>
-          <line>60</line>
+          <line>64</line>
           <option name="timeStamp" value="45" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">

@@ -846,7 +846,7 @@ mod cylinder_tests {
 
 mod cone_tests {
     use super::*;
-    use std::f64::consts::SQRT_2;
+    use std::f64::consts::{FRAC_1_SQRT_2, SQRT_2};
 
     #[test]
     fn a_ray_that_passes_through_a_double_napped_cone_should_intersect_twice() {
@@ -947,6 +947,55 @@ mod cone_tests {
         .for_each(|(scenario, point, normal)| {
             assert!(approx_eq!(Normal3D, cone.normal_at(point, None), normal), "{}", scenario);
         })
+    }
+
+    #[rustfmt::skip]
+    #[test]
+    fn uv_mapping_a_unit_cone_should_project_points_on_the_sides_onto_a_plane() {
+        let cone = Object::cone().min_y(-2.0).max_y(0.0).build();
+        let _45_deg = FRAC_1_SQRT_2 / 2.0;
+
+        vec![
+            (Point3D::new(0.0, 0.0, 0.0),            (0.5, 0.0)),
+            (Point3D::new(0.0, 0.5, -0.5),           (0.0, 0.5)),
+            (Point3D::new(0.0, -1.0, -1.0),          (0.0, 0.0)),
+            (Point3D::new(_45_deg, -0.5, -_45_deg),  (0.125, 0.5)),
+            (Point3D::new(0.5, -0.5, 0.0),           (0.25, 0.5)),
+            (Point3D::new(_45_deg, -0.5, _45_deg),   (0.375, 0.5)),
+            (Point3D::new(0.0, -0.25, 0.25),         (0.5, 0.75)),
+            (Point3D::new(-_45_deg, -0.5, _45_deg),  (0.625, 0.5)),
+            (Point3D::new(-1.25, -1.25, 0.0),        (0.75, 0.75)),
+            (Point3D::new(-_45_deg, -0.5, -_45_deg), (0.875, 0.5)),
+        ]
+            .into_iter()
+            .for_each(|(point, (u, v))| {
+                assert_eq!(cone.shape().uv_at(point), (u, v));
+            })
+    }
+
+    #[rustfmt::skip]
+    #[test]
+    fn uv_mapping_the_caps_of_a_capped_cone_should_project_points_onto_a_circle_on_a_plane() {
+        let cone = Object::cone().min_y(-1.0).max_y(1.0).capped().build();
+
+        vec![
+            (Point3D::new(0.0, 1.0, 0.0), (1.5, 0.5)),
+            (Point3D::new(-1.0, 1.0, 0.0), (1.0, 0.5)),
+            (Point3D::new(1.0, 1.0, 0.0), (2.0, 0.5)),
+            (Point3D::new(0.0, 1.0, -1.0), (1.5, 1.0)),
+            (Point3D::new(0.0, 1.0, 1.0), (1.5, 0.0)),
+            (Point3D::new(FRAC_1_SQRT_2, 1.0, FRAC_1_SQRT_2), (1.8535533905932737, 0.1464466094067262)),
+            (Point3D::new(0.0, -1.0, 0.0), (2.5, 0.5)),
+            (Point3D::new(-1.0, -1.0, 0.0), (2.0, 0.5)),
+            (Point3D::new(1.0, -1.0, 0.0), (3.0, 0.5)),
+            (Point3D::new(0.0, -1.0, -1.0), (2.5, 0.0)),
+            (Point3D::new(0.0, -1.0, 1.0), (2.5, 1.0)),
+            (Point3D::new(FRAC_1_SQRT_2, -1.0, FRAC_1_SQRT_2), (2.853553390593274, 0.8535533905932737)),
+        ]
+            .into_iter()
+            .for_each(|(point, (u, v))| {
+                assert_eq!(cone.shape().uv_at(point), (u, v));
+            })
     }
 }
 

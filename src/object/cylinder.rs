@@ -3,6 +3,10 @@ use crate::object::Shape;
 use crate::{Intersection, Normal3D, Object, Point3D, Ray, Vector, Vector3D};
 use std::f64::consts::PI;
 
+/// An infinite cylinder centred on the y axis, with a constant radius of 1
+///
+/// May be truncated at either end to make it finite.
+/// May be capped, otherwise the ends will be open, and the inner face will be visible
 #[derive(Debug, PartialEq)]
 pub struct Cylinder {
     max_y: f64,

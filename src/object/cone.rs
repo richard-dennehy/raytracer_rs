@@ -1,7 +1,13 @@
 use crate::object::bounds::BoundingBox;
 use crate::object::Shape;
 use crate::{Intersection, Normal3D, Object, Point3D, Ray, Vector, Vector3D};
+use std::f64::consts::PI;
 
+/// An infinite double-napped cone (like a sand timer), tapering to a point at the origin,
+/// centred on the y axis, with a radius equal to the absolute y value (i.e. the radius is 1 at y -1)
+///
+/// May be truncated at either end, to make the shape finite. Truncating at y = 0 produces a single cone.
+/// May be capped, otherwise the end will be open and the inner face will be visible
 #[derive(Debug, PartialEq)]
 pub struct Cone {
     max_y: f64,
@@ -111,11 +117,33 @@ impl Shape for Cone {
         ts
     }
 
-    /// ranges from u <- 0..2 and v <- 0..1 such that u <- 0..1 maps to the sides of the cone,
-    /// and u <- 1..2 maps to the base of the cone (if it has one)
-    fn uv_at(&self, _point: Point3D) -> (f64, f64) {
-        // TODO map the sides onto a circle (try to avoid distortion somehow)
-        todo!()
+    /// ranges from u <- 0..3 and v <- 0..1 such that:
+    ///  - u <- 0..1 maps to the sides of the cone,
+    ///  - u <- 1..2 maps to the top cap of the cone
+    ///  - u <- 2..3 maps to the bottom cap of the cone
+    fn uv_at(&self, point: Point3D) -> (f64, f64) {
+        if self.capped && ((self.max_y - point.y()).abs() <= f32::EPSILON as f64) {
+            let u = (point.x() + 1.0) / 2.0;
+            let v = (1.0 - point.z()) / 2.0;
+
+            return (u + 1.0, v);
+        }
+
+        if self.capped && ((self.min_y - point.y()).abs() <= f32::EPSILON as f64) {
+            let u = (point.x() + 1.0) / 2.0;
+            let v = (point.z() + 1.0) / 2.0;
+
+            return (u + 2.0, v);
+        }
+
+        // azimuthal angle
+        let theta = point.x().atan2(point.z());
+        let raw_u = theta / (2.0 * PI);
+        // corrects backwards azimuthal angle
+        let u = 1.0 - (raw_u + 0.5);
+
+        let v = point.y().rem_euclid(1.0);
+        (u, v)
     }
 }
 
