@@ -15,12 +15,8 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP improve UV mapping&#10;&#10;fix cylinder mapping to work correctly on caps">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP improve UV mapping&#10;&#10;WIP triangle UVs">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/cone.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cone.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/cylinder.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cylinder.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -94,11 +90,16 @@
       <command value="cargo run --release" />
       <command value="cargo clean" />
       <command value="cargo update" />
-      <command value="cargo test" />
       <command value="cargo bench" />
+      <command value="cargo test" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.run (release)">
+  <component name="RunManager" selected="Cargo.test">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -115,8 +116,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test object::tests::cone_tests::uv_mapping_a_unit_cone_should_project_points_on_the_sides_onto_a_plane" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib object::tests::cone_tests::uv_mapping_a_unit_cone_should_project_points_on_the_sides_onto_a_plane -- --exact" />
+    <configuration name="Test object::tests::triangle_tests::uv_mapping_a_180_degree_rotated_xz_triangle_should_project_points_onto_a_plane_described_by_the_edges" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib object::tests::triangle_tests::uv_mapping_a_180_degree_rotated_xz_triangle_should_project_points_onto_a_plane_described_by_the_edges -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -130,8 +131,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test object::tests::cone_tests::uv_mapping_the_caps_of_a_capped_cone_should_project_points_onto_a_circle_on_a_plane" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib object::tests::cone_tests::uv_mapping_the_caps_of_a_capped_cone_should_project_points_onto_a_circle_on_a_plane -- --exact" />
+    <configuration name="Test object::tests::triangle_tests::uv_mapping_a_non_right_angle_triangle_should_evenly_project_points_across_the_plane" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib object::tests::triangle_tests::uv_mapping_a_non_right_angle_triangle_should_evenly_project_points_across_the_plane -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -145,8 +146,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test object::tests::cylinder_tests::uv_mapping_the_caps_of_a_capped_cylinder_should_project_points_onto_a_circle_on_a_plane" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib object::tests::cylinder_tests::uv_mapping_the_caps_of_a_capped_cylinder_should_project_points_onto_a_circle_on_a_plane -- --exact" />
+    <configuration name="Test object::tests::triangle_tests::uv_mapping_a_non_uniform_right_angle_triangle_should_evenly_project_points_across_the_plane" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib object::tests::triangle_tests::uv_mapping_a_non_uniform_right_angle_triangle_should_evenly_project_points_across_the_plane -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -160,8 +161,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="run (release)" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="run --release" />
+    <configuration name="Test object::tests::triangle_tests::uv_mapping_a_triangle_on_an_arbitrary_plane_should_project_points_onto_the_plane" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib object::tests::triangle_tests::uv_mapping_a_triangle_on_an_arbitrary_plane_should_project_points_onto_the_plane -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -172,7 +173,6 @@
       <option name="isRedirectInput" value="false" />
       <option name="redirectInputPath" value="" />
       <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
@@ -189,29 +189,23 @@
       <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
-      <item itemvalue="Cargo.run (release)" />
+      <item itemvalue="Cargo.Test object::tests::triangle_tests::uv_mapping_a_180_degree_rotated_xz_triangle_should_project_points_onto_a_plane_described_by_the_edges" />
+      <item itemvalue="Cargo.Test object::tests::triangle_tests::uv_mapping_a_triangle_on_an_arbitrary_plane_should_project_points_onto_the_plane" />
+      <item itemvalue="Cargo.Test object::tests::triangle_tests::uv_mapping_a_non_uniform_right_angle_triangle_should_evenly_project_points_across_the_plane" />
+      <item itemvalue="Cargo.Test object::tests::triangle_tests::uv_mapping_a_non_right_angle_triangle_should_evenly_project_points_across_the_plane" />
       <item itemvalue="Cargo.test" />
-      <item itemvalue="Cargo.Test object::tests::cylinder_tests::uv_mapping_the_caps_of_a_capped_cylinder_should_project_points_onto_a_circle_on_a_plane" />
-      <item itemvalue="Cargo.Test object::tests::cone_tests::uv_mapping_a_unit_cone_should_project_points_on_the_sides_onto_a_plane" />
-      <item itemvalue="Cargo.Test object::tests::cone_tests::uv_mapping_the_caps_of_a_capped_cone_should_project_points_onto_a_circle_on_a_plane" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.test" />
-        <item itemvalue="Cargo.Test object::tests::cone_tests::uv_mapping_the_caps_of_a_capped_cone_should_project_points_onto_a_circle_on_a_plane" />
-        <item itemvalue="Cargo.Test object::tests::cone_tests::uv_mapping_a_unit_cone_should_project_points_on_the_sides_onto_a_plane" />
-        <item itemvalue="Cargo.Test object::tests::cylinder_tests::uv_mapping_the_caps_of_a_capped_cylinder_should_project_points_onto_a_circle_on_a_plane" />
+        <item itemvalue="Cargo.Test object::tests::triangle_tests::uv_mapping_a_non_right_angle_triangle_should_evenly_project_points_across_the_plane" />
+        <item itemvalue="Cargo.Test object::tests::triangle_tests::uv_mapping_a_non_uniform_right_angle_triangle_should_evenly_project_points_across_the_plane" />
+        <item itemvalue="Cargo.Test object::tests::triangle_tests::uv_mapping_a_triangle_on_an_arbitrary_plane_should_project_points_onto_the_plane" />
+        <item itemvalue="Cargo.Test object::tests::triangle_tests::uv_mapping_a_180_degree_rotated_xz_triangle_should_project_points_onto_a_plane_described_by_the_edges" />
       </list>
     </recent_temporary>
   </component>
@@ -405,35 +399,17 @@
       <workItem from="1621545185690" duration="1325000" />
       <workItem from="1621619864739" duration="2566000" />
       <workItem from="1621679547590" duration="3713000" />
-      <workItem from="1621766158306" duration="2640000" />
-    </task>
-    <task id="LOCAL-00131" summary="move parallel rendering into canvas">
-      <created>1617047145427</created>
-      <option name="number" value="00131" />
-      <option name="presentableId" value="LOCAL-00131" />
-      <option name="project" value="LOCAL" />
-      <updated>1617047145427</updated>
-    </task>
-    <task id="LOCAL-00132" summary="failed attempt to convert to 1D Vector in Canvas (causes regression)">
-      <created>1617048118561</created>
-      <option name="number" value="00132" />
-      <option name="presentableId" value="LOCAL-00132" />
-      <option name="project" value="LOCAL" />
-      <updated>1617048118561</updated>
-    </task>
-    <task id="LOCAL-00133" summary="introduce benchmarks for scenes with lots of objects">
-      <created>1617131839857</created>
-      <option name="number" value="00133" />
-      <option name="presentableId" value="LOCAL-00133" />
-      <option name="project" value="LOCAL" />
-      <updated>1617131839858</updated>
-    </task>
-    <task id="LOCAL-00134" summary="implement bounding boxes for primitive objects">
-      <created>1617219900132</created>
-      <option name="number" value="00134" />
-      <option name="presentableId" value="LOCAL-00134" />
-      <option name="project" value="LOCAL" />
-      <updated>1617219900133</updated>
+      <workItem from="1621766158306" duration="3216000" />
+      <workItem from="1621879982702" duration="1656000" />
+      <workItem from="1621890135309" duration="312000" />
+      <workItem from="1621893613667" duration="1761000" />
+      <workItem from="1621964205237" duration="3594000" />
+      <workItem from="1622053173046" duration="3536000" />
+      <workItem from="1622143501455" duration="1247000" />
+      <workItem from="1622144902141" duration="44000" />
+      <workItem from="1622569482815" duration="2112000" />
+      <workItem from="1622656299076" duration="2430000" />
+      <workItem from="1622743065112" duration="856000" />
     </task>
     <task id="LOCAL-00135" summary="implement basic bounding box operations">
       <created>1617309576690</created>
@@ -750,7 +726,35 @@
       <option name="project" value="LOCAL" />
       <updated>1621684362201</updated>
     </task>
-    <option name="localTasksCounter" value="180" />
+    <task id="LOCAL-00180" summary="WIP improve UV mapping&#10;&#10;implement UV mapping for cones based on cylinder UV mapping">
+      <created>1621768819372</created>
+      <option name="number" value="00180" />
+      <option name="presentableId" value="LOCAL-00180" />
+      <option name="project" value="LOCAL" />
+      <updated>1621768819372</updated>
+    </task>
+    <task id="LOCAL-00181" summary="WIP improve UV mapping&#10;&#10;WIP triangle UVs">
+      <created>1622054319646</created>
+      <option name="number" value="00181" />
+      <option name="presentableId" value="LOCAL-00181" />
+      <option name="project" value="LOCAL" />
+      <updated>1622054319646</updated>
+    </task>
+    <task id="LOCAL-00182" summary="WIP improve UV mapping&#10;&#10;WIP triangle UVs">
+      <created>1622657100181</created>
+      <option name="number" value="00182" />
+      <option name="presentableId" value="LOCAL-00182" />
+      <option name="project" value="LOCAL" />
+      <updated>1622657100181</updated>
+    </task>
+    <task id="LOCAL-00183" summary="WIP improve UV mapping&#10;&#10;WIP triangle UVs">
+      <created>1622658750474</created>
+      <option name="number" value="00183" />
+      <option name="presentableId" value="LOCAL-00183" />
+      <option name="project" value="LOCAL" />
+      <updated>1622658750474</updated>
+    </task>
+    <option name="localTasksCounter" value="184" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -776,8 +780,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="example for cylinder acne" />
-    <MESSAGE value="fix acne on cylinder caps" />
     <MESSAGE value="example for acne on overlapping transparent object" />
     <MESSAGE value="WIP fix acne in overlapping transparent objects" />
     <MESSAGE value="remove over_point and under_point and exclude duplicate intersections from hit calculations" />
@@ -801,7 +803,9 @@
     <MESSAGE value="WIP improve UV mapping&#10;&#10;WIP add for Cube and Cylinder UV mapping" />
     <MESSAGE value="WIP improve UV mapping&#10;&#10;remove old UV mapping" />
     <MESSAGE value="WIP improve UV mapping&#10;&#10;fix cylinder mapping to work correctly on caps" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP improve UV mapping&#10;&#10;fix cylinder mapping to work correctly on caps" />
+    <MESSAGE value="WIP improve UV mapping&#10;&#10;implement UV mapping for cones based on cylinder UV mapping" />
+    <MESSAGE value="WIP improve UV mapping&#10;&#10;WIP triangle UVs" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP improve UV mapping&#10;&#10;WIP triangle UVs" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -1078,6 +1078,7 @@ mod group_tests {
 
 mod triangle_tests {
     use super::*;
+    use std::f64::consts::FRAC_1_SQRT_2;
 
     #[test]
     fn the_normal_of_a_triangle_should_be_constant() {
@@ -1168,6 +1169,120 @@ mod triangle_tests {
         let intersections = triangle.intersect(&ray);
         assert_eq!(intersections.len(), 1);
         assert_eq!(intersections.underlying()[0].t, 2.0);
+    }
+
+    #[test]
+    fn uv_mapping_an_xz_triangle_should_project_points_onto_a_plane_described_by_the_edges() {
+        let object = Object::triangle(
+            Point3D::ORIGIN,
+            Point3D::new(1.0, 0.0, 0.0),
+            Point3D::new(0.0, 0.0, 1.0),
+        );
+        let triangle = object.shape();
+
+        vec![
+            (Point3D::ORIGIN, (0.0, 0.0)),
+            (Point3D::new(1.0, 0.0, 0.0), (0.0, 1.0)),
+            (Point3D::new(0.0, 0.0, 1.0), (1.0, 0.0)),
+            (Point3D::new(0.5, 0.0, 0.5), (0.5, 0.5)),
+        ]
+        .into_iter()
+        .for_each(|(point, (u, v))| {
+            assert_eq!(triangle.uv_at(point), (u, v));
+        })
+    }
+
+    #[test]
+    fn uv_mapping_a_180_degree_rotated_xz_triangle_should_project_points_onto_a_plane_described_by_the_edges(
+    ) {
+        let object = Object::triangle(
+            Point3D::ORIGIN,
+            Point3D::new(-1.0, 0.0, 0.0),
+            Point3D::new(0.0, 0.0, -1.0),
+        );
+        let triangle = object.shape();
+
+        vec![
+            (Point3D::ORIGIN, (0.0, 0.0)),
+            (Point3D::new(-1.0, 0.0, 0.0), (0.0, 1.0)),
+            (Point3D::new(0.0, 0.0, -1.0), (1.0, 0.0)),
+            (Point3D::new(-0.5, 0.0, -0.5), (0.5, 0.5)),
+        ]
+        .into_iter()
+        .for_each(|(point, (u, v))| {
+            assert_eq!(triangle.uv_at(point), (u, v));
+        })
+    }
+
+    #[test]
+    fn uv_mapping_a_triangle_on_an_arbitrary_plane_should_project_points_onto_the_plane() {
+        // roughly 45 degrees rotated around x then z
+        let object = Object::triangle(
+            Point3D::ORIGIN,
+            Point3D::new(-0.5, 0.5, FRAC_1_SQRT_2),
+            Point3D::new(FRAC_1_SQRT_2, FRAC_1_SQRT_2, 0.0),
+        );
+        let triangle = object.shape();
+
+        vec![
+            (Point3D::ORIGIN, (0.0, 0.0)),
+            (Point3D::new(-0.5, 0.5, FRAC_1_SQRT_2), (0.0, 1.0)),
+            (Point3D::new(FRAC_1_SQRT_2, FRAC_1_SQRT_2, 0.0), (1.0, 0.0)),
+            (
+                Point3D::new(0.103553, 0.603553, 0.353553),
+                (0.4999994476176948, 0.4999997238088475),
+            ),
+        ]
+        .into_iter()
+        .for_each(|(point, (u, v))| {
+            assert_eq!(triangle.uv_at(point), (u, v));
+        })
+    }
+
+    #[test]
+    fn uv_mapping_a_non_uniform_right_angle_triangle_should_evenly_project_points_across_the_plane()
+    {
+        let object = Object::triangle(
+            Point3D::ORIGIN,
+            Point3D::new(1.0, 0.0, 0.0),
+            Point3D::new(0.0, 0.0, 3.0),
+        );
+        let triangle = object.shape();
+
+        vec![
+            (Point3D::ORIGIN, (0.0, 0.0)),
+            (Point3D::new(1.0, 0.0, 0.0), (0.0, 1.0)),
+            (Point3D::new(0.0, 0.0, 1.0), (1.0 / 3.0, 0.0)),
+            (Point3D::new(0.0, 0.0, 3.0), (1.0, 0.0)),
+            (Point3D::new(0.5, 0.0, 1.5), (0.5, 0.5)),
+            (Point3D::new(0.5, 0.0, 0.5), (1.0 / 6.0, 0.5)),
+        ]
+        .into_iter()
+        .for_each(|(point, (u, v))| {
+            assert_eq!(triangle.uv_at(point), (u, v));
+        })
+    }
+
+    #[test]
+    fn uv_mapping_a_non_right_angle_triangle_should_evenly_project_points_across_the_plane() {
+        let object = Object::triangle(
+            Point3D::new(1.0, 0.0, 0.0),
+            Point3D::new(1.0, 1.0, 0.0),
+            Point3D::new(0.0, 0.0, 1.0),
+        );
+        let triangle = object.shape();
+
+        vec![
+            (Point3D::new(1.0, 0.0, 0.0), (0.0, 0.0)),
+            (Point3D::new(0.0, 1.0, 0.0), (0.5, 1.0)),
+            (Point3D::new(0.0, 0.0, 1.0), (1.0, 0.0)),
+            (Point3D::new(0.5, 0.5, 0.5), (0.5, 0.5)),
+            (Point3D::new(0.5, 0.0, 0.5), (0.5, 0.0)),
+        ]
+        .into_iter()
+        .for_each(|(point, (u, v))| {
+            assert_eq!(triangle.uv_at(point), (u, v));
+        })
     }
 }
 
