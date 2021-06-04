@@ -670,6 +670,7 @@ dependencies = [
  "float-cmp",
  "image",
  "indicatif",
+ "itertools 0.10.0",
  "nonzero_ext",
  "proptest",
  "rayon",

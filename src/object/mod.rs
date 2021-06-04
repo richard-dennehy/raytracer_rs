@@ -1,6 +1,6 @@
 use crate::{
-    Colour, Intersection, Intersections, Light, Material, Normal3D, Point3D, Ray, Transform,
-    Vector, Vector3D,
+    Colour, Intersection, Intersections, Material, Normal3D, Point3D, Ray, Transform, Vector,
+    Vector3D,
 };
 use std::fmt::Debug;
 use std::sync::atomic::{AtomicU32, Ordering};
@@ -18,6 +18,7 @@ mod triangle;
 use triangle::Triangle;
 
 mod bounds;
+use crate::light::LightSample;
 use crate::material::MaterialKind;
 use bounds::BoundingBox;
 use std::f64::consts::PI;
@@ -195,18 +196,18 @@ impl Object {
         direct_light: Colour,
         eye_vector: Normal3D,
         surface_normal: Normal3D,
-        light_source: &Light,
+        light_source: &LightSample,
     ) -> Colour {
         let material = &self.material;
         let material_colour = self.raw_colour_at(point);
-        let ambient = material_colour * light_source.colour() * material.ambient;
+        let ambient = material_colour * light_source.colour * material.ambient;
 
         // i.e. is in shadow
         if direct_light == Colour::BLACK {
             return ambient;
         }
 
-        let light_vector = (light_source.position() - point).normalised();
+        let light_vector = (light_source.position - point).normalised();
         let light_dot_normal = light_vector.dot(surface_normal);
         // if dot product is <= 0, the light is behind the surface
         if light_dot_normal.is_sign_negative() {

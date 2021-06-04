@@ -15,9 +15,10 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP improve UV mapping&#10;&#10;WIP triangle UVs">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP implement area lights">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/light/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/light/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,19 +88,14 @@
   <component name="RunAnythingCache">
     <option name="myCommands">
       <command value="cargo clippy" />
-      <command value="cargo run --release" />
       <command value="cargo clean" />
       <command value="cargo update" />
       <command value="cargo bench" />
       <command value="cargo test" />
+      <command value="cargo run --release" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.test">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="Cargo.run (release)">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -113,21 +109,6 @@
       <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Test object::tests::triangle_tests::uv_mapping_a_180_degree_rotated_xz_triangle_should_project_points_onto_a_plane_described_by_the_edges" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib object::tests::triangle_tests::uv_mapping_a_180_degree_rotated_xz_triangle_should_project_points_onto_a_plane_described_by_the_edges -- --exact" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <option name="channel" value="DEFAULT" />
-      <option name="requiredFeatures" value="true" />
-      <option name="allFeatures" value="false" />
-      <option name="emulateTerminal" value="false" />
-      <option name="backtrace" value="SHORT" />
-      <envs />
-      <option name="isRedirectInput" value="false" />
-      <option name="redirectInputPath" value="" />
-      <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
@@ -176,6 +157,21 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration name="run (release)" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="run --release" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="test" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="command" value="test" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -191,21 +187,26 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
-      <item itemvalue="Cargo.Test object::tests::triangle_tests::uv_mapping_a_180_degree_rotated_xz_triangle_should_project_points_onto_a_plane_described_by_the_edges" />
       <item itemvalue="Cargo.Test object::tests::triangle_tests::uv_mapping_a_triangle_on_an_arbitrary_plane_should_project_points_onto_the_plane" />
       <item itemvalue="Cargo.Test object::tests::triangle_tests::uv_mapping_a_non_uniform_right_angle_triangle_should_evenly_project_points_across_the_plane" />
       <item itemvalue="Cargo.Test object::tests::triangle_tests::uv_mapping_a_non_right_angle_triangle_should_evenly_project_points_across_the_plane" />
       <item itemvalue="Cargo.test" />
+      <item itemvalue="Cargo.run (release)" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.Test object::tests::triangle_tests::uv_mapping_a_non_right_angle_triangle_should_evenly_project_points_across_the_plane" />
         <item itemvalue="Cargo.Test object::tests::triangle_tests::uv_mapping_a_non_uniform_right_angle_triangle_should_evenly_project_points_across_the_plane" />
         <item itemvalue="Cargo.Test object::tests::triangle_tests::uv_mapping_a_triangle_on_an_arbitrary_plane_should_project_points_onto_the_plane" />
-        <item itemvalue="Cargo.Test object::tests::triangle_tests::uv_mapping_a_180_degree_rotated_xz_triangle_should_project_points_onto_a_plane_described_by_the_edges" />
       </list>
     </recent_temporary>
   </component>
@@ -409,42 +410,9 @@
       <workItem from="1622144902141" duration="44000" />
       <workItem from="1622569482815" duration="2112000" />
       <workItem from="1622656299076" duration="2430000" />
-      <workItem from="1622743065112" duration="856000" />
-    </task>
-    <task id="LOCAL-00135" summary="implement basic bounding box operations">
-      <created>1617309576690</created>
-      <option name="number" value="00135" />
-      <option name="presentableId" value="LOCAL-00135" />
-      <option name="project" value="LOCAL" />
-      <updated>1617309576691</updated>
-    </task>
-    <task id="LOCAL-00136" summary="implement bounding box transformations">
-      <created>1617365651553</created>
-      <option name="number" value="00136" />
-      <option name="presentableId" value="LOCAL-00136" />
-      <option name="project" value="LOCAL" />
-      <updated>1617365651553</updated>
-    </task>
-    <task id="LOCAL-00137" summary="implement bounding boxes for transformed and composite objects">
-      <created>1617451020184</created>
-      <option name="number" value="00137" />
-      <option name="presentableId" value="LOCAL-00137" />
-      <option name="project" value="LOCAL" />
-      <updated>1617451020184</updated>
-    </task>
-    <task id="LOCAL-00138" summary="use bounding box intersections to fail fast on missed rays">
-      <created>1617535730769</created>
-      <option name="number" value="00138" />
-      <option name="presentableId" value="LOCAL-00138" />
-      <option name="project" value="LOCAL" />
-      <updated>1617535730770</updated>
-    </task>
-    <task id="LOCAL-00139" summary="add function to split bounding boxes">
-      <created>1617908375990</created>
-      <option name="number" value="00139" />
-      <option name="presentableId" value="LOCAL-00139" />
-      <option name="project" value="LOCAL" />
-      <updated>1617908375991</updated>
+      <workItem from="1622743065112" duration="1686000" />
+      <workItem from="1622825283522" duration="3169000" />
+      <workItem from="1622886574471" duration="3677000" />
     </task>
     <task id="LOCAL-00140" summary="WIP add function to optimise Groups hierarchy">
       <created>1617910843411</created>
@@ -754,7 +722,42 @@
       <option name="project" value="LOCAL" />
       <updated>1622658750474</updated>
     </task>
-    <option name="localTasksCounter" value="184" />
+    <task id="LOCAL-00184" summary="WIP improve UV mapping&#10;&#10;WIP triangle UVs">
+      <created>1622744176456</created>
+      <option name="number" value="00184" />
+      <option name="presentableId" value="LOCAL-00184" />
+      <option name="project" value="LOCAL" />
+      <updated>1622744176456</updated>
+    </task>
+    <task id="LOCAL-00185" summary="WIP implement area lights">
+      <created>1622826913211</created>
+      <option name="number" value="00185" />
+      <option name="presentableId" value="LOCAL-00185" />
+      <option name="project" value="LOCAL" />
+      <updated>1622826913211</updated>
+    </task>
+    <task id="LOCAL-00186" summary="WIP implement area lights">
+      <created>1622827646717</created>
+      <option name="number" value="00186" />
+      <option name="presentableId" value="LOCAL-00186" />
+      <option name="project" value="LOCAL" />
+      <updated>1622827646717</updated>
+    </task>
+    <task id="LOCAL-00187" summary="WIP implement area lights">
+      <created>1622827880855</created>
+      <option name="number" value="00187" />
+      <option name="presentableId" value="LOCAL-00187" />
+      <option name="project" value="LOCAL" />
+      <updated>1622827880855</updated>
+    </task>
+    <task id="LOCAL-00188" summary="WIP implement area lights">
+      <created>1622888745927</created>
+      <option name="number" value="00188" />
+      <option name="presentableId" value="LOCAL-00188" />
+      <option name="project" value="LOCAL" />
+      <updated>1622888745927</updated>
+    </task>
+    <option name="localTasksCounter" value="189" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -780,8 +783,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="example for acne on overlapping transparent object" />
-    <MESSAGE value="WIP fix acne in overlapping transparent objects" />
     <MESSAGE value="remove over_point and under_point and exclude duplicate intersections from hit calculations" />
     <MESSAGE value="WIP support arbitrary anti-aliasing samples" />
     <MESSAGE value="WIP add benchmarks for anti-aliasing" />
@@ -804,8 +805,10 @@
     <MESSAGE value="WIP improve UV mapping&#10;&#10;remove old UV mapping" />
     <MESSAGE value="WIP improve UV mapping&#10;&#10;fix cylinder mapping to work correctly on caps" />
     <MESSAGE value="WIP improve UV mapping&#10;&#10;implement UV mapping for cones based on cylinder UV mapping" />
+    <MESSAGE value="implement UV maps for all primitive shapes" />
     <MESSAGE value="WIP improve UV mapping&#10;&#10;WIP triangle UVs" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP improve UV mapping&#10;&#10;WIP triangle UVs" />
+    <MESSAGE value="WIP implement area lights" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP implement area lights" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

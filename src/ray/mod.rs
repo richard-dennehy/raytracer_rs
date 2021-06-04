@@ -1,5 +1,6 @@
+use crate::light::LightSample;
 use crate::matrix::Matrix4D;
-use crate::{Colour, Light, Normal3D, Object, Point3D, Vector, Vector3D};
+use crate::{Colour, Normal3D, Object, Point3D, Vector, Vector3D};
 use std::vec::IntoIter;
 
 #[cfg(test)]
@@ -123,7 +124,7 @@ impl<'obj> HitData<'obj> {
         }
     }
 
-    pub fn colour(&self, direct_light: Colour, light_source: &Light) -> Colour {
+    pub fn colour(&self, direct_light: Colour, light_source: &LightSample) -> Colour {
         self.object.colour_at(
             self.point,
             direct_light,

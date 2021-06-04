@@ -955,14 +955,8 @@ fn should_parse_scene_description() {
                 up: Vector3D::new(-0.45, 1.0, 0.0),
             },
             lights: vec![
-                Light::Point {
-                    colour: Colour::WHITE,
-                    position: Point3D::new(50.0, 100.0, -50.0)
-                },
-                Light::Point {
-                    colour: Colour::greyscale(0.2),
-                    position: Point3D::new(-400.0, 50.0, -10.0)
-                },
+                Light::point(Colour::WHITE, Point3D::new(50.0, 100.0, -50.0)),
+                Light::point(Colour::greyscale(0.2), Point3D::new(-400.0, 50.0, -10.0)),
             ],
             objects: vec![
                 ObjectDescription {

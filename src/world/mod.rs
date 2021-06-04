@@ -1,3 +1,4 @@
+use crate::light::LightSample;
 use crate::material::MaterialKind;
 use crate::ray::HitData;
 use crate::{Colour, Intersections, Light, Material, Object, Point3D, Ray, Transform, Vector};
@@ -137,20 +138,31 @@ impl World {
         self.lights
             .iter()
             .map(|light| {
-                let direct_light = self.direct_light(hit_data.point, light, hit_data.object.id());
+                let samples = light.samples();
+                let n_samples = samples.len();
 
-                hit_data.colour(direct_light, light)
+                let sum = samples
+                    .into_iter()
+                    .map(|sample| {
+                        let direct_light =
+                            self.direct_light(hit_data.point, &sample, hit_data.object.id());
+
+                        hit_data.colour(direct_light, &sample)
+                    })
+                    .sum::<Colour>();
+
+                sum / (n_samples as f64)
             })
             .sum()
     }
 
-    fn direct_light(&self, point: Point3D, light: &Light, target_id: u32) -> Colour {
-        let light_vector = light.position() - point;
+    fn direct_light(&self, point: Point3D, light: &LightSample, target_id: u32) -> Colour {
+        let light_vector = light.position - point;
         let light_distance = light_vector.magnitude();
 
         // if light source is exactly at the intersection point, use full intensity
         if light_distance <= (f32::EPSILON as f64) {
-            return light.colour();
+            return light.colour;
         }
 
         let light_vector = light_vector.normalised();
@@ -161,7 +173,7 @@ impl World {
             .into_iter()
             .filter(|i| i.with.id() != target_id || i.t >= (f32::EPSILON as f64))
             .filter(|i| i.t >= 0.0 && i.t < light_distance)
-            .fold(light.colour(), |light, hit| {
+            .fold(light.colour, |light, hit| {
                 if light == Colour::BLACK {
                     return Colour::BLACK;
                 }
@@ -196,7 +208,7 @@ impl World {
 
                     colour * hit.with.material.transparency
                 } else {
-                    // intersecting object doesn't affect shadow calculations
+                    // object doesn't affect shadow calculations
                     light
                 }
             })

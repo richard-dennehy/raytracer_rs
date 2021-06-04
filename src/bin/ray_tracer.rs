@@ -2,8 +2,7 @@ extern crate ray_tracer;
 
 use ray_tracer::renderer::Samples;
 use ray_tracer::*;
-use std::f64::consts::PI;
-use std::num::NonZeroUsize;
+use std::f64::consts::FRAC_PI_4;
 use std::time::Instant;
 
 /// Notes on axes and rotation:
@@ -17,73 +16,84 @@ fn main() -> Result<(), String> {
     let timer = Instant::now();
 
     let mut world = World::empty();
-    world
-        .lights
-        .push(Light::point(Colour::WHITE, Point3D::new(10.0, 10.0, -10.0)));
+    world.lights.push(Light::area(
+        Colour::greyscale(1.5),
+        Point3D::new(-1.0, 2.0, 4.0),
+        Vector3D::new(2.0, 0.0, 0.0),
+        Vector3D::new(0.0, 2.0, 0.0),
+        nonzero_ext::nonzero!(10u8),
+        nonzero_ext::nonzero!(10u8),
+    ));
 
-    let checkers = |width: NonZeroUsize, height: NonZeroUsize| {
-        UvPattern::checkers(Colour::new(0.0, 0.5, 0.0), Colour::WHITE, width, height)
-    };
+    let light_source = Object::cube()
+        .with_material(Material {
+            kind: MaterialKind::Solid(Colour::greyscale(1.5)),
+            ambient: 1.0,
+            diffuse: 0.0,
+            specular: 0.0,
+            casts_shadow: false,
+            ..Default::default()
+        })
+        .transformed(
+            Transform::identity()
+                .scale_z(0.01)
+                .translate_y(3.0)
+                .translate_z(4.0),
+        );
 
-    world.add(
-        Object::cylinder()
-            .min_y(0.0)
-            .max_y(1.0)
-            .capped()
-            .build()
-            .with_material(Material {
-                kind: MaterialKind::Uv(UvPattern::capped_cylinder(
-                    checkers(
-                        nonzero_ext::nonzero!(4_usize),
-                        nonzero_ext::nonzero!(2_usize),
-                    ),
-                    checkers(
-                        nonzero_ext::nonzero!(2_usize),
-                        nonzero_ext::nonzero!(2_usize),
-                    ),
-                    checkers(
-                        nonzero_ext::nonzero!(2_usize),
-                        nonzero_ext::nonzero!(2_usize),
-                    ),
-                )),
-                ..Default::default()
-            })
-            .transformed(Transform::identity().translate_x(-2.0)),
-    );
+    world.add(light_source);
 
-    world.add(
-        Object::cone()
-            .min_y(-1.0)
-            .max_y(1.0)
-            .capped()
-            .build()
-            .with_material(Material {
-                kind: MaterialKind::Uv(UvPattern::capped_cylinder(
-                    checkers(
-                        nonzero_ext::nonzero!(4_usize),
-                        nonzero_ext::nonzero!(2_usize),
-                    ),
-                    checkers(
-                        nonzero_ext::nonzero!(2_usize),
-                        nonzero_ext::nonzero!(2_usize),
-                    ),
-                    checkers(
-                        nonzero_ext::nonzero!(2_usize),
-                        nonzero_ext::nonzero!(2_usize),
-                    ),
-                )),
-                ..Default::default()
-            })
-            .transformed(Transform::identity().translate_x(2.0)),
-    );
+    let floor = Object::plane().with_material(Material {
+        kind: MaterialKind::Solid(Colour::WHITE),
+        ambient: 0.025,
+        diffuse: 0.67,
+        specular: 0.0,
+        ..Default::default()
+    });
+
+    world.add(floor);
+
+    let red_sphere = Object::sphere()
+        .with_material(Material {
+            kind: MaterialKind::Solid(Colour::RED),
+            ambient: 0.1,
+            specular: 0.0,
+            diffuse: 0.6,
+            reflective: 0.3,
+            ..Default::default()
+        })
+        .transformed(
+            Transform::identity()
+                .scale_all(0.5)
+                .translate_x(0.5)
+                .translate_y(0.5),
+        );
+    world.add(red_sphere);
+
+    let blue_sphere = Object::sphere()
+        .with_material(Material {
+            kind: MaterialKind::Solid(Colour::new(0.5, 0.5, 1.0)),
+            ambient: 0.1,
+            specular: 0.0,
+            diffuse: 0.6,
+            reflective: 0.3,
+            ..Default::default()
+        })
+        .transformed(
+            Transform::identity()
+                .scale_all(1.0 / 3.0)
+                .translate_x(-0.25)
+                .translate_y(1.0 / 3.0),
+        );
+    world.add(blue_sphere);
 
     let camera = Camera::new(
         nonzero_ext::nonzero!(1920u16),
         nonzero_ext::nonzero!(1080u16),
-        PI / 3.0,
+        FRAC_PI_4,
         Transform::view_transform(
-            Point3D::new(6.0, 3.0, -5.0),
-            Point3D::ORIGIN,
+            Point3D::new(-3.0, 1.0, 2.5),
+            Point3D::new(0.0, 0.5, 0.0),
             Normal3D::POSITIVE_Y,
         ),
     );

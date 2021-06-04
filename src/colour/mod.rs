@@ -1,5 +1,5 @@
 use std::iter::Sum;
-use std::ops::{Add, Mul, Sub};
+use std::ops::{Add, Div, Mul, Sub};
 
 #[cfg(test)]
 mod tests;
@@ -138,6 +138,14 @@ impl Mul<f64> for &Colour {
 
     fn mul(self, rhs: f64) -> Self::Output {
         *self * rhs
+    }
+}
+
+impl Div<f64> for Colour {
+    type Output = Colour;
+
+    fn div(self, rhs: f64) -> Self::Output {
+        Colour(self.red() / rhs, self.green() / rhs, self.blue() / rhs)
     }
 }
 
