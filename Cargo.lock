@@ -673,6 +673,7 @@ dependencies = [
  "itertools 0.10.0",
  "nonzero_ext",
  "proptest",
+ "rand",
  "rayon",
  "yaml-rust",
 ]

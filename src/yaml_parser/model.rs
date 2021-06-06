@@ -141,6 +141,7 @@ pub type Defines = HashMap<String, Define>;
 
 #[derive(PartialEq, Debug, Default, Clone)]
 pub struct MaterialDescription {
+    // TODO doesn't support UVs
     pub(crate) pattern: Option<Either<Colour, PatternDescription>>,
     pub(crate) diffuse: Option<f64>,
     pub(crate) ambient: Option<f64>,

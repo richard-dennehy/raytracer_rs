@@ -15,11 +15,13 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implement area lights">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="precalculate light samples">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/light/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/light/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/world/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -411,13 +413,6 @@
       <workItem from="1622886574471" duration="3856000" />
       <workItem from="1622974918750" duration="1422000" />
     </task>
-    <task id="LOCAL-00141" summary="WIP add tests for group optimisation">
-      <created>1617996463015</created>
-      <option name="number" value="00141" />
-      <option name="presentableId" value="LOCAL-00141" />
-      <option name="project" value="LOCAL" />
-      <updated>1617996463015</updated>
-    </task>
     <task id="LOCAL-00142" summary="implemented bounding volume hierarchies to vastly reduce rendering time of complex scenes">
       <created>1618056891050</created>
       <option name="number" value="00142" />
@@ -754,7 +749,14 @@
       <option name="project" value="LOCAL" />
       <updated>1622890459640</updated>
     </task>
-    <option name="localTasksCounter" value="190" />
+    <task id="LOCAL-00190" summary="precalculate light samples">
+      <created>1622977161495</created>
+      <option name="number" value="00190" />
+      <option name="presentableId" value="LOCAL-00190" />
+      <option name="project" value="LOCAL" />
+      <updated>1622977161495</updated>
+    </task>
+    <option name="localTasksCounter" value="191" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -780,7 +782,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP support arbitrary anti-aliasing samples" />
     <MESSAGE value="WIP add benchmarks for anti-aliasing" />
     <MESSAGE value="check corners first to reduce redundant work when anti-aliasing scenes" />
     <MESSAGE value="use more lenient equality check when using AA corner optimisation" />
@@ -805,7 +806,8 @@
     <MESSAGE value="WIP improve UV mapping&#10;&#10;WIP triangle UVs" />
     <MESSAGE value="WIP implement area lights" />
     <MESSAGE value="implement area lights" />
-    <option name="LAST_COMMIT_MESSAGE" value="implement area lights" />
+    <MESSAGE value="precalculate light samples" />
+    <option name="LAST_COMMIT_MESSAGE" value="precalculate light samples" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
