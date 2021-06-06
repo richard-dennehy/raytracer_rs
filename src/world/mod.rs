@@ -138,11 +138,10 @@ impl World {
         self.lights
             .iter()
             .map(|light| {
-                let samples = light.samples();
-                let n_samples = samples.len();
+                let (samples, n_samples) = light.samples();
 
+                // FIXME should probably just take a running average instead
                 let sum = samples
-                    .into_iter()
                     .map(|sample| {
                         let direct_light =
                             self.direct_light(hit_data.point, &sample, hit_data.object.id());

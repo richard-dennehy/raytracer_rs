@@ -15,10 +15,11 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP implement area lights">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implement area lights">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/light/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/light/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/world/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,7 +96,7 @@
       <command value="cargo run --release" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.run (release)">
+  <component name="RunManager" selected="Cargo.test">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -187,11 +188,6 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.Test object::tests::triangle_tests::uv_mapping_a_triangle_on_an_arbitrary_plane_should_project_points_onto_the_plane" />
@@ -202,8 +198,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.Test object::tests::triangle_tests::uv_mapping_a_non_right_angle_triangle_should_evenly_project_points_across_the_plane" />
         <item itemvalue="Cargo.Test object::tests::triangle_tests::uv_mapping_a_non_uniform_right_angle_triangle_should_evenly_project_points_across_the_plane" />
         <item itemvalue="Cargo.Test object::tests::triangle_tests::uv_mapping_a_triangle_on_an_arbitrary_plane_should_project_points_onto_the_plane" />
@@ -412,14 +408,8 @@
       <workItem from="1622656299076" duration="2430000" />
       <workItem from="1622743065112" duration="1686000" />
       <workItem from="1622825283522" duration="3169000" />
-      <workItem from="1622886574471" duration="3677000" />
-    </task>
-    <task id="LOCAL-00140" summary="WIP add function to optimise Groups hierarchy">
-      <created>1617910843411</created>
-      <option name="number" value="00140" />
-      <option name="presentableId" value="LOCAL-00140" />
-      <option name="project" value="LOCAL" />
-      <updated>1617910843411</updated>
+      <workItem from="1622886574471" duration="3856000" />
+      <workItem from="1622974918750" duration="1422000" />
     </task>
     <task id="LOCAL-00141" summary="WIP add tests for group optimisation">
       <created>1617996463015</created>
@@ -757,7 +747,14 @@
       <option name="project" value="LOCAL" />
       <updated>1622888745927</updated>
     </task>
-    <option name="localTasksCounter" value="189" />
+    <task id="LOCAL-00189" summary="implement area lights">
+      <created>1622890459640</created>
+      <option name="number" value="00189" />
+      <option name="presentableId" value="LOCAL-00189" />
+      <option name="project" value="LOCAL" />
+      <updated>1622890459640</updated>
+    </task>
+    <option name="localTasksCounter" value="190" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -783,7 +780,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="remove over_point and under_point and exclude duplicate intersections from hit calculations" />
     <MESSAGE value="WIP support arbitrary anti-aliasing samples" />
     <MESSAGE value="WIP add benchmarks for anti-aliasing" />
     <MESSAGE value="check corners first to reduce redundant work when anti-aliasing scenes" />
@@ -808,7 +804,8 @@
     <MESSAGE value="implement UV maps for all primitive shapes" />
     <MESSAGE value="WIP improve UV mapping&#10;&#10;WIP triangle UVs" />
     <MESSAGE value="WIP implement area lights" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP implement area lights" />
+    <MESSAGE value="implement area lights" />
+    <option name="LAST_COMMIT_MESSAGE" value="implement area lights" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

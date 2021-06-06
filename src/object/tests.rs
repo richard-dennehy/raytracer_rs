@@ -13,13 +13,14 @@ mod shape_tests {
         let normal = sphere.normal_at(point, None);
         let eye_vector = Normal3D::NEGATIVE_Z;
         let light = Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, -10.0));
+        let sample = light.samples().0.next().unwrap();
 
         let lit_material = sphere.colour_at(
             point,
-            light.colour(),
+            sample.colour,
             eye_vector,
             normal,
-            &light.samples()[0],
+            sample,
         );
         assert_eq!(lit_material, Colour::new(1.9, 1.9, 1.9));
     }
@@ -33,13 +34,14 @@ mod shape_tests {
         let eye_vector =
             Vector3D::new(0.0, 2.0_f64.sqrt() / 2.0, -2.0_f64.sqrt() / 2.0).normalised();
         let light = Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, -10.0));
+        let sample = light.samples().0.next().unwrap();
 
         let lit_material = sphere.colour_at(
             point,
-            light.colour(),
+            sample.colour,
             eye_vector,
             normal,
-            &light.samples()[0],
+            sample,
         );
         assert_eq!(lit_material, Colour::new(1.0, 1.0, 1.0));
     }
@@ -53,13 +55,14 @@ mod shape_tests {
         let normal = sphere.normal_at(point, None);
         let eye_vector = Normal3D::NEGATIVE_Z;
         let light = Light::point(Colour::WHITE, Point3D::new(0.0, 10.0, -10.0));
+        let sample = light.samples().0.next().unwrap();
 
         let lit_material = sphere.colour_at(
             point,
-            light.colour(),
+            sample.colour,
             eye_vector,
             normal,
-            &light.samples()[0],
+            sample,
         );
         assert_eq!(
             lit_material,
@@ -77,13 +80,14 @@ mod shape_tests {
         let eye_vector =
             Vector3D::new(0.0, -2.0_f64.sqrt() / 2.0, -2.0_f64.sqrt() / 2.0).normalised();
         let light = Light::point(Colour::WHITE, Point3D::new(0.0, 10.0, -10.0));
+        let sample = light.samples().0.next().unwrap();
 
         let lit_material = sphere.colour_at(
             point,
-            light.colour(),
+            sample.colour,
             eye_vector,
             normal,
-            &light.samples()[0],
+            sample,
         );
         assert_eq!(
             lit_material,
@@ -112,7 +116,7 @@ mod shape_tests {
                 Colour::WHITE,
                 Normal3D::NEGATIVE_X,
                 normal,
-                &light.samples()[0]
+                &light.samples().0.next().unwrap()
             ),
             Colour::BLACK
         );
@@ -140,7 +144,7 @@ mod shape_tests {
                 Colour::WHITE,
                 Normal3D::NEGATIVE_X,
                 normal,
-                &light.samples()[0]
+                &light.samples().0.next().unwrap()
             ),
             Colour::WHITE
         );
@@ -331,7 +335,7 @@ mod sphere_tests {
                 Colour::WHITE,
                 Normal3D::NEGATIVE_X,
                 normal,
-                &light.samples()[0],
+                &light.samples().0.next().unwrap(),
             ),
             Colour::BLACK
         );
@@ -358,7 +362,7 @@ mod sphere_tests {
                 Colour::WHITE,
                 Normal3D::NEGATIVE_X,
                 normal,
-                &light.samples()[0],
+                &light.samples().0.next().unwrap(),
             ),
             Colour::WHITE
         );

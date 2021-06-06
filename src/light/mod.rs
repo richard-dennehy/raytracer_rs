@@ -4,13 +4,13 @@ use std::num::NonZeroU8;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Light {
-    inner: inner::Light,
+    samples: Vec<LightSample>,
 }
 
 impl Light {
     pub fn point(colour: Colour, position: Point3D) -> Self {
         Light {
-            inner: inner::Light::Point { colour, position },
+            samples: vec![LightSample::new(position, colour)],
         }
     }
 
@@ -22,54 +22,22 @@ impl Light {
         u_steps: NonZeroU8,
         v_steps: NonZeroU8,
     ) -> Self {
-        let cell_dimensions = CellDimensions {
-            u: u / (u_steps.get() as f64),
-            v: v / (v_steps.get() as f64),
-        };
+        let cell_u = u / (u_steps.get() as f64);
+        let cell_v = v / (v_steps.get() as f64);
 
-        Light {
-            inner: inner::Light::Area {
-                colour,
-                corner: bottom_left,
-                cell_dimensions,
-                width: u_steps.get(),
-                height: v_steps.get(),
-            },
-        }
+        let offset = bottom_left + cell_u / 2.0 + cell_v / 2.0;
+
+        let samples = (0..u_steps.get())
+            .cartesian_product(0..v_steps.get())
+            .map(|(u, v)| LightSample::new(offset + cell_u * u as f64 + cell_v * v as f64, colour))
+            .collect();
+
+        Light { samples }
     }
 
-    pub fn colour(&self) -> Colour {
-        match &self.inner {
-            inner::Light::Point { colour, .. } => *colour,
-            inner::Light::Area { colour, .. } => *colour,
-        }
-    }
-
-    // FIXME performance: calculate this once and hand out references
-    pub fn samples(&self) -> Vec<LightSample> {
-        match &self.inner {
-            inner::Light::Point { position, colour } => vec![LightSample::new(*position, *colour)],
-            inner::Light::Area {
-                corner,
-                cell_dimensions,
-                width,
-                height,
-                colour,
-                ..
-            } => {
-                let offset = *corner + cell_dimensions.u / 2.0 + cell_dimensions.v / 2.0;
-
-                (0..*width)
-                    .cartesian_product(0..*height)
-                    .map(|(u, v)| {
-                        LightSample::new(
-                            offset + cell_dimensions.u * u as f64 + cell_dimensions.v * v as f64,
-                            *colour,
-                        )
-                    })
-                    .collect()
-            }
-        }
+    // FIXME if `world` uses running average this doesn't need to return the len
+    pub fn samples(&self) -> (impl Iterator<Item = &LightSample>, usize) {
+        (self.samples.iter(), self.samples.len())
     }
 }
 
@@ -82,31 +50,6 @@ pub struct LightSample {
 impl LightSample {
     pub fn new(position: Point3D, colour: Colour) -> Self {
         LightSample { position, colour }
-    }
-}
-
-#[derive(Debug, PartialEq, Clone)]
-struct CellDimensions {
-    u: Vector3D,
-    v: Vector3D,
-}
-
-mod inner {
-    use super::*;
-
-    #[derive(Debug, PartialEq, Clone)]
-    pub(super) enum Light {
-        Point {
-            colour: Colour,
-            position: Point3D,
-        },
-        Area {
-            colour: Colour,
-            corner: Point3D,
-            cell_dimensions: CellDimensions,
-            width: u8,
-            height: u8,
-        },
     }
 }
 
@@ -125,7 +68,7 @@ mod tests {
             nonzero_ext::nonzero!(2u8),
         );
 
-        let mut samples = area.samples().into_iter();
+        let mut samples = area.samples().0;
         assert_eq!(
             samples.next().unwrap().position,
             Point3D::new(0.25, 0.0, 0.25)
