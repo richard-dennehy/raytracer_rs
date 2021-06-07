@@ -1,6 +1,5 @@
 extern crate ray_tracer;
 
-use rand::Rng;
 use ray_tracer::renderer::Samples;
 use ray_tracer::*;
 use std::f64::consts::FRAC_PI_4;
@@ -16,9 +15,6 @@ use std::time::Instant;
 fn main() -> Result<(), String> {
     let timer = Instant::now();
 
-    let seed = rand::thread_rng().gen::<u64>();
-    dbg!(seed);
-
     let mut world = World::empty();
     world.lights.push(Light::area(
         Colour::greyscale(1.5),
@@ -27,7 +23,7 @@ fn main() -> Result<(), String> {
         Vector3D::new(0.0, 2.0, 0.0),
         nonzero_ext::nonzero!(15u8),
         nonzero_ext::nonzero!(15u8),
-        seed,
+        7859535925052243674,
     ));
 
     let light_source = Object::cube()
@@ -58,15 +54,17 @@ fn main() -> Result<(), String> {
 
     world.add(floor);
 
+    let sphere_material = |colour: Colour| Material {
+        kind: MaterialKind::Solid(colour),
+        ambient: 0.1,
+        specular: 0.0,
+        diffuse: 0.6,
+        reflective: 0.3,
+        ..Default::default()
+    };
+
     let red_sphere = Object::sphere()
-        .with_material(Material {
-            kind: MaterialKind::Solid(Colour::RED),
-            ambient: 0.1,
-            specular: 0.0,
-            diffuse: 0.6,
-            reflective: 0.3,
-            ..Default::default()
-        })
+        .with_material(sphere_material(Colour::RED))
         .transformed(
             Transform::identity()
                 .scale_all(0.5)
@@ -76,14 +74,7 @@ fn main() -> Result<(), String> {
     world.add(red_sphere);
 
     let blue_sphere = Object::sphere()
-        .with_material(Material {
-            kind: MaterialKind::Solid(Colour::new(0.5, 0.5, 1.0)),
-            ambient: 0.1,
-            specular: 0.0,
-            diffuse: 0.6,
-            reflective: 0.3,
-            ..Default::default()
-        })
+        .with_material(sphere_material(Colour::new(0.5, 0.5, 1.0)))
         .transformed(
             Transform::identity()
                 .scale_all(1.0 / 3.0)

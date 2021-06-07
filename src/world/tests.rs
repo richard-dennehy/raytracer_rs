@@ -422,7 +422,8 @@ mod shading {
 
 mod lighting {
     use super::*;
-    use crate::Normal3D;
+    use crate::{Camera, Normal3D, Vector3D};
+    use std::f64::consts::{FRAC_1_SQRT_2, FRAC_PI_4};
 
     #[test]
     fn lighting_a_point_in_shadow_should_only_have_ambient() {
@@ -458,6 +459,150 @@ mod lighting {
         let colour = world.colour_at(Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z));
 
         assert_eq!(colour, Colour::greyscale(0.1));
+    }
+
+    #[test]
+    fn lighting_using_an_area_light_should_average_multiple_samples_from_the_light_source() {
+        let mut world = World::empty();
+        world.lights.push(Light::area(
+            Colour::WHITE,
+            Point3D::new(-0.5, -0.5, -5.0),
+            Vector3D::new(1.0, 0.0, 0.0),
+            Vector3D::new(0.0, 1.0, 0.0),
+            nonzero_ext::nonzero!(2u8),
+            nonzero_ext::nonzero!(2u8),
+            0,
+        ));
+        world.add(Object::sphere().with_material(Material {
+            kind: MaterialKind::Solid(Colour::WHITE),
+            ambient: 0.1,
+            diffuse: 0.9,
+            specular: 0.0,
+            ..Default::default()
+        }));
+
+        let eye = Point3D::new(0.0, 0.0, -5.0);
+        let target = Point3D::new(0.0, 0.0, -1.0);
+        let expected = world.colour_at(Ray::new(eye, (target - eye).normalised()));
+        assert_eq!(
+            expected,
+            Colour::new(0.9961547818617024, 0.9961547818617024, 0.9961547818617024)
+        );
+
+        let target = Point3D::new(0.0, FRAC_1_SQRT_2, -FRAC_1_SQRT_2);
+        let expected = world.colour_at(Ray::new(eye, (target - eye).normalised()));
+        assert_eq!(
+            expected,
+            Colour::new(0.6419842116276147, 0.6419842116276147, 0.6419842116276147)
+        );
+    }
+
+    #[test]
+    fn an_area_light_should_cast_soft_shadows() {
+        let mut world = World::empty();
+        world.lights.push(Light::area(
+            Colour::greyscale(1.5),
+            Point3D::new(-1.0, 2.0, 4.0),
+            Vector3D::new(2.0, 0.0, 0.0),
+            Vector3D::new(0.0, 2.0, 0.0),
+            nonzero_ext::nonzero!(8u8),
+            nonzero_ext::nonzero!(8u8),
+            7859535925052243674,
+        ));
+
+        let light_source = Object::cube()
+            .with_material(Material {
+                kind: MaterialKind::Solid(Colour::greyscale(1.5)),
+                ambient: 1.0,
+                diffuse: 0.0,
+                specular: 0.0,
+                casts_shadow: false,
+                ..Default::default()
+            })
+            .transformed(
+                Transform::identity()
+                    .scale_z(0.01)
+                    .translate_y(3.0)
+                    .translate_z(4.0),
+            );
+
+        world.add(light_source);
+
+        let floor = Object::plane().with_material(Material {
+            kind: MaterialKind::Solid(Colour::WHITE),
+            ambient: 0.025,
+            diffuse: 0.67,
+            specular: 0.0,
+            ..Default::default()
+        });
+
+        world.add(floor);
+
+        let sphere_material = |colour: Colour| Material {
+            kind: MaterialKind::Solid(colour),
+            ambient: 0.1,
+            specular: 0.0,
+            diffuse: 0.6,
+            reflective: 0.3,
+            ..Default::default()
+        };
+
+        let red_sphere = Object::sphere()
+            .with_material(sphere_material(Colour::RED))
+            .transformed(
+                Transform::identity()
+                    .scale_all(0.5)
+                    .translate_x(0.5)
+                    .translate_y(0.5),
+            );
+        world.add(red_sphere);
+
+        let blue_sphere = Object::sphere()
+            .with_material(sphere_material(Colour::new(0.5, 0.5, 1.0)))
+            .transformed(
+                Transform::identity()
+                    .scale_all(1.0 / 3.0)
+                    .translate_x(-0.25)
+                    .translate_y(1.0 / 3.0),
+            );
+        world.add(blue_sphere);
+
+        let camera = Camera::new(
+            nonzero_ext::nonzero!(1920u16),
+            nonzero_ext::nonzero!(1080u16),
+            FRAC_PI_4,
+            Transform::view_transform(
+                Point3D::new(-3.0, 1.0, 2.5),
+                Point3D::new(0.0, 0.5, 0.0),
+                Normal3D::POSITIVE_Y,
+            ),
+        );
+
+        let left_slightly_shadowed = camera.ray_at(982, 885, 0.5, 0.5);
+        assert_eq!(
+            world.colour_at(left_slightly_shadowed),
+            Colour::new(0.6492824372513257, 0.6492824372513257, 0.6492824372513257,)
+        );
+
+        let fully_shadowed = camera.ray_at(1181, 827, 0.5, 0.5);
+        assert_eq!(
+            world.colour_at(fully_shadowed),
+            Colour::new(
+                0.03750000000000005,
+                0.03750000000000005,
+                0.03750000000000005
+            )
+        );
+
+        let right_slightly_shadowed = camera.ray_at(1560, 793, 0.5, 0.5);
+        assert_eq!(
+            world.colour_at(right_slightly_shadowed),
+            Colour::new(
+                0.28073844088640443,
+                0.28073844088640443,
+                0.28073844088640443,
+            )
+        );
     }
 }
 
