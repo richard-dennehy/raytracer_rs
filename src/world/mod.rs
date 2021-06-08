@@ -140,9 +140,9 @@ impl World {
             .map(|light| {
                 let (samples, n_samples) = light.samples();
 
-                // FIXME should probably just take a running average instead
                 let sum = samples
-                    .map(|sample| {
+                    .map(|point| {
+                        let sample = LightSample::new(*point, light.colour());
                         let direct_light =
                             self.direct_light(hit_data.point, &sample, hit_data.object.id());
 

@@ -6,16 +6,40 @@ use std::num::NonZeroU8;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Light {
-    samples: Vec<LightSample>,
+    samples: Vec<Point3D>,
+    colour: Colour,
 }
 
 impl Light {
     pub fn point(colour: Colour, position: Point3D) -> Self {
+        // FIXME using Vec isn't ideal for Point lights, as it adds a pointer indirection for the sake of a single Point
         Light {
-            samples: vec![LightSample::new(position, colour)],
+            samples: vec![position],
+            colour,
         }
     }
 
+    /// Create an Area light, with a non-zero size in two dimensions. Shadows cast by this light are "soft",
+    /// i.e. don't have a clearly visible edge.
+    ///
+    /// Adding an object to the scene with the same location and dimensions and shadow casting disabled
+    /// allows the light to be physically visible in the scene, in e.g. reflections.
+    ///
+    /// # Notes
+    /// Light is cast in all directions equally, i.e. there is no distinction between the "front" face and the "back" face.
+    /// A fixed number of samples are taken from the surface, given by `u_steps * v_steps`.
+    /// Shadows are not perfectly soft, and will show banding, depending on the sample count.
+    /// Taking higher `u_steps` and `v_steps` samples will result in better shadows, at the cost of
+    /// exponentially increasing rendering time.
+    ///
+    /// # Arguments
+    /// `colour` - The full intensity colour of the light
+    /// `bottom_left` - The bottom left corner of the light
+    /// `u` - A 3D Vector defining the "bottom" edge
+    /// `v` - A 3D Vector defining the "left" edge
+    /// `u_steps` - the number of samples to take from the "bottom" edge
+    /// `v_steps` - the number of samples to take from the "left" edge
+    /// `seed` - used to randomly offset the sampled locations - providing the same seed ensures rendering is deterministic
     pub fn area(
         colour: Colour,
         bottom_left: Point3D,
@@ -41,17 +65,20 @@ impl Light {
 
         let samples = (0..u_steps.get())
             .cartesian_product(0..v_steps.get())
-            .map(|(u, v)| {
-                LightSample::new(offset() + cell_u * u as f64 + cell_v * v as f64, colour)
-            })
+            .map(|(u, v)| offset() + cell_u * u as f64 + cell_v * v as f64)
             .collect();
 
-        Light { samples }
+        Light { samples, colour }
     }
 
-    // FIXME if `world` uses running average this doesn't need to return the len
-    pub fn samples(&self) -> (impl Iterator<Item = &LightSample>, usize) {
+    pub fn samples(&self) -> (impl Iterator<Item = &Point3D>, usize) {
+        // ideally wouldn't have to return the length, but it's probably easier/cleaner than using size_hint
+
         (self.samples.iter(), self.samples.len())
+    }
+
+    pub fn colour(&self) -> Colour {
+        self.colour
     }
 }
 

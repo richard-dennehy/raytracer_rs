@@ -9,3 +9,4 @@
 - https://forum.raytracerchallenge.com/thread/203/performance-tips-clarifications-book-errata
 - Move common geometric operations into separate module
 - MTL parser
+- Switch back to quickcheck - use newtype to override generator

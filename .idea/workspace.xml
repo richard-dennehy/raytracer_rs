@@ -15,10 +15,11 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="use random offsets into area light samples to reduce banding">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add tests for area lighting">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/world/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/light/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/light/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/world/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,7 +96,12 @@
       <command value="cargo run --release" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.test">
+  <component name="RunManager" selected="Cargo.run (release)">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -187,11 +193,6 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.Test object::tests::triangle_tests::uv_mapping_a_triangle_on_an_arbitrary_plane_should_project_points_onto_the_plane" />
@@ -202,9 +203,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.Test world::tests::lighting::an_area_light_should_cast_soft_shadows" />
-        <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.Test world::tests::lighting::lighting_using_an_area_light_should_average_multiple_samples_from_the_light_source" />
         <item itemvalue="Cargo.Test object::tests::triangle_tests::uv_mapping_a_triangle_on_an_arbitrary_plane_should_project_points_onto_the_plane" />
       </list>
@@ -416,14 +417,8 @@
       <workItem from="1622974918750" duration="1422000" />
       <workItem from="1623089286702" duration="535000" />
       <workItem from="1623089847473" duration="88000" />
-      <workItem from="1623089947450" duration="3307000" />
-    </task>
-    <task id="LOCAL-00143" summary="WIP add parsing support for dragons YAML">
-      <created>1618146559522</created>
-      <option name="number" value="00143" />
-      <option name="presentableId" value="LOCAL-00143" />
-      <option name="project" value="LOCAL" />
-      <updated>1618146559522</updated>
+      <workItem from="1623089947450" duration="3360000" />
+      <workItem from="1623175689038" duration="3029000" />
     </task>
     <task id="LOCAL-00144" summary="WIP YAML parsing support for Object defines and Groups">
       <created>1618256571399</created>
@@ -761,7 +756,14 @@
       <option name="project" value="LOCAL" />
       <updated>1622979564645</updated>
     </task>
-    <option name="localTasksCounter" value="192" />
+    <task id="LOCAL-00192" summary="add tests for area lighting">
+      <created>1623093333073</created>
+      <option name="number" value="00192" />
+      <option name="presentableId" value="LOCAL-00192" />
+      <option name="project" value="LOCAL" />
+      <updated>1623093333073</updated>
+    </task>
+    <option name="localTasksCounter" value="193" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -787,7 +789,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="check corners first to reduce redundant work when anti-aliasing scenes" />
     <MESSAGE value="use more lenient equality check when using AA corner optimisation" />
     <MESSAGE value="add early return for renders with less than 5 samples per pixel" />
     <MESSAGE value="added progress bar and experiment with supersampling" />
@@ -812,7 +813,8 @@
     <MESSAGE value="implement area lights" />
     <MESSAGE value="precalculate light samples" />
     <MESSAGE value="use random offsets into area light samples to reduce banding" />
-    <option name="LAST_COMMIT_MESSAGE" value="use random offsets into area light samples to reduce banding" />
+    <MESSAGE value="add tests for area lighting" />
+    <option name="LAST_COMMIT_MESSAGE" value="add tests for area lighting" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
