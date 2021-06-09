@@ -1,7 +1,8 @@
 use criterion::{criterion_group, BenchmarkId, Criterion};
 use ray_tracer::renderer::Samples;
 use ray_tracer::{
-    renderer, Camera, Colour, Light, Material, Normal3D, Object, Pattern, Point3D, Transform, World,
+    renderer, Camera, Colour, Light, Material, MaterialKind, Normal3D, Object, Pattern, Point3D,
+    Transform, World,
 };
 use std::array::IntoIter;
 use std::f64::consts::PI;
@@ -72,13 +73,16 @@ fn basic_scene(c: &mut Criterion) {
                         .lights
                         .push(Light::point(Colour::WHITE, Point3D::new(5.0, 10.0, -10.0)));
                     world.add(Object::plane().with_material(Material {
-                        pattern: Pattern::checkers(Colour::WHITE, Colour::BLACK),
+                        kind: MaterialKind::Pattern(Pattern::checkers(
+                            Colour::WHITE,
+                            Colour::BLACK,
+                        )),
                         ..Default::default()
                     }));
                     world.add(
                         Object::sphere()
                             .with_material(Material {
-                                pattern: Pattern::solid(Colour::RED),
+                                kind: MaterialKind::Solid(Colour::RED),
                                 ..Default::default()
                             })
                             .transformed(Transform::identity().translate_y(1.0).translate_z(-2.0)),
@@ -86,7 +90,7 @@ fn basic_scene(c: &mut Criterion) {
                     world.add(
                         Object::plane()
                             .with_material(Material {
-                                pattern: Pattern::solid(Colour::new(0.1, 0.1, 0.6)),
+                                kind: MaterialKind::Solid(Colour::new(0.1, 0.1, 0.6)),
                                 ..Default::default()
                             })
                             .transformed(
@@ -99,7 +103,7 @@ fn basic_scene(c: &mut Criterion) {
                     world.add(
                         Object::plane()
                             .with_material(Material {
-                                pattern: Pattern::solid(Colour::BLACK),
+                                kind: MaterialKind::Solid(Colour::BLACK),
                                 reflective: 0.9,
                                 ..Default::default()
                             })

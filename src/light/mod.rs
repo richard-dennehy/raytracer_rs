@@ -112,36 +112,36 @@ mod tests {
 
         let mut samples = area.samples().0;
         assert_eq!(
-            samples.next().unwrap().position,
-            Point3D::new(0.3655567079318523, 0.0, 0.3867300921766191)
+            samples.next().unwrap(),
+            &Point3D::new(0.3655567079318523, 0.0, 0.3867300921766191)
         );
         assert_eq!(
-            samples.next().unwrap().position,
-            Point3D::new(0.012922317116677517, 0.0, 0.7920796309681001)
+            samples.next().unwrap(),
+            &Point3D::new(0.012922317116677517, 0.0, 0.7920796309681001)
         );
         assert_eq!(
-            samples.next().unwrap().position,
-            Point3D::new(0.6310853162862626, 0.0, 0.38599345287341036)
+            samples.next().unwrap(),
+            &Point3D::new(0.6310853162862626, 0.0, 0.38599345287341036)
         );
         assert_eq!(
-            samples.next().unwrap().position,
-            Point3D::new(0.6093484553357547, 0.0, 0.8968567283345681)
+            samples.next().unwrap(),
+            &Point3D::new(0.6093484553357547, 0.0, 0.8968567283345681)
         );
         assert_eq!(
-            samples.next().unwrap().position,
-            Point3D::new(1.3746692145496366, 0.0, 0.48446887400119504)
+            samples.next().unwrap(),
+            &Point3D::new(1.3746692145496366, 0.0, 0.48446887400119504)
         );
         assert_eq!(
-            samples.next().unwrap().position,
-            Point3D::new(1.4981586781621425, 0.0, 0.5696882153025913)
+            samples.next().unwrap(),
+            &Point3D::new(1.4981586781621425, 0.0, 0.5696882153025913)
         );
         assert_eq!(
-            samples.next().unwrap().position,
-            Point3D::new(1.556432499904909, 0.0, 0.4824178498227347)
+            samples.next().unwrap(),
+            &Point3D::new(1.556432499904909, 0.0, 0.4824178498227347)
         );
         assert_eq!(
-            samples.next().unwrap().position,
-            Point3D::new(1.5247000272159905, 0.0, 0.7128510331304977)
+            samples.next().unwrap(),
+            &Point3D::new(1.5247000272159905, 0.0, 0.7128510331304977)
         );
         assert!(samples.next().is_none());
     }

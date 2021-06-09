@@ -1,6 +1,6 @@
 use criterion::{black_box, criterion_group, Criterion};
 use ray_tracer::{
-    Camera, Colour, Light, Material, Normal3D, Object, Pattern, Point3D, Transform, World,
+    Camera, Colour, Light, Material, MaterialKind, Normal3D, Object, Point3D, Transform, World,
 };
 use std::f64::consts::PI;
 
@@ -36,7 +36,7 @@ fn single_ray_many_objects(c: &mut Criterion) {
                                 .translate_x(x * spacing),
                         )
                         .with_material(Material {
-                            pattern: Pattern::solid(colour),
+                            kind: MaterialKind::Solid(colour),
                             ..Default::default()
                         });
 
@@ -116,7 +116,7 @@ fn single_ray_many_reflective_refractive_objects(c: &mut Criterion) {
                                     .translate_x(x * spacing),
                             )
                             .with_material(Material {
-                                pattern: Pattern::solid(colour),
+                                kind: MaterialKind::Solid(colour),
                                 reflective: 0.5,
                                 transparency: 0.5,
                                 refractive: 1.2,

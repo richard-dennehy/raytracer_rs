@@ -7,4 +7,5 @@ criterion_main! {
     benchmarks::complex_scenes::benches,
     benchmarks::bounding_boxes::benches,
     benchmarks::anti_aliasing::benches,
+    benchmarks::lighting::benches,
 }

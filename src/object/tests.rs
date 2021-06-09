@@ -17,10 +17,10 @@ mod shape_tests {
 
         let lit_material = sphere.colour_at(
             point,
-            sample.colour,
+            Colour::WHITE,
             eye_vector,
             normal,
-            sample,
+            &LightSample::new(*sample, Colour::WHITE),
         );
         assert_eq!(lit_material, Colour::new(1.9, 1.9, 1.9));
     }
@@ -38,10 +38,10 @@ mod shape_tests {
 
         let lit_material = sphere.colour_at(
             point,
-            sample.colour,
+            Colour::WHITE,
             eye_vector,
             normal,
-            sample,
+            &LightSample::new(*sample, Colour::WHITE),
         );
         assert_eq!(lit_material, Colour::new(1.0, 1.0, 1.0));
     }
@@ -59,10 +59,10 @@ mod shape_tests {
 
         let lit_material = sphere.colour_at(
             point,
-            sample.colour,
+            Colour::WHITE,
             eye_vector,
             normal,
-            sample,
+            &LightSample::new(*sample, Colour::WHITE),
         );
         assert_eq!(
             lit_material,
@@ -84,10 +84,10 @@ mod shape_tests {
 
         let lit_material = sphere.colour_at(
             point,
-            sample.colour,
+            Colour::WHITE,
             eye_vector,
             normal,
-            sample,
+            &LightSample::new(*sample, Colour::WHITE),
         );
         assert_eq!(
             lit_material,
@@ -109,6 +109,7 @@ mod shape_tests {
         let point = Point3D::new(0.5, 0.0, 0.0);
         let normal = sphere.normal_at(point, None);
         let light = Light::point(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0));
+        let sample = light.samples().0.next().unwrap();
 
         assert_eq!(
             sphere.colour_at(
@@ -116,7 +117,7 @@ mod shape_tests {
                 Colour::WHITE,
                 Normal3D::NEGATIVE_X,
                 normal,
-                &light.samples().0.next().unwrap()
+                &LightSample::new(*sample, Colour::WHITE),
             ),
             Colour::BLACK
         );
@@ -137,6 +138,7 @@ mod shape_tests {
         let point = Point3D::new(-0.5, 0.0, 0.0);
         let normal = sphere.normal_at(point, None);
         let light = Light::point(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0));
+        let sample = light.samples().0.next().unwrap();
 
         assert_eq!(
             sphere.colour_at(
@@ -144,7 +146,7 @@ mod shape_tests {
                 Colour::WHITE,
                 Normal3D::NEGATIVE_X,
                 normal,
-                &light.samples().0.next().unwrap()
+                &LightSample::new(*sample, Colour::WHITE),
             ),
             Colour::WHITE
         );
@@ -328,6 +330,7 @@ mod sphere_tests {
         let point = Point3D::new(-0.5, 0.0, 0.0);
         let normal = sphere.normal_at(point, None);
         let light = Light::point(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0));
+        let sample = light.samples().0.next().unwrap();
 
         assert_eq!(
             sphere.colour_at(
@@ -335,7 +338,7 @@ mod sphere_tests {
                 Colour::WHITE,
                 Normal3D::NEGATIVE_X,
                 normal,
-                &light.samples().0.next().unwrap(),
+                &LightSample::new(*sample, Colour::WHITE),
             ),
             Colour::BLACK
         );
@@ -355,6 +358,7 @@ mod sphere_tests {
         let point = Point3D::new(0.5, 0.0, 0.0);
         let normal = sphere.normal_at(point, None);
         let light = Light::point(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0));
+        let sample = light.samples().0.next().unwrap();
 
         assert_eq!(
             sphere.colour_at(
@@ -362,7 +366,7 @@ mod sphere_tests {
                 Colour::WHITE,
                 Normal3D::NEGATIVE_X,
                 normal,
-                &light.samples().0.next().unwrap(),
+                &LightSample::new(*sample, Colour::WHITE),
             ),
             Colour::WHITE
         );

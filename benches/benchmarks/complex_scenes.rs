@@ -2,8 +2,8 @@ use criterion::{criterion_group, Criterion};
 use nonzero_ext::*;
 use ray_tracer::renderer::Samples;
 use ray_tracer::{
-    renderer, yaml_parser, Camera, Colour, Light, Material, Normal3D, Object, Pattern, Point3D,
-    Transform, World,
+    renderer, yaml_parser, Camera, Colour, Light, Material, MaterialKind, Normal3D, Object,
+    Pattern, Point3D, Transform, World,
 };
 use std::f64::consts::PI;
 use std::fs;
@@ -82,7 +82,10 @@ fn fresnel(c: &mut Criterion) {
                 let wall = Object::plane()
                     .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(5.1))
                     .with_material(Material {
-                        pattern: Pattern::checkers(Colour::BLACK, Colour::WHITE),
+                        kind: MaterialKind::Pattern(Pattern::checkers(
+                            Colour::BLACK,
+                            Colour::WHITE,
+                        )),
                         ..Default::default()
                     });
 
@@ -93,7 +96,7 @@ fn fresnel(c: &mut Criterion) {
                 let outer_glass_sphere = Object::sphere()
                     .transformed(Transform::identity().translate_y(1.0).translate_z(0.5))
                     .with_material(Material {
-                        pattern: Pattern::solid(Colour::BLACK),
+                        kind: MaterialKind::Pattern(Pattern::solid(Colour::BLACK)),
                         transparency: 1.0,
                         refractive: 1.5,
                         reflective: 1.0,
@@ -112,7 +115,7 @@ fn fresnel(c: &mut Criterion) {
                             .translate_z(0.5),
                     )
                     .with_material(Material {
-                        pattern: Pattern::solid(Colour::BLACK),
+                        kind: MaterialKind::Pattern(Pattern::solid(Colour::BLACK)),
                         transparency: 1.0,
                         refractive: 1.0,
                         reflective: 1.0,
