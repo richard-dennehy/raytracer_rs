@@ -10,7 +10,7 @@ mod shape_tests {
         let sphere = Object::sphere();
         let point = Point3D::new(0.0, 0.0, -1.0);
 
-        let normal = sphere.normal_at(point, None);
+        let normal = sphere.normal_at(point);
         let eye_vector = Normal3D::NEGATIVE_Z;
         let light = Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, -10.0));
         let sample = light.samples().0.next().unwrap();
@@ -30,7 +30,7 @@ mod shape_tests {
         let sphere = Object::sphere();
         let point = Point3D::new(0.0, 0.0, -1.0);
 
-        let normal = sphere.normal_at(point, None);
+        let normal = sphere.normal_at(point);
         let eye_vector =
             Vector3D::new(0.0, 2.0_f64.sqrt() / 2.0, -2.0_f64.sqrt() / 2.0).normalised();
         let light = Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, -10.0));
@@ -52,7 +52,7 @@ mod shape_tests {
         let sphere = Object::sphere().transformed(Transform::identity().translate_z(1.0));
         let point = Point3D::new(0.0, 0.0, 0.0);
 
-        let normal = sphere.normal_at(point, None);
+        let normal = sphere.normal_at(point);
         let eye_vector = Normal3D::NEGATIVE_Z;
         let light = Light::point(Colour::WHITE, Point3D::new(0.0, 10.0, -10.0));
         let sample = light.samples().0.next().unwrap();
@@ -76,7 +76,7 @@ mod shape_tests {
         let sphere = Object::sphere().transformed(Transform::identity().translate_z(1.0));
         let point = Point3D::new(0.0, 0.0, 0.0);
 
-        let normal = sphere.normal_at(point, None);
+        let normal = sphere.normal_at(point);
         let eye_vector =
             Vector3D::new(0.0, -2.0_f64.sqrt() / 2.0, -2.0_f64.sqrt() / 2.0).normalised();
         let light = Light::point(Colour::WHITE, Point3D::new(0.0, 10.0, -10.0));
@@ -107,7 +107,7 @@ mod shape_tests {
                 ..Default::default()
             });
         let point = Point3D::new(0.5, 0.0, 0.0);
-        let normal = sphere.normal_at(point, None);
+        let normal = sphere.normal_at(point);
         let light = Light::point(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0));
         let sample = light.samples().0.next().unwrap();
 
@@ -136,7 +136,7 @@ mod shape_tests {
             });
 
         let point = Point3D::new(-0.5, 0.0, 0.0);
-        let normal = sphere.normal_at(point, None);
+        let normal = sphere.normal_at(point);
         let light = Light::point(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0));
         let sample = light.samples().0.next().unwrap();
 
@@ -161,35 +161,32 @@ mod sphere_tests {
     #[test]
     fn should_be_able_to_calculate_the_normal_on_the_x_axis() {
         let sphere = Object::sphere();
-        let normal = sphere.normal_at(Point3D::new(1.0, 0.0, 0.0), None);
+        let normal = sphere.normal_at(Point3D::new(1.0, 0.0, 0.0));
         assert_eq!(normal, Normal3D::POSITIVE_X);
     }
 
     #[test]
     fn should_be_able_to_calculate_the_normal_on_the_y_axis() {
         let sphere = Object::sphere();
-        let normal = sphere.normal_at(Point3D::new(0.0, 1.0, 0.0), None);
+        let normal = sphere.normal_at(Point3D::new(0.0, 1.0, 0.0));
         assert_eq!(normal, Normal3D::POSITIVE_Y);
     }
 
     #[test]
     fn should_be_able_to_calculate_the_normal_on_the_z_axis() {
         let sphere = Object::sphere();
-        let normal = sphere.normal_at(Point3D::new(0.0, 0.0, 1.0), None);
+        let normal = sphere.normal_at(Point3D::new(0.0, 0.0, 1.0));
         assert_eq!(normal, Normal3D::POSITIVE_Z);
     }
 
     #[test]
     fn should_be_able_to_calculate_the_normal_at_an_arbitrary_point_on_a_sphere() {
         let sphere = Object::sphere();
-        let normal = sphere.normal_at(
-            Point3D::new(
-                3.0_f64.sqrt() / 3.0,
-                3.0_f64.sqrt() / 3.0,
-                3.0_f64.sqrt() / 3.0,
-            ),
-            None,
-        );
+        let normal = sphere.normal_at(Point3D::new(
+            3.0_f64.sqrt() / 3.0,
+            3.0_f64.sqrt() / 3.0,
+            3.0_f64.sqrt() / 3.0,
+        ));
         assert_eq!(
             normal,
             Vector3D::new(
@@ -207,7 +204,7 @@ mod sphere_tests {
 
         let sphere = Object::sphere().transformed(Transform::identity().translate_y(1.0));
 
-        let normal = sphere.normal_at(Point3D::new(0.0, 1.0 + FRAC_1_SQRT_2, -FRAC_1_SQRT_2), None);
+        let normal = sphere.normal_at(Point3D::new(0.0, 1.0 + FRAC_1_SQRT_2, -FRAC_1_SQRT_2));
         assert!(approx_eq!(
             Normal3D,
             normal,
@@ -226,10 +223,11 @@ mod sphere_tests {
             .scale_z(1.0);
         let sphere = Object::sphere().transformed(transform);
 
-        let normal = sphere.normal_at(
-            Point3D::new(0.0, 2.0_f64.sqrt() / 2.0, -2.0_f64.sqrt() / 2.0),
-            None,
-        );
+        let normal = sphere.normal_at(Point3D::new(
+            0.0,
+            2.0_f64.sqrt() / 2.0,
+            -2.0_f64.sqrt() / 2.0,
+        ));
         assert_eq!(
             normal,
             Vector3D::new(0.0, 0.9701425001453319, -0.24253562503633294).normalised()
@@ -328,7 +326,7 @@ mod sphere_tests {
         });
 
         let point = Point3D::new(-0.5, 0.0, 0.0);
-        let normal = sphere.normal_at(point, None);
+        let normal = sphere.normal_at(point);
         let light = Light::point(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0));
         let sample = light.samples().0.next().unwrap();
 
@@ -356,7 +354,7 @@ mod sphere_tests {
         });
 
         let point = Point3D::new(0.5, 0.0, 0.0);
-        let normal = sphere.normal_at(point, None);
+        let normal = sphere.normal_at(point);
         let light = Light::point(Colour::WHITE, Point3D::new(10.0, 0.0, 0.0));
         let sample = light.samples().0.next().unwrap();
 
@@ -397,7 +395,7 @@ mod plane_tests {
         #[test]
         fn the_normal_of_an_xz_plane_is_constant_at_all_points(x in crate::util::reasonable_f64(), z in crate::util::reasonable_f64()) {
             assert_eq!(
-                Object::plane().normal_at(Point3D::new(x, 0.0, z), None),
+                Object::plane().normal_at(Point3D::new(x, 0.0, z)),
                 Normal3D::POSITIVE_Y
             );
         }
@@ -408,7 +406,7 @@ mod plane_tests {
 
             assert!(approx_eq!(
                 Normal3D,
-                plane.normal_at(Point3D::new(x, y, 0.0), None),
+                plane.normal_at(Point3D::new(x, y, 0.0)),
                 Normal3D::POSITIVE_Z
             ));
         }
@@ -419,7 +417,7 @@ mod plane_tests {
 
             assert!(approx_eq!(
                 Normal3D,
-                plane.normal_at(Point3D::new(0.0, y, z), None),
+                plane.normal_at(Point3D::new(0.0, y, z)),
                 Normal3D::NEGATIVE_X
             ));
         }
@@ -602,7 +600,7 @@ mod cube_tests {
         ]
         .into_iter()
         .for_each(|(point, normal)| {
-            assert_eq!(Object::cube().normal_at(point, None), normal);
+            assert_eq!(Object::cube().normal_at(point), normal);
         })
     }
 
@@ -719,7 +717,7 @@ mod cylinder_tests {
         ]
         .into_iter()
         .for_each(|(point, normal)| {
-            assert_eq!(cylinder.normal_at(point, None), normal);
+            assert_eq!(cylinder.normal_at(point), normal);
         })
     }
 
@@ -826,7 +824,7 @@ mod cylinder_tests {
         ]
         .into_iter()
         .for_each(|(point, normal)| {
-            assert_eq!(cylinder.normal_at(point, None), normal);
+            assert_eq!(cylinder.normal_at(point), normal);
         })
     }
 
@@ -980,7 +978,7 @@ mod cone_tests {
         ]
         .into_iter()
         .for_each(|(scenario, point, normal)| {
-            assert!(approx_eq!(Normal3D, cone.normal_at(point, None), normal), "{}", scenario);
+            assert!(approx_eq!(Normal3D, cone.normal_at(point), normal), "{}", scenario);
         })
     }
 
@@ -1105,7 +1103,7 @@ mod group_tests {
 
         assert!(approx_eq!(
             Normal3D,
-            sphere_ref.normal_at(Point3D::new(1.7321, 1.1547, -5.5774), None),
+            sphere_ref.normal_at(Point3D::new(1.7321, 1.1547, -5.5774)),
             Vector3D::new(0.28570368184140726, 0.428543151781141, -0.8571605294481017).normalised()
         ));
     }
@@ -1125,18 +1123,9 @@ mod triangle_tests {
 
         let normal = Normal3D::NEGATIVE_Z;
 
-        assert_eq!(
-            triangle.normal_at(Point3D::new(0.0, 0.5, 0.0), None),
-            normal
-        );
-        assert_eq!(
-            triangle.normal_at(Point3D::new(-0.5, 0.75, 0.0), None),
-            normal
-        );
-        assert_eq!(
-            triangle.normal_at(Point3D::new(0.5, 0.25, 0.0), None),
-            normal
-        );
+        assert_eq!(triangle.normal_at(Point3D::new(0.0, 0.5, 0.0)), normal);
+        assert_eq!(triangle.normal_at(Point3D::new(-0.5, 0.75, 0.0)), normal);
+        assert_eq!(triangle.normal_at(Point3D::new(0.5, 0.25, 0.0)), normal);
     }
 
     #[test]
@@ -1217,8 +1206,8 @@ mod triangle_tests {
 
         vec![
             (Point3D::ORIGIN, (0.0, 0.0)),
-            (Point3D::new(1.0, 0.0, 0.0), (0.0, 1.0)),
-            (Point3D::new(0.0, 0.0, 1.0), (1.0, 0.0)),
+            (Point3D::new(1.0, 0.0, 0.0), (1.0, 0.0)),
+            (Point3D::new(0.0, 0.0, 1.0), (0.0, 1.0)),
             (Point3D::new(0.5, 0.0, 0.5), (0.5, 0.5)),
         ]
         .into_iter()
@@ -1239,8 +1228,8 @@ mod triangle_tests {
 
         vec![
             (Point3D::ORIGIN, (0.0, 0.0)),
-            (Point3D::new(-1.0, 0.0, 0.0), (0.0, 1.0)),
-            (Point3D::new(0.0, 0.0, -1.0), (1.0, 0.0)),
+            (Point3D::new(-1.0, 0.0, 0.0), (1.0, 0.0)),
+            (Point3D::new(0.0, 0.0, -1.0), (0.0, 1.0)),
             (Point3D::new(-0.5, 0.0, -0.5), (0.5, 0.5)),
         ]
         .into_iter()
@@ -1261,11 +1250,11 @@ mod triangle_tests {
 
         vec![
             (Point3D::ORIGIN, (0.0, 0.0)),
-            (Point3D::new(-0.5, 0.5, FRAC_1_SQRT_2), (0.0, 1.0)),
-            (Point3D::new(FRAC_1_SQRT_2, FRAC_1_SQRT_2, 0.0), (1.0, 0.0)),
+            (Point3D::new(-0.5, 0.5, FRAC_1_SQRT_2), (1.0, 0.0)),
+            (Point3D::new(FRAC_1_SQRT_2, FRAC_1_SQRT_2, 0.0), (0.0, 1.0)),
             (
                 Point3D::new(0.103553, 0.603553, 0.353553),
-                (0.4999994476176948, 0.4999997238088475),
+                (0.4999997238088475, 0.4999994476176948),
             ),
         ]
         .into_iter()
@@ -1286,11 +1275,11 @@ mod triangle_tests {
 
         vec![
             (Point3D::ORIGIN, (0.0, 0.0)),
-            (Point3D::new(1.0, 0.0, 0.0), (0.0, 1.0)),
-            (Point3D::new(0.0, 0.0, 1.0), (1.0 / 3.0, 0.0)),
-            (Point3D::new(0.0, 0.0, 3.0), (1.0, 0.0)),
+            (Point3D::new(1.0, 0.0, 0.0), (1.0, 0.0)),
+            (Point3D::new(0.0, 0.0, 1.0), (0.0, 1.0 / 3.0)),
+            (Point3D::new(0.0, 0.0, 3.0), (0.0, 1.0)),
             (Point3D::new(0.5, 0.0, 1.5), (0.5, 0.5)),
-            (Point3D::new(0.5, 0.0, 0.5), (1.0 / 6.0, 0.5)),
+            (Point3D::new(0.5, 0.0, 0.5), (0.5, 1.0 / 6.0)),
         ]
         .into_iter()
         .for_each(|(point, (u, v))| {
@@ -1309,10 +1298,10 @@ mod triangle_tests {
 
         vec![
             (Point3D::new(1.0, 0.0, 0.0), (0.0, 0.0)),
-            (Point3D::new(0.0, 1.0, 0.0), (0.5, 1.0)),
-            (Point3D::new(0.0, 0.0, 1.0), (1.0, 0.0)),
+            (Point3D::new(0.0, 1.0, 0.0), (1.0, 0.5)),
+            (Point3D::new(0.0, 0.0, 1.0), (0.0, 1.0)),
             (Point3D::new(0.5, 0.5, 0.5), (0.5, 0.5)),
-            (Point3D::new(0.5, 0.0, 0.5), (0.5, 0.0)),
+            (Point3D::new(0.5, 0.0, 0.5), (0.0, 0.5)),
         ]
         .into_iter()
         .for_each(|(point, (u, v))| {
@@ -1325,24 +1314,6 @@ mod smooth_triangles {
     use super::*;
 
     #[test]
-    fn intersecting_a_smooth_triangle_should_populate_uv() {
-        let triangle = Object::smooth_triangle(
-            Point3D::new(0.0, 1.0, 0.0),
-            Point3D::new(-1.0, 0.0, 0.0),
-            Point3D::new(1.0, 0.0, 0.0),
-            Normal3D::POSITIVE_Y,
-            Normal3D::NEGATIVE_X,
-            Normal3D::POSITIVE_X,
-        );
-        let ray = Ray::new(Point3D::new(-0.2, 0.3, -2.0), Normal3D::POSITIVE_Z);
-
-        assert_eq!(
-            triangle.intersect(&ray).underlying()[0].uv,
-            Some((0.44999999999999996, 0.24999999999999997))
-        );
-    }
-
-    #[test]
     fn the_normal_of_a_smooth_triangle_should_be_based_off_the_uv_of_the_intersection() {
         let triangle = Object::smooth_triangle(
             Point3D::new(0.0, 1.0, 0.0),
@@ -1353,13 +1324,12 @@ mod smooth_triangles {
             Normal3D::POSITIVE_X,
         );
         let ray = Ray::new(Point3D::new(-0.2, 0.3, -2.0), Normal3D::POSITIVE_Z);
-        let uv = triangle.intersect(&ray).underlying()[0].uv;
-        assert!(uv.is_some());
-        let (u, v) = uv.unwrap();
+        let intersections = triangle.intersect(&ray);
+        let point = ray.position(intersections.underlying()[0].t);
 
         assert_eq!(
             // Point has no effect on normal as u,v is used instead
-            triangle.normal_at(Point3D::ORIGIN, Some((u, v))),
+            triangle.normal_at(point),
             Vector3D::new(-0.554700196225229, 0.8320502943378437, 0.0).normalised()
         );
     }

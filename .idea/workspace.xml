@@ -15,10 +15,16 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add benchmarks for area lights">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="attempt to improve performance of point lights">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/performance.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/performance.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/light/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/light/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/cone.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cone.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/cylinder.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cylinder.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/triangle.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -114,8 +120,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test world::tests::lighting::an_area_light_should_cast_soft_shadows" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib world::tests::lighting::an_area_light_should_cast_soft_shadows -- --exact" />
+    <configuration name="Test object::tests::smooth_triangles::the_normal_of_a_smooth_triangle_should_be_based_off_the_uv_of_the_intersection" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib object::tests::smooth_triangles::the_normal_of_a_smooth_triangle_should_be_based_off_the_uv_of_the_intersection -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -129,8 +135,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test world::tests::lighting::lighting_using_an_area_light_should_average_multiple_samples_from_the_light_source" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib world::tests::lighting::lighting_using_an_area_light_should_average_multiple_samples_from_the_light_source -- --exact" />
+    <configuration name="Test world::tests::lighting::an_area_light_should_cast_soft_shadows" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib world::tests::lighting::an_area_light_should_cast_soft_shadows -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -189,21 +195,26 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.run (release)" />
       <item itemvalue="Cargo.test" />
-      <item itemvalue="Cargo.Test world::tests::lighting::lighting_using_an_area_light_should_average_multiple_samples_from_the_light_source" />
       <item itemvalue="Cargo.Test world::tests::lighting::an_area_light_should_cast_soft_shadows" />
       <item itemvalue="Cargo.bench" />
+      <item itemvalue="Cargo.Test object::tests::smooth_triangles::the_normal_of_a_smooth_triangle_should_be_based_off_the_uv_of_the_intersection" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.bench" />
+        <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.Test object::tests::smooth_triangles::the_normal_of_a_smooth_triangle_should_be_based_off_the_uv_of_the_intersection" />
         <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.run (release)" />
-        <item itemvalue="Cargo.test" />
-        <item itemvalue="Cargo.Test world::tests::lighting::an_area_light_should_cast_soft_shadows" />
       </list>
     </recent_temporary>
   </component>
@@ -416,14 +427,7 @@
       <workItem from="1623089947450" duration="3360000" />
       <workItem from="1623175689038" duration="3325000" />
       <workItem from="1623261145158" duration="2788000" />
-      <workItem from="1623346877764" duration="1487000" />
-    </task>
-    <task id="LOCAL-00146" summary="WIP update YAML parser to support dragon file&#10;&#10;- support creating groups">
-      <created>1618429948736</created>
-      <option name="number" value="00146" />
-      <option name="presentableId" value="LOCAL-00146" />
-      <option name="project" value="LOCAL" />
-      <updated>1618429948736</updated>
+      <workItem from="1623346877764" duration="4399000" />
     </task>
     <task id="LOCAL-00147" summary="WIP update YAML parser to support dragon file&#10;&#10;- major refactor of parser to inline define values during parsing">
       <created>1618664365183</created>
@@ -761,7 +765,14 @@
       <option name="project" value="LOCAL" />
       <updated>1623263919596</updated>
     </task>
-    <option name="localTasksCounter" value="195" />
+    <task id="LOCAL-00195" summary="attempt to improve performance of point lights">
+      <created>1623348380821</created>
+      <option name="number" value="00195" />
+      <option name="presentableId" value="LOCAL-00195" />
+      <option name="project" value="LOCAL" />
+      <updated>1623348380821</updated>
+    </task>
+    <option name="localTasksCounter" value="196" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -787,7 +798,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added progress bar and experiment with supersampling" />
     <MESSAGE value="WIP implement texture mapping" />
     <MESSAGE value="implement spherical texture mapping" />
     <MESSAGE value="implement planar and cylindrical uv mapping" />
@@ -812,16 +822,12 @@
     <MESSAGE value="add tests for area lighting" />
     <MESSAGE value="document area lights and avoid duplicating colour for each sample" />
     <MESSAGE value="add benchmarks for area lights" />
-    <option name="LAST_COMMIT_MESSAGE" value="add benchmarks for area lights" />
+    <MESSAGE value="attempt to improve performance of point lights" />
+    <option name="LAST_COMMIT_MESSAGE" value="attempt to improve performance of point lights" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/object/cylinder.rs</url>
-          <line>64</line>
-          <option name="timeStamp" value="45" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/world/mod.rs</url>
           <line>107</line>

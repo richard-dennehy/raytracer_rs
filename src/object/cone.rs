@@ -25,7 +25,7 @@ impl Shape for Cone {
         )
     }
 
-    fn object_normal_at(&self, point: Point3D, _uv: Option<(f64, f64)>) -> Normal3D {
+    fn object_normal_at(&self, point: Point3D) -> Normal3D {
         let distance = point.x().powi(2) + point.z().powi(2);
 
         if distance < point.y() && point.y() >= self.max_y - f64::EPSILON {

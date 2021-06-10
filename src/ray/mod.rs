@@ -40,20 +40,11 @@ impl Ray {
 pub struct Intersection<'with> {
     pub t: f64,
     pub with: &'with Object,
-    pub uv: Option<(f64, f64)>,
 }
 
 impl<'with> Intersection<'with> {
     pub fn new(t: f64, with: &'with Object) -> Intersection {
-        Intersection { t, with, uv: None }
-    }
-
-    pub fn with_uv(t: f64, with: &'with Object, u: f64, v: f64) -> Intersection {
-        Intersection {
-            t,
-            with,
-            uv: Some((u, v)),
-        }
+        Intersection { t, with }
     }
 }
 
@@ -74,7 +65,7 @@ impl<'obj> HitData<'obj> {
     ) -> Self {
         let point = ray.position(intersection.t);
         let eye = -ray.direction.normalised();
-        let normal = intersection.with.normal_at(point, intersection.uv);
+        let normal = intersection.with.normal_at(point);
 
         let inside = normal.dot(eye) < 0.0;
 

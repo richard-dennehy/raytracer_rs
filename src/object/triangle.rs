@@ -73,18 +73,15 @@ impl Shape for Triangle {
         )
     }
 
-    fn object_normal_at(&self, _: Point3D, uv: Option<(f64, f64)>) -> Normal3D {
+    fn object_normal_at(&self, point: Point3D) -> Normal3D {
         match self.kind {
             NormalKind::Smooth {
                 normal1,
                 normal2,
                 normal3,
             } => {
-                if let Some((u, v)) = uv {
-                    (normal2 * u + normal3 * v + normal1 * (1.0 - u - v)).normalised()
-                } else {
-                    panic!("Smooth triangle intersection did not set uv coordinates")
-                }
+                let (u, v) = self.uv_at(point);
+                (normal2 * u + normal3 * v + normal1 * (1.0 - u - v)).normalised()
             }
             NormalKind::Uniform(normal) => normal,
         }
@@ -118,11 +115,9 @@ impl Shape for Triangle {
         };
 
         let t = f * self.edge2.dot(origin_cross_e1);
-        if let NormalKind::Smooth { .. } = self.kind {
-            vec![Intersection::with_uv(t, parent, u, v)]
-        } else {
-            vec![Intersection::new(t, parent)]
-        }
+        // it'd be nice to not throw away the UV here, but it doesn't appear to be possible without
+        // compromising the performance of every other kind of shape
+        vec![Intersection::new(t, parent)]
     }
 
     // calculate Barycentric coordinates; see https://en.wikipedia.org/wiki/Barycentric_coordinate_system#Barycentric_coordinates_on_triangles
@@ -141,8 +136,8 @@ impl Shape for Triangle {
 
         let v = (e3_dot_e3 * point_dot_e1 - e1_dot_e3 * point_dot_e3) / denominator;
         let w = (e1_dot_e1 * point_dot_e3 - e1_dot_e3 * point_dot_e1) / denominator;
-        // discarding/not calculating "u" because it doesn't seem to give a useful result for texture mapping
 
-        (w, v)
+        // using `v` and `w` like this (and ignoring `u`) gives the same coordinates as Möller–Trumbore
+        (v, w)
     }
 }

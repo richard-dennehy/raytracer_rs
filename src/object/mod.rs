@@ -173,14 +173,14 @@ impl Object {
         NEXT_ID.fetch_add(1, Ordering::SeqCst)
     }
 
-    pub fn normal_at(&self, point: Point3D, uv: Option<(f64, f64)>) -> Normal3D {
+    pub fn normal_at(&self, point: Point3D) -> Normal3D {
         let inverted_transform = self.transform.inverse();
 
         let (x, y, z, _) = inverted_transform * point;
         let object_point = Point3D::new(x, y, z);
 
         let object_normal = match &self.kind {
-            ObjectKind::Shape(shape) => shape.object_normal_at(object_point, uv),
+            ObjectKind::Shape(shape) => shape.object_normal_at(object_point),
             ObjectKind::Group(_) => unreachable!("should never need to calculate normals on Group object as rays should only intersect Shapes"),
             ObjectKind::Csg { .. } => unreachable!("Rays cannot intersect CSGs directly")
         };
@@ -463,7 +463,7 @@ impl Object {
 pub trait Shape: Debug + Sync {
     fn object_bounds(&self) -> BoundingBox;
 
-    fn object_normal_at(&self, point: Point3D, uv: Option<(f64, f64)>) -> Normal3D;
+    fn object_normal_at(&self, point: Point3D) -> Normal3D;
     fn object_intersect<'parent>(
         &self,
         parent: &'parent Object,
@@ -481,7 +481,7 @@ impl Shape for Sphere {
         BoundingBox::new(Point3D::new(-1.0, -1.0, -1.0), Point3D::new(1.0, 1.0, 1.0))
     }
 
-    fn object_normal_at(&self, point: Point3D, _uv: Option<(f64, f64)>) -> Normal3D {
+    fn object_normal_at(&self, point: Point3D) -> Normal3D {
         (point - Point3D::ORIGIN).normalised()
     }
 
@@ -536,7 +536,7 @@ impl Shape for Plane {
         )
     }
 
-    fn object_normal_at(&self, _: Point3D, _uv: Option<(f64, f64)>) -> Normal3D {
+    fn object_normal_at(&self, _: Point3D) -> Normal3D {
         Normal3D::POSITIVE_Y
     }
 
@@ -566,7 +566,7 @@ impl Shape for Cube {
         BoundingBox::new(Point3D::new(-1.0, -1.0, -1.0), Point3D::new(1.0, 1.0, 1.0))
     }
 
-    fn object_normal_at(&self, point: Point3D, _uv: Option<(f64, f64)>) -> Normal3D {
+    fn object_normal_at(&self, point: Point3D) -> Normal3D {
         if point.x().abs() >= point.y().abs() && point.x().abs() >= point.z().abs() {
             Vector3D::new(point.x(), 0.0, 0.0)
         } else if point.y().abs() >= point.x().abs() && point.y().abs() >= point.z().abs() {
