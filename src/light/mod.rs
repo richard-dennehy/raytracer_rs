@@ -6,15 +6,20 @@ use std::num::NonZeroU8;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Light {
-    samples: Vec<Point3D>,
+    kind: Kind,
     colour: Colour,
+}
+
+#[derive(Debug, PartialEq, Clone)]
+enum Kind {
+    Point([Point3D; 1]),
+    Area { samples: Vec<Point3D> },
 }
 
 impl Light {
     pub fn point(colour: Colour, position: Point3D) -> Self {
-        // FIXME using Vec isn't ideal for Point lights, as it adds a pointer indirection for the sake of a single Point
         Light {
-            samples: vec![position],
+            kind: Kind::Point([position]),
             colour,
         }
     }
@@ -68,13 +73,17 @@ impl Light {
             .map(|(u, v)| offset() + cell_u * u as f64 + cell_v * v as f64)
             .collect();
 
-        Light { samples, colour }
+        Light {
+            kind: Kind::Area { samples },
+            colour,
+        }
     }
 
     pub fn samples(&self) -> (impl Iterator<Item = &Point3D>, usize) {
-        // ideally wouldn't have to return the length, but it's probably easier/cleaner than using size_hint
-
-        (self.samples.iter(), self.samples.len())
+        match &self.kind {
+            Kind::Point(point) => (point.iter(), 1),
+            Kind::Area { samples } => (samples.iter(), samples.len()),
+        }
     }
 
     pub fn colour(&self) -> Colour {

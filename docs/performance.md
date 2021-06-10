@@ -134,3 +134,8 @@ Return early when sample counts are low (1 and 4) to avoid pointless mildly expe
 - Performance impact: very minor improvement on low sample count scenes with lots of skybox visible with "less than 5 samples" early return; no impact on other scenes
 
 Note: adding basic "1 sample" early return has no noticeable effect
+
+### Use array of samples in Point light instead of Vec
+Remove initial pointer indirection for Point lights, as there is only a single sample. Also reduces size
+
+- Impact: inconclusive/minimal

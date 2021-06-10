@@ -15,16 +15,10 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="document area lights and avoid duplicating colour for each sample">
-      <change afterPath="$PROJECT_DIR$/benches/benchmarks/lighting.rs" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add benchmarks for area lights">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/bench_main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/bench_main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/anti_aliasing.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/anti_aliasing.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/bounding_boxes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/bounding_boxes.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/performance.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/performance.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/light/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/light/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -421,14 +415,8 @@
       <workItem from="1623089847473" duration="88000" />
       <workItem from="1623089947450" duration="3360000" />
       <workItem from="1623175689038" duration="3325000" />
-      <workItem from="1623261145158" duration="2751000" />
-    </task>
-    <task id="LOCAL-00145" summary="WIP update YAML parser to support dragon file&#10;&#10;- &quot;tidy up&quot; transformation conversion">
-      <created>1618343641812</created>
-      <option name="number" value="00145" />
-      <option name="presentableId" value="LOCAL-00145" />
-      <option name="project" value="LOCAL" />
-      <updated>1618343641812</updated>
+      <workItem from="1623261145158" duration="2788000" />
+      <workItem from="1623346877764" duration="1487000" />
     </task>
     <task id="LOCAL-00146" summary="WIP update YAML parser to support dragon file&#10;&#10;- support creating groups">
       <created>1618429948736</created>
@@ -766,7 +754,14 @@
       <option name="project" value="LOCAL" />
       <updated>1623178743274</updated>
     </task>
-    <option name="localTasksCounter" value="194" />
+    <task id="LOCAL-00194" summary="add benchmarks for area lights">
+      <created>1623263919596</created>
+      <option name="number" value="00194" />
+      <option name="presentableId" value="LOCAL-00194" />
+      <option name="project" value="LOCAL" />
+      <updated>1623263919596</updated>
+    </task>
+    <option name="localTasksCounter" value="195" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -792,7 +787,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add early return for renders with less than 5 samples per pixel" />
     <MESSAGE value="added progress bar and experiment with supersampling" />
     <MESSAGE value="WIP implement texture mapping" />
     <MESSAGE value="implement spherical texture mapping" />
@@ -817,7 +811,8 @@
     <MESSAGE value="use random offsets into area light samples to reduce banding" />
     <MESSAGE value="add tests for area lighting" />
     <MESSAGE value="document area lights and avoid duplicating colour for each sample" />
-    <option name="LAST_COMMIT_MESSAGE" value="document area lights and avoid duplicating colour for each sample" />
+    <MESSAGE value="add benchmarks for area lights" />
+    <option name="LAST_COMMIT_MESSAGE" value="add benchmarks for area lights" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
