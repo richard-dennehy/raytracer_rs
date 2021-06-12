@@ -1,6 +1,6 @@
 use crate::object::bounds::BoundingBox;
 use crate::object::Shape;
-use crate::{Intersection, Normal3D, Object, Point3D, Ray, Vector, Vector3D};
+use crate::{Intersection, Intersections, Normal3D, Object, Point3D, Ray, Vector, Vector3D};
 use std::f64::consts::PI;
 
 /// An infinite double-napped cone (like a sand timer), tapering to a point at the origin,
@@ -48,7 +48,7 @@ impl Shape for Cone {
         &self,
         parent: &'parent Object,
         ray: Ray,
-    ) -> Vec<Intersection<'parent>> {
+    ) -> Intersections<'parent> {
         let intersects_cap = |t: f64| {
             let x = ray.origin.x() + t * ray.direction.x();
             let y = ray.origin.y() + t * ray.direction.y();
@@ -58,7 +58,7 @@ impl Shape for Cone {
         };
 
         let mut cap_intersections = if self.capped {
-            let mut ts = Vec::with_capacity(2);
+            let mut ts = Intersections::empty();
             // check bottom cap
             let t = (self.min_y - ray.origin.y()) / ray.direction.y();
 
@@ -75,7 +75,7 @@ impl Shape for Cone {
 
             ts
         } else {
-            vec![]
+            Intersections::empty()
         };
 
         let a = ray.direction.x().powi(2) - ray.direction.y().powi(2) + ray.direction.z().powi(2);
@@ -94,8 +94,8 @@ impl Shape for Cone {
             return cap_intersections;
         };
 
-        let mut ts = if let Some((first, second)) = crate::util::quadratic(a, b, c) {
-            let mut ts = Vec::with_capacity(2);
+        let ts = if let Some((first, second)) = crate::util::quadratic(a, b, c) {
+            let mut ts = Intersections::empty();
 
             let y_first = ray.origin.y() + ray.direction.y() * first;
             if y_first > self.min_y && y_first < self.max_y {
@@ -109,12 +109,10 @@ impl Shape for Cone {
 
             ts
         } else {
-            vec![]
+            Intersections::empty()
         };
 
-        ts.append(&mut cap_intersections);
-
-        ts
+        ts.join(cap_intersections)
     }
 
     /// ranges from u <- 0..3 and v <- 0..1 such that:

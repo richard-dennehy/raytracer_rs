@@ -195,7 +195,7 @@ mod ray_unit_tests {
         // enter first sphere
         let hit_data = HitData::from(
             &ray,
-            intersections.underlying()[0].clone(),
+            intersections.get(0).unwrap().clone(),
             intersections.clone(),
         );
         assert_eq!(hit_data.entered_refractive, 1.0);
@@ -204,7 +204,7 @@ mod ray_unit_tests {
         // enter second sphere (nested in first)
         let hit_data = HitData::from(
             &ray,
-            intersections.underlying()[1].clone(),
+            intersections.get(1).unwrap().clone(),
             intersections.clone(),
         );
         assert_eq!(hit_data.entered_refractive, 1.5);
@@ -213,7 +213,7 @@ mod ray_unit_tests {
         // enter third sphere (overlapping with second)
         let hit_data = HitData::from(
             &ray,
-            intersections.underlying()[2].clone(),
+            intersections.get(2).unwrap().clone(),
             intersections.clone(),
         );
         assert_eq!(hit_data.entered_refractive, 2.0);
@@ -222,7 +222,7 @@ mod ray_unit_tests {
         // exit second sphere (still in third sphere)
         let hit_data = HitData::from(
             &ray,
-            intersections.underlying()[3].clone(),
+            intersections.get(3).unwrap().clone(),
             intersections.clone(),
         );
         assert_eq!(hit_data.entered_refractive, 2.5);
@@ -231,7 +231,7 @@ mod ray_unit_tests {
         // exit third sphere into first
         let hit_data = HitData::from(
             &ray,
-            intersections.underlying()[4].clone(),
+            intersections.get(4).unwrap().clone(),
             intersections.clone(),
         );
         assert_eq!(hit_data.entered_refractive, 2.5);
@@ -240,7 +240,7 @@ mod ray_unit_tests {
         // exit first sphere into void
         let hit_data = HitData::from(
             &ray,
-            intersections.underlying()[5].clone(),
+            intersections.get(5).unwrap().clone(),
             intersections.clone(),
         );
         assert_eq!(hit_data.entered_refractive, 1.5);

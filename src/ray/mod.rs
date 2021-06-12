@@ -1,7 +1,7 @@
 use crate::light::LightSample;
 use crate::matrix::Matrix4D;
 use crate::{Colour, Normal3D, Object, Point3D, Vector, Vector3D};
-use std::vec::IntoIter;
+use smallvec::SmallVec;
 
 #[cfg(test)]
 mod tests;
@@ -186,20 +186,31 @@ impl ReflectionData {
 /// Invariants:
 ///  - always sorted by ascending `t` values
 #[derive(Clone, Debug)]
-pub struct Intersections<'scene>(Vec<Intersection<'scene>>);
+pub struct Intersections<'scene>(SmallVec<[Intersection<'scene>; 4]>);
 
 impl<'scene> Intersections<'scene> {
-    #[cfg(test)]
-    pub fn underlying(&self) -> &Vec<Intersection<'scene>> {
-        &self.0
-    }
-
     pub fn empty() -> Self {
-        Intersections(Vec::new())
+        Intersections(SmallVec::new())
     }
 
+    pub fn single(intersection: Intersection<'scene>) -> Self {
+        let mut underlying = SmallVec::new();
+        underlying.push(intersection);
+
+        Intersections(underlying)
+    }
+
+    pub fn pair(first: Intersection<'scene>, second: Intersection<'scene>) -> Self {
+        let mut underlying = SmallVec::new();
+        underlying.push(first);
+        underlying.push(second);
+
+        Intersections(underlying)
+    }
+
+    #[cfg(test)]
     pub fn of(intersections: Vec<Intersection<'scene>>) -> Self {
-        let mut this = Intersections(intersections);
+        let mut this = Intersections(SmallVec::from_vec(intersections));
         this.sort();
         this
     }
@@ -239,11 +250,11 @@ impl<'scene> Intersections<'scene> {
         self.sort();
     }
 
-    pub fn get(&self, index: usize) -> Option<&Intersection> {
+    pub fn get(&self, index: usize) -> Option<&Intersection<'scene>> {
         self.0.get(index)
     }
 
-    pub fn into_iter(self) -> IntoIter<Intersection<'scene>> {
+    pub fn into_iter(self) -> impl Iterator<Item = Intersection<'scene>> {
         self.0.into_iter()
     }
 

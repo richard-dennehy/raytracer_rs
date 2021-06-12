@@ -15,16 +15,15 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="attempt to improve performance of point lights">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="recalculate triangle UVs when calculating smoothed normals to avoid passing redundant data around">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/cone.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cone.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/cylinder.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cylinder.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/triangle.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -193,11 +192,6 @@
       <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <list>
@@ -427,14 +421,9 @@
       <workItem from="1623089947450" duration="3360000" />
       <workItem from="1623175689038" duration="3325000" />
       <workItem from="1623261145158" duration="2788000" />
-      <workItem from="1623346877764" duration="4399000" />
-    </task>
-    <task id="LOCAL-00147" summary="WIP update YAML parser to support dragon file&#10;&#10;- major refactor of parser to inline define values during parsing">
-      <created>1618664365183</created>
-      <option name="number" value="00147" />
-      <option name="presentableId" value="LOCAL-00147" />
-      <option name="project" value="LOCAL" />
-      <updated>1618664365183</updated>
+      <workItem from="1623346877764" duration="4465000" />
+      <workItem from="1623433943878" duration="2418000" />
+      <workItem from="1623494080419" duration="1743000" />
     </task>
     <task id="LOCAL-00148" summary="update YAML parser to support dragon file&#10;&#10;- support loading wavefront obj files from YAML">
       <created>1618747256549</created>
@@ -772,7 +761,14 @@
       <option name="project" value="LOCAL" />
       <updated>1623348380821</updated>
     </task>
-    <option name="localTasksCounter" value="196" />
+    <task id="LOCAL-00196" summary="recalculate triangle UVs when calculating smoothed normals to avoid passing redundant data around">
+      <created>1623351343212</created>
+      <option name="number" value="00196" />
+      <option name="presentableId" value="LOCAL-00196" />
+      <option name="project" value="LOCAL" />
+      <updated>1623351343212</updated>
+    </task>
+    <option name="localTasksCounter" value="197" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -798,7 +794,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP implement texture mapping" />
     <MESSAGE value="implement spherical texture mapping" />
     <MESSAGE value="implement planar and cylindrical uv mapping" />
     <MESSAGE value="WIP cubic mapping" />
@@ -823,7 +818,8 @@
     <MESSAGE value="document area lights and avoid duplicating colour for each sample" />
     <MESSAGE value="add benchmarks for area lights" />
     <MESSAGE value="attempt to improve performance of point lights" />
-    <option name="LAST_COMMIT_MESSAGE" value="attempt to improve performance of point lights" />
+    <MESSAGE value="recalculate triangle UVs when calculating smoothed normals to avoid passing redundant data around" />
+    <option name="LAST_COMMIT_MESSAGE" value="recalculate triangle UVs when calculating smoothed normals to avoid passing redundant data around" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

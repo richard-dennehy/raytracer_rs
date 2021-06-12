@@ -1,6 +1,6 @@
 use crate::object::bounds::BoundingBox;
 use crate::object::Shape;
-use crate::{Intersection, Normal3D, Object, Point3D, Ray, Vector, Vector3D};
+use crate::{Intersection, Intersections, Normal3D, Object, Point3D, Ray, Vector, Vector3D};
 
 #[derive(Debug, PartialEq)]
 pub struct Triangle {
@@ -92,12 +92,12 @@ impl Shape for Triangle {
         &self,
         parent: &'parent Object,
         with: Ray,
-    ) -> Vec<Intersection<'parent>> {
+    ) -> Intersections<'parent> {
         let dir_cross_e2 = with.direction.cross(self.edge2);
         let determinant = self.edge1.dot(dir_cross_e2);
 
         if determinant.abs() < f64::EPSILON {
-            return vec![];
+            return Intersections::empty();
         };
 
         let f = 1.0 / determinant;
@@ -105,19 +105,19 @@ impl Shape for Triangle {
 
         let u = f * p1_to_origin.dot(dir_cross_e2);
         if u < 0.0 || u > 1.0 {
-            return vec![];
+            return Intersections::empty();
         };
 
         let origin_cross_e1 = p1_to_origin.cross(self.edge1);
         let v = f * with.direction.dot(origin_cross_e1);
         if v < 0.0 || (u + v) > 1.0 {
-            return vec![];
+            return Intersections::empty();
         };
 
         let t = f * self.edge2.dot(origin_cross_e1);
         // it'd be nice to not throw away the UV here, but it doesn't appear to be possible without
         // compromising the performance of every other kind of shape
-        vec![Intersection::new(t, parent)]
+        Intersections::single(Intersection::new(t, parent))
     }
 
     // calculate Barycentric coordinates; see https://en.wikipedia.org/wiki/Barycentric_coordinate_system#Barycentric_coordinates_on_triangles

@@ -1,6 +1,6 @@
 use crate::object::bounds::BoundingBox;
 use crate::object::Shape;
-use crate::{Intersection, Normal3D, Object, Point3D, Ray, Vector, Vector3D};
+use crate::{Intersection, Intersections, Normal3D, Object, Point3D, Ray, Vector, Vector3D};
 use std::f64::consts::PI;
 
 /// An infinite cylinder centred on the y axis, with a constant radius of 1
@@ -38,7 +38,7 @@ impl Shape for Cylinder {
         &self,
         parent: &'parent Object,
         ray: Ray,
-    ) -> Vec<Intersection<'parent>> {
+    ) -> Intersections<'parent> {
         let intersects_cap = |t: f64| {
             let x = ray.origin.x() + t * ray.direction.x();
             let z = ray.origin.z() + t * ray.direction.z();
@@ -46,8 +46,8 @@ impl Shape for Cylinder {
             (x.powi(2) + z.powi(2)) <= 1.0
         };
 
-        let mut cap_intersections = if self.capped {
-            let mut ts = Vec::with_capacity(2);
+        let cap_intersections = if self.capped {
+            let mut ts = Intersections::empty();
             // check bottom cap
             let t = (self.min_y - ray.origin.y()) / ray.direction.y();
 
@@ -64,7 +64,7 @@ impl Shape for Cylinder {
 
             ts
         } else {
-            vec![]
+            Intersections::empty()
         };
 
         let a = ray.direction.x().powi(2) + ray.direction.z().powi(2);
@@ -88,7 +88,7 @@ impl Shape for Cylinder {
         let y_first = ray.origin.y() + ray.direction.y() * first;
         let y_second = ray.origin.y() + ray.direction.y() * second;
 
-        let mut ts = Vec::with_capacity(2);
+        let mut ts = Intersections::empty();
         if y_first > self.min_y && y_first < self.max_y {
             ts.push(Intersection::new(first, parent));
         }
@@ -97,9 +97,7 @@ impl Shape for Cylinder {
             ts.push(Intersection::new(second, parent));
         }
 
-        ts.append(&mut cap_intersections);
-
-        ts
+        ts.join(cap_intersections)
     }
 
     /// ranges from u <- 0..3 and v <- 0..1 such that:

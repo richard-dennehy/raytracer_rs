@@ -242,8 +242,8 @@ mod sphere_tests {
         let intersections = sphere.intersect(&ray);
         assert_eq!(intersections.len(), 2);
 
-        assert_eq!(intersections.underlying()[0].t, 4.0);
-        assert_eq!(intersections.underlying()[1].t, 6.0);
+        assert_eq!(intersections.get(0).unwrap().t, 4.0);
+        assert_eq!(intersections.get(1).unwrap().t, 6.0);
     }
 
     #[test]
@@ -254,8 +254,8 @@ mod sphere_tests {
         let intersections = sphere.intersect(&ray);
         assert_eq!(intersections.len(), 2);
 
-        assert_eq!(intersections.underlying()[0].t, 5.0);
-        assert_eq!(intersections.underlying()[1].t, 5.0);
+        assert_eq!(intersections.get(0).unwrap().t, 5.0);
+        assert_eq!(intersections.get(1).unwrap().t, 5.0);
     }
 
     #[test]
@@ -264,7 +264,7 @@ mod sphere_tests {
         let sphere = Object::sphere();
 
         let intersections = sphere.intersect(&ray);
-        assert!(intersections.underlying().is_empty());
+        assert!(intersections.is_empty());
     }
 
     #[test]
@@ -275,8 +275,8 @@ mod sphere_tests {
         let intersections = sphere.intersect(&ray);
         assert_eq!(intersections.len(), 2);
 
-        assert_eq!(intersections.underlying()[0].t, -1.0);
-        assert_eq!(intersections.underlying()[1].t, 1.0);
+        assert_eq!(intersections.get(0).unwrap().t, -1.0);
+        assert_eq!(intersections.get(1).unwrap().t, 1.0);
     }
 
     #[test]
@@ -288,8 +288,8 @@ mod sphere_tests {
         let intersections = sphere.intersect(&ray);
         assert_eq!(intersections.len(), 2);
 
-        assert_eq!(intersections.underlying()[0].t, -6.0);
-        assert_eq!(intersections.underlying()[1].t, -4.0);
+        assert_eq!(intersections.get(0).unwrap().t, -6.0);
+        assert_eq!(intersections.get(1).unwrap().t, -4.0);
     }
 
     #[test]
@@ -300,8 +300,8 @@ mod sphere_tests {
         let intersections = sphere.intersect(&ray);
         assert_eq!(intersections.len(), 2);
 
-        assert_eq!(intersections.underlying()[0].t, 3.0);
-        assert_eq!(intersections.underlying()[1].t, 7.0);
+        assert_eq!(intersections.get(0).unwrap().t, 3.0);
+        assert_eq!(intersections.get(1).unwrap().t, 7.0);
     }
 
     #[test]
@@ -311,7 +311,7 @@ mod sphere_tests {
         let sphere = Object::sphere().transformed(translation);
 
         let intersections = sphere.intersect(&ray);
-        assert!(intersections.underlying().is_empty())
+        assert!(intersections.is_empty())
     }
 
     #[test]
@@ -445,7 +445,7 @@ mod plane_tests {
 
         assert_eq!(intersections.len(), 1);
 
-        assert_eq!(intersections.underlying()[0].t, 1.0);
+        assert_eq!(intersections.get(0).unwrap().t, 1.0);
     }
 
     #[test]
@@ -458,7 +458,7 @@ mod plane_tests {
 
         assert_eq!(intersections.len(), 1);
 
-        assert_eq!(intersections.underlying()[0].t, 1.0);
+        assert_eq!(intersections.get(0).unwrap().t, 1.0);
     }
 
     #[test]
@@ -490,8 +490,8 @@ mod cube_tests {
         let intersections = cube.intersect(&ray);
         assert_eq!(intersections.len(), 2);
 
-        assert_eq!(intersections.underlying()[0].t, 4.0);
-        assert_eq!(intersections.underlying()[1].t, 6.0);
+        assert_eq!(intersections.get(0).unwrap().t, 4.0);
+        assert_eq!(intersections.get(1).unwrap().t, 6.0);
     }
 
     #[test]
@@ -502,8 +502,8 @@ mod cube_tests {
         let intersections = cube.intersect(&ray);
         assert_eq!(intersections.len(), 2);
 
-        assert_eq!(intersections.underlying()[0].t, 4.0);
-        assert_eq!(intersections.underlying()[1].t, 6.0);
+        assert_eq!(intersections.get(0).unwrap().t, 4.0);
+        assert_eq!(intersections.get(1).unwrap().t, 6.0);
     }
 
     #[test]
@@ -514,8 +514,8 @@ mod cube_tests {
         let intersections = cube.intersect(&ray);
         assert_eq!(intersections.len(), 2);
 
-        assert_eq!(intersections.underlying()[0].t, 4.0);
-        assert_eq!(intersections.underlying()[1].t, 6.0);
+        assert_eq!(intersections.get(0).unwrap().t, 4.0);
+        assert_eq!(intersections.get(1).unwrap().t, 6.0);
     }
 
     #[test]
@@ -526,8 +526,8 @@ mod cube_tests {
         let intersections = cube.intersect(&ray);
         assert_eq!(intersections.len(), 2);
 
-        assert_eq!(intersections.underlying()[0].t, 4.0);
-        assert_eq!(intersections.underlying()[1].t, 6.0);
+        assert_eq!(intersections.get(0).unwrap().t, 4.0);
+        assert_eq!(intersections.get(1).unwrap().t, 6.0);
     }
 
     #[test]
@@ -538,8 +538,8 @@ mod cube_tests {
         let intersections = cube.intersect(&ray);
         assert_eq!(intersections.len(), 2);
 
-        assert_eq!(intersections.underlying()[0].t, 4.0);
-        assert_eq!(intersections.underlying()[1].t, 6.0);
+        assert_eq!(intersections.get(0).unwrap().t, 4.0);
+        assert_eq!(intersections.get(1).unwrap().t, 6.0);
     }
 
     #[test]
@@ -550,8 +550,8 @@ mod cube_tests {
         let intersections = cube.intersect(&ray);
         assert_eq!(intersections.len(), 2);
 
-        assert_eq!(intersections.underlying()[0].t, 4.0);
-        assert_eq!(intersections.underlying()[1].t, 6.0);
+        assert_eq!(intersections.get(0).unwrap().t, 4.0);
+        assert_eq!(intersections.get(1).unwrap().t, 6.0);
     }
 
     #[test]
@@ -562,8 +562,8 @@ mod cube_tests {
         let intersections = cube.intersect(&ray);
         assert_eq!(intersections.len(), 2);
 
-        assert_eq!(intersections.underlying()[0].t, -1.0);
-        assert_eq!(intersections.underlying()[1].t, 1.0);
+        assert_eq!(intersections.get(0).unwrap().t, -1.0);
+        assert_eq!(intersections.get(1).unwrap().t, 1.0);
     }
 
     #[test]
@@ -700,8 +700,8 @@ mod cylinder_tests {
             let intersections = cylinder.intersect(&ray);
 
             assert_eq!(intersections.len(), 2, "{}", scenario);
-            assert_eq!(intersections.underlying()[0].t, t0, "{}", scenario);
-            assert_eq!(intersections.underlying()[1].t, t1, "{}", scenario);
+            assert_eq!(intersections.get(0).unwrap().t, t0, "{}", scenario);
+            assert_eq!(intersections.get(1).unwrap().t, t1, "{}", scenario);
         })
     }
 
@@ -767,8 +767,8 @@ mod cylinder_tests {
         let ray = Ray::new(Point3D::new(0.0, 1.5, -2.0), Normal3D::POSITIVE_Z);
         let intersections = cylinder.intersect(&ray);
         assert_eq!(intersections.len(), 2);
-        assert_eq!(intersections.underlying()[0].t, 1.0);
-        assert_eq!(intersections.underlying()[1].t, 3.0);
+        assert_eq!(intersections.get(0).unwrap().t, 1.0);
+        assert_eq!(intersections.get(1).unwrap().t, 3.0);
     }
 
     #[test]
@@ -914,8 +914,8 @@ mod cone_tests {
             let intersections = cone.intersect(&ray);
 
             assert_eq!(intersections.len(), 2, "{}", scenario);
-            assert_eq!(intersections.underlying()[0].t, first, "{}", scenario);
-            assert_eq!(intersections.underlying()[1].t, second, "{}", scenario);
+            assert_eq!(intersections.get(0).unwrap().t, first, "{}", scenario);
+            assert_eq!(intersections.get(1).unwrap().t, second, "{}", scenario);
         })
     }
 
@@ -930,7 +930,7 @@ mod cone_tests {
         let intersections = cone.intersect(&ray);
 
         assert_eq!(intersections.len(), 1);
-        assert_eq!(intersections.underlying()[0].t, 0.3535533905932738);
+        assert_eq!(intersections.get(0).unwrap().t, 0.3535533905932738);
     }
 
     #[test]
@@ -1061,10 +1061,10 @@ mod group_tests {
 
         let intersections = group.intersect(&ray);
         assert_eq!(intersections.len(), 4);
-        assert_eq!(intersections.underlying()[0].with.id(), second_id);
-        assert_eq!(intersections.underlying()[1].with.id(), second_id);
-        assert_eq!(intersections.underlying()[2].with.id(), first_id);
-        assert_eq!(intersections.underlying()[3].with.id(), first_id);
+        assert_eq!(intersections.get(0).unwrap().with.id(), second_id);
+        assert_eq!(intersections.get(1).unwrap().with.id(), second_id);
+        assert_eq!(intersections.get(2).unwrap().with.id(), first_id);
+        assert_eq!(intersections.get(3).unwrap().with.id(), first_id);
     }
 
     #[test]
@@ -1192,7 +1192,7 @@ mod triangle_tests {
 
         let intersections = triangle.intersect(&ray);
         assert_eq!(intersections.len(), 1);
-        assert_eq!(intersections.underlying()[0].t, 2.0);
+        assert_eq!(intersections.get(0).unwrap().t, 2.0);
     }
 
     #[test]
@@ -1325,7 +1325,7 @@ mod smooth_triangles {
         );
         let ray = Ray::new(Point3D::new(-0.2, 0.3, -2.0), Normal3D::POSITIVE_Z);
         let intersections = triangle.intersect(&ray);
-        let point = ray.position(intersections.underlying()[0].t);
+        let point = ray.position(intersections.get(0).unwrap().t);
 
         assert_eq!(
             // Point has no effect on normal as u,v is used instead
@@ -1361,11 +1361,11 @@ mod constructive_solid_geometry {
         let intersections = csg.intersect(&ray);
         assert_eq!(intersections.len(), 2);
 
-        assert_eq!(intersections.underlying()[0].t, 4.0);
-        assert_eq!(intersections.underlying()[0].with.id, left_id);
+        assert_eq!(intersections.get(0).unwrap().t, 4.0);
+        assert_eq!(intersections.get(0).unwrap().with.id, left_id);
 
-        assert_eq!(intersections.underlying()[1].t, 6.5);
-        assert_eq!(intersections.underlying()[1].with.id, right_id);
+        assert_eq!(intersections.get(1).unwrap().t, 6.5);
+        assert_eq!(intersections.get(1).unwrap().with.id, right_id);
     }
 
     #[test]
@@ -1383,11 +1383,11 @@ mod constructive_solid_geometry {
         let intersections = csg.intersect(&ray);
         assert_eq!(intersections.len(), 2);
 
-        assert_eq!(intersections.underlying()[0].t, 4.5);
-        assert_eq!(intersections.underlying()[0].with.id, right_id);
+        assert_eq!(intersections.get(0).unwrap().t, 4.5);
+        assert_eq!(intersections.get(0).unwrap().with.id, right_id);
 
-        assert_eq!(intersections.underlying()[1].t, 6.0);
-        assert_eq!(intersections.underlying()[1].with.id, left_id);
+        assert_eq!(intersections.get(1).unwrap().t, 6.0);
+        assert_eq!(intersections.get(1).unwrap().with.id, left_id);
     }
 
     #[test]
@@ -1405,11 +1405,11 @@ mod constructive_solid_geometry {
         let intersections = csg.intersect(&ray);
         assert_eq!(intersections.len(), 2);
 
-        assert_eq!(intersections.underlying()[0].t, 4.0);
-        assert_eq!(intersections.underlying()[0].with.id, left_id);
+        assert_eq!(intersections.get(0).unwrap().t, 4.0);
+        assert_eq!(intersections.get(0).unwrap().with.id, left_id);
 
-        assert_eq!(intersections.underlying()[1].t, 4.5);
-        assert_eq!(intersections.underlying()[1].with.id, right_id);
+        assert_eq!(intersections.get(1).unwrap().t, 4.5);
+        assert_eq!(intersections.get(1).unwrap().with.id, right_id);
     }
 
     // a naive implementation would compare intersection IDs with the IDs of its direct children, but this wouldn't work with Groups and other CSGs
@@ -1435,11 +1435,11 @@ mod constructive_solid_geometry {
         let intersections = csg.intersect(&ray);
         assert_eq!(intersections.len(), 2);
 
-        assert_eq!(intersections.underlying()[0].t, 4.0);
-        assert_eq!(intersections.underlying()[0].with.id, third_id);
+        assert_eq!(intersections.get(0).unwrap().t, 4.0);
+        assert_eq!(intersections.get(0).unwrap().with.id, third_id);
 
-        assert_eq!(intersections.underlying()[1].t, 5.25);
-        assert_eq!(intersections.underlying()[1].with.id, second_id);
+        assert_eq!(intersections.get(1).unwrap().t, 5.25);
+        assert_eq!(intersections.get(1).unwrap().with.id, second_id);
     }
 
     #[test]
@@ -1453,7 +1453,7 @@ mod constructive_solid_geometry {
         let ray = Ray::new(Point3D::new(10.0, 0.0, -10.0), Normal3D::POSITIVE_Z);
         let intersections = group.intersect(&ray);
         assert_eq!(intersections.len(), 2);
-        assert_eq!(intersections.underlying()[0].with.id, first_id);
+        assert_eq!(intersections.get(0).unwrap().with.id, first_id);
     }
 }
 

@@ -267,9 +267,7 @@ impl Object {
                 let ray_transform = self.transform.inverse();
 
                 let transformed = with.transformed(&ray_transform);
-                let intersections = shape.object_intersect(&self, transformed);
-
-                Intersections::of(intersections)
+                shape.object_intersect(&self, transformed)
             }
             ObjectKind::Group(children) => children
                 .iter()
@@ -468,7 +466,7 @@ pub trait Shape: Debug + Sync {
         &self,
         parent: &'parent Object,
         with: Ray,
-    ) -> Vec<Intersection<'parent>>;
+    ) -> Intersections<'parent>;
 
     fn uv_at(&self, point: Point3D) -> (f64, f64);
 }
@@ -489,19 +487,19 @@ impl Shape for Sphere {
         &self,
         parent: &'parent Object,
         with: Ray,
-    ) -> Vec<Intersection<'parent>> {
+    ) -> Intersections<'parent> {
         let sphere_to_ray = with.origin - Point3D::ORIGIN;
         let a = with.direction.dot(with.direction);
         let b = 2.0 * with.direction.dot(sphere_to_ray);
         let c = sphere_to_ray.dot(sphere_to_ray) - 1.0;
 
         if let Some((first, second)) = crate::util::quadratic(a, b, c) {
-            vec![
+            Intersections::pair(
                 Intersection::new(first, parent),
                 Intersection::new(second, parent),
-            ]
+            )
         } else {
-            vec![]
+            Intersections::empty()
         }
     }
 
@@ -544,13 +542,13 @@ impl Shape for Plane {
         &self,
         parent: &'parent Object,
         with: Ray,
-    ) -> Vec<Intersection<'parent>> {
+    ) -> Intersections<'parent> {
         if with.direction.y().abs() <= f32::EPSILON as f64 {
-            return Vec::new();
+            return Intersections::empty();
         }
 
         let t = -with.origin.y() / with.direction.y();
-        vec![Intersection::new(t, parent)]
+        Intersections::single(Intersection::new(t, parent))
     }
 
     fn uv_at(&self, point: Point3D) -> (f64, f64) {
@@ -581,7 +579,7 @@ impl Shape for Cube {
         &self,
         parent: &'parent Object,
         with: Ray,
-    ) -> Vec<Intersection<'parent>> {
+    ) -> Intersections<'parent> {
         fn check_axis(origin: f64, direction: f64) -> (f64, f64) {
             let t_min_numerator = -1.0 - origin;
             let t_max_numerator = 1.0 - origin;
@@ -604,12 +602,12 @@ impl Shape for Cube {
         let t_max = t_max_x.min(t_max_y).min(t_max_z);
 
         if t_min > t_max {
-            vec![]
+            Intersections::empty()
         } else {
-            vec![
+            Intersections::pair(
                 Intersection::new(t_min, parent),
                 Intersection::new(t_max, parent),
-            ]
+            )
         }
     }
 
