@@ -139,3 +139,23 @@ Note: adding basic "1 sample" early return has no noticeable effect
 Remove initial pointer indirection for Point lights, as there is only a single sample. Also reduces size
 
 - Impact: inconclusive/minimal
+
+### Use optimised small vector type in Intersections list
+Switch backing type of `Intersections` to a stack allocated small vector type i.e. `smallvec` to minimise heap allocations.
+
+- Impact: significant - scenes with few objects show drastic improvement (~50%) but rays that intersect lots of objects are noticeably slower (~20%)
+
+### Investigate optimal "small vector" size
+Making the inline allocated vector larger improves the performance of scenes with lots of objects, up to a point, 
+but degrades the performance of rays that intersect zero or one objects.
+
+By rerunning the benchmarks with different inline allocation sizes, a reasonable compromise can be found.
+
+**Outcome**
+
+The original inline allocation size of 4 appears to be the best compromise, however the performance impact of
+changes in either direction is highly variable, with some complex scenes showing up to 20% improvement with a larger allocation,
+and other complex scenes performing worse (~10%).
+
+Generally, reducing the allocation size makes complex scenes perform significantly worse, and has little real-time impact on simple scenes (~15ms),
+and increasing the allocation size has rapidly diminishing returns on complex scenes, while substantially reducing performance of other scenes.

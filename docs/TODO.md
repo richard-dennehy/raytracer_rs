@@ -1,6 +1,5 @@
 - Handle obj parser errors more gracefully
 - Maybe performance: replace partial comparison + expect with total comparison when sorting `Intersections`
-- Use small vec type optimised for common case of few intersections e.g. `smallvec`
 - Use [approx](https://docs.rs/approx/0.4.0/approx/index.html) instead of `float_cmp`
 - Separate primitives and composites
 - Truncate colour precision to e.g. 5 sigfig in tests
