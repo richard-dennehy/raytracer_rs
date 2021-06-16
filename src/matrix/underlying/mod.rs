@@ -1,4 +1,5 @@
 use crate::{Point3D, Vector};
+use approx::AbsDiffEq;
 use std::ops::{Mul, MulAssign};
 
 #[cfg(test)]
@@ -499,6 +500,33 @@ impl Matrix4D {
 
     pub fn m33(&self) -> f64 {
         self.underlying[3][3]
+    }
+}
+
+impl AbsDiffEq for Matrix4D {
+    type Epsilon = f64;
+
+    fn default_epsilon() -> Self::Epsilon {
+        f32::EPSILON as f64
+    }
+
+    fn abs_diff_eq(&self, other: &Self, epsilon: Self::Epsilon) -> bool {
+        self.m00().abs_diff_eq(&other.m00(), epsilon)
+            && self.m01().abs_diff_eq(&other.m01(), epsilon)
+            && self.m02().abs_diff_eq(&other.m02(), epsilon)
+            && self.m03().abs_diff_eq(&other.m03(), epsilon)
+            && self.m10().abs_diff_eq(&other.m10(), epsilon)
+            && self.m11().abs_diff_eq(&other.m11(), epsilon)
+            && self.m12().abs_diff_eq(&other.m12(), epsilon)
+            && self.m13().abs_diff_eq(&other.m13(), epsilon)
+            && self.m20().abs_diff_eq(&other.m20(), epsilon)
+            && self.m21().abs_diff_eq(&other.m21(), epsilon)
+            && self.m22().abs_diff_eq(&other.m22(), epsilon)
+            && self.m23().abs_diff_eq(&other.m23(), epsilon)
+            && self.m30().abs_diff_eq(&other.m30(), epsilon)
+            && self.m31().abs_diff_eq(&other.m31(), epsilon)
+            && self.m32().abs_diff_eq(&other.m32(), epsilon)
+            && self.m33().abs_diff_eq(&other.m33(), epsilon)
     }
 }
 

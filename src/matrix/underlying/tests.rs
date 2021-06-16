@@ -309,9 +309,9 @@ fn should_be_able_to_calculate_the_determinant_of_a_3d_matrix() {
 }
 
 mod property_tests {
-    extern crate float_cmp;
     use super::*;
     use crate::Vector3D;
+    use approx::*;
     use proptest::prelude::*;
 
     proptest! {
@@ -340,15 +340,6 @@ mod property_tests {
             first in any::<Matrix4D>(),
             second in any::<Matrix4D>(),
         ) {
-            // rounding errors become significant
-            fn assert_close_enough(f: f64, s: f64) {
-                assert!(
-                    approx_eq!(f64, f, s, epsilon = (f32::EPSILON as f64) * 2.0),
-                    "not approximately equal: {} != {}",
-                    f,
-                    s
-                )
-            }
 
             if second.determinant() != 0.0 {
                 let inverse = second.inverse();
@@ -356,22 +347,8 @@ mod property_tests {
                 let inverse = inverse.unwrap();
 
                 let product = (first.clone() * second) * inverse;
-                assert_close_enough(first.m00(), product.m00());
-                assert_close_enough(first.m01(), product.m01());
-                assert_close_enough(first.m02(), product.m02());
-                assert_close_enough(first.m03(), product.m03());
-                assert_close_enough(first.m10(), product.m10());
-                assert_close_enough(first.m11(), product.m11());
-                assert_close_enough(first.m12(), product.m12());
-                assert_close_enough(first.m13(), product.m13());
-                assert_close_enough(first.m20(), product.m20());
-                assert_close_enough(first.m21(), product.m21());
-                assert_close_enough(first.m22(), product.m22());
-                assert_close_enough(first.m23(), product.m23());
-                assert_close_enough(first.m30(), product.m30());
-                assert_close_enough(first.m31(), product.m31());
-                assert_close_enough(first.m32(), product.m32());
-                assert_close_enough(first.m33(), product.m33());
+                // rounding errors accumulate relatively significantly
+                assert_abs_diff_eq!(first, product, epsilon = f32::EPSILON as f64 * 2.0)
             }
         }
     }

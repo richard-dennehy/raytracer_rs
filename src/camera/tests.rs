@@ -3,6 +3,7 @@ use super::*;
 mod unit_tests {
     use super::*;
     use crate::Vector3D;
+    use approx::*;
     use std::f64::consts::{PI, SQRT_2};
 
     #[test]
@@ -13,7 +14,7 @@ mod unit_tests {
             PI / 2.0,
             Transform::identity(),
         );
-        assert!(approx_eq!(f64, camera.pixel_size, 0.01));
+        assert_abs_diff_eq!(camera.pixel_size, 0.01);
     }
 
     #[test]
@@ -24,7 +25,7 @@ mod unit_tests {
             PI / 2.0,
             Transform::identity(),
         );
-        assert!(approx_eq!(f64, camera.pixel_size, 0.01));
+        assert_abs_diff_eq!(camera.pixel_size, 0.01);
     }
 
     #[test]
@@ -39,11 +40,7 @@ mod unit_tests {
 
         let ray = camera.ray_at(100, 50, 0.5, 0.5);
         assert_eq!(ray.origin, Point3D::new(0.0, 0.0, 0.0));
-        assert!(approx_eq!(
-            Vector3D,
-            ray.direction,
-            Vector3D::new(0.0, 0.0, -1.0)
-        ))
+        assert_abs_diff_eq!(ray.direction, Vector3D::new(0.0, 0.0, -1.0))
     }
 
     #[test]
@@ -58,15 +55,10 @@ mod unit_tests {
 
         let ray = camera.ray_at(0, 0, 0.5, 0.5);
         assert_eq!(ray.origin, Point3D::new(0.0, 0.0, 0.0));
-        assert!(
-            approx_eq!(
-                Vector3D,
-                ray.direction,
-                Vector3D::new(0.6651864261194508, 0.3325932130597254, -0.6685123582500481)
-            ),
-            "not approximately equal to {:?}",
-            ray.direction
-        )
+        assert_abs_diff_eq!(
+            ray.direction,
+            Vector3D::new(0.6651864261194508, 0.3325932130597254, -0.6685123582500481)
+        );
     }
 
     #[test]
@@ -85,14 +77,9 @@ mod unit_tests {
 
         let ray = camera.ray_at(100, 50, 0.5, 0.5);
         assert_eq!(ray.origin, Point3D::new(0.0, 2.0, -5.0));
-        assert!(
-            approx_eq!(
-                Vector3D,
-                ray.direction,
-                Vector3D::new(SQRT_2 / 2.0, 0.0, -SQRT_2 / 2.0)
-            ),
-            "not approximately equal to {:?}",
-            ray.direction
+        assert_abs_diff_eq!(
+            ray.direction,
+            Vector3D::new(SQRT_2 / 2.0, 0.0, -SQRT_2 / 2.0)
         )
     }
 }

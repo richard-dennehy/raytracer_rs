@@ -1,3 +1,4 @@
+use approx::AbsDiffEq;
 use std::iter::Sum;
 use std::ops::{Add, Div, Mul, Sub};
 
@@ -167,23 +168,16 @@ impl Sum for Colour {
     }
 }
 
-#[cfg(test)]
-pub use test_utils::*;
+impl AbsDiffEq for Colour {
+    type Epsilon = f64;
 
-#[cfg(test)]
-mod test_utils {
-    use crate::Colour;
-    use float_cmp::{ApproxEq, F64Margin};
+    fn default_epsilon() -> Self::Epsilon {
+        f32::EPSILON as f64
+    }
 
-    impl ApproxEq for Colour {
-        type Margin = F64Margin;
-
-        fn approx_eq<M: Into<Self::Margin>>(self, other: Self, margin: M) -> bool {
-            let margin = margin.into();
-
-            self.0.approx_eq(other.0, margin)
-                && self.1.approx_eq(other.1, margin)
-                && self.2.approx_eq(other.2, margin)
-        }
+    fn abs_diff_eq(&self, other: &Self, epsilon: Self::Epsilon) -> bool {
+        self.0.abs_diff_eq(&other.0, epsilon)
+            && self.1.abs_diff_eq(&other.1, epsilon)
+            && self.2.abs_diff_eq(&other.2, epsilon)
     }
 }

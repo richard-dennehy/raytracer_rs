@@ -2,6 +2,7 @@ use super::*;
 
 mod unit_tests {
     use super::*;
+    use approx::*;
     use std::f64::consts::{PI, SQRT_2};
 
     #[test]
@@ -155,16 +156,15 @@ mod unit_tests {
         let transform = Transform::identity().rotate_y(PI / 4.0).rotate_x(PI / 4.0);
 
         let scaled = bounds.transformed(transform);
-        assert!(approx_eq!(
-            Point3D,
+
+        assert_abs_diff_eq!(
             scaled.min,
             Point3D::new(-SQRT_2, -1.7071067811865475, -1.7071067811865475)
-        ));
-        assert!(approx_eq!(
-            Point3D,
+        );
+        assert_abs_diff_eq!(
             scaled.max,
             Point3D::new(SQRT_2, 1.7071067811865475, 1.7071067811865475)
-        ));
+        );
     }
 
     mod intersection {

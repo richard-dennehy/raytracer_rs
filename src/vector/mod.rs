@@ -1,4 +1,5 @@
 use crate::Point3D;
+use approx::AbsDiffEq;
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
 #[cfg(test)]
@@ -240,13 +241,40 @@ impl Div<f64> for Normal3D {
     }
 }
 
+impl AbsDiffEq for Normal3D {
+    type Epsilon = f64;
+
+    fn default_epsilon() -> Self::Epsilon {
+        f32::EPSILON as f64
+    }
+
+    fn abs_diff_eq(&self, other: &Self, epsilon: Self::Epsilon) -> bool {
+        self.0.abs_diff_eq(&other.0, epsilon)
+            && self.1.abs_diff_eq(&other.1, epsilon)
+            && self.2.abs_diff_eq(&other.2, epsilon)
+    }
+}
+
+impl AbsDiffEq for Vector3D {
+    type Epsilon = f64;
+
+    fn default_epsilon() -> Self::Epsilon {
+        f32::EPSILON as f64
+    }
+
+    fn abs_diff_eq(&self, other: &Self, epsilon: Self::Epsilon) -> bool {
+        self.0.abs_diff_eq(&other.0, epsilon)
+            && self.1.abs_diff_eq(&other.1, epsilon)
+            && self.2.abs_diff_eq(&other.2, epsilon)
+    }
+}
+
 #[cfg(test)]
 pub use test_utils::*;
 
 #[cfg(test)]
 mod test_utils {
     use super::*;
-    use float_cmp::{ApproxEq, F64Margin};
     use proptest::prelude::*;
 
     impl Arbitrary for Vector3D {
@@ -263,29 +291,5 @@ mod test_utils {
         }
 
         type Strategy = BoxedStrategy<Self>;
-    }
-
-    impl ApproxEq for Vector3D {
-        type Margin = F64Margin;
-
-        fn approx_eq<M: Into<Self::Margin>>(self, other: Self, margin: M) -> bool {
-            let margin = margin.into();
-
-            self.0.approx_eq(other.0, margin)
-                && self.1.approx_eq(other.1, margin)
-                && self.2.approx_eq(other.2, margin)
-        }
-    }
-
-    impl ApproxEq for Normal3D {
-        type Margin = F64Margin;
-
-        fn approx_eq<M: Into<Self::Margin>>(self, other: Self, margin: M) -> bool {
-            let margin = margin.into();
-
-            self.0.approx_eq(other.0, margin)
-                && self.1.approx_eq(other.1, margin)
-                && self.2.approx_eq(other.2, margin)
-        }
     }
 }

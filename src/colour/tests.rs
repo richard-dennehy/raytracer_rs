@@ -2,6 +2,7 @@ use super::*;
 
 mod unit_tests {
     use super::*;
+    use approx::*;
 
     #[test]
     fn the_first_component_is_red() {
@@ -35,7 +36,7 @@ mod unit_tests {
         let c2 = Colour::new(0.7, 0.1, 0.25);
 
         let difference = c1 - c2;
-        assert!(approx_eq!(f64, difference.red(), 0.2));
+        assert_abs_diff_eq!(difference.red(), 0.2);
         assert_eq!(difference.green(), 0.5);
         assert_eq!(difference.blue(), 0.5);
     }
@@ -58,7 +59,7 @@ mod unit_tests {
         let product = c1 * c2;
         assert_eq!(product.red(), 0.9);
         assert_eq!(product.green(), 0.2);
-        assert!(approx_eq!(f64, product.blue(), 0.04));
+        assert_abs_diff_eq!(product.blue(), 0.04);
     }
 
     #[test]

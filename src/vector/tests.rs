@@ -2,6 +2,7 @@ use super::*;
 
 mod unit_tests {
     use super::*;
+    use approx::*;
 
     #[test]
     fn adding_two_vectors_should_produce_a_vector() {
@@ -151,11 +152,7 @@ mod unit_tests {
         let normal = Normal3D::new(2.0_f64.sqrt() / 2.0, 2.0_f64.sqrt() / 2.0, 0.0);
 
         let reflected = vector.reflect_through(normal);
-        assert!(approx_eq!(
-            Vector3D,
-            reflected,
-            Vector3D::new(1.0, 0.0, 0.0)
-        ));
+        assert_abs_diff_eq!(reflected, Vector3D::new(1.0, 0.0, 0.0));
     }
 }
 

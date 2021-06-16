@@ -156,6 +156,7 @@ mod shape_tests {
 mod sphere_tests {
     use super::*;
     use crate::{Light, Pattern};
+    use approx::*;
     use std::f64::consts::SQRT_2;
 
     #[test]
@@ -205,11 +206,10 @@ mod sphere_tests {
         let sphere = Object::sphere().transformed(Transform::identity().translate_y(1.0));
 
         let normal = sphere.normal_at(Point3D::new(0.0, 1.0 + FRAC_1_SQRT_2, -FRAC_1_SQRT_2));
-        assert!(approx_eq!(
-            Normal3D,
+        assert_abs_diff_eq!(
             normal,
             Vector3D::new(0.0, FRAC_1_SQRT_2, -FRAC_1_SQRT_2).normalised()
-        ));
+        );
     }
 
     #[test]
@@ -388,6 +388,7 @@ mod sphere_tests {
 
 mod plane_tests {
     use super::*;
+    use approx::*;
     use proptest::prelude::*;
     use std::f64::consts::PI;
 
@@ -404,22 +405,14 @@ mod plane_tests {
         fn the_normal_of_an_xy_plane_is_constant_at_all_points(x in crate::util::reasonable_f64(), y in crate::util::reasonable_f64()) {
             let plane = Object::plane().transformed(Transform::identity().rotate_x(PI / 2.0));
 
-            assert!(approx_eq!(
-                Normal3D,
-                plane.normal_at(Point3D::new(x, y, 0.0)),
-                Normal3D::POSITIVE_Z
-            ));
+            assert_abs_diff_eq!(plane.normal_at(Point3D::new(x, y, 0.0)), Normal3D::POSITIVE_Z);
         }
 
         #[test]
         fn the_normal_of_a_yz_plane_is_constant_at_all_points(y in crate::util::reasonable_f64(), z in crate::util::reasonable_f64()) {
             let plane = Object::plane().transformed(Transform::identity().rotate_z(PI / 2.0));
 
-            assert!(approx_eq!(
-                Normal3D,
-                plane.normal_at(Point3D::new(0.0, y, z)),
-                Normal3D::NEGATIVE_X
-            ));
+            assert_abs_diff_eq!(plane.normal_at(Point3D::new(0.0, y, z)), Normal3D::NEGATIVE_X);
         }
     }
 
@@ -481,6 +474,7 @@ mod plane_tests {
 
 mod cube_tests {
     use super::*;
+    use approx::*;
 
     #[test]
     fn a_ray_directly_towards_the_pos_x_face_should_intersect() {
@@ -640,10 +634,11 @@ mod cube_tests {
             ("bottom", Point3D::new(0.9, -1.0, -0.9),  (1.95, 2.05)),
         ]
             .into_iter()
-            .for_each(|(side, point, (u, v))| {
+            .for_each(|(_, point, (u, v))| {
                 let (actual_u, actual_v) = Cube.uv_at(point);
-                assert!(approx_eq!(f64, actual_u, u), "({}, {}) != ({}, {}); {} side", actual_u, actual_v, u, v, side);
-                assert!(approx_eq!(f64, actual_v, v), "({}, {}) != ({}, {}); {} side", actual_u, actual_v, u, v, side);
+                
+                assert_abs_diff_eq!(actual_u, u);
+                assert_abs_diff_eq!(actual_v, v);
             })
     }
 }
@@ -879,6 +874,7 @@ mod cylinder_tests {
 
 mod cone_tests {
     use super::*;
+    use approx::*;
     use std::f64::consts::{FRAC_1_SQRT_2, SQRT_2};
 
     #[test]
@@ -977,8 +973,8 @@ mod cone_tests {
             ("Negative y", Point3D::new(-1.0, -1.0, 0.0), Vector3D::new(-1.0, 1.0, 0.0).normalised()),
         ]
         .into_iter()
-        .for_each(|(scenario, point, normal)| {
-            assert!(approx_eq!(Normal3D, cone.normal_at(point), normal), "{}", scenario);
+        .for_each(|(_, point, normal)| {
+            assert_abs_diff_eq!(cone.normal_at(point), normal);
         })
     }
 
@@ -1034,6 +1030,7 @@ mod cone_tests {
 
 mod group_tests {
     use super::*;
+    use approx::*;
     use std::f64::consts::PI;
 
     #[test]
@@ -1101,11 +1098,10 @@ mod group_tests {
             .first()
             .unwrap();
 
-        assert!(approx_eq!(
-            Normal3D,
+        assert_abs_diff_eq!(
             sphere_ref.normal_at(Point3D::new(1.7321, 1.1547, -5.5774)),
             Vector3D::new(0.28570368184140726, 0.428543151781141, -0.8571605294481017).normalised()
-        ));
+        );
     }
 }
 

@@ -70,6 +70,7 @@ mod intersections {
 mod shading {
     use super::*;
     use crate::{Camera, Normal3D, Pattern};
+    use approx::*;
     use std::f64::consts::PI;
 
     #[test]
@@ -84,12 +85,7 @@ mod shading {
             0.28549589481077575,
         );
 
-        assert!(
-            approx_eq!(Colour, colour, expected, epsilon = f32::EPSILON as f64),
-            "{:?} != {:?}",
-            expected,
-            colour
-        );
+        assert_abs_diff_eq!(expected, colour);
     }
 
     #[test]
@@ -112,12 +108,7 @@ mod shading {
         let colour = world.shade_hit(&hit_data);
         let expected = Colour::new(0.9049844720832575, 0.9049844720832575, 0.9049844720832575);
 
-        assert!(
-            approx_eq!(Colour, colour, expected, epsilon = f32::EPSILON as f64),
-            "{:?} != {:?}",
-            colour,
-            expected
-        );
+        assert_abs_diff_eq!(expected, colour);
     }
 
     #[test]
@@ -125,16 +116,14 @@ mod shading {
         let world = World::default();
         let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z);
 
-        assert!(approx_eq!(
-            Colour,
+        assert_abs_diff_eq!(
             world.colour_at(ray),
             Colour::new(
                 0.38066119308103435,
                 0.47582649135129296,
                 0.28549589481077575
             ),
-            epsilon = f32::EPSILON as f64
-        ));
+        );
     }
 
     #[test]
@@ -185,12 +174,7 @@ mod shading {
         // note: if the ray misses, the colour will be black;
         // if the ray hits, but the colour is shaded incorrectly, the colour will be very dark;
         // if the ray hits and the colour is shaded correctly, the colour will be light
-        assert!(
-            approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
-            "{:?} != {:?}",
-            expected,
-            actual
-        );
+        assert_abs_diff_eq!(expected, actual);
     }
 
     // using the hit `point` rather than `over_point` results in hideous acne at certain angles;
@@ -303,32 +287,16 @@ mod shading {
         );
 
         let expected = Colour::new(0.6957377128787232, 0.0, 0.0);
-
         let colour = world.colour_at(camera.ray_at(62, 592, 0.5, 0.5));
-        assert!(
-            approx_eq!(Colour, colour, expected, epsilon = f32::EPSILON as f64),
-            "{:?} != {:?}",
-            expected,
-            colour
-        );
+        assert_abs_diff_eq!(expected, colour);
 
         let expected = Colour::new(0.6957372881303316, 0.0, 0.0);
         let colour = world.colour_at(camera.ray_at(63, 592, 0.5, 0.5));
-        assert!(
-            approx_eq!(Colour, colour, expected, epsilon = f32::EPSILON as f64),
-            "{:?} != {:?}",
-            expected,
-            colour
-        );
+        assert_abs_diff_eq!(expected, colour);
 
         let expected = Colour::new(0.6957368602150138, 0.0, 0.0);
         let colour = world.colour_at(camera.ray_at(64, 592, 0.5, 0.5));
-        assert!(
-            approx_eq!(Colour, colour, expected, epsilon = f32::EPSILON as f64),
-            "{:?} != {:?}",
-            expected,
-            colour
-        );
+        assert_abs_diff_eq!(expected, colour);
     }
 
     #[test]
@@ -391,32 +359,17 @@ mod shading {
         let expected = Colour::new(0.7050813513879224, 0.07052098992794008, 0.07052098992794008);
         let actual = world.colour_at(camera.ray_at(889, 669, 0.5, 0.5));
 
-        assert!(
-            approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
-            "{:?} != {:?} (left)",
-            expected,
-            actual
-        );
+        assert_abs_diff_eq!(expected, actual);
 
         let expected = Colour::new(0.7050788713728109, 0.13397655953467352, 0.13397655953467352);
         let actual = world.colour_at(camera.ray_at(890, 669, 0.5, 0.5));
 
-        assert!(
-            approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
-            "{:?} != {:?} (middle)",
-            expected,
-            actual
-        );
+        assert_abs_diff_eq!(expected, actual);
 
         let expected = Colour::new(0.7050763886303489, 0.07052050406256043, 0.07052050406256043);
         let actual = world.colour_at(camera.ray_at(891, 669, 0.5, 0.5));
 
-        assert!(
-            approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
-            "{:?} != {:?} (right)",
-            expected,
-            actual
-        );
+        assert_abs_diff_eq!(expected, actual);
     }
 }
 
@@ -609,6 +562,7 @@ mod lighting {
 mod reflection_and_refraction {
     use super::*;
     use crate::{Normal3D, Vector3D};
+    use approx::*;
     use std::f64::consts::{PI, SQRT_2};
 
     #[test]
@@ -625,15 +579,13 @@ mod reflection_and_refraction {
             world.objects.push(reflective_plane);
         };
 
-        assert!(approx_eq!(
-            Colour,
+        assert_abs_diff_eq!(
             world.colour_at(Ray::new(
                 Point3D::new(0.0, 0.0, -3.0),
                 Vector3D::new(0.0, -SQRT_2 / 2.0, SQRT_2 / 2.0).normalised(),
             )),
             Colour::new(0.8767560060717737, 0.9243386603443418, 0.8291733517992057),
-            epsilon = f32::EPSILON as f64
-        ));
+        );
     }
 
     #[test]
@@ -664,12 +616,10 @@ mod reflection_and_refraction {
             .lights
             .push(Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, 0.0)));
 
-        assert!(approx_eq!(
-            Colour,
+        assert_abs_diff_eq!(
             world.colour_at(Ray::new(Point3D::ORIGIN, Normal3D::POSITIVE_Y)),
-            Colour::WHITE,
-            epsilon = f32::EPSILON as f64
-        ));
+            Colour::WHITE
+        );
     }
 
     #[test]
@@ -707,18 +657,14 @@ mod reflection_and_refraction {
         let expected = world.colour_at(ray);
         let actual = Colour::new(1.1128630897687959, 0.686425385324466, 0.686425385324466);
 
-        assert!(
-            approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
-            "{:?} != {:?}",
-            expected,
-            actual
-        );
+        assert_abs_diff_eq!(expected, actual)
     }
 }
 
 mod transparency {
     use super::*;
     use crate::{Camera, Normal3D, Vector3D};
+    use approx::*;
     use std::f64::consts::{PI, SQRT_2};
 
     #[test]
@@ -796,12 +742,7 @@ mod transparency {
         let expected = world.colour_at(ray);
         let actual = Colour::new(1.1029302361646764, 0.6964342236428152, 0.6924306883154755);
 
-        assert!(
-            approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
-            "{:?} != {:?}",
-            expected,
-            actual
-        );
+        assert_abs_diff_eq!(expected, actual);
     }
 
     #[test]
@@ -841,12 +782,7 @@ mod transparency {
         let expected = Colour::new(0.06315462059737657, 0.06315462059737657, 1.7180008057464167);
         let actual = world.colour_at(ray);
 
-        assert!(
-            approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
-            "{:?} != {:?}",
-            expected,
-            actual
-        );
+        assert_abs_diff_eq!(expected, actual);
     }
 
     #[test]

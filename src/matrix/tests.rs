@@ -2,6 +2,7 @@ use super::*;
 
 mod unit_tests {
     use super::*;
+    use approx::*;
     use std::f64::consts::PI;
 
     #[test]
@@ -71,15 +72,15 @@ mod unit_tests {
         {
             let point = half_quarter * point;
             assert_eq!(point.x(), 0.0);
-            assert!(approx_eq!(f64, point.y(), 2.0_f64.sqrt() / 2.0));
-            assert!(approx_eq!(f64, point.z(), 2.0_f64.sqrt() / 2.0));
+            assert_abs_diff_eq!(point.y(), 2.0_f64.sqrt() / 2.0);
+            assert_abs_diff_eq!(point.z(), 2.0_f64.sqrt() / 2.0);
         }
 
         {
             let point = full_quarter * point;
             assert_eq!(point.x(), 0.0);
-            assert!(approx_eq!(f64, point.y(), 0.0));
-            assert!(approx_eq!(f64, point.z(), 1.0));
+            assert_abs_diff_eq!(point.y(), 0.0);
+            assert_abs_diff_eq!(point.z(), 1.0);
         }
     }
 
@@ -91,16 +92,16 @@ mod unit_tests {
 
         {
             let point = half_quarter * point;
-            assert!(approx_eq!(f64, point.x(), 2.0_f64.sqrt() / 2.0));
+            assert_abs_diff_eq!(point.x(), 2.0_f64.sqrt() / 2.0);
             assert_eq!(point.y(), 0.0);
-            assert!(approx_eq!(f64, point.z(), 2.0_f64.sqrt() / 2.0));
+            assert_abs_diff_eq!(point.z(), 2.0_f64.sqrt() / 2.0);
         }
 
         {
             let point = full_quarter * point;
-            assert!(approx_eq!(f64, point.x(), 1.0));
+            assert_abs_diff_eq!(point.x(), 1.0);
             assert_eq!(point.y(), 0.0);
-            assert!(approx_eq!(f64, point.z(), 0.0));
+            assert_abs_diff_eq!(point.z(), 0.0);
         }
     }
 
@@ -112,15 +113,15 @@ mod unit_tests {
 
         {
             let point = half_quarter * point;
-            assert!(approx_eq!(f64, point.x(), -(2.0_f64.sqrt() / 2.0)));
-            assert!(approx_eq!(f64, point.y(), 2.0_f64.sqrt() / 2.0));
+            assert_abs_diff_eq!(point.x(), -(2.0_f64.sqrt() / 2.0));
+            assert_abs_diff_eq!(point.y(), 2.0_f64.sqrt() / 2.0);
             assert_eq!(point.z(), 0.0);
         }
 
         {
             let point = full_quarter * point;
-            assert!(approx_eq!(f64, point.x(), -1.0));
-            assert!(approx_eq!(f64, point.y(), 0.0));
+            assert_abs_diff_eq!(point.x(), -1.0);
+            assert_abs_diff_eq!(point.y(), 0.0);
             assert_eq!(point.z(), 0.0);
         }
     }
@@ -134,8 +135,8 @@ mod unit_tests {
             let (x, y, z, _) = half_quarter.inverse() * point;
 
             assert_eq!(x, 0.0);
-            assert!(approx_eq!(f64, y, 2.0_f64.sqrt() / 2.0));
-            assert!(approx_eq!(f64, z, -(2.0_f64.sqrt() / 2.0)));
+            assert_abs_diff_eq!(y, 2.0_f64.sqrt() / 2.0);
+            assert_abs_diff_eq!(z, -(2.0_f64.sqrt() / 2.0));
         }
     }
 
@@ -201,37 +202,13 @@ mod unit_tests {
         let translation = Transform::translation(10.0, 5.0, 7.0);
 
         let rotated = rotation * point;
-        {
-            let point = rotated;
-
-            assert!(approx_eq!(f64, point.x(), 1.0));
-            assert!(approx_eq!(f64, point.y(), -1.0));
-            assert!(approx_eq!(f64, point.z(), 0.0));
-        }
+        assert_abs_diff_eq!(rotated, Point3D::new(1.0, -1.0, 0.0));
 
         let scaled = scale * rotated;
-        {
-            let point = scaled;
-
-            assert!(approx_eq!(f64, point.x(), 5.0));
-            assert!(approx_eq!(f64, point.y(), -5.0));
-            assert!(approx_eq!(
-                f64,
-                point.z(),
-                0.0,
-                ulps = 5,
-                epsilon = f32::EPSILON as f64
-            ));
-        }
+        assert_abs_diff_eq!(scaled, Point3D::new(5.0, -5.0, 0.0));
 
         let translated = translation * scaled;
-        {
-            let point = translated;
-
-            assert!(approx_eq!(f64, point.x(), 15.0));
-            assert!(approx_eq!(f64, point.y(), 0.0));
-            assert!(approx_eq!(f64, point.z(), 7.0));
-        }
+        assert_abs_diff_eq!(translated, Point3D::new(15.0, 0.0, 7.0));
     }
 
     #[test]
@@ -244,7 +221,7 @@ mod unit_tests {
         let transform = translation * scale * rotation;
         let point = transform * point;
 
-        assert!(approx_eq!(Point3D, point, Point3D::new(15.0, 0.0, 7.0)))
+        assert_abs_diff_eq!(point, Point3D::new(15.0, 0.0, 7.0));
     }
 
     #[test]
@@ -258,11 +235,7 @@ mod unit_tests {
             .translate_y(5.0)
             .translate_z(7.0);
 
-        assert!(approx_eq!(
-            Point3D,
-            translation * point,
-            Point3D::new(15.0, 0.0, 7.0)
-        ));
+        assert_abs_diff_eq!(translation * point, Point3D::new(15.0, 0.0, 7.0));
     }
 
     #[test]
@@ -306,24 +279,34 @@ mod unit_tests {
             Vector3D::new(1.0, 1.0, 0.0).normalised(),
         );
 
-        #[rustfmt::skip]
-        assert!(
-            approx_eq!(
-                Transform,
-                transform,
-                Transform::new(Matrix4D::new(
-                    [-0.5070925528371099, 0.5070925528371099, 0.6761234037828132, -2.366431913239846],
-                    [0.7677159338596801, 0.6060915267313263, 0.12121830534626524, -2.8284271247461894],
-                    [-0.35856858280031806, 0.5976143046671968, -0.7171371656006361, 0.0],
-                    [0.0, 0.0, 0.0, 1.0]
-                ))
-            )
+        assert_abs_diff_eq!(
+            transform,
+            Transform::new(Matrix4D::new(
+                [
+                    -0.5070925528371099,
+                    0.5070925528371099,
+                    0.6761234037828132,
+                    -2.366431913239846
+                ],
+                [
+                    0.7677159338596801,
+                    0.6060915267313263,
+                    0.12121830534626524,
+                    -2.8284271247461894
+                ],
+                [
+                    -0.35856858280031806,
+                    0.5976143046671968,
+                    -0.7171371656006361,
+                    0.0
+                ],
+                [0.0, 0.0, 0.0, 1.0]
+            ))
         );
     }
 }
 
 mod property_tests {
-    extern crate float_cmp;
     use super::*;
     use proptest::prelude::*;
 

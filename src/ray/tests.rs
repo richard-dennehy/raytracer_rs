@@ -3,6 +3,7 @@ use super::*;
 mod ray_unit_tests {
     use super::*;
     use crate::{Material, Transform};
+    use approx::*;
     use std::f64::consts::SQRT_2;
 
     #[test]
@@ -113,17 +114,7 @@ mod ray_unit_tests {
         let data = HitData::from(&ray, intersection, intersections);
         assert_eq!(data.object.id(), sphere.id());
 
-        assert!(
-            approx_eq!(
-                Point3D,
-                data.point,
-                Point3D::new(0.0, 0.0, -1.0),
-                epsilon = f32::EPSILON as f64
-            ),
-            "{:?} != {:?}",
-            data.point,
-            Point3D::new(0.0, 0.0, -1.0)
-        );
+        assert_abs_diff_eq!(data.point, Point3D::new(0.0, 0.0, -1.0),);
 
         assert_eq!(data.eye, Normal3D::NEGATIVE_Z);
         assert_eq!(data.normal, Normal3D::NEGATIVE_Z);
@@ -142,18 +133,7 @@ mod ray_unit_tests {
         let data = HitData::from(&ray, intersection, intersections);
         assert_eq!(data.object.id(), sphere.id());
 
-        assert!(
-            approx_eq!(
-                Point3D,
-                data.point,
-                Point3D::new(0.0, 0.0, 1.0),
-                epsilon = f32::EPSILON as f64
-            ),
-            "{:?} != {:?}",
-            data.point,
-            Point3D::new(0.0, 0.0, 1.0)
-        );
-
+        assert_abs_diff_eq!(data.point, Point3D::new(0.0, 0.0, 1.0),);
         assert_eq!(data.eye, Normal3D::NEGATIVE_Z);
         assert_eq!(data.normal, Normal3D::NEGATIVE_Z);
     }

@@ -3,6 +3,7 @@ use super::*;
 mod rendering {
     use super::*;
     use crate::{Colour, Normal3D, Point3D, Transform};
+    use approx::*;
     use std::f64::consts::PI;
     use std::num::NonZeroU16;
 
@@ -28,12 +29,7 @@ mod rendering {
         );
         let actual = canvas.get(5, 5);
 
-        assert!(
-            approx_eq!(Colour, expected, actual, epsilon = f32::EPSILON as f64),
-            "{:?} != {:?}",
-            expected,
-            actual
-        );
+        assert_abs_diff_eq!(expected, actual);
     }
 }
 

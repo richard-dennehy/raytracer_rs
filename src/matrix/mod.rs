@@ -1,4 +1,5 @@
 use crate::{Normal3D, Point3D, Vector, Vector3D};
+use approx::AbsDiffEq;
 use std::fmt;
 use std::fmt::{Debug, Formatter};
 use std::ops::{Mul, MulAssign};
@@ -289,6 +290,18 @@ impl Mul<Point3D> for Transform {
     }
 }
 
+impl AbsDiffEq for Transform {
+    type Epsilon = f64;
+
+    fn default_epsilon() -> Self::Epsilon {
+        f32::EPSILON as f64
+    }
+
+    fn abs_diff_eq(&self, other: &Self, epsilon: Self::Epsilon) -> bool {
+        self.inverse.abs_diff_eq(&other.inverse, epsilon)
+    }
+}
+
 #[cfg(test)]
 pub use test_utils::*;
 
@@ -296,36 +309,10 @@ pub use test_utils::*;
 mod test_utils {
     use crate::matrix::underlying::Matrix4D;
     use crate::Transform;
-    use float_cmp::{ApproxEq, F64Margin};
     use proptest::collection;
     use proptest::option;
     use proptest::prelude::*;
     use std::f64::consts::PI;
-
-    impl ApproxEq for Transform {
-        type Margin = F64Margin;
-
-        fn approx_eq<M: Into<Self::Margin>>(self, other: Self, margin: M) -> bool {
-            let margin = margin.into();
-
-            self.inverse.m00().approx_eq(other.inverse.m00(), margin)
-                && self.inverse.m01().approx_eq(other.inverse.m01(), margin)
-                && self.inverse.m02().approx_eq(other.inverse.m02(), margin)
-                && self.inverse.m03().approx_eq(other.inverse.m03(), margin)
-                && self.inverse.m10().approx_eq(other.inverse.m10(), margin)
-                && self.inverse.m11().approx_eq(other.inverse.m11(), margin)
-                && self.inverse.m12().approx_eq(other.inverse.m12(), margin)
-                && self.inverse.m13().approx_eq(other.inverse.m13(), margin)
-                && self.inverse.m20().approx_eq(other.inverse.m20(), margin)
-                && self.inverse.m21().approx_eq(other.inverse.m21(), margin)
-                && self.inverse.m22().approx_eq(other.inverse.m22(), margin)
-                && self.inverse.m23().approx_eq(other.inverse.m23(), margin)
-                && self.inverse.m30().approx_eq(other.inverse.m30(), margin)
-                && self.inverse.m31().approx_eq(other.inverse.m31(), margin)
-                && self.inverse.m32().approx_eq(other.inverse.m32(), margin)
-                && self.inverse.m33().approx_eq(other.inverse.m33(), margin)
-        }
-    }
 
     impl Transform {
         pub fn underlying(&self) -> Matrix4D {
