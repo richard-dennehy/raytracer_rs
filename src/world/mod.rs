@@ -1,6 +1,7 @@
 use crate::light::LightSample;
 use crate::material::MaterialKind;
 use crate::ray::HitData;
+use crate::util::F64Ext;
 use crate::{Colour, Intersections, Light, Material, Object, Point3D, Ray, Transform, Vector};
 
 #[cfg(test)]
@@ -160,7 +161,7 @@ impl World {
         let light_distance = light_vector.magnitude();
 
         // if light source is exactly at the intersection point, use full intensity
-        if light_distance <= (f32::EPSILON as f64) {
+        if light_distance.is_roughly_zero() {
             return light.colour;
         }
 
@@ -170,7 +171,7 @@ impl World {
 
         self.intersect(&ray)
             .into_iter()
-            .filter(|i| i.with.id() != target_id || i.t >= (f32::EPSILON as f64))
+            .filter(|i| i.with.id() != target_id || i.t.is_not_roughly_zero())
             .filter(|i| i.t >= 0.0 && i.t < light_distance)
             .fold(light.colour, |light, hit| {
                 if light == Colour::BLACK {

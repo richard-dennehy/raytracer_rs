@@ -1,5 +1,6 @@
 use crate::light::LightSample;
 use crate::matrix::Matrix4D;
+use crate::util::F64Ext;
 use crate::{Colour, Normal3D, Object, Point3D, Vector, Vector3D};
 use smallvec::SmallVec;
 
@@ -239,7 +240,7 @@ impl<'scene> Intersections<'scene> {
         self.0
             .iter()
             .filter(|&intersect| {
-                Some(intersect.with.id()) != last || intersect.t >= (f32::EPSILON as f64)
+                Some(intersect.with.id()) != last || intersect.t.is_not_roughly_zero()
             })
             .find(|&intersect| intersect.t >= 0.0)
             .cloned()

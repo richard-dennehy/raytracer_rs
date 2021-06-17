@@ -1,8 +1,6 @@
 - Handle obj parser errors more gracefully
-- Maybe performance: replace partial comparison + expect with total comparison when sorting `Intersections`
-- Use [approx](https://docs.rs/approx/0.4.0/approx/index.html) instead of `float_cmp`
+- Maybe performance: replace partial comparison + expect with total comparison when sorting `Intersections` (see https://docs.rs/ordered-float/latest/ordered_float/index.html)
 - Separate primitives and composites
-- Truncate colour precision to e.g. 5 sigfig in tests
 - Check floating point modulo operations (may need to use euclid instead)
 - Check smooth triangle bounding box
 - https://forum.raytracerchallenge.com/thread/203/performance-tips-clarifications-book-errata

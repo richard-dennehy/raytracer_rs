@@ -1,5 +1,6 @@
 use crate::object::bounds::BoundingBox;
 use crate::object::Shape;
+use crate::util::F64Ext;
 use crate::{Intersection, Intersections, Normal3D, Object, Point3D, Ray, Vector, Vector3D};
 use std::f64::consts::PI;
 
@@ -25,9 +26,9 @@ impl Shape for Cylinder {
     fn object_normal_at(&self, point: Point3D) -> Normal3D {
         let distance = point.x().powi(2) + point.z().powi(2);
 
-        if distance < 1.0 && point.y() >= self.max_y - (f32::EPSILON as f64) {
+        if distance < 1.0 && point.y().is_roughly_gte(self.max_y) {
             Normal3D::POSITIVE_Y
-        } else if distance < 1.0 && point.y() <= self.min_y + (f32::EPSILON as f64) {
+        } else if distance < 1.0 && point.y().is_roughly_lte(self.min_y) {
             Normal3D::NEGATIVE_Y
         } else {
             Vector3D::new(point.x(), 0.0, point.z()).normalised()
@@ -105,14 +106,14 @@ impl Shape for Cylinder {
     ///  - u <- 1..2 maps to the top cap of the cylinder
     ///  - u <- 2..3 maps to the bottom cap of the cylinder
     fn uv_at(&self, point: Point3D) -> (f64, f64) {
-        if self.capped && ((self.max_y - point.y()).abs() <= f32::EPSILON as f64) {
+        if self.capped && self.max_y.roughly_equals(point.y()) {
             let u = (point.x() + 1.0) / 2.0;
             let v = (1.0 - point.z()) / 2.0;
 
             return (u + 1.0, v);
         }
 
-        if self.capped && ((self.min_y - point.y()).abs() <= f32::EPSILON as f64) {
+        if self.capped && self.min_y.roughly_equals(point.y()) {
             let u = (point.x() + 1.0) / 2.0;
             let v = (point.z() + 1.0) / 2.0;
 

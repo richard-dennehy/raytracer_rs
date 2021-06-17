@@ -1,4 +1,5 @@
 use crate::pattern::Kind::{Checkers, Gradient, Ring, Solid, Striped};
+use crate::util::F64Ext;
 use crate::{Colour, Point3D, Transform};
 use image::RgbImage;
 use std::num::NonZeroUsize;
@@ -292,7 +293,7 @@ impl UvPattern {
 fn nudge(f: f64) -> f64 {
     let delta = f.ceil() - f;
 
-    if delta != 0.0 && delta <= (f32::EPSILON as f64) {
+    if delta != 0.0 && delta.is_roughly_zero() {
         f + (f32::EPSILON as f64)
     } else {
         f

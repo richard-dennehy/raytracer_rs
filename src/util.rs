@@ -19,3 +19,34 @@ pub fn quadratic(a: f64, b: f64, c: f64) -> Option<(f64, f64)> {
 pub fn reasonable_f64() -> std::ops::Range<f64> {
     -1000.0..1000.0
 }
+
+pub trait F64Ext {
+    fn roughly_equals(&self, other: Self) -> bool;
+    fn is_roughly_gte(&self, other: Self) -> bool;
+    fn is_roughly_lte(&self, other: Self) -> bool;
+    fn is_roughly_zero(&self) -> bool;
+    fn is_not_roughly_zero(&self) -> bool {
+        !self.is_roughly_zero()
+    }
+}
+
+// actual f64 epsilon isn't nearly lenient enough
+const EPSILON: f64 = f32::EPSILON as f64;
+
+impl F64Ext for f64 {
+    fn roughly_equals(&self, other: Self) -> bool {
+        approx::relative_eq!(self, &other, epsilon = EPSILON)
+    }
+
+    fn is_roughly_gte(&self, other: Self) -> bool {
+        *self >= other - EPSILON
+    }
+
+    fn is_roughly_lte(&self, other: Self) -> bool {
+        *self <= other + EPSILON
+    }
+
+    fn is_roughly_zero(&self) -> bool {
+        self.roughly_equals(0.0)
+    }
+}

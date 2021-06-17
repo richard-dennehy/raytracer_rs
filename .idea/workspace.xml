@@ -15,27 +15,15 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="experiment with different inline vector sizes">
-      <change afterPath="$PROJECT_DIR$/src/util.rs" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="migrate tests to use `approx` instead of `float_cmp`">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/camera/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/camera/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/colour/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/colour/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/colour/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/colour/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/matrix/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/matrix/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/matrix/underlying/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/underlying/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/matrix/underlying/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/underlying/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/bounds/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/bounds/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/point/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/point/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vector/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/vector/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vector/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/vector/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/world/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/cone.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cone.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/cylinder.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cylinder.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pattern/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/ray/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/util.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/util.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -444,14 +432,9 @@
       <workItem from="1623584451407" duration="2294000" />
       <workItem from="1623693616864" duration="2257000" />
       <workItem from="1623777539692" duration="2594000" />
-      <workItem from="1623865582049" duration="1459000" />
-    </task>
-    <task id="LOCAL-00149" summary="allow group materials to override children">
-      <created>1618748495877</created>
-      <option name="number" value="00149" />
-      <option name="presentableId" value="LOCAL-00149" />
-      <option name="project" value="LOCAL" />
-      <updated>1618748495877</updated>
+      <workItem from="1623865582049" duration="1789000" />
+      <workItem from="1623867475550" duration="23000" />
+      <workItem from="1623955399101" duration="2543000" />
     </task>
     <task id="LOCAL-00150" summary="WIP write README for YAML parser">
       <created>1618860211930</created>
@@ -789,7 +772,14 @@
       <option name="project" value="LOCAL" />
       <updated>1623587247441</updated>
     </task>
-    <option name="localTasksCounter" value="198" />
+    <task id="LOCAL-00198" summary="migrate tests to use `approx` instead of `float_cmp`">
+      <created>1623867281631</created>
+      <option name="number" value="00198" />
+      <option name="presentableId" value="LOCAL-00198" />
+      <option name="project" value="LOCAL" />
+      <updated>1623867281631</updated>
+    </task>
+    <option name="localTasksCounter" value="199" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -815,7 +805,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="implement planar and cylindrical uv mapping" />
     <MESSAGE value="WIP cubic mapping" />
     <MESSAGE value="implement cubic UV mapping" />
     <MESSAGE value="implement image mapping" />
@@ -840,7 +829,8 @@
     <MESSAGE value="attempt to improve performance of point lights" />
     <MESSAGE value="recalculate triangle UVs when calculating smoothed normals to avoid passing redundant data around" />
     <MESSAGE value="experiment with different inline vector sizes" />
-    <option name="LAST_COMMIT_MESSAGE" value="experiment with different inline vector sizes" />
+    <MESSAGE value="migrate tests to use `approx` instead of `float_cmp`" />
+    <option name="LAST_COMMIT_MESSAGE" value="migrate tests to use `approx` instead of `float_cmp`" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -20,6 +20,7 @@ use triangle::Triangle;
 mod bounds;
 use crate::light::LightSample;
 use crate::material::MaterialKind;
+use crate::util::F64Ext;
 use bounds::BoundingBox;
 use std::f64::consts::PI;
 
@@ -543,7 +544,7 @@ impl Shape for Plane {
         parent: &'parent Object,
         with: Ray,
     ) -> Intersections<'parent> {
-        if with.direction.y().abs() <= f32::EPSILON as f64 {
+        if with.direction.y().is_roughly_zero() {
             return Intersections::empty();
         }
 

@@ -1,5 +1,6 @@
 use crate::object::bounds::BoundingBox;
 use crate::object::Shape;
+use crate::util::F64Ext;
 use crate::{Intersection, Intersections, Normal3D, Object, Point3D, Ray, Vector, Vector3D};
 use std::f64::consts::PI;
 
@@ -120,14 +121,14 @@ impl Shape for Cone {
     ///  - u <- 1..2 maps to the top cap of the cone
     ///  - u <- 2..3 maps to the bottom cap of the cone
     fn uv_at(&self, point: Point3D) -> (f64, f64) {
-        if self.capped && ((self.max_y - point.y()).abs() <= f32::EPSILON as f64) {
+        if self.capped && self.max_y.roughly_equals(point.y()) {
             let u = (point.x() + 1.0) / 2.0;
             let v = (1.0 - point.z()) / 2.0;
 
             return (u + 1.0, v);
         }
 
-        if self.capped && ((self.min_y - point.y()).abs() <= f32::EPSILON as f64) {
+        if self.capped && self.min_y.roughly_equals(point.y()) {
             let u = (point.x() + 1.0) / 2.0;
             let v = (point.z() + 1.0) / 2.0;
 
