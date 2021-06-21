@@ -159,89 +159,61 @@ mod unit_tests {
 
 mod property_tests {
     use super::*;
-
-    use proptest::prelude::*;
+    use crate::util::ReasonableF64;
+    use quickcheck::{Arbitrary, Gen};
+    use quickcheck_macros::quickcheck;
+    use rand::prelude::*;
 
     impl Arbitrary for Colour {
-        type Parameters = ();
+        fn arbitrary(_: &mut Gen) -> Self {
+            let mut rng = rand::thread_rng();
+            // generate a finite f64 value between 0 and 1.5
+            // (colour components are allowed to be greater than 1, but allowing very large values may lead to massive rounding errors)
+            fn gen_component(rng: &mut ThreadRng) -> f64 {
+                rng.gen_range(0.0..1.5)
+            }
 
-        fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
-            (
-                crate::util::reasonable_f64(),
-                crate::util::reasonable_f64(),
-                crate::util::reasonable_f64(),
+            Self::new(
+                gen_component(&mut rng),
+                gen_component(&mut rng),
+                gen_component(&mut rng),
             )
-                .prop_map(|(x, y, z)| Colour::new(x, y, z))
-                .boxed()
         }
-
-        type Strategy = BoxedStrategy<Self>;
     }
 
-    proptest! {
-        #[test]
-        fn a_colour_has_red_blue_and_green_components(r in crate::util::reasonable_f64(), g in crate::util::reasonable_f64(), b in crate::util::reasonable_f64()) {
-            let colour = Colour::new(r, g, b);
+    #[quickcheck]
+    fn adding_two_colours_should_sum_components(c1: Colour, c2: Colour) {
+        let sum = c1 + c2;
+        assert_eq!(sum.red(), c1.red() + c2.red());
+        assert_eq!(sum.green(), c1.green() + c2.green());
+        assert_eq!(sum.blue(), c1.blue() + c2.blue());
+    }
 
-            assert_eq!(colour.red(), r);
-            assert_eq!(colour.green(), g);
-            assert_eq!(colour.blue(), b);
-        }
+    #[quickcheck]
+    fn adding_two_colours_is_commutative(c1: Colour, c2: Colour) {
+        assert_eq!(c1 + c2, c2 + c1);
+    }
 
-        #[test]
-        fn adding_two_colours_should_sum_components(
-            r1 in crate::util::reasonable_f64(),
-            g1 in crate::util::reasonable_f64(),
-            b1 in crate::util::reasonable_f64(),
-            r2 in crate::util::reasonable_f64(),
-            g2 in crate::util::reasonable_f64(),
-            b2 in crate::util::reasonable_f64(),
-        ) {
-            let c1 = Colour::new(r1, g1, b1);
-            let c2 = Colour::new(r2, g2, b2);
+    #[quickcheck]
+    fn multiplying_a_colour_by_a_scalar_should_scale_components(colour: Colour, s: ReasonableF64) {
+        let s = s.0;
+        let scaled = colour * s;
 
-            let sum = c1 + c2;
-            assert_eq!(sum.red(), r1 + r2);
-            assert_eq!(sum.green(), g1 + g2);
-            assert_eq!(sum.blue(), b1 + b2);
-        }
+        assert_eq!(scaled.red(), colour.red() * s);
+        assert_eq!(scaled.green(), colour.green() * s);
+        assert_eq!(scaled.blue(), colour.blue() * s);
+    }
 
-        #[test]
-        fn adding_two_colours_is_commutative(c1 in any::<Colour>(), c2 in any::<Colour>()) {
-            assert_eq!(c1 + c2, c2 + c1);
-        }
+    #[quickcheck]
+    fn multiplying_two_colours_should_multiply_components(c1: Colour, c2: Colour) {
+        let product = c1 * c2;
+        assert_eq!(product.red(), c1.red() * c2.red());
+        assert_eq!(product.green(), c1.green() * c2.green());
+        assert_eq!(product.blue(), c1.blue() * c2.blue());
+    }
 
-        #[test]
-        fn multiplying_a_colour_by_a_scalar_should_scale_components(r in crate::util::reasonable_f64(), g in crate::util::reasonable_f64(), b in crate::util::reasonable_f64(), s in crate::util::reasonable_f64()) {
-            let colour = Colour::new(r, g, b);
-            let scaled = colour * s;
-
-            assert_eq!(scaled.red(), r * s);
-            assert_eq!(scaled.green(), g * s);
-            assert_eq!(scaled.blue(), b * s);
-        }
-
-        #[test]
-        fn multiplying_two_colours_should_multiply_components(
-            r1 in crate::util::reasonable_f64(),
-            g1 in crate::util::reasonable_f64(),
-            b1 in crate::util::reasonable_f64(),
-            r2 in crate::util::reasonable_f64(),
-            g2 in crate::util::reasonable_f64(),
-            b2 in crate::util::reasonable_f64(),
-        ) {
-            let c1 = Colour::new(r1, g1, b1);
-            let c2 = Colour::new(r2, g2, b2);
-
-            let sum = c1 * c2;
-            assert_eq!(sum.red(), r1 * r2);
-            assert_eq!(sum.green(), g1 * g2);
-            assert_eq!(sum.blue(), b1 * b2);
-        }
-
-        #[test]
-        fn multiplying_colours_is_commutative(c1 in any::<Colour>(), c2 in any::<Colour>()) {
-            assert_eq!(c1 * c2, c2 * c1);
-        }
+    #[quickcheck]
+    fn multiplying_colours_is_commutative(c1: Colour, c2: Colour) {
+        assert_eq!(c1 * c2, c2 * c1);
     }
 }

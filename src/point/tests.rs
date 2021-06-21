@@ -55,87 +55,38 @@ mod unit_tests {
 
 mod property_tests {
     use super::*;
-    use proptest::prelude::*;
+    use quickcheck_macros::quickcheck;
 
-    proptest! {
-        #[test]
-        fn first_element_should_be_x(x in crate::util::reasonable_f64(), y in crate::util::reasonable_f64(), z in crate::util::reasonable_f64()) {
-            assert_eq!(Point3D::new(x, y, z).x(), x)
-        }
+    #[quickcheck]
+    fn adding_a_vector_to_a_point_should_produce_a_point_translated_by_the_vector(
+        point: Point3D,
+        vector: Vector3D,
+    ) {
+        let translated = point + vector;
+        assert_eq!(translated.x(), point.x() + vector.x());
+        assert_eq!(translated.y(), point.y() + vector.y());
+        assert_eq!(translated.z(), point.z() + vector.z());
+    }
 
-        #[test]
-        fn second_element_should_be_y(x in crate::util::reasonable_f64(), y in crate::util::reasonable_f64(), z in crate::util::reasonable_f64()) {
-            assert_eq!(Point3D::new(x, y, z).y(), y)
-        }
+    #[quickcheck]
+    fn subtracting_a_point_from_a_point_should_produce_a_vector_of_the_distance_between_them(
+        p1: Point3D,
+        p2: Point3D,
+    ) {
+        let distance = p1 - p2;
+        assert_eq!(distance.x(), p1.x() - p2.x());
+        assert_eq!(distance.y(), p1.y() - p2.y());
+        assert_eq!(distance.z(), p1.z() - p2.z());
+    }
 
-        #[test]
-        fn third_element_should_be_z(x in crate::util::reasonable_f64(), y in crate::util::reasonable_f64(), z in crate::util::reasonable_f64()) {
-            assert_eq!(Point3D::new(x, y, z).z(), z)
-        }
-
-        #[test]
-        fn w_should_always_be_one(x in crate::util::reasonable_f64(), y in crate::util::reasonable_f64(), z in crate::util::reasonable_f64()) {
-            assert_eq!(Point3D::new(x, y, z).w(), 1.0)
-        }
-
-        #[test]
-        fn adding_a_vector_to_a_point_should_produce_a_point_with_sum_of_x_y_and_z(
-            x1 in crate::util::reasonable_f64(),
-            y1 in crate::util::reasonable_f64(),
-            z1 in crate::util::reasonable_f64(),
-            x2 in crate::util::reasonable_f64(),
-            y2 in crate::util::reasonable_f64(),
-            z2 in crate::util::reasonable_f64(),
-        ) {
-            let point = Point3D::new(x1, y1, z1);
-            let vector = Vector3D::new(x2, y2, z2);
-
-            let added = point + vector;
-            assert_eq!(added.x(), x1 + x2);
-            assert_eq!(added.y(), y1 + y2);
-            assert_eq!(added.z(), z1 + z2);
-
-            assert_eq!(added.w(), 1.0);
-        }
-
-        #[test]
-        fn subtracting_a_point_from_a_point_should_produce_a_vector_of_the_distance_between_them(
-            x1 in crate::util::reasonable_f64(),
-            y1 in crate::util::reasonable_f64(),
-            z1 in crate::util::reasonable_f64(),
-            x2 in crate::util::reasonable_f64(),
-            y2 in crate::util::reasonable_f64(),
-            z2 in crate::util::reasonable_f64(),
-        ) {
-            let p1 = Point3D::new(x1, y1, z1);
-            let p2 = Point3D::new(x2, y2, z2);
-
-            let distance = p1 - p2;
-            assert_eq!(distance.x(), x1 - x2);
-            assert_eq!(distance.y(), y1 - y2);
-            assert_eq!(distance.z(), z1 - z2);
-
-            assert_eq!(distance.w(), 0.0);
-        }
-
-        #[test]
-        fn subtracting_a_vector_from_a_point_should_produce_a_point_translated_by_the_vector(
-            x1 in crate::util::reasonable_f64(),
-            y1 in crate::util::reasonable_f64(),
-            z1 in crate::util::reasonable_f64(),
-            x2 in crate::util::reasonable_f64(),
-            y2 in crate::util::reasonable_f64(),
-            z2 in crate::util::reasonable_f64(),
-        ) {
-            let point = Point3D::new(x1, y1, z1);
-            let vector = Vector3D::new(x2, y2, z2);
-
-            let translated = point - vector;
-            assert_eq!(translated.x(), x1 - x2);
-            assert_eq!(translated.y(), y1 - y2);
-            assert_eq!(translated.z(), z1 - z2);
-
-            assert_eq!(translated.w(), 1.0);
-        }
+    #[quickcheck]
+    fn subtracting_a_vector_from_a_point_should_produce_a_point_translated_by_the_negative_vector(
+        point: Point3D,
+        vector: Vector3D,
+    ) {
+        let translated = point - vector;
+        assert_eq!(translated.x(), point.x() - vector.x());
+        assert_eq!(translated.y(), point.y() - vector.y());
+        assert_eq!(translated.z(), point.z() - vector.z());
     }
 }

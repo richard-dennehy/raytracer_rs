@@ -308,108 +308,57 @@ mod unit_tests {
 
 mod property_tests {
     use super::*;
-    use proptest::prelude::*;
+    use quickcheck_macros::quickcheck;
 
-    // because the IDE totally gives up in the `proptest` macro, define functions here and
-    // call them inside the `proptest` block
-    mod properties {
-        use super::*;
-
-        pub fn identity_transform_multiplication_has_no_effect_on_vector(vector: Vector3D) {
-            assert_eq!(Transform::identity() * vector, vector);
-        }
-
-        pub fn identity_transform_multiplication_has_no_effect_on_point(point: Point3D) {
-            assert_eq!(Transform::identity() * point, point);
-        }
-
-        pub fn vectors_cannot_be_translated(vector: Vector3D, translation: Transform) {
-            assert_eq!(translation * vector, vector);
-        }
-
-        pub fn must_be_invertible(transform: Transform) {
-            // if the underlying matrix is not invertible, the transform will panic on creation - this test only ensures that the internal invariant is properly maintained
-            assert!(transform.inverse.inverse().is_some())
-        }
-
-        pub fn multiplying_a_point_by_a_transform_produces_the_same_point_as_multiplying_by_the_equivalent_matrix(
-            transform: Transform,
-            point: Point3D,
-        ) {
-            let expected = transform * point;
-            let (x, y, z, _) = transform.underlying() * point;
-            let actual = Point3D::new(x, y, z);
-
-            assert_eq!(expected, actual);
-        }
-
-        pub fn multiplying_a_vector_by_a_transform_produces_the_same_vector_as_multiplying_by_the_equivalent_matrix(
-            transform: Transform,
-            vector: Vector3D,
-        ) {
-            let expected = transform * vector;
-            let (x, y, z, _) = transform.underlying() * vector;
-            let actual = Vector3D::new(x, y, z);
-
-            assert_eq!(expected, actual);
-        }
+    #[quickcheck]
+    fn multiplying_a_vector_by_identity_transform_produces_the_same_vector(vector: Vector3D) {
+        assert_eq!(Transform::identity() * vector, vector);
     }
 
-    proptest! {
-        #[test]
-        fn multiplying_a_vector_by_identity_transform_produces_the_same_vector(vector in any::<Vector3D>()) {
-            properties::identity_transform_multiplication_has_no_effect_on_vector(vector);
-        }
+    #[quickcheck]
+    fn multiplying_a_point_by_identity_transform_produces_the_same_point(point: Point3D) {
+        assert_eq!(Transform::identity() * point, point);
+    }
 
-        #[test]
-        fn multiplying_a_point_by_identity_transform_produces_the_same_point(point in any::<Point3D>()) {
-            properties::identity_transform_multiplication_has_no_effect_on_point(point);
-        }
+    #[quickcheck]
+    fn vectors_cannot_be_translated(vector: Vector3D, translation: AnyTranslation) {
+        assert_eq!(*translation * vector, vector);
+    }
 
-        #[test]
-        fn vectors_cannot_be_translated(vector in any::<Vector3D>(), translation in Transform::any_translation()) {
-            properties::vectors_cannot_be_translated(vector, translation);
-        }
+    #[quickcheck]
+    fn all_translations_are_invertible(translation: AnyTranslation) {
+        assert!((*translation).inverse.inverse().is_some());
+    }
 
-        #[test]
-        fn all_translations_are_invertible(translation in Transform::any_translation()) {
-            properties::must_be_invertible(translation);
-        }
+    #[quickcheck]
+    fn all_scaling_is_invertible(scale: AnyScaling) {
+        assert!((*scale).inverse.inverse().is_some());
+    }
 
-        #[test]
-        fn all_scaling_is_invertible(scale in Transform::any_scaling()) {
-            properties::must_be_invertible(scale);
-        }
+    #[quickcheck]
+    fn all_shearing_is_invertible(shear: AnyShear) {
+        assert!((*shear).inverse.inverse().is_some());
+    }
 
-        #[test]
-        fn all_shearing_is_invertible(shear in Transform::any_shear()) {
-            properties::must_be_invertible(shear);
-        }
+    #[quickcheck]
+    fn all_rotations_are_invertible(rotation: AnyRotation) {
+        assert!((*rotation).inverse.inverse().is_some());
+    }
 
-        #[test]
-        fn all_rotations_are_invertible(rotation in Transform::any_rotation()) {
-            properties::must_be_invertible(rotation);
-        }
+    #[quickcheck]
+    fn all_transformations_are_invertible(transform: Transform) {
+        assert!(transform.inverse.inverse().is_some());
+    }
 
-        #[test]
-        fn all_transformations_are_invertible(transform in Transform::any_transform()) {
-            properties::must_be_invertible(transform);
-        }
+    #[quickcheck]
+    fn multiplying_a_point_by_a_transform_produces_the_same_point_as_multiplying_by_the_equivalent_matrix(
+        transform: Transform,
+        point: Point3D,
+    ) {
+        let expected = transform * point;
+        let (x, y, z, _) = transform.underlying() * point;
+        let actual = Point3D::new(x, y, z);
 
-        #[test]
-        fn multiplying_a_point_by_a_transform_produces_the_same_point_as_multiplying_by_the_equivalent_matrix(
-            transform in Transform::any_transform(),
-            point in any::<Point3D>()
-        ) {
-            properties::multiplying_a_point_by_a_transform_produces_the_same_point_as_multiplying_by_the_equivalent_matrix(transform, point)
-        }
-
-        #[test]
-        fn multiplying_a_vector_by_a_transform_produces_the_same_vector_as_multiplying_by_the_equivalent_matrix(
-            transform in Transform::any_transform(),
-            vector in any::<Vector3D>()
-        ) {
-            properties::multiplying_a_vector_by_a_transform_produces_the_same_vector_as_multiplying_by_the_equivalent_matrix(transform, vector)
-        }
+        assert_eq!(expected, actual);
     }
 }

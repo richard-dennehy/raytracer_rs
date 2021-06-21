@@ -3,6 +3,8 @@ use approx::AbsDiffEq;
 use std::fmt;
 use std::fmt::{Debug, Formatter};
 use std::ops::{Mul, MulAssign};
+#[cfg(test)]
+pub use test_utils::*;
 
 #[cfg(test)]
 mod tests;
@@ -303,112 +305,203 @@ impl AbsDiffEq for Transform {
 }
 
 #[cfg(test)]
-pub use test_utils::*;
-
-#[cfg(test)]
 mod test_utils {
-    use crate::matrix::underlying::Matrix4D;
+    use crate::matrix::Matrix4D;
     use crate::Transform;
-    use proptest::collection;
-    use proptest::option;
-    use proptest::prelude::*;
+    use quickcheck::{Arbitrary, Gen};
+    use rand::prelude::*;
     use std::f64::consts::PI;
+    use std::ops::Deref;
 
     impl Transform {
         pub fn underlying(&self) -> Matrix4D {
             self.inverse.inverse().unwrap()
         }
+    }
 
-        pub fn any_transform() -> BoxedStrategy<Self> {
-            fn any_single_transform() -> BoxedStrategy<Transform> {
-                proptest::prop_oneof![
-                    Transform::any_translation(),
-                    Transform::any_scaling(),
-                    Transform::any_shear(),
-                    Transform::any_rotation(),
-                ]
-                .boxed()
+    impl Arbitrary for Transform {
+        fn arbitrary(g: &mut Gen) -> Self {
+            fn gen_single(g: &mut Gen) -> Transform {
+                let translation = AnyTranslation::arbitrary(g).0;
+                let scaling = AnyScaling::arbitrary(g).0;
+                let shear = AnyShear::arbitrary(g).0;
+                let rotation = AnyRotation::arbitrary(g).0;
+
+                *g.choose(&[translation, scaling, shear, rotation]).unwrap()
             }
 
-            collection::vec(any_single_transform(), 1..5)
-                .prop_map(|transforms| {
-                    transforms
-                        .into_iter()
-                        .fold(Transform::identity(), |acc, next| next * acc)
-                })
-                .boxed()
+            // generate between 1 and 5 arbitrary transforms and combine them into a single transform
+            let n = (usize::arbitrary(g) % 5) + 1;
+            (0..n)
+                .map(|_| gen_single(g))
+                .fold(Transform::identity(), |acc, next| next * acc)
         }
+    }
 
-        pub fn any_translation() -> BoxedStrategy<Self> {
-            (
-                option::of(-5.0..5.0),
-                option::of(-5.0..5.0),
-                option::of(-5.0..5.0),
-            )
-                .prop_filter("zero translation", |(x, y, z)| {
-                    x.is_none() && y.is_none() && z.is_none()
-                })
-                .prop_map(|(x, y, z)| {
-                    Transform::identity()
-                        .translate_x(x.unwrap_or(0.0))
-                        .translate_y(y.unwrap_or(0.0))
-                        .translate_z(z.unwrap_or(0.0))
-                })
-                .boxed()
-        }
+    #[derive(Debug, Clone)]
+    pub struct AnyTranslation(Transform);
+    impl Arbitrary for AnyTranslation {
+        fn arbitrary(_: &mut Gen) -> Self {
+            let mut rng = rand::thread_rng();
 
-        pub fn any_scaling() -> BoxedStrategy<Self> {
-            // use smallish values to stop combined transforms from generating enormous values (and accumulating enormous rounding errors)
-            (
-                option::of(-1.5..1.5),
-                option::of(-1.5..1.5),
-                option::of(-1.5..1.5),
-            )
-                .prop_filter("no scaling", |(x, y, z)| {
-                    x.is_none() && y.is_none() && z.is_none()
-                })
-                .prop_map(|(x, y, z)| {
-                    Transform::identity()
-                        .translate_x(x.unwrap_or(1.0))
-                        .translate_y(y.unwrap_or(1.0))
-                        .translate_z(z.unwrap_or(1.0))
-                })
-                .boxed()
-        }
-
-        pub fn any_shear() -> BoxedStrategy<Self> {
-            proptest::prop_oneof![
-                (-1.5..1.5).prop_map(|x_to_y| Transform::identity().shear_x_to_y(x_to_y)),
-                (-1.5..1.5).prop_map(|x_to_z| Transform::identity().shear_x_to_z(x_to_z)),
-                (-1.5..1.5).prop_map(|y_to_x| Transform::identity().shear_y_to_x(y_to_x)),
-                (-1.5..1.5).prop_map(|y_to_z| Transform::identity().shear_y_to_z(y_to_z)),
-                (-1.5..1.5).prop_map(|z_to_x| Transform::identity().shear_z_to_x(z_to_x)),
-                (-1.5..1.5).prop_map(|z_to_y| Transform::identity().shear_z_to_y(z_to_y)),
-            ]
-            .boxed()
-        }
-
-        pub fn any_rotation() -> BoxedStrategy<Self> {
-            // -2π to 2π radians = -360deg to 360deg
-            fn radians() -> BoxedStrategy<f64> {
-                (-2.0..2.0).prop_map(|r| r * PI).boxed()
+            fn gen_translation(rng: &mut ThreadRng) -> f64 {
+                rng.gen_range(-5.0..5.0)
             }
 
-            (
-                option::of(radians()),
-                option::of(radians()),
-                option::of(radians()),
-            )
-                .prop_filter("no rotation", |(x, y, z)| {
-                    x.is_none() && y.is_none() && z.is_none()
-                })
-                .prop_map(|(x, y, z)| {
+            let gen_x = rng.gen::<bool>();
+            let gen_y = rng.gen::<bool>();
+            let gen_z = rng.gen::<bool>();
+
+            // avoid generating zero translations
+            if gen_x || gen_y || gen_z {
+                AnyTranslation(
                     Transform::identity()
-                        .rotate_x(x.unwrap_or(0.0))
-                        .rotate_y(y.unwrap_or(0.0))
-                        .rotate_z(z.unwrap_or(0.0))
-                })
-                .boxed()
+                        .translate_x(if gen_x {
+                            gen_translation(&mut rng)
+                        } else {
+                            0.0
+                        })
+                        .translate_y(if gen_y {
+                            gen_translation(&mut rng)
+                        } else {
+                            0.0
+                        })
+                        .translate_z(if gen_z {
+                            gen_translation(&mut rng)
+                        } else {
+                            0.0
+                        }),
+                )
+            } else {
+                AnyTranslation(
+                    Transform::identity()
+                        .translate_x(gen_translation(&mut rng))
+                        .translate_y(gen_translation(&mut rng))
+                        .translate_z(gen_translation(&mut rng)),
+                )
+            }
+        }
+    }
+
+    impl Deref for AnyTranslation {
+        type Target = Transform;
+
+        fn deref(&self) -> &Self::Target {
+            &self.0
+        }
+    }
+
+    #[derive(Debug, Clone)]
+    pub struct AnyScaling(Transform);
+    impl Arbitrary for AnyScaling {
+        fn arbitrary(_: &mut Gen) -> Self {
+            let mut rng = rand::thread_rng();
+
+            // generate small value to avoid potentially drastic effects leading to large rounding errors
+            fn gen_scaling(rng: &mut ThreadRng) -> f64 {
+                rng.gen_range(-1.5..1.5)
+            }
+
+            let gen_x = rng.gen::<bool>();
+            let gen_y = rng.gen::<bool>();
+            let gen_z = rng.gen::<bool>();
+
+            // avoid generating 1x scaling
+            if gen_x || gen_y || gen_z {
+                AnyScaling(
+                    Transform::identity()
+                        .scale_x(if gen_x { gen_scaling(&mut rng) } else { 1.0 })
+                        .scale_y(if gen_y { gen_scaling(&mut rng) } else { 1.0 })
+                        .scale_z(if gen_z { gen_scaling(&mut rng) } else { 1.0 }),
+                )
+            } else {
+                AnyScaling(
+                    Transform::identity()
+                        .scale_x(gen_scaling(&mut rng))
+                        .scale_y(gen_scaling(&mut rng))
+                        .scale_z(gen_scaling(&mut rng)),
+                )
+            }
+        }
+    }
+
+    impl Deref for AnyScaling {
+        type Target = Transform;
+
+        fn deref(&self) -> &Self::Target {
+            &self.0
+        }
+    }
+
+    #[derive(Debug, Clone)]
+    pub struct AnyShear(Transform);
+    impl Arbitrary for AnyShear {
+        fn arbitrary(_: &mut Gen) -> Self {
+            let mut rng = rand::thread_rng();
+
+            // generate small value to avoid potentially drastic effects
+            fn gen_shear(rng: &mut ThreadRng) -> f64 {
+                rng.gen_range(-1.5..1.5)
+            }
+
+            let xy = Transform::identity().shear_x_to_y(gen_shear(&mut rng));
+            let xz = Transform::identity().shear_x_to_z(gen_shear(&mut rng));
+            let yx = Transform::identity().shear_y_to_x(gen_shear(&mut rng));
+            let yz = Transform::identity().shear_y_to_z(gen_shear(&mut rng));
+            let zx = Transform::identity().shear_z_to_x(gen_shear(&mut rng));
+            let zy = Transform::identity().shear_z_to_y(gen_shear(&mut rng));
+
+            AnyShear([xy, xz, yx, yz, zx, zy].choose(&mut rng).unwrap().clone())
+        }
+    }
+
+    impl Deref for AnyShear {
+        type Target = Transform;
+
+        fn deref(&self) -> &Self::Target {
+            &self.0
+        }
+    }
+
+    #[derive(Debug, Clone)]
+    pub struct AnyRotation(Transform);
+    impl Arbitrary for AnyRotation {
+        fn arbitrary(_: &mut Gen) -> Self {
+            let mut rng = rand::thread_rng();
+
+            // generate between -2π and 2π radians of rotation
+            fn gen_radians(rng: &mut ThreadRng) -> f64 {
+                rng.gen_range(-2.0..2.0) * PI
+            }
+
+            let gen_x = rng.gen::<bool>();
+            let gen_y = rng.gen::<bool>();
+            let gen_z = rng.gen::<bool>();
+
+            // avoid generating 0 rotation
+            if gen_x || gen_y || gen_z {
+                AnyRotation(
+                    Transform::identity()
+                        .rotate_x(if gen_x { gen_radians(&mut rng) } else { 0.0 })
+                        .rotate_y(if gen_x { gen_radians(&mut rng) } else { 0.0 })
+                        .rotate_z(if gen_x { gen_radians(&mut rng) } else { 0.0 }),
+                )
+            } else {
+                AnyRotation(
+                    Transform::identity()
+                        .rotate_x(gen_radians(&mut rng))
+                        .rotate_y(gen_radians(&mut rng))
+                        .rotate_z(gen_radians(&mut rng)),
+                )
+            }
+        }
+    }
+
+    impl Deref for AnyRotation {
+        type Target = Transform;
+
+        fn deref(&self) -> &Self::Target {
+            &self.0
         }
     }
 }

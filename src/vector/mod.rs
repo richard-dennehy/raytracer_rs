@@ -15,9 +15,6 @@ pub trait Vector: Sized + Copy + Clone {
     fn x(&self) -> f64;
     fn y(&self) -> f64;
     fn z(&self) -> f64;
-    fn w(&self) -> f64 {
-        0.0
-    }
 
     fn magnitude(&self) -> f64;
     fn normalised(&self) -> Normal3D;
@@ -274,22 +271,22 @@ pub use test_utils::*;
 
 #[cfg(test)]
 mod test_utils {
-    use super::*;
-    use proptest::prelude::*;
+    use crate::Vector3D;
+    use quickcheck::{Arbitrary, Gen};
+    use rand::prelude::*;
 
     impl Arbitrary for Vector3D {
-        type Parameters = ();
+        fn arbitrary(_: &mut Gen) -> Self {
+            let mut rng = thread_rng();
+            fn gen_component(rng: &mut ThreadRng) -> f64 {
+                rng.gen_range(-10.0..10.0)
+            }
 
-        fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
-            (
-                crate::util::reasonable_f64(),
-                crate::util::reasonable_f64(),
-                crate::util::reasonable_f64(),
+            Self::new(
+                gen_component(&mut rng),
+                gen_component(&mut rng),
+                gen_component(&mut rng),
             )
-                .prop_map(|(x, y, z)| Vector3D::new(x, y, z))
-                .boxed()
         }
-
-        type Strategy = BoxedStrategy<Self>;
     }
 }

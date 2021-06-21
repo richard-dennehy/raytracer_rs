@@ -436,43 +436,24 @@ mod unit_tests {
 
 mod property_tests {
     use super::*;
-    use proptest::prelude::*;
+    use quickcheck_macros::quickcheck;
 
-    mod properties {
-        use super::*;
+    #[quickcheck]
+    fn two_joined_bounding_boxes_should_contain_the_min_and_max_points_of_both_boxes(
+        bb1: BoundingBox,
+        bb2: BoundingBox,
+    ) {
+        let bounds = bb1.expand_to_fit(&bb2);
 
-        pub fn two_joined_bounding_boxes_should_contain_the_min_and_max_points_of_both_boxes(
-            bb1: BoundingBox,
-            bb2: BoundingBox,
-        ) {
-            let bounds = bb1.expand_to_fit(&bb2);
-
-            assert!(bounds.contains(bb1.min));
-            assert!(bounds.contains(bb2.min));
-            assert!(bounds.contains(bb1.max));
-            assert!(bounds.contains(bb2.max));
-        }
-
-        pub fn a_bounding_box_should_contain_its_min_and_max_points(bounds: BoundingBox) {
-            assert!(bounds.contains(bounds.min));
-            assert!(bounds.contains(bounds.max));
-        }
+        assert!(bounds.contains(bb1.min));
+        assert!(bounds.contains(bb2.min));
+        assert!(bounds.contains(bb1.max));
+        assert!(bounds.contains(bb2.max));
     }
 
-    proptest! {
-        #[test]
-        fn two_joined_bounding_boxes_should_contain_the_min_and_max_points_of_both_boxes(
-            bb1 in any::<BoundingBox>(),
-            bb2 in any::<BoundingBox>(),
-        ) {
-            properties::two_joined_bounding_boxes_should_contain_the_min_and_max_points_of_both_boxes(bb1, bb2)
-        }
-
-        #[test]
-        fn a_bounding_box_should_contain_its_min_and_max_points(
-            bounds in any::<BoundingBox>()
-        ) {
-            properties::a_bounding_box_should_contain_its_min_and_max_points(bounds)
-        }
+    #[quickcheck]
+    fn a_bounding_box_should_contain_its_min_and_max_points(bounds: BoundingBox) {
+        assert!(bounds.contains(bounds.min));
+        assert!(bounds.contains(bounds.max));
     }
 }

@@ -138,7 +138,6 @@ impl BoundingBox {
         t_max >= t_min
     }
 
-    // TODO test infinite/plane BBs
     pub fn split(&self) -> (Self, Self) {
         let x_len = self.max.x() - self.min.x();
         let y_len = self.max.y() - self.min.y();
@@ -179,28 +178,33 @@ impl BoundingBox {
 mod test_utils {
     use crate::object::bounds::BoundingBox;
     use crate::Point3D;
-    use proptest::arbitrary::Arbitrary;
-    use proptest::num;
-    use proptest::prelude::{BoxedStrategy, Strategy};
+    use quickcheck::{Arbitrary, Gen};
+    use rand::prelude::*;
 
     impl Arbitrary for BoundingBox {
-        type Parameters = ();
+        fn arbitrary(_: &mut Gen) -> Self {
+            let mut rng = rand::thread_rng();
 
-        fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
-            (
-                num::f64::NEGATIVE,
-                num::f64::NEGATIVE,
-                num::f64::NEGATIVE,
-                num::f64::POSITIVE,
-                num::f64::POSITIVE,
-                num::f64::POSITIVE,
+            fn gen_positive(rng: &mut ThreadRng) -> f64 {
+                rng.gen_range(0.0..10.0)
+            }
+
+            fn gen_negative(rng: &mut ThreadRng) -> f64 {
+                rng.gen_range(-10.0..0.0)
+            }
+
+            BoundingBox::new(
+                Point3D::new(
+                    gen_negative(&mut rng),
+                    gen_negative(&mut rng),
+                    gen_negative(&mut rng),
+                ),
+                Point3D::new(
+                    gen_positive(&mut rng),
+                    gen_positive(&mut rng),
+                    gen_positive(&mut rng),
+                ),
             )
-                .prop_map(|(x1, y1, z1, x2, y2, z2)| {
-                    BoundingBox::new(Point3D::new(x1, y1, z1), Point3D::new(x2, y2, z2))
-                })
-                .boxed()
         }
-
-        type Strategy = BoxedStrategy<Self>;
     }
 }

@@ -389,31 +389,35 @@ mod sphere_tests {
 mod plane_tests {
     use super::*;
     use approx::*;
-    use proptest::prelude::*;
+    use quickcheck_macros::quickcheck;
     use std::f64::consts::PI;
 
-    proptest! {
-        #[test]
-        fn the_normal_of_an_xz_plane_is_constant_at_all_points(x in crate::util::reasonable_f64(), z in crate::util::reasonable_f64()) {
-            assert_eq!(
-                Object::plane().normal_at(Point3D::new(x, 0.0, z)),
-                Normal3D::POSITIVE_Y
-            );
-        }
+    #[quickcheck]
+    fn the_normal_of_an_xz_plane_is_constant_at_all_points(x: f64, z: f64) {
+        assert_eq!(
+            Object::plane().normal_at(Point3D::new(x, 0.0, z)),
+            Normal3D::POSITIVE_Y
+        );
+    }
 
-        #[test]
-        fn the_normal_of_an_xy_plane_is_constant_at_all_points(x in crate::util::reasonable_f64(), y in crate::util::reasonable_f64()) {
-            let plane = Object::plane().transformed(Transform::identity().rotate_x(PI / 2.0));
+    #[quickcheck]
+    fn the_normal_of_an_xy_plane_is_constant_at_all_points(x: f64, y: f64) {
+        let plane = Object::plane().transformed(Transform::identity().rotate_x(PI / 2.0));
 
-            assert_abs_diff_eq!(plane.normal_at(Point3D::new(x, y, 0.0)), Normal3D::POSITIVE_Z);
-        }
+        assert_abs_diff_eq!(
+            plane.normal_at(Point3D::new(x, y, 0.0)),
+            Normal3D::POSITIVE_Z
+        );
+    }
 
-        #[test]
-        fn the_normal_of_a_yz_plane_is_constant_at_all_points(y in crate::util::reasonable_f64(), z in crate::util::reasonable_f64()) {
-            let plane = Object::plane().transformed(Transform::identity().rotate_z(PI / 2.0));
+    #[quickcheck]
+    fn the_normal_of_a_yz_plane_is_constant_at_all_points(y: f64, z: f64) {
+        let plane = Object::plane().transformed(Transform::identity().rotate_z(PI / 2.0));
 
-            assert_abs_diff_eq!(plane.normal_at(Point3D::new(0.0, y, z)), Normal3D::NEGATIVE_X);
-        }
+        assert_abs_diff_eq!(
+            plane.normal_at(Point3D::new(0.0, y, z)),
+            Normal3D::NEGATIVE_X
+        );
     }
 
     #[test]

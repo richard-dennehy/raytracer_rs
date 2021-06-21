@@ -16,8 +16,16 @@ pub fn quadratic(a: f64, b: f64, c: f64) -> Option<(f64, f64)> {
 /// the calculations and test assertions, and none of which are reasonable input values
 /// ("garbage in, garbage out" is a reasonable stance for a ray tracer)
 /// this restricts f64s to a reasonable but still fairly generous range
-pub fn reasonable_f64() -> std::ops::Range<f64> {
-    -1000.0..1000.0
+#[derive(Clone, Debug, Copy)]
+pub struct ReasonableF64(pub f64);
+
+#[cfg(test)]
+impl quickcheck::Arbitrary for ReasonableF64 {
+    fn arbitrary(_: &mut quickcheck::Gen) -> Self {
+        use rand::prelude::*;
+
+        ReasonableF64(thread_rng().gen_range(-1000.0..1000.0))
+    }
 }
 
 pub trait F64Ext {

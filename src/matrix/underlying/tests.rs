@@ -312,44 +312,41 @@ mod property_tests {
     use super::*;
     use crate::Vector3D;
     use approx::*;
-    use proptest::prelude::*;
+    use quickcheck_macros::quickcheck;
 
-    proptest! {
-        #[test]
-        fn multiplying_a_vector_by_identity_matrix_produces_a_4_tuple_of_the_vector_components(
-            vector in any::<Vector3D>(),
-        ) {
-            assert_eq!(
-                Matrix4D::identity() * vector,
-                (vector.x(), vector.y(), vector.z(), vector.w())
-            );
-        }
+    #[quickcheck]
+    fn multiplying_a_vector_by_identity_matrix_produces_a_4_tuple_of_the_vector_components(
+        vector: Vector3D,
+    ) {
+        assert_eq!(
+            Matrix4D::identity() * vector,
+            (vector.x(), vector.y(), vector.z(), 0.0)
+        );
+    }
 
-        #[test]
-        fn multiplying_a_point_by_identity_matrix_produces_a_4_tuple_of_the_point_components(
-            point in any::<Point3D>(),
-        ) {
-            assert_eq!(
-                Matrix4D::identity() * point,
-                (point.x(), point.y(), point.z(), point.w())
-            );
-        }
+    #[quickcheck]
+    fn multiplying_a_point_by_identity_matrix_produces_a_4_tuple_of_the_point_components(
+        point: Point3D,
+    ) {
+        assert_eq!(
+            Matrix4D::identity() * point,
+            (point.x(), point.y(), point.z(), 1.0)
+        );
+    }
 
-        #[test]
-        fn multiplying_a_matrix_by_a_matrix_inverse_undoes_multiplication(
-            first in any::<Matrix4D>(),
-            second in any::<Matrix4D>(),
-        ) {
+    #[quickcheck]
+    fn multiplying_a_matrix_by_a_matrix_inverse_undoes_multiplication(
+        first: Matrix4D,
+        second: Matrix4D,
+    ) {
+        if second.determinant() != 0.0 {
+            let inverse = second.inverse();
+            assert!(inverse.is_some());
+            let inverse = inverse.unwrap();
 
-            if second.determinant() != 0.0 {
-                let inverse = second.inverse();
-                assert!(inverse.is_some());
-                let inverse = inverse.unwrap();
-
-                let product = (first.clone() * second) * inverse;
-                // rounding errors accumulate relatively significantly
-                assert_abs_diff_eq!(first, product, epsilon = f32::EPSILON as f64 * 2.0)
-            }
+            let product = (first.clone() * second) * inverse;
+            // rounding errors accumulate relatively significantly
+            assert_abs_diff_eq!(first, product, epsilon = f32::EPSILON as f64 * 2.0)
         }
     }
 }

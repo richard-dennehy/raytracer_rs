@@ -3,6 +3,9 @@ use approx::AbsDiffEq;
 use std::ops::{Mul, MulAssign};
 
 #[cfg(test)]
+pub use test_utils::*;
+
+#[cfg(test)]
 mod tests;
 
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -531,33 +534,23 @@ impl AbsDiffEq for Matrix4D {
 }
 
 #[cfg(test)]
-pub use test_utils::*;
-
-#[cfg(test)]
 mod test_utils {
-    use crate::matrix::underlying::Matrix4D;
-    use proptest::prelude::*;
+    use crate::matrix::Matrix4D;
+    use crate::util::ReasonableF64;
+    use quickcheck::{Arbitrary, Gen};
 
     impl Arbitrary for Matrix4D {
-        type Parameters = ();
+        fn arbitrary(g: &mut Gen) -> Self {
+            let mut gen_row = || {
+                [
+                    ReasonableF64::arbitrary(g).0,
+                    ReasonableF64::arbitrary(g).0,
+                    ReasonableF64::arbitrary(g).0,
+                    ReasonableF64::arbitrary(g).0,
+                ]
+            };
 
-        fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
-            fn gen_row() -> BoxedStrategy<[f64; 4]> {
-                (
-                    crate::util::reasonable_f64(),
-                    crate::util::reasonable_f64(),
-                    crate::util::reasonable_f64(),
-                    crate::util::reasonable_f64(),
-                )
-                    .prop_map(|(f1, f2, f3, f4)| [f1, f2, f3, f4])
-                    .boxed()
-            }
-
-            (gen_row(), gen_row(), gen_row(), gen_row())
-                .prop_map(|(r1, r2, r3, r4)| Matrix4D::new(r1, r2, r3, r4))
-                .boxed()
+            Matrix4D::new(gen_row(), gen_row(), gen_row(), gen_row())
         }
-
-        type Strategy = BoxedStrategy<Self>;
     }
 }
