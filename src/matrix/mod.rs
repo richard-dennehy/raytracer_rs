@@ -230,14 +230,14 @@ impl Debug for Transform {
         let underlying = self.inverse.inverse().unwrap();
 
         let stringified = format!(
-            "\n| {} | {} | {} | {} |\n| {} | {} | {} | {} |\n| {} | {} | {} | {} |\n| {} | {} | {} | {} |\n",
+            "\n| {:+.3} | {:+.3} | {:+.3} | {:+.3} |\n| {:+.3} | {:+.3} | {:+.3} | {:+.3} |\n| {:+.3} | {:+.3} | {:+.3} | {:+.3} |\n| {:+.3} | {:+.3} | {:+.3} | {:+.3} |\n",
             underlying.m00(), underlying.m01(), underlying.m02(), underlying.m03(),
             underlying.m10(), underlying.m11(), underlying.m12(), underlying.m13(),
             underlying.m20(), underlying.m21(), underlying.m22(), underlying.m23(),
             underlying.m30(), underlying.m31(), underlying.m32(), underlying.m33()
         );
 
-        writeln!(f, "{}", stringified)
+        write!(f, "{}", stringified)
     }
 }
 

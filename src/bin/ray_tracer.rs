@@ -2,7 +2,9 @@ extern crate ray_tracer;
 
 use ray_tracer::renderer::Samples;
 use ray_tracer::*;
-use std::f64::consts::FRAC_PI_4;
+use std::f64::consts::FRAC_PI_3;
+use std::fs;
+use std::path::Path;
 use std::time::Instant;
 
 /// Notes on axes and rotation:
@@ -16,80 +18,29 @@ fn main() -> Result<(), String> {
     let timer = Instant::now();
 
     let mut world = World::empty();
-    world.lights.push(Light::area(
-        Colour::greyscale(1.5),
-        Point3D::new(-1.0, 2.0, 4.0),
-        Vector3D::new(2.0, 0.0, 0.0),
-        Vector3D::new(0.0, 2.0, 0.0),
-        nonzero_ext::nonzero!(15u8),
-        nonzero_ext::nonzero!(15u8),
-        7859535925052243674,
-    ));
+    world
+        .lights
+        .push(Light::point(Colour::WHITE, Point3D::new(0.0, 10.0, 5.0)));
 
-    let light_source = Object::cube()
-        .with_material(Material {
-            kind: MaterialKind::Solid(Colour::greyscale(1.5)),
-            ambient: 1.0,
-            diffuse: 0.0,
-            specular: 0.0,
-            casts_shadow: false,
-            ..Default::default()
-        })
-        .transformed(
-            Transform::identity()
-                .scale_z(0.01)
-                .translate_y(3.0)
-                .translate_z(4.0),
-        );
+    let obj_file = fs::read_to_string(
+        Path::new(env!("CARGO_MANIFEST_DIR")).join("meshes/suzanne low poly.obj"),
+    )
+    .unwrap();
+    let obj_data = obj_parser::parse(&obj_file);
+    let prism = obj_data.to_object()?;
 
-    world.add(light_source);
-
-    let floor = Object::plane().with_material(Material {
-        kind: MaterialKind::Solid(Colour::WHITE),
-        ambient: 0.025,
-        diffuse: 0.67,
-        specular: 0.0,
+    world.add(prism.with_material(Material {
+        kind: MaterialKind::Solid(Colour::greyscale(0.7)),
         ..Default::default()
-    });
-
-    world.add(floor);
-
-    let sphere_material = |colour: Colour| Material {
-        kind: MaterialKind::Solid(colour),
-        ambient: 0.1,
-        specular: 0.0,
-        diffuse: 0.6,
-        reflective: 0.3,
-        ..Default::default()
-    };
-
-    let red_sphere = Object::sphere()
-        .with_material(sphere_material(Colour::RED))
-        .transformed(
-            Transform::identity()
-                .scale_all(0.5)
-                .translate_x(0.5)
-                .translate_y(0.5),
-        );
-    world.add(red_sphere);
-
-    let blue_sphere = Object::sphere()
-        .with_material(sphere_material(Colour::new(0.5, 0.5, 1.0)))
-        .transformed(
-            Transform::identity()
-                .scale_all(1.0 / 3.0)
-                .translate_x(-0.25)
-                .translate_y(1.0 / 3.0),
-        );
-    world.add(blue_sphere);
+    }));
 
     let camera = Camera::new(
         nonzero_ext::nonzero!(1920u16),
         nonzero_ext::nonzero!(1080u16),
-        FRAC_PI_4,
+        FRAC_PI_3,
         Transform::view_transform(
-            Point3D::new(-3.0, 1.0, 2.5),
-            Point3D::new(0.0, 0.5, 0.0),
+            Point3D::new(0.0, 0.0, 5.0),
+            Point3D::ORIGIN,
             Normal3D::POSITIVE_Y,
         ),
     );

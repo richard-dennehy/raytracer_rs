@@ -15,7 +15,7 @@ pub struct Triangle {
 impl Triangle {
     pub fn new(point1: Point3D, point2: Point3D, point3: Point3D) -> Self {
         let edge1 = point2 - point1;
-        let edge2 = point3 - point2;
+        let edge2 = point3 - point1;
 
         let normal = (edge2.cross(edge1)).normalised();
 
