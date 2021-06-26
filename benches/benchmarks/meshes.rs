@@ -1,6 +1,6 @@
 use criterion::{criterion_group, Criterion};
 use ray_tracer::renderer::{render, Samples};
-use ray_tracer::{obj_parser, Camera, Colour, Light, Normal3D, Point3D, Transform, World};
+use ray_tracer::{wavefront_parser, Camera, Colour, Light, Normal3D, Point3D, Transform, World};
 use std::f64::consts::FRAC_PI_3;
 use std::fs;
 use std::path::Path;
@@ -21,7 +21,7 @@ fn basic_triangle_meshes(c: &mut Criterion) {
         )
         .expect(&format!("failed to read mesh file {}", file_name));
 
-        let obj = obj_parser::parse(&file);
+        let obj = wavefront_parser::parse_obj(&file);
 
         group.bench_with_input(file_name, &obj, |b, obj| {
             b.iter(|| {
@@ -59,7 +59,7 @@ fn complex_meshes(c: &mut Criterion) {
         )
         .expect(&format!("failed to read mesh file {}", file_name));
 
-        let obj = obj_parser::parse(&file);
+        let obj = wavefront_parser::parse_obj(&file);
 
         group.bench_with_input(file_name, &obj, |b, obj| {
             b.iter(|| {
@@ -102,7 +102,7 @@ fn very_complex_meshes(c: &mut Criterion) {
         )
         .expect(&format!("failed to read mesh file {}", file_name));
 
-        let obj = obj_parser::parse(&file);
+        let obj = wavefront_parser::parse_obj(&file);
 
         group.bench_with_input(file_name, &obj, |b, obj| {
             b.iter(|| {

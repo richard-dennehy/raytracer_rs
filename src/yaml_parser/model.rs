@@ -1,7 +1,7 @@
 use crate::material::MaterialKind;
-use crate::obj_parser::ObjData;
+use crate::wavefront_parser::ObjData;
 use crate::{
-    obj_parser, Camera, Colour, Light, Material, Object, Pattern, Point3D, Transform, Vector,
+    wavefront_parser, Camera, Colour, Light, Material, Object, Pattern, Point3D, Transform, Vector,
     Vector3D,
 };
 use either::Either;
@@ -113,7 +113,7 @@ fn get_or_load(
     )
     .map_err(|e| e.to_string())?;
 
-    let obj_data = obj_parser::parse(&file_contents);
+    let obj_data = wavefront_parser::parse_obj(&file_contents);
     cache
         .entry(obj_file_name.to_string())
         .or_insert(obj_data)

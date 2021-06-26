@@ -40,7 +40,7 @@ pub use pattern::*;
 
 pub mod image_writer;
 
-pub mod obj_parser;
+pub mod wavefront_parser;
 
 pub mod yaml_parser;
 

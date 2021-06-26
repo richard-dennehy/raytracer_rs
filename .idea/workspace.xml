@@ -15,21 +15,10 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="switch property tests back to quickcheck">
-      <change afterPath="$PROJECT_DIR$/benches/benchmarks/meshes.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/meshes/prism flat.obj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/meshes/prism smooth.obj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/meshes/suzanne high poly.obj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/meshes/suzanne low poly.obj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/meshes/suzanne lp smooth.obj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/meshes/suzanne medium poly.obj" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP implement MTL parser">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/bench_main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/bench_main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/matrix/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/triangle.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/wavefront_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/wavefront_parser/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/wavefront_parser/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/wavefront_parser/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -114,7 +103,7 @@
       <command value="cargo bench -- meshes" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.bench">
+  <component name="RunManager" selected="Cargo.test">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -132,8 +121,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test property_tests" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib colour::tests::property_tests" />
+    <configuration name="Test mtl_parser_tests" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib wavefront_parser::tests::mtl_parser_tests" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -148,8 +137,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test world::tests::lighting::an_area_light_should_cast_soft_shadows" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib world::tests::lighting::an_area_light_should_cast_soft_shadows -- --exact" />
+    <configuration name="Test wavefront_parser::tests::mtl_parser_tests::should_be_able_to_parse_mtl_file_containing_multiple_materials" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib wavefront_parser::tests::mtl_parser_tests::should_be_able_to_parse_mtl_file_containing_multiple_materials -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -212,21 +201,26 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
-      <item itemvalue="Cargo.Test property_tests" />
-      <item itemvalue="Cargo.Test world::tests::lighting::an_area_light_should_cast_soft_shadows" />
       <item itemvalue="Cargo.bench" />
       <item itemvalue="Cargo.test" />
       <item itemvalue="Cargo.run" />
+      <item itemvalue="Cargo.Test mtl_parser_tests" />
+      <item itemvalue="Cargo.Test wavefront_parser::tests::mtl_parser_tests::should_be_able_to_parse_mtl_file_containing_multiple_materials" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.Test wavefront_parser::tests::mtl_parser_tests::should_be_able_to_parse_mtl_file_containing_multiple_materials" />
+        <item itemvalue="Cargo.Test mtl_parser_tests" />
         <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.run" />
-        <item itemvalue="Cargo.bench" />
-        <item itemvalue="Cargo.test" />
-        <item itemvalue="Cargo.Test world::tests::lighting::an_area_light_should_cast_soft_shadows" />
       </list>
     </recent_temporary>
   </component>
@@ -458,56 +452,16 @@
       <workItem from="1624393407380" duration="1081000" />
       <workItem from="1624471306507" duration="2578000" />
       <workItem from="1624558369938" duration="171000" />
-      <workItem from="1624558566486" duration="1092000" />
-    </task>
-    <task id="LOCAL-00152" summary="WIP Subsample anti-aliasing">
-      <created>1619036876313</created>
-      <option name="number" value="00152" />
-      <option name="presentableId" value="LOCAL-00152" />
-      <option name="project" value="LOCAL" />
-      <updated>1619036876313</updated>
-    </task>
-    <task id="LOCAL-00153" summary="Implement subsample anti-aliasing">
-      <created>1619206159732</created>
-      <option name="number" value="00153" />
-      <option name="presentableId" value="LOCAL-00153" />
-      <option name="project" value="LOCAL" />
-      <updated>1619206159732</updated>
-    </task>
-    <task id="LOCAL-00154" summary="example for cylinder acne">
-      <created>1619208599581</created>
-      <option name="number" value="00154" />
-      <option name="presentableId" value="LOCAL-00154" />
-      <option name="project" value="LOCAL" />
-      <updated>1619208599581</updated>
-    </task>
-    <task id="LOCAL-00155" summary="fix acne on cylinder caps">
-      <created>1619265016245</created>
-      <option name="number" value="00155" />
-      <option name="presentableId" value="LOCAL-00155" />
-      <option name="project" value="LOCAL" />
-      <updated>1619265016245</updated>
-    </task>
-    <task id="LOCAL-00156" summary="example for acne on overlapping transparent object">
-      <created>1619266908588</created>
-      <option name="number" value="00156" />
-      <option name="presentableId" value="LOCAL-00156" />
-      <option name="project" value="LOCAL" />
-      <updated>1619266908588</updated>
-    </task>
-    <task id="LOCAL-00157" summary="WIP fix acne in overlapping transparent objects">
-      <created>1619351741423</created>
-      <option name="number" value="00157" />
-      <option name="presentableId" value="LOCAL-00157" />
-      <option name="project" value="LOCAL" />
-      <updated>1619351741424</updated>
-    </task>
-    <task id="LOCAL-00158" summary="remove over_point and under_point and exclude duplicate intersections from hit calculations">
-      <created>1619468572832</created>
-      <option name="number" value="00158" />
-      <option name="presentableId" value="LOCAL-00158" />
-      <option name="project" value="LOCAL" />
-      <updated>1619468572832</updated>
+      <workItem from="1624558566486" duration="1377000" />
+      <workItem from="1624704273868" duration="307000" />
+      <workItem from="1624715116216" duration="86000" />
+      <workItem from="1624715214030" duration="4282000" />
+      <workItem from="1624794934816" duration="3686000" />
+      <workItem from="1624902229713" duration="2331000" />
+      <workItem from="1624991439051" duration="2558000" />
+      <workItem from="1625075849500" duration="2930000" />
+      <workItem from="1625160705003" duration="2162000" />
+      <workItem from="1625246722459" duration="1678000" />
     </task>
     <task id="LOCAL-00159" summary="WIP support arbitrary anti-aliasing samples">
       <created>1619645803529</created>
@@ -803,7 +757,56 @@
       <option name="project" value="LOCAL" />
       <updated>1624299241826</updated>
     </task>
-    <option name="localTasksCounter" value="201" />
+    <task id="LOCAL-00201" summary="add benchmarks for triangle meshes">
+      <created>1624559921527</created>
+      <option name="number" value="00201" />
+      <option name="presentableId" value="LOCAL-00201" />
+      <option name="project" value="LOCAL" />
+      <updated>1624559921528</updated>
+    </task>
+    <task id="LOCAL-00202" summary="WIP implement MTL parser">
+      <created>1624719708788</created>
+      <option name="number" value="00202" />
+      <option name="presentableId" value="LOCAL-00202" />
+      <option name="project" value="LOCAL" />
+      <updated>1624719708788</updated>
+    </task>
+    <task id="LOCAL-00203" summary="WIP implement MTL parser">
+      <created>1624796774431</created>
+      <option name="number" value="00203" />
+      <option name="presentableId" value="LOCAL-00203" />
+      <option name="project" value="LOCAL" />
+      <updated>1624796774431</updated>
+    </task>
+    <task id="LOCAL-00204" summary="WIP implement MTL parser">
+      <created>1624798664035</created>
+      <option name="number" value="00204" />
+      <option name="presentableId" value="LOCAL-00204" />
+      <option name="project" value="LOCAL" />
+      <updated>1624798664035</updated>
+    </task>
+    <task id="LOCAL-00205" summary="WIP implement MTL parser">
+      <created>1624993998569</created>
+      <option name="number" value="00205" />
+      <option name="presentableId" value="LOCAL-00205" />
+      <option name="project" value="LOCAL" />
+      <updated>1624993998569</updated>
+    </task>
+    <task id="LOCAL-00206" summary="WIP implement MTL parser">
+      <created>1625078805830</created>
+      <option name="number" value="00206" />
+      <option name="presentableId" value="LOCAL-00206" />
+      <option name="project" value="LOCAL" />
+      <updated>1625078805830</updated>
+    </task>
+    <task id="LOCAL-00207" summary="WIP implement MTL parser">
+      <created>1625162880338</created>
+      <option name="number" value="00207" />
+      <option name="presentableId" value="LOCAL-00207" />
+      <option name="project" value="LOCAL" />
+      <updated>1625162880338</updated>
+    </task>
+    <option name="localTasksCounter" value="208" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -829,8 +832,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="implement image mapping" />
-    <MESSAGE value="WIP move UV mapping to Shape implementations" />
     <MESSAGE value="WIP implement cubic UV by stitching 6 face UVs together" />
     <MESSAGE value="WIP improve UV mapping&#10;&#10; - create MaterialKind for Pattern, Colour, and UV; and use Arc for Image textures" />
     <MESSAGE value="WIP improve UV mapping&#10;&#10;create MaterialKind for Pattern, Colour, and UV; and use Arc for Image textures" />
@@ -854,7 +855,9 @@
     <MESSAGE value="migrate tests to use `approx` instead of `float_cmp`" />
     <MESSAGE value="use `approx`/utility functions when comparing floats" />
     <MESSAGE value="switch property tests back to quickcheck" />
-    <option name="LAST_COMMIT_MESSAGE" value="switch property tests back to quickcheck" />
+    <MESSAGE value="add benchmarks for triangle meshes" />
+    <MESSAGE value="WIP implement MTL parser" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP implement MTL parser" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -868,6 +871,11 @@
           <url>file://$PROJECT_DIR$/src/world/mod.rs</url>
           <line>75</line>
           <option name="timeStamp" value="51" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/wavefront_parser/mod.rs</url>
+          <line>64</line>
+          <option name="timeStamp" value="53" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

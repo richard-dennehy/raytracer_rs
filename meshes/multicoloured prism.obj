@@ -1,0 +1,17 @@
+# Blender v2.93.1 OBJ File: ''
+# www.blender.org
+mtllib multicoloured prism.mtl
+o Cube_Cube.001
+v -0.577350 0.000000 -1.000000
+v 1.154701 0.000000 0.000000
+v -0.577350 -0.000000 1.000000
+v 0.000000 1.632994 0.000000
+usemtl Awful_Green
+s off
+f 3 4 1
+usemtl Sunburn_Red
+f 2 4 3
+usemtl Sickly_Blue
+f 1 4 2
+usemtl Obnoxious_Pink
+f 1 2 3

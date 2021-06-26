@@ -26,7 +26,7 @@ fn main() -> Result<(), String> {
         Path::new(env!("CARGO_MANIFEST_DIR")).join("meshes/suzanne low poly.obj"),
     )
     .unwrap();
-    let obj_data = obj_parser::parse(&obj_file);
+    let obj_data = wavefront_parser::parse_obj(&obj_file);
     let prism = obj_data.to_object()?;
 
     world.add(prism.with_material(Material {

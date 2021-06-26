@@ -1,0 +1,14 @@
+# Blender v2.93.1 OBJ File: ''
+# www.blender.org
+mtllib green prism.mtl
+o Cube_Cube.001
+v -0.577350 0.000000 -1.000000
+v 1.154701 0.000000 0.000000
+v -0.577350 -0.000000 1.000000
+v 0.000000 1.632994 0.000000
+usemtl awful_green
+s off
+f 1 2 3
+f 1 4 2
+f 2 4 3
+f 3 4 1
