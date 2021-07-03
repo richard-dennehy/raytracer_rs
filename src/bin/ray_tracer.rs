@@ -2,6 +2,7 @@ extern crate ray_tracer;
 
 use ray_tracer::renderer::Samples;
 use ray_tracer::*;
+use std::collections::HashMap;
 use std::f64::consts::FRAC_PI_3;
 use std::fs;
 use std::path::Path;
@@ -26,7 +27,7 @@ fn main() -> Result<(), String> {
         Path::new(env!("CARGO_MANIFEST_DIR")).join("meshes/suzanne low poly.obj"),
     )
     .unwrap();
-    let obj_data = wavefront_parser::parse_obj(&obj_file);
+    let obj_data = wavefront_parser::parse_obj(&obj_file, HashMap::new());
     let prism = obj_data.to_object()?;
 
     world.add(prism.with_material(Material {

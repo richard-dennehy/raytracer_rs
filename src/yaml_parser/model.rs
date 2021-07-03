@@ -113,7 +113,8 @@ fn get_or_load(
     )
     .map_err(|e| e.to_string())?;
 
-    let obj_data = wavefront_parser::parse_obj(&file_contents);
+    // TODO load referenced MTL files properly
+    let obj_data = wavefront_parser::parse_obj(&file_contents, HashMap::new());
     cache
         .entry(obj_file_name.to_string())
         .or_insert(obj_data)

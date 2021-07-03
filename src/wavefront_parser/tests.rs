@@ -13,7 +13,7 @@ and doesn't care about that
 ¯\\_(ツ)_/¯";
 
         let out = parse_mtl(invalid_file);
-        assert_eq!(out, HashMap::new());
+        assert_eq!(out, Materials(HashMap::new()));
     }
 
     mod single_material {
@@ -297,46 +297,31 @@ illum 4
         let materials = parse_mtl(input);
 
         let neon_green = materials.get("neon_green").unwrap();
-        assert_eq!(
-            neon_green.kind,
-            MaterialKind::Solid(Colour::new(0.0, 1.0, 0.0))
-        );
+        assert_eq!(neon_green.kind, MaterialKind::Solid(Colour::GREEN));
         assert_eq!(neon_green.ambient, 1.0);
         assert_eq!(neon_green.diffuse, 0.0);
         assert_eq!(neon_green.specular, 0.0);
 
         let flat_green = materials.get("flat_green").unwrap();
-        assert_eq!(
-            flat_green.kind,
-            MaterialKind::Solid(Colour::new(0.0, 1.0, 0.0))
-        );
+        assert_eq!(flat_green.kind, MaterialKind::Solid(Colour::GREEN));
         assert_eq!(flat_green.ambient, 0.1);
         assert_eq!(flat_green.specular, 0.0);
         assert_eq!(flat_green.diffuse, 0.9);
 
         let diss_green = materials.get("diss_green").unwrap();
-        assert_eq!(
-            diss_green.kind,
-            MaterialKind::Solid(Colour::new(0.0, 1.0, 0.0))
-        );
+        assert_eq!(diss_green.kind, MaterialKind::Solid(Colour::GREEN));
         assert_eq!(diss_green.ambient, 0.1);
         assert!(diss_green.transparency.roughly_equals(0.2));
 
         let shiny_green = materials.get("shiny_green").unwrap();
-        assert_eq!(
-            shiny_green.kind,
-            MaterialKind::Solid(Colour::new(0.0, 1.0, 0.0))
-        );
+        assert_eq!(shiny_green.kind, MaterialKind::Solid(Colour::GREEN));
         assert_eq!(shiny_green.diffuse, 0.9);
         assert_eq!(shiny_green.specular, 1.0);
         assert_eq!(shiny_green.shininess, 200.0);
 
         let green_mirror = materials.get("green_mirror").unwrap();
         assert_eq!(green_mirror.ambient, 0.1);
-        assert_eq!(
-            green_mirror.kind,
-            MaterialKind::Solid(Colour::new(0.0, 1.0, 0.0))
-        );
+        assert_eq!(green_mirror.kind, MaterialKind::Solid(Colour::GREEN));
         assert_eq!(green_mirror.specular, 1.0);
         assert_eq!(green_mirror.shininess, 200.0);
         assert_eq!(green_mirror.reflective, 1.0);
@@ -359,9 +344,10 @@ mod obj_parser_tests {
         fn vertices(&self) -> Vec<usize>;
     }
 
-    impl VerticesExt for Vec<PolygonData> {
+    impl VerticesExt for Polygon {
         fn vertices(&self) -> Vec<usize> {
-            self.iter().map(|p| p.vertex).collect::<Vec<_>>()
+            let (points, _) = self;
+            points.iter().map(|p| p.vertex).collect::<Vec<_>>()
         }
     }
 
@@ -373,7 +359,7 @@ She set out one day
 in a relative way,
 and came back the previous night.";
 
-        let out = parse_obj(invalid_obj_file);
+        let out = parse_obj(invalid_obj_file, HashMap::new());
         assert!(out.vertices.is_empty());
         assert!(out.normals.is_empty());
         assert!(out.groups.is_empty());
@@ -386,7 +372,7 @@ and came back the previous night.";
         v 1 0 0
         v 1 1 0";
 
-        let out = parse_obj(input);
+        let out = parse_obj(input, HashMap::new());
         assert_eq!(out.vertex(1), Some(Point3D::new(-1.0, 1.0, 0.0)));
         assert_eq!(out.vertex(2), Some(Point3D::new(-1.0, 0.5, 0.0)));
         assert_eq!(out.vertex(3), Some(Point3D::new(1.0, 0.0, 0.0)));
@@ -403,7 +389,7 @@ and came back the previous night.";
         f 1 2 3
         f 1 3 4";
 
-        let out = parse_obj(input);
+        let out = parse_obj(input, HashMap::new());
         assert_eq!(out.groups[0][0].vertices(), vec![1, 2, 3]);
         assert_eq!(out.groups[0][1].vertices(), vec![1, 3, 4]);
     }
@@ -418,7 +404,7 @@ v 0 2 0
 
 f 1 2 3 4 5";
 
-        let out = parse_obj(input);
+        let out = parse_obj(input, HashMap::new());
         assert_eq!(out.groups[0][0].vertices(), vec![1, 2, 3, 4, 5]);
     }
 
@@ -432,7 +418,7 @@ f 1 2 3 4 5";
         f 1 2 3
         f 1 3 4";
 
-        let out = parse_obj(input);
+        let out = parse_obj(input, HashMap::new());
         let object = out.to_object();
         assert!(object.is_ok(), "{}", object.unwrap_err());
         let object = object.unwrap();
@@ -475,7 +461,7 @@ v 0 2 0
 
 f 1 2 3 4 5";
 
-        let out = parse_obj(input);
+        let out = parse_obj(input, HashMap::new());
         let object = out.to_object();
         assert!(object.is_ok(), "{}", object.unwrap_err());
         let object = object.unwrap();
@@ -532,7 +518,7 @@ f 1 2 3 4 5";
         g SecondGroup
         f 1 3 4";
 
-        let output = parse_obj(input);
+        let output = parse_obj(input, HashMap::new());
         assert_eq!(output.groups[0][0].vertices(), vec![1, 2, 3]);
         assert_eq!(output.groups[1][0].vertices(), vec![1, 3, 4]);
     }
@@ -549,7 +535,7 @@ f 1 2 3 4 5";
         g SecondGroup
         f 1 3 4";
 
-        let output = parse_obj(input);
+        let output = parse_obj(input, HashMap::new());
         let object = output.to_object();
         assert!(object.is_ok(), "{}", object.unwrap_err());
         let object = object.unwrap();
@@ -565,7 +551,7 @@ f 1 2 3 4 5";
         vn 0.707 0 -0.707
         vn 1 2 3";
 
-        let output = parse_obj(input);
+        let output = parse_obj(input, HashMap::new());
         assert_eq!(output.normals[0], Vector3D::new(0.0, 0.0, 1.0));
         assert_eq!(output.normals[1], Vector3D::new(0.707, 0.0, -0.707));
         assert_eq!(output.normals[2], Vector3D::new(1.0, 2.0, 3.0));
@@ -584,9 +570,9 @@ f 1 2 3 4 5";
         f 1//3 2//1 3//2
         f 1/0/3 2/102/1 3/14/2";
 
-        let output = parse_obj(input);
+        let output = parse_obj(input, HashMap::new());
         assert_eq!(
-            output.groups[0][0][0],
+            output.groups[0][0].0[0],
             PolygonData {
                 vertex: 1,
                 texture_vertex: None,
@@ -594,7 +580,7 @@ f 1 2 3 4 5";
             }
         );
         assert_eq!(
-            output.groups[0][0][1],
+            output.groups[0][0].0[1],
             PolygonData {
                 vertex: 2,
                 texture_vertex: None,
@@ -602,7 +588,7 @@ f 1 2 3 4 5";
             }
         );
         assert_eq!(
-            output.groups[0][0][2],
+            output.groups[0][0].0[2],
             PolygonData {
                 vertex: 3,
                 texture_vertex: None,
@@ -611,7 +597,7 @@ f 1 2 3 4 5";
         );
 
         assert_eq!(
-            output.groups[0][1][0],
+            output.groups[0][1].0[0],
             PolygonData {
                 vertex: 1,
                 texture_vertex: Some(0),
@@ -619,7 +605,7 @@ f 1 2 3 4 5";
             }
         );
         assert_eq!(
-            output.groups[0][1][1],
+            output.groups[0][1].0[1],
             PolygonData {
                 vertex: 2,
                 texture_vertex: Some(102),
@@ -627,7 +613,7 @@ f 1 2 3 4 5";
             }
         );
         assert_eq!(
-            output.groups[0][1][2],
+            output.groups[0][1].0[2],
             PolygonData {
                 vertex: 3,
                 texture_vertex: Some(14),
@@ -649,7 +635,7 @@ f 1 2 3 4 5";
         f 1//3 2//1 3//2
         f 1/0/3 2/102/1 3/14/2";
 
-        let output = parse_obj(input);
+        let output = parse_obj(input, HashMap::new());
         let object = output.to_object();
         assert!(object.is_ok(), "{}", object.unwrap_err());
         let object = object.unwrap();
@@ -687,5 +673,290 @@ f 1 2 3 4 5";
             }"
             .to_string()
         );
+    }
+
+    mod material_tests {
+        use super::*;
+        use maplit::hashmap;
+
+        #[test]
+        #[should_panic]
+        fn a_usemtl_statement_without_an_mtllib_statement_should_fail() {
+            let input = "v 0 1 0
+            v -1 0 0
+            v 1 0 0
+
+            usemtl awful_green
+            f 1 2 3";
+
+            parse_obj(input, HashMap::new());
+        }
+
+        mod when_material_libraries_have_been_loaded {
+            use super::*;
+            use maplit::hashmap;
+
+            #[test]
+            fn when_the_material_exists_should_set_the_material_of_the_following_face() {
+                let input = "mtllib test materials.mtl
+                v 0 1 0
+                v -1 0 0
+                v 1 0 0
+    
+                usemtl awful_green
+                f 1 2 3";
+
+                let obj_data = parse_obj(
+                    input,
+                    hashmap! { "test materials".to_owned() => Materials(hashmap! {
+                        "awful_green".to_owned() => Material { kind: MaterialKind::Solid(Colour::GREEN), ..Default::default() }
+                    }) },
+                );
+
+                assert!(obj_data.groups[0][0].1.is_some());
+                assert_eq!(
+                    obj_data.groups[0][0].1.as_ref().unwrap().kind,
+                    MaterialKind::Solid(Colour::GREEN)
+                );
+            }
+
+            #[test]
+            fn usemtl_should_set_the_material_of_all_following_faces() {
+                let input = "mtllib test materials.mtl
+                v 0 1 0
+                v -1 0 0
+                v 1 0 0
+    
+                usemtl awful_green
+                f 1 2 3
+                f 2 1 3
+                f 3 1 2";
+
+                let obj_data = parse_obj(
+                    input,
+                    hashmap! { "test materials".to_owned() => Materials(hashmap! {
+                        "awful_green".to_owned() => Material { kind: MaterialKind::Solid(Colour::GREEN), ..Default::default() }
+                    }) },
+                );
+
+                assert!(obj_data.groups[0][0].1.is_some());
+                assert_eq!(
+                    obj_data.groups[0][0].1.as_ref().unwrap().kind,
+                    MaterialKind::Solid(Colour::GREEN)
+                );
+
+                assert!(obj_data.groups[0][1].1.is_some());
+                assert_eq!(
+                    obj_data.groups[0][1].1.as_ref().unwrap().kind,
+                    MaterialKind::Solid(Colour::GREEN)
+                );
+
+                assert!(obj_data.groups[0][2].1.is_some());
+                assert_eq!(
+                    obj_data.groups[0][2].1.as_ref().unwrap().kind,
+                    MaterialKind::Solid(Colour::GREEN)
+                );
+            }
+
+            #[test]
+            fn should_be_possible_to_give_different_faces_different_materials() {
+                let input = "mtllib test materials.mtl
+                v 0 1 0
+                v -1 0 0
+                v 1 0 0
+    
+                usemtl awful_green
+                f 1 2 3
+                f 2 1 3
+                usemtl sunburned_red
+                f 3 1 2";
+
+                let obj_data = parse_obj(
+                    input,
+                    hashmap! { "test materials".to_owned() => Materials(hashmap! {
+                        "awful_green".to_owned() => Material { kind: MaterialKind::Solid(Colour::GREEN), ..Default::default() },
+                        "sunburned_red".to_owned() => Material { kind: MaterialKind::Solid(Colour::RED), ..Default::default() },
+                    }) },
+                );
+
+                assert!(obj_data.groups[0][0].1.is_some());
+                assert_eq!(
+                    obj_data.groups[0][0].1.as_ref().unwrap().kind,
+                    MaterialKind::Solid(Colour::GREEN)
+                );
+
+                assert!(obj_data.groups[0][1].1.is_some());
+                assert_eq!(
+                    obj_data.groups[0][1].1.as_ref().unwrap().kind,
+                    MaterialKind::Solid(Colour::GREEN)
+                );
+
+                assert!(obj_data.groups[0][2].1.is_some());
+                assert_eq!(
+                    obj_data.groups[0][2].1.as_ref().unwrap().kind,
+                    MaterialKind::Solid(Colour::RED)
+                );
+            }
+
+            #[test]
+            fn should_be_able_to_use_material_loaded_from_a_second_library() {
+                let input = "mtllib test materials.mtl more materials.mtl
+                v 0 1 0
+                v -1 0 0
+                v 1 0 0
+    
+                usemtl awful_green
+                f 1 2 3
+                f 2 1 3
+                usemtl sunburned_red
+                f 3 1 2";
+
+                let obj_data = parse_obj(
+                    input,
+                    hashmap! {
+                        "test materials".to_owned() => Materials(hashmap! {
+                            "awful_green".to_owned() => Material { kind: MaterialKind::Solid(Colour::GREEN), ..Default::default() },
+                        }),
+                        "more materials".to_owned() => Materials(hashmap! {
+                            "sunburned_red".to_owned() => Material { kind: MaterialKind::Solid(Colour::RED), ..Default::default() },
+                        })
+                    },
+                );
+
+                assert!(obj_data.groups[0][0].1.is_some());
+                assert_eq!(
+                    obj_data.groups[0][0].1.as_ref().unwrap().kind,
+                    MaterialKind::Solid(Colour::GREEN)
+                );
+
+                assert!(obj_data.groups[0][1].1.is_some());
+                assert_eq!(
+                    obj_data.groups[0][1].1.as_ref().unwrap().kind,
+                    MaterialKind::Solid(Colour::GREEN)
+                );
+
+                assert!(obj_data.groups[0][2].1.is_some());
+                assert_eq!(
+                    obj_data.groups[0][2].1.as_ref().unwrap().kind,
+                    MaterialKind::Solid(Colour::RED)
+                );
+            }
+
+            #[test]
+            fn should_prioritise_materials_from_an_earlier_library_over_conflicting_materials_from_a_later_library(
+            ) {
+                let input = "mtllib test materials.mtl more materials.mtl even more.mtl
+                v 0 1 0
+                v -1 0 0
+                v 1 0 0
+    
+                usemtl mystery
+                f 1 2 3";
+
+                let obj_data = parse_obj(
+                    input,
+                    hashmap! {
+                        "test materials".to_owned() => Materials(hashmap! {
+                            "mystery".to_owned() => Material { kind: MaterialKind::Solid(Colour::GREEN), ..Default::default() },
+                        }),
+                        "more materials".to_owned() => Materials(hashmap! {
+                            "sunburned_red".to_owned() => Material { kind: MaterialKind::Solid(Colour::RED), ..Default::default() },
+                        }),
+                        "even more".to_owned() => Materials(hashmap! {
+                            "mystery".to_owned() => Material { kind: MaterialKind::Solid(Colour::BLACK), ..Default::default() },
+                        })
+                    },
+                );
+
+                assert!(obj_data.groups[0][0].1.is_some());
+                assert_eq!(
+                    obj_data.groups[0][0].1.as_ref().unwrap().kind,
+                    MaterialKind::Solid(Colour::GREEN)
+                );
+            }
+
+            #[test]
+            #[should_panic]
+            fn should_fail_if_a_material_does_not_exist_in_a_loaded_library() {
+                let input = "mtllib test materials.mtl more materials.mtl even more.mtl
+                v 0 1 0
+                v -1 0 0
+                v 1 0 0
+    
+                usemtl mystery
+                f 1 2 3";
+
+                parse_obj(
+                    input,
+                    hashmap! {
+                        "test materials".to_owned() => Materials(hashmap! {
+                            "awful_green".to_owned() => Material { kind: MaterialKind::Solid(Colour::GREEN), ..Default::default() },
+                        }),
+                        "more materials".to_owned() => Materials(hashmap! {
+                            "sunburned_red".to_owned() => Material { kind: MaterialKind::Solid(Colour::RED), ..Default::default() },
+                        })
+                    },
+                );
+            }
+        }
+
+        #[test]
+        fn converting_an_obj_and_mtl_file_to_an_object_should_assign_the_correct_materials() {
+            let mtl_input = "newmtl awful_green
+            Kd 0 1 0";
+            let materials = hashmap!["materials".to_owned() => parse_mtl(mtl_input)];
+
+            let obj_input = "mtllib materials.mtl
+            v 0 1 0
+            v -1 0 0
+            v 1 0 0
+
+            usemtl awful_green
+            f 1 2 3";
+
+            let obj_data = parse_obj(obj_input, materials);
+            let object = obj_data.to_object();
+            assert!(object.is_ok(), "{}", object.unwrap_err());
+            let object = object.unwrap();
+            assert_eq!(
+                object.children()[0].material.kind,
+                MaterialKind::Solid(Colour::GREEN)
+            );
+        }
+
+        #[test]
+        fn converting_an_obj_containing_a_polygon_should_assign_the_correct_material_to_all_subtriangles(
+        ) {
+            let mtl_input = "newmtl awful_green
+            Kd 0 1 0";
+            let materials = hashmap!["materials".to_owned() => parse_mtl(mtl_input)];
+
+            let obj_input = "mtllib materials.mtl
+            v 0 1 0
+            v -1 0 0
+            v 1 0 0
+            v 0 0 1
+            v 0 1 1
+
+            usemtl awful_green
+            f 1 2 3 4 5";
+
+            let obj_data = parse_obj(obj_input, materials);
+            let object = obj_data.to_object();
+            assert!(object.is_ok(), "{}", object.unwrap_err());
+            let object = object.unwrap();
+            assert_eq!(
+                object.children()[0].material.kind,
+                MaterialKind::Solid(Colour::GREEN)
+            );
+            assert_eq!(
+                object.children()[1].material.kind,
+                MaterialKind::Solid(Colour::GREEN)
+            );
+            assert_eq!(
+                object.children()[2].material.kind,
+                MaterialKind::Solid(Colour::GREEN)
+            );
+        }
     }
 }

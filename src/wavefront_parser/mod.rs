@@ -6,13 +6,92 @@ use std::str::SplitWhitespace;
 #[cfg(test)]
 mod tests;
 
-pub fn parse_mtl(input: &str) -> HashMap<String, Material> {
+pub fn parse_mtl(input: &str) -> Materials {
     MaterialParser {
         input,
         current: None,
         materials: HashMap::new(),
     }
     .parse()
+}
+
+#[derive(Debug, PartialEq)]
+pub struct Materials(HashMap<String, Material>);
+
+impl Materials {
+    pub fn get(&self, key: &str) -> Option<&Material> {
+        self.0.get(key)
+    }
+}
+
+// TODO split parsing from file discovery/loading
+pub fn parse_obj(input: &str, materials: HashMap<String, Materials>) -> ObjData {
+    let mut vertices = vec![];
+    let mut normals = vec![];
+    let mut polys = vec![];
+    let mut groups = vec![];
+    let mut loaded_materials = HashMap::new();
+    let mut current_material: Option<&Material> = None;
+
+    input.lines().map(|line| line.trim()).for_each(|line| {
+        let mut parts = line.split_whitespace();
+
+        match parts.next() {
+            Some("mtllib") => {
+                let file_names = line.chars().skip("mttlib ".len()).collect::<String>();
+                let file_names = file_names
+                    .split(".mtl")
+                    .map(str::trim)
+                    .filter(|s| !s.is_empty())
+                    .map(str::to_owned)
+                    .collect::<Vec<_>>();
+
+                file_names
+                    .into_iter()
+                    .map(|file_name| {
+                        materials.get(&file_name).expect(&format!(
+                            "material library {} must be loaded before obj file can be parsed",
+                            file_name
+                        ))
+                    })
+                    .flat_map(|materials| materials.0.iter())
+                    .for_each(|(material_name, material)| {
+                        loaded_materials
+                            .entry(material_name.as_str())
+                            .or_insert(material);
+                    })
+            }
+            Some("v") => vertices.push(parse_vertex(parts)),
+            Some("f") => polys.push(parse_polygon(parts, current_material.cloned())),
+            Some("vn") => normals.push(parse_normal(parts)),
+            Some("g") => {
+                if !polys.is_empty() {
+                    let polys = std::mem::take(&mut polys);
+                    groups.push(polys);
+                }
+            }
+            Some("usemtl") => {
+                let material_name = parts
+                    .next()
+                    .expect("`usemtl` statement does not name the material");
+                current_material = Some(*(loaded_materials.get(material_name)).expect(&format!(
+                    "cannot `usemtl` {} as it has not been loaded from an MTL library",
+                    material_name
+                )));
+            }
+            _ => (),
+        }
+    });
+
+    if !polys.is_empty() {
+        groups.push(polys)
+    }
+
+    ObjData {
+        vertices,
+        normals,
+        groups,
+    }
 }
 
 struct MaterialParser<'input> {
@@ -22,7 +101,7 @@ struct MaterialParser<'input> {
 }
 
 impl<'input> MaterialParser<'input> {
-    fn parse(mut self) -> HashMap<String, Material> {
+    fn parse(mut self) -> Materials {
         self.input.lines().map(|line| line.trim()).for_each(|line| {
             let mut parts = line.split_whitespace();
 
@@ -104,7 +183,7 @@ impl<'input> MaterialParser<'input> {
         });
 
         self.save_current_material();
-        self.materials
+        Materials(self.materials)
     }
 
     fn save_current_material(&mut self) {
@@ -171,40 +250,6 @@ fn parse_rgb_to_f64(iterator: &mut SplitWhitespace) -> f64 {
     }
 }
 
-pub fn parse_obj(input: &str) -> ObjData {
-    let mut vertices = vec![];
-    let mut normals = vec![];
-    let mut polys = vec![];
-    let mut groups = vec![];
-
-    input.lines().map(|line| line.trim()).for_each(|line| {
-        let mut parts = line.split_whitespace();
-
-        match parts.next() {
-            Some("v") => vertices.push(parse_vertex(parts)),
-            Some("f") => polys.push(parse_polygon(parts)),
-            Some("vn") => normals.push(parse_normal(parts)),
-            Some("g") => {
-                if !polys.is_empty() {
-                    let polys = std::mem::replace(&mut polys, vec![]);
-                    groups.push(polys);
-                }
-            }
-            _ => (),
-        }
-    });
-
-    if !polys.is_empty() {
-        groups.push(polys)
-    }
-
-    ObjData {
-        vertices,
-        normals,
-        groups,
-    }
-}
-
 fn parse_vertex(mut line_parts: SplitWhitespace) -> Point3D {
     let mut next = || {
         let part = line_parts.next().expect("missing line part");
@@ -217,7 +262,7 @@ fn parse_vertex(mut line_parts: SplitWhitespace) -> Point3D {
     Point3D::new(next(), next(), next())
 }
 
-fn parse_polygon(line_parts: SplitWhitespace) -> Polygon {
+fn parse_polygon(line_parts: SplitWhitespace, material: Option<Material>) -> Polygon {
     fn parse_usize(s: &str) -> usize {
         s.parse::<usize>().expect(&format!(
             "Unparseable polygon data (cannot parse component as integer): {}",
@@ -225,7 +270,7 @@ fn parse_polygon(line_parts: SplitWhitespace) -> Polygon {
         ))
     }
 
-    line_parts
+    let polys = line_parts
         .map(|part| {
             let mut parts = part.split('/');
             let vertex = parts
@@ -244,7 +289,9 @@ fn parse_polygon(line_parts: SplitWhitespace) -> Polygon {
                 normal,
             }
         })
-        .collect()
+        .collect();
+
+    (polys, material)
 }
 
 fn parse_normal(mut line_parts: SplitWhitespace) -> Vector3D {
@@ -259,11 +306,10 @@ fn parse_normal(mut line_parts: SplitWhitespace) -> Vector3D {
     Vector3D::new(next(), next(), next())
 }
 
-type Polygon = Vec<PolygonData>;
+type Polygon = (Vec<PolygonData>, Option<Material>);
 type Group = Vec<Polygon>;
 
-#[allow(unused)]
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug, PartialEq)]
 struct PolygonData {
     vertex: usize,
     texture_vertex: Option<usize>,
@@ -289,7 +335,7 @@ impl ObjData {
         let convert_group = |group: &Group| {
             let mut triangles = vec![];
 
-            for polygon in group {
+            for (polygon, material) in group {
                 for face in triangulate(polygon) {
                     let mut vertices = Vec::with_capacity(3);
                     let mut normals = Vec::with_capacity(3);
@@ -316,10 +362,10 @@ impl ObjData {
                         }
                     }
 
-                    if normals.is_empty() {
-                        triangles.push(Object::triangle(vertices[0], vertices[1], vertices[2]))
+                    let triangle = if normals.is_empty() {
+                        Object::triangle(vertices[0], vertices[1], vertices[2])
                     } else if normals.len() == 3 {
-                        triangles.push(Object::smooth_triangle(
+                        Object::smooth_triangle(
                             vertices[0],
                             vertices[1],
                             vertices[2],
@@ -327,12 +373,18 @@ impl ObjData {
                             normals[0].normalised(),
                             normals[1].normalised(),
                             normals[2].normalised(),
-                        ))
+                        )
                     } else {
                         return Err(format!(
                             "Face {:?} must either have normals for all faces or no faces",
                             polygon
                         ));
+                    };
+
+                    if let Some(material) = material {
+                        triangles.push(triangle.with_material(material.clone()))
+                    } else {
+                        triangles.push(triangle)
                     }
                 }
             }
@@ -355,7 +407,7 @@ impl ObjData {
     }
 }
 
-fn triangulate(face: &Polygon) -> Vec<[(usize, Option<usize>); 3]> {
+fn triangulate(face: &[PolygonData]) -> Vec<[(usize, Option<usize>); 3]> {
     let mut out = vec![];
 
     for i in 2..face.len() {
