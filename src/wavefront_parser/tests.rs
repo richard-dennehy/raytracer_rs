@@ -346,8 +346,7 @@ mod obj_parser_tests {
 
     impl VerticesExt for Polygon {
         fn vertices(&self) -> Vec<usize> {
-            let (points, _) = self;
-            points.iter().map(|p| p.vertex).collect::<Vec<_>>()
+            self.vertices.iter().map(|p| p.vertex).collect::<Vec<_>>()
         }
     }
 
@@ -390,8 +389,8 @@ and came back the previous night.";
         f 1 3 4";
 
         let out = parse_obj(input, HashMap::new());
-        assert_eq!(out.groups[0][0].vertices(), vec![1, 2, 3]);
-        assert_eq!(out.groups[0][1].vertices(), vec![1, 3, 4]);
+        assert_eq!(out.groups[0].polygons[0].vertices(), vec![1, 2, 3]);
+        assert_eq!(out.groups[0].polygons[1].vertices(), vec![1, 3, 4]);
     }
 
     #[test]
@@ -405,7 +404,7 @@ v 0 2 0
 f 1 2 3 4 5";
 
         let out = parse_obj(input, HashMap::new());
-        assert_eq!(out.groups[0][0].vertices(), vec![1, 2, 3, 4, 5]);
+        assert_eq!(out.groups[0].polygons[0].vertices(), vec![1, 2, 3, 4, 5]);
     }
 
     #[test]
@@ -519,8 +518,8 @@ f 1 2 3 4 5";
         f 1 3 4";
 
         let output = parse_obj(input, HashMap::new());
-        assert_eq!(output.groups[0][0].vertices(), vec![1, 2, 3]);
-        assert_eq!(output.groups[1][0].vertices(), vec![1, 3, 4]);
+        assert_eq!(output.groups[0].polygons[0].vertices(), vec![1, 2, 3]);
+        assert_eq!(output.groups[1].polygons[0].vertices(), vec![1, 3, 4]);
     }
 
     #[test]
@@ -572,24 +571,24 @@ f 1 2 3 4 5";
 
         let output = parse_obj(input, HashMap::new());
         assert_eq!(
-            output.groups[0][0].0[0],
-            PolygonData {
+            output.groups[0].polygons[0].vertices[0],
+            VertexData {
                 vertex: 1,
                 texture_vertex: None,
                 normal: Some(3)
             }
         );
         assert_eq!(
-            output.groups[0][0].0[1],
-            PolygonData {
+            output.groups[0].polygons[0].vertices[1],
+            VertexData {
                 vertex: 2,
                 texture_vertex: None,
                 normal: Some(1)
             }
         );
         assert_eq!(
-            output.groups[0][0].0[2],
-            PolygonData {
+            output.groups[0].polygons[0].vertices[2],
+            VertexData {
                 vertex: 3,
                 texture_vertex: None,
                 normal: Some(2)
@@ -597,24 +596,24 @@ f 1 2 3 4 5";
         );
 
         assert_eq!(
-            output.groups[0][1].0[0],
-            PolygonData {
+            output.groups[0].polygons[1].vertices[0],
+            VertexData {
                 vertex: 1,
                 texture_vertex: Some(0),
                 normal: Some(3)
             }
         );
         assert_eq!(
-            output.groups[0][1].0[1],
-            PolygonData {
+            output.groups[0].polygons[1].vertices[1],
+            VertexData {
                 vertex: 2,
                 texture_vertex: Some(102),
                 normal: Some(1)
             }
         );
         assert_eq!(
-            output.groups[0][1].0[2],
-            PolygonData {
+            output.groups[0].polygons[1].vertices[2],
+            VertexData {
                 vertex: 3,
                 texture_vertex: Some(14),
                 normal: Some(2)
@@ -713,9 +712,13 @@ f 1 2 3 4 5";
                     }) },
                 );
 
-                assert!(obj_data.groups[0][0].1.is_some());
+                assert!(obj_data.groups[0].polygons[0].material.is_some());
                 assert_eq!(
-                    obj_data.groups[0][0].1.as_ref().unwrap().kind,
+                    obj_data.groups[0].polygons[0]
+                        .material
+                        .as_ref()
+                        .unwrap()
+                        .kind,
                     MaterialKind::Solid(Colour::GREEN)
                 );
             }
@@ -739,21 +742,33 @@ f 1 2 3 4 5";
                     }) },
                 );
 
-                assert!(obj_data.groups[0][0].1.is_some());
+                assert!(obj_data.groups[0].polygons[0].material.is_some());
                 assert_eq!(
-                    obj_data.groups[0][0].1.as_ref().unwrap().kind,
+                    obj_data.groups[0].polygons[0]
+                        .material
+                        .as_ref()
+                        .unwrap()
+                        .kind,
                     MaterialKind::Solid(Colour::GREEN)
                 );
 
-                assert!(obj_data.groups[0][1].1.is_some());
+                assert!(obj_data.groups[0].polygons[1].material.is_some());
                 assert_eq!(
-                    obj_data.groups[0][1].1.as_ref().unwrap().kind,
+                    obj_data.groups[0].polygons[1]
+                        .material
+                        .as_ref()
+                        .unwrap()
+                        .kind,
                     MaterialKind::Solid(Colour::GREEN)
                 );
 
-                assert!(obj_data.groups[0][2].1.is_some());
+                assert!(obj_data.groups[0].polygons[2].material.is_some());
                 assert_eq!(
-                    obj_data.groups[0][2].1.as_ref().unwrap().kind,
+                    obj_data.groups[0].polygons[2]
+                        .material
+                        .as_ref()
+                        .unwrap()
+                        .kind,
                     MaterialKind::Solid(Colour::GREEN)
                 );
             }
@@ -779,21 +794,33 @@ f 1 2 3 4 5";
                     }) },
                 );
 
-                assert!(obj_data.groups[0][0].1.is_some());
+                assert!(obj_data.groups[0].polygons[0].material.is_some());
                 assert_eq!(
-                    obj_data.groups[0][0].1.as_ref().unwrap().kind,
+                    obj_data.groups[0].polygons[0]
+                        .material
+                        .as_ref()
+                        .unwrap()
+                        .kind,
                     MaterialKind::Solid(Colour::GREEN)
                 );
 
-                assert!(obj_data.groups[0][1].1.is_some());
+                assert!(obj_data.groups[0].polygons[1].material.is_some());
                 assert_eq!(
-                    obj_data.groups[0][1].1.as_ref().unwrap().kind,
+                    obj_data.groups[0].polygons[1]
+                        .material
+                        .as_ref()
+                        .unwrap()
+                        .kind,
                     MaterialKind::Solid(Colour::GREEN)
                 );
 
-                assert!(obj_data.groups[0][2].1.is_some());
+                assert!(obj_data.groups[0].polygons[2].material.is_some());
                 assert_eq!(
-                    obj_data.groups[0][2].1.as_ref().unwrap().kind,
+                    obj_data.groups[0].polygons[2]
+                        .material
+                        .as_ref()
+                        .unwrap()
+                        .kind,
                     MaterialKind::Solid(Colour::RED)
                 );
             }
@@ -823,21 +850,33 @@ f 1 2 3 4 5";
                     },
                 );
 
-                assert!(obj_data.groups[0][0].1.is_some());
+                assert!(obj_data.groups[0].polygons[0].material.is_some());
                 assert_eq!(
-                    obj_data.groups[0][0].1.as_ref().unwrap().kind,
+                    obj_data.groups[0].polygons[0]
+                        .material
+                        .as_ref()
+                        .unwrap()
+                        .kind,
                     MaterialKind::Solid(Colour::GREEN)
                 );
 
-                assert!(obj_data.groups[0][1].1.is_some());
+                assert!(obj_data.groups[0].polygons[1].material.is_some());
                 assert_eq!(
-                    obj_data.groups[0][1].1.as_ref().unwrap().kind,
+                    obj_data.groups[0].polygons[1]
+                        .material
+                        .as_ref()
+                        .unwrap()
+                        .kind,
                     MaterialKind::Solid(Colour::GREEN)
                 );
 
-                assert!(obj_data.groups[0][2].1.is_some());
+                assert!(obj_data.groups[0].polygons[2].material.is_some());
                 assert_eq!(
-                    obj_data.groups[0][2].1.as_ref().unwrap().kind,
+                    obj_data.groups[0].polygons[2]
+                        .material
+                        .as_ref()
+                        .unwrap()
+                        .kind,
                     MaterialKind::Solid(Colour::RED)
                 );
             }
@@ -868,9 +907,13 @@ f 1 2 3 4 5";
                     },
                 );
 
-                assert!(obj_data.groups[0][0].1.is_some());
+                assert!(obj_data.groups[0].polygons[0].material.is_some());
                 assert_eq!(
-                    obj_data.groups[0][0].1.as_ref().unwrap().kind,
+                    obj_data.groups[0].polygons[0]
+                        .material
+                        .as_ref()
+                        .unwrap()
+                        .kind,
                     MaterialKind::Solid(Colour::GREEN)
                 );
             }

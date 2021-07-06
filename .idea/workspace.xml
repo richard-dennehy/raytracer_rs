@@ -15,8 +15,9 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP support MTL libs in obj parser">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="support MTL libs in obj parser">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/wavefront_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/wavefront_parser/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/wavefront_parser/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/wavefront_parser/tests.rs" afterDir="false" />
     </list>
@@ -103,7 +104,7 @@
       <command value="cargo bench -- meshes" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.Test wavefront_parser::tests::obj_parser_tests::material_tests::converting_an_obj_and_mtl_file_to_an_object_should_assign_the_correct_materials">
+  <component name="RunManager" selected="Cargo.test">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -169,7 +170,7 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="run" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+    <configuration name="run (release)" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="command" value="run --release" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
@@ -201,24 +202,19 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.Test wavefront_parser::tests::mtl_parser_tests::should_be_able_to_parse_mtl_file_containing_multiple_materials" />
       <item itemvalue="Cargo.bench" />
-      <item itemvalue="Cargo.run" />
+      <item itemvalue="Cargo.run (release)" />
       <item itemvalue="Cargo.test" />
       <item itemvalue="Cargo.Test wavefront_parser::tests::obj_parser_tests::material_tests::converting_an_obj_and_mtl_file_to_an_object_should_assign_the_correct_materials" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.Test wavefront_parser::tests::obj_parser_tests::material_tests::converting_an_obj_and_mtl_file_to_an_object_should_assign_the_correct_materials" />
         <item itemvalue="Cargo.test" />
-        <item itemvalue="Cargo.run" />
+        <item itemvalue="Cargo.run (release)" />
+        <item itemvalue="Cargo.Test wavefront_parser::tests::obj_parser_tests::material_tests::converting_an_obj_and_mtl_file_to_an_object_should_assign_the_correct_materials" />
         <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.Test wavefront_parser::tests::mtl_parser_tests::should_be_able_to_parse_mtl_file_containing_multiple_materials" />
       </list>
@@ -465,14 +461,8 @@
       <workItem from="1625309641517" duration="4081000" />
       <workItem from="1625395747068" duration="3543000" />
       <workItem from="1625508290401" duration="19000" />
-      <workItem from="1625508326147" duration="1568000" />
-    </task>
-    <task id="LOCAL-00162" summary="use more lenient equality check when using AA corner optimisation">
-      <created>1619870708289</created>
-      <option name="number" value="00162" />
-      <option name="presentableId" value="LOCAL-00162" />
-      <option name="project" value="LOCAL" />
-      <updated>1619870708290</updated>
+      <workItem from="1625508326147" duration="2921000" />
+      <workItem from="1625594352593" duration="1962000" />
     </task>
     <task id="LOCAL-00163" summary="add early return for renders with less than 5 samples per pixel">
       <created>1619872180473</created>
@@ -810,7 +800,14 @@
       <option name="project" value="LOCAL" />
       <updated>1625399540539</updated>
     </task>
-    <option name="localTasksCounter" value="211" />
+    <task id="LOCAL-00211" summary="support MTL libs in obj parser">
+      <created>1625511050934</created>
+      <option name="number" value="00211" />
+      <option name="presentableId" value="LOCAL-00211" />
+      <option name="project" value="LOCAL" />
+      <updated>1625511050934</updated>
+    </task>
+    <option name="localTasksCounter" value="212" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -836,7 +833,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP improve UV mapping&#10;&#10;create MaterialKind for Pattern, Colour, and UV; and use Arc for Image textures" />
     <MESSAGE value="WIP improve UV mapping&#10;&#10;WIP add tests for Shape UV mapping" />
     <MESSAGE value="WIP improve UV mapping&#10;&#10;WIP add for Cube and Cylinder UV mapping" />
     <MESSAGE value="WIP improve UV mapping&#10;&#10;remove old UV mapping" />
@@ -861,7 +857,8 @@
     <MESSAGE value="WIP implement MTL parser" />
     <MESSAGE value="implement basic MTL parser" />
     <MESSAGE value="WIP support MTL libs in obj parser" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP support MTL libs in obj parser" />
+    <MESSAGE value="support MTL libs in obj parser" />
+    <option name="LAST_COMMIT_MESSAGE" value="support MTL libs in obj parser" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -875,11 +872,6 @@
           <url>file://$PROJECT_DIR$/src/world/mod.rs</url>
           <line>75</line>
           <option name="timeStamp" value="51" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/wavefront_parser/mod.rs</url>
-          <line>143</line>
-          <option name="timeStamp" value="53" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

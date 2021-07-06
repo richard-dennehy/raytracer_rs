@@ -66,8 +66,8 @@ pub fn parse_obj(input: &str, materials: HashMap<String, Materials>) -> ObjData 
             Some("vn") => normals.push(parse_normal(parts)),
             Some("g") => {
                 if !polys.is_empty() {
-                    let polys = std::mem::take(&mut polys);
-                    groups.push(polys);
+                    let polygons = std::mem::take(&mut polys);
+                    groups.push(Group { polygons });
                 }
             }
             Some("usemtl") => {
@@ -84,7 +84,7 @@ pub fn parse_obj(input: &str, materials: HashMap<String, Materials>) -> ObjData 
     });
 
     if !polys.is_empty() {
-        groups.push(polys)
+        groups.push(Group { polygons: polys })
     }
 
     ObjData {
@@ -144,40 +144,7 @@ impl<'input> MaterialParser<'input> {
                         self.current_material().transparency = 1.0 - dissolve
                     }
                 }
-                Some("illum") => match parts.next() {
-                    Some("0") => {
-                        self.current_material().ambient = 1.0;
-                        self.current_material().diffuse = 0.0;
-                        self.current_material().specular = 0.0;
-                    }
-                    Some("1") => {
-                        self.current_material().specular = 0.0;
-                    }
-                    Some("2") => (),
-                    Some("3" | "8") => {
-                        if self.current_material().reflective == 0.0 {
-                            self.current_material().reflective = 1.0
-                        }
-                    }
-                    Some("4" | "5" | "6" | "7") => {
-                        if self.current_material().reflective == 0.0 {
-                            self.current_material().reflective = 1.0;
-                        }
-                        if self.current_material().transparency == 0.0 {
-                            self.current_material().transparency = 1.0;
-                        }
-                    }
-                    Some("9") => {
-                        if self.current_material().transparency == 0.0 {
-                            self.current_material().transparency = 1.0
-                        }
-                    }
-                    Some("10") => panic!("illum model 10 is not supported"),
-                    Some(other) => {
-                        panic!("invalid illum value {} - must be between 0 and 10", other)
-                    }
-                    None => panic!("illum does not have a value"),
-                },
+                Some("illum") => self.apply_illumination(parts.next()),
                 _ => (),
             }
         });
@@ -199,6 +166,43 @@ impl<'input> MaterialParser<'input> {
             material
         } else {
             panic!("A material must be defined with a `newmtl` statement before material properties can be defined")
+        }
+    }
+
+    fn apply_illumination(&mut self, illum: Option<&str>) {
+        match illum {
+            Some("0") => {
+                self.current_material().ambient = 1.0;
+                self.current_material().diffuse = 0.0;
+                self.current_material().specular = 0.0;
+            }
+            Some("1") => {
+                self.current_material().specular = 0.0;
+            }
+            Some("2") => (),
+            Some("3" | "8") => {
+                if self.current_material().reflective == 0.0 {
+                    self.current_material().reflective = 1.0
+                }
+            }
+            Some("4" | "5" | "6" | "7") => {
+                if self.current_material().reflective == 0.0 {
+                    self.current_material().reflective = 1.0;
+                }
+                if self.current_material().transparency == 0.0 {
+                    self.current_material().transparency = 1.0;
+                }
+            }
+            Some("9") => {
+                if self.current_material().transparency == 0.0 {
+                    self.current_material().transparency = 1.0
+                }
+            }
+            Some("10") => panic!("illum model 10 is not supported"),
+            Some(other) => {
+                panic!("invalid illum value {} - must be between 0 and 10", other)
+            }
+            None => panic!("illum does not have a value"),
         }
     }
 }
@@ -270,7 +274,7 @@ fn parse_polygon(line_parts: SplitWhitespace, material: Option<Material>) -> Pol
         ))
     }
 
-    let polys = line_parts
+    let vertices = line_parts
         .map(|part| {
             let mut parts = part.split('/');
             let vertex = parts
@@ -283,7 +287,7 @@ fn parse_polygon(line_parts: SplitWhitespace, material: Option<Material>) -> Pol
             let texture_vertex = next();
             let normal = next();
 
-            PolygonData {
+            VertexData {
                 vertex,
                 texture_vertex,
                 normal,
@@ -291,7 +295,7 @@ fn parse_polygon(line_parts: SplitWhitespace, material: Option<Material>) -> Pol
         })
         .collect();
 
-    (polys, material)
+    Polygon { vertices, material }
 }
 
 fn parse_normal(mut line_parts: SplitWhitespace) -> Vector3D {
@@ -306,11 +310,19 @@ fn parse_normal(mut line_parts: SplitWhitespace) -> Vector3D {
     Vector3D::new(next(), next(), next())
 }
 
-type Polygon = (Vec<PolygonData>, Option<Material>);
-type Group = Vec<Polygon>;
+#[derive(Debug, PartialEq)]
+struct Polygon {
+    vertices: Vec<VertexData>,
+    material: Option<Material>,
+}
 
 #[derive(Debug, PartialEq)]
-struct PolygonData {
+struct Group {
+    polygons: Vec<Polygon>,
+}
+
+#[derive(Debug, PartialEq)]
+struct VertexData {
     vertex: usize,
     texture_vertex: Option<usize>,
     normal: Option<usize>,
@@ -335,8 +347,8 @@ impl ObjData {
         let convert_group = |group: &Group| {
             let mut triangles = vec![];
 
-            for (polygon, material) in group {
-                for face in triangulate(polygon) {
+            for polygon in &group.polygons {
+                for face in triangulate(&polygon.vertices) {
                     let mut vertices = Vec::with_capacity(3);
                     let mut normals = Vec::with_capacity(3);
 
@@ -381,7 +393,7 @@ impl ObjData {
                         ));
                     };
 
-                    if let Some(material) = material {
+                    if let Some(material) = &polygon.material {
                         triangles.push(triangle.with_material(material.clone()))
                     } else {
                         triangles.push(triangle)
@@ -407,7 +419,7 @@ impl ObjData {
     }
 }
 
-fn triangulate(face: &[PolygonData]) -> Vec<[(usize, Option<usize>); 3]> {
+fn triangulate(face: &[VertexData]) -> Vec<[(usize, Option<usize>); 3]> {
     let mut out = vec![];
 
     for i in 2..face.len() {
