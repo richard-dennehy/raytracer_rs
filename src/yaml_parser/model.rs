@@ -1,13 +1,11 @@
 use crate::material::MaterialKind;
-use crate::wavefront_parser::ObjData;
+use crate::wavefront_parser::WavefrontParser;
 use crate::{
-    wavefront_parser, Camera, Colour, Light, Material, Object, Pattern, Point3D, Transform, Vector,
-    Vector3D,
+    Camera, Colour, Light, Material, Object, Pattern, Point3D, Transform, Vector, Vector3D,
 };
 use either::Either;
 use either::Either::{Left, Right};
 use std::collections::HashMap;
-use std::fs;
 use std::num::NonZeroU16;
 use std::path::Path;
 
@@ -55,7 +53,7 @@ impl SceneDescription {
         fn inner(
             this: &SceneDescription,
             objects: &Vec<ObjectDescription>,
-            obj_cache: &mut HashMap<String, ObjData>,
+            parser: &mut WavefrontParser,
         ) -> Result<Vec<Object>, String> {
             objects
                 .iter()
@@ -73,9 +71,9 @@ impl SceneDescription {
 
                             Ok(cylinder.build())
                         }
-                        ObjectKind::ObjFile { file_name } => get_or_load(obj_cache, file_name),
+                        ObjectKind::ObjFile { file_name } => parser.load(file_name),
                         ObjectKind::Group { children } => {
-                            inner(this, children, obj_cache).map(Object::group)
+                            inner(this, children, parser).map(Object::group)
                         }
                     };
 
@@ -93,32 +91,13 @@ impl SceneDescription {
                 .collect()
         }
 
-        inner(self, &self.objects, &mut HashMap::new())
+        let mut parser = WavefrontParser::new_with_path(
+            Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("scene_descriptions")
+                .join("obj_files"),
+        );
+        inner(self, &self.objects, &mut parser)
     }
-}
-
-fn get_or_load(
-    cache: &mut HashMap<String, ObjData>,
-    obj_file_name: &str,
-) -> Result<Object, String> {
-    if let Some(obj_data) = cache.get(obj_file_name) {
-        return obj_data.to_object();
-    }
-
-    let file_contents = fs::read_to_string(
-        Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("scene_descriptions")
-            .join("obj_files")
-            .join(obj_file_name),
-    )
-    .map_err(|e| e.to_string())?;
-
-    // TODO load referenced MTL files properly
-    let obj_data = wavefront_parser::parse_obj(&file_contents, HashMap::new());
-    cache
-        .entry(obj_file_name.to_string())
-        .or_insert(obj_data)
-        .to_object()
 }
 
 #[derive(PartialEq, Debug)]

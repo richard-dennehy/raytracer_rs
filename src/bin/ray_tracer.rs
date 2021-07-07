@@ -2,8 +2,6 @@ extern crate ray_tracer;
 
 use ray_tracer::renderer::Samples;
 use ray_tracer::*;
-use std::collections::HashMap;
-use std::f64::consts::FRAC_PI_3;
 use std::fs;
 use std::path::Path;
 use std::time::Instant;
@@ -18,45 +16,19 @@ use std::time::Instant;
 fn main() -> Result<(), String> {
     let timer = Instant::now();
 
+    let yaml = fs::read_to_string(
+        Path::new(env!("CARGO_MANIFEST_DIR")).join("scene_descriptions/bounding-boxes.yml"),
+    )
+    .map_err(|e| e.to_string())?;
+    let mut scene = yaml_parser::parse(&yaml)?;
+    scene.override_resolution(1920, 1080);
+
     let mut world = World::empty();
-    world
-        .lights
-        .push(Light::point(Colour::WHITE, Point3D::new(0.0, 10.0, -5.0)));
+    scene.objects()?.into_iter().for_each(|obj| world.add(obj));
+    world.lights = scene.lights();
 
-    let mtl_file =
-        fs::read_to_string(Path::new(env!("CARGO_MANIFEST_DIR")).join("meshes/illum test.mtl"))
-            .unwrap();
-    let illum_materials = wavefront_parser::parse_mtl(&mtl_file);
+    let camera = scene.camera()?;
 
-    let obj_file =
-        fs::read_to_string(Path::new(env!("CARGO_MANIFEST_DIR")).join("meshes/illum test.obj"))
-            .unwrap();
-    let mut materials = HashMap::new();
-    materials.insert("illum test".to_owned(), illum_materials);
-
-    let obj_data = wavefront_parser::parse_obj(&obj_file, materials);
-    let illum_test = obj_data.to_object()?;
-
-    world.add(illum_test);
-    world.add(
-        Object::plane()
-            .with_material(Material {
-                kind: MaterialKind::Pattern(Pattern::checkers(Colour::WHITE, Colour::BLACK)),
-                ..Default::default()
-            })
-            .transformed(Transform::identity().translate_y(-1.0)),
-    );
-
-    let camera = Camera::new(
-        nonzero_ext::nonzero!(1920u16),
-        nonzero_ext::nonzero!(1080u16),
-        FRAC_PI_3,
-        Transform::view_transform(
-            Point3D::new(8.0, 3.0, -17.0),
-            Point3D::new(8.0, 0.0, 0.0),
-            Normal3D::POSITIVE_Y,
-        ),
-    );
     let canvas = renderer::render(world, camera, &Samples::single());
 
     let image = image_writer::write(canvas);

@@ -13,6 +13,8 @@ and doesn't care about that
 ¯\\_(ツ)_/¯";
 
         let out = parse_mtl(invalid_file);
+        assert!(out.is_ok(), "{}", out.unwrap_err());
+        let out = out.unwrap();
         assert_eq!(out, Materials(HashMap::new()));
     }
 
@@ -20,7 +22,6 @@ and doesn't care about that
         use super::*;
 
         #[test]
-        #[should_panic]
         fn each_material_must_be_named() {
             let input = "
 # oh no it's commented out
@@ -34,7 +35,9 @@ Ni 1.450000
 d 1.000000
 illum 2";
 
-            parse_mtl(input);
+            let out = parse_mtl(input);
+            assert!(out.is_err(), "expected parsing to fail, but it succeeded");
+            assert_eq!(out.unwrap_err(), "A material must be defined with a `newmtl` statement before material properties can be defined");
         }
 
         #[test]
@@ -44,6 +47,9 @@ newmtl awful_green
 Kd 0.425245 0.800000 0.011982";
 
             let materials = parse_mtl(input);
+            assert!(materials.is_ok(), "{}", materials.unwrap_err());
+            let materials = materials.unwrap();
+
             let green = materials.get("awful_green");
             assert!(green.is_some());
             let green = green.unwrap();
@@ -60,6 +66,9 @@ newmtl overcast_grey
 Kd 0.7";
 
             let materials = parse_mtl(input);
+            assert!(materials.is_ok(), "{}", materials.unwrap_err());
+            let materials = materials.unwrap();
+
             let grey = materials.get("overcast_grey");
             assert!(grey.is_some());
             let grey = grey.unwrap();
@@ -73,6 +82,9 @@ newmtl blinding
 Ns 1000";
 
             let materials = parse_mtl(input);
+            assert!(materials.is_ok(), "{}", materials.unwrap_err());
+            let materials = materials.unwrap();
+
             let material = materials.get("blinding");
             assert!(material.is_some());
             let material = material.unwrap();
@@ -99,6 +111,9 @@ newmtl ambient
                 );
 
                 let materials = parse_mtl(&input);
+                assert!(materials.is_ok(), "{}", materials.unwrap_err());
+                let materials = materials.unwrap();
+
                 let material = materials.get("ambient");
                 assert!(material.is_some());
                 let material = material.unwrap();
@@ -126,6 +141,9 @@ newmtl specular
                 );
 
                 let materials = parse_mtl(&input);
+                assert!(materials.is_ok(), "{}", materials.unwrap_err());
+                let materials = materials.unwrap();
+
                 let material = materials.get("specular");
                 assert!(material.is_some());
                 let material = material.unwrap();
@@ -140,6 +158,9 @@ newmtl refractive
 Ni 1.45";
 
             let materials = parse_mtl(input);
+            assert!(materials.is_ok(), "{}", materials.unwrap_err());
+            let materials = materials.unwrap();
+
             let material = materials.get("refractive");
             assert!(material.is_some());
             let material = material.unwrap();
@@ -153,6 +174,9 @@ newmtl opaque
 d 1.000";
 
             let materials = parse_mtl(input);
+            assert!(materials.is_ok(), "{}", materials.unwrap_err());
+            let materials = materials.unwrap();
+
             let material = materials.get("opaque");
             assert!(material.is_some());
             let material = material.unwrap();
@@ -166,6 +190,9 @@ newmtl transparent
 d 0.000";
 
             let materials = parse_mtl(input);
+            assert!(materials.is_ok(), "{}", materials.unwrap_err());
+            let materials = materials.unwrap();
+
             let material = materials.get("transparent");
             assert!(material.is_some());
             let material = material.unwrap();
@@ -206,9 +233,13 @@ illum {}",
                     );
 
                     let materials = parse_mtl(&input);
+                    assert!(materials.is_ok(), "{}", materials.unwrap_err());
+                    let materials = materials.unwrap();
+
                     let material = materials.get("illum");
                     assert!(material.is_some());
                     let material = material.unwrap();
+
                     assert_eq!(material.ambient, ambient, "({})", idx);
                     assert_eq!(material.diffuse, diffuse, "({})", idx);
                     assert_eq!(material.specular, specular, "({})", idx);
@@ -232,9 +263,13 @@ d 1.000000
 illum 2";
 
             let materials = parse_mtl(input);
+            assert!(materials.is_ok(), "{}", materials.unwrap_err());
+            let materials = materials.unwrap();
+
             let material = materials.get("awful_green");
             assert!(material.is_some());
             let material = material.unwrap();
+
             assert_eq!(material.shininess, 225.0);
             assert_eq!(material.ambient, 0.1);
             assert_eq!(
@@ -295,6 +330,8 @@ illum 4
 ";
 
         let materials = parse_mtl(input);
+        assert!(materials.is_ok(), "{}", materials.unwrap_err());
+        let materials = materials.unwrap();
 
         let neon_green = materials.get("neon_green").unwrap();
         assert_eq!(neon_green.kind, MaterialKind::Solid(Colour::GREEN));
@@ -352,13 +389,18 @@ mod obj_parser_tests {
 
     #[test]
     fn parser_should_ignore_unrecognised_lines() {
+        let mut parser = WavefrontParser::new();
+
         let invalid_obj_file = "There was a young lady named Bright
 who traveled much faster than light.
 She set out one day
 in a relative way,
 and came back the previous night.";
 
-        let out = parse_obj(invalid_obj_file, HashMap::new());
+        let out = parser.parse_obj(invalid_obj_file);
+        assert!(out.is_ok(), "{}", out.unwrap_err());
+        let out = out.unwrap();
+
         assert!(out.vertices.is_empty());
         assert!(out.normals.is_empty());
         assert!(out.groups.is_empty());
@@ -366,12 +408,17 @@ and came back the previous night.";
 
     #[test]
     fn parser_should_parse_vertex_data() {
+        let mut parser = WavefrontParser::new();
+
         let input = "v -1 1 0
         v -1.0000 0.5000 0.0000
         v 1 0 0
         v 1 1 0";
 
-        let out = parse_obj(input, HashMap::new());
+        let out = parser.parse_obj(input);
+        assert!(out.is_ok(), "{}", out.unwrap_err());
+        let out = out.unwrap();
+
         assert_eq!(out.vertex(1), Some(Point3D::new(-1.0, 1.0, 0.0)));
         assert_eq!(out.vertex(2), Some(Point3D::new(-1.0, 0.5, 0.0)));
         assert_eq!(out.vertex(3), Some(Point3D::new(1.0, 0.0, 0.0)));
@@ -380,6 +427,8 @@ and came back the previous night.";
 
     #[test]
     fn parser_should_parse_face_data() {
+        let mut parser = WavefrontParser::new();
+
         let input = "v -1 1 0
         v 1 0 0
         v 1 0 0
@@ -388,13 +437,18 @@ and came back the previous night.";
         f 1 2 3
         f 1 3 4";
 
-        let out = parse_obj(input, HashMap::new());
+        let out = parser.parse_obj(input);
+        assert!(out.is_ok(), "{}", out.unwrap_err());
+        let out = out.unwrap();
+
         assert_eq!(out.groups[0].polygons[0].vertices(), vec![1, 2, 3]);
         assert_eq!(out.groups[0].polygons[1].vertices(), vec![1, 3, 4]);
     }
 
     #[test]
     fn parser_should_parse_polygons_with_more_than_3_vertices() {
+        let mut parser = WavefrontParser::new();
+
         let input = "v -1 1 0
 v -1 0 0
 v 1 0 0
@@ -403,12 +457,17 @@ v 0 2 0
 
 f 1 2 3 4 5";
 
-        let out = parse_obj(input, HashMap::new());
+        let out = parser.parse_obj(input);
+        assert!(out.is_ok(), "{}", out.unwrap_err());
+        let out = out.unwrap();
+
         assert_eq!(out.groups[0].polygons[0].vertices(), vec![1, 2, 3, 4, 5]);
     }
 
     #[test]
     fn obj_data_should_be_convertible_to_group_containing_parsed_faces() {
+        let mut parser = WavefrontParser::new();
+
         let input = "v -1 1 0
         v 1 0 0
         v 1 0 0
@@ -417,7 +476,10 @@ f 1 2 3 4 5";
         f 1 2 3
         f 1 3 4";
 
-        let out = parse_obj(input, HashMap::new());
+        let out = parser.parse_obj(input);
+        assert!(out.is_ok(), "{}", out.unwrap_err());
+        let out = out.unwrap();
+
         let object = out.to_object();
         assert!(object.is_ok(), "{}", object.unwrap_err());
         let object = object.unwrap();
@@ -452,6 +514,8 @@ f 1 2 3 4 5";
 
     #[test]
     fn converting_to_group_should_triangulate_polygon_faces() {
+        let mut parser = WavefrontParser::new();
+
         let input = "v -1 1 0
 v -1 0 0
 v 1 0 0
@@ -460,7 +524,10 @@ v 0 2 0
 
 f 1 2 3 4 5";
 
-        let out = parse_obj(input, HashMap::new());
+        let out = parser.parse_obj(input);
+        assert!(out.is_ok(), "{}", out.unwrap_err());
+        let out = out.unwrap();
+
         let object = out.to_object();
         assert!(object.is_ok(), "{}", object.unwrap_err());
         let object = object.unwrap();
@@ -507,6 +574,8 @@ f 1 2 3 4 5";
 
     #[test]
     fn obj_parser_should_preserve_named_groups() {
+        let mut parser = WavefrontParser::new();
+
         let input = "v -1 1 0
         v -1 0 0
         v 1 0 0
@@ -517,13 +586,18 @@ f 1 2 3 4 5";
         g SecondGroup
         f 1 3 4";
 
-        let output = parse_obj(input, HashMap::new());
+        let output = parser.parse_obj(input);
+        assert!(output.is_ok(), "{}", output.unwrap_err());
+        let output = output.unwrap();
+
         assert_eq!(output.groups[0].polygons[0].vertices(), vec![1, 2, 3]);
         assert_eq!(output.groups[1].polygons[0].vertices(), vec![1, 3, 4]);
     }
 
     #[test]
     fn converting_obj_data_with_multiple_groups_should_create_a_group_with_subgroups() {
+        let mut parser = WavefrontParser::new();
+
         let input = "v -1 1 0
         v -1 0 0
         v 1 0 0
@@ -534,7 +608,10 @@ f 1 2 3 4 5";
         g SecondGroup
         f 1 3 4";
 
-        let output = parse_obj(input, HashMap::new());
+        let output = parser.parse_obj(input);
+        assert!(output.is_ok(), "{}", output.unwrap_err());
+        let output = output.unwrap();
+
         let object = output.to_object();
         assert!(object.is_ok(), "{}", object.unwrap_err());
         let object = object.unwrap();
@@ -546,11 +623,16 @@ f 1 2 3 4 5";
 
     #[test]
     fn obj_parser_should_parse_vertex_normals() {
+        let mut parser = WavefrontParser::new();
+
         let input = "vn 0 0 1
         vn 0.707 0 -0.707
         vn 1 2 3";
 
-        let output = parse_obj(input, HashMap::new());
+        let output = parser.parse_obj(input);
+        assert!(output.is_ok(), "{}", output.unwrap_err());
+        let output = output.unwrap();
+
         assert_eq!(output.normals[0], Vector3D::new(0.0, 0.0, 1.0));
         assert_eq!(output.normals[1], Vector3D::new(0.707, 0.0, -0.707));
         assert_eq!(output.normals[2], Vector3D::new(1.0, 2.0, 3.0));
@@ -558,6 +640,8 @@ f 1 2 3 4 5";
 
     #[test]
     fn obj_parser_should_parse_faces_with_texture_and_normal_indexes() {
+        let mut parser = WavefrontParser::new();
+
         let input = "v 0 1 0
         v -1 0 0
         v 1 0 0
@@ -569,7 +653,10 @@ f 1 2 3 4 5";
         f 1//3 2//1 3//2
         f 1/0/3 2/102/1 3/14/2";
 
-        let output = parse_obj(input, HashMap::new());
+        let output = parser.parse_obj(input);
+        assert!(output.is_ok(), "{}", output.unwrap_err());
+        let output = output.unwrap();
+
         assert_eq!(
             output.groups[0].polygons[0].vertices[0],
             VertexData {
@@ -623,6 +710,8 @@ f 1 2 3 4 5";
 
     #[test]
     fn converting_obj_data_should_convert_faces_with_normals_into_smooth_triangles() {
+        let mut parser = WavefrontParser::new();
+
         let input = "v 0 1 0
         v -1 0 0
         v 1 0 0
@@ -634,7 +723,10 @@ f 1 2 3 4 5";
         f 1//3 2//1 3//2
         f 1/0/3 2/102/1 3/14/2";
 
-        let output = parse_obj(input, HashMap::new());
+        let output = parser.parse_obj(input);
+        assert!(output.is_ok(), "{}", output.unwrap_err());
+        let output = output.unwrap();
+
         let object = output.to_object();
         assert!(object.is_ok(), "{}", object.unwrap_err());
         let object = object.unwrap();
@@ -676,11 +768,11 @@ f 1 2 3 4 5";
 
     mod material_tests {
         use super::*;
-        use maplit::hashmap;
 
         #[test]
-        #[should_panic]
         fn a_usemtl_statement_without_an_mtllib_statement_should_fail() {
+            let mut parser = WavefrontParser::new();
+
             let input = "v 0 1 0
             v -1 0 0
             v 1 0 0
@@ -688,7 +780,12 @@ f 1 2 3 4 5";
             usemtl awful_green
             f 1 2 3";
 
-            parse_obj(input, HashMap::new());
+            let output = parser.parse_obj(input);
+            assert!(output.is_err());
+            assert_eq!(
+                output.unwrap_err(),
+                "cannot `usemtl awful_green` as it has not been loaded from an MTL library"
+            );
         }
 
         mod when_material_libraries_have_been_loaded {
@@ -697,6 +794,11 @@ f 1 2 3 4 5";
 
             #[test]
             fn when_the_material_exists_should_set_the_material_of_the_following_face() {
+                let mut parser = WavefrontParser::new();
+                parser.mtl_cache.insert("test materials".to_owned(), Materials(hashmap! {
+                    "awful_green".to_owned() => Material { kind: MaterialKind::Solid(Colour::GREEN), ..Default::default() }
+                }));
+
                 let input = "mtllib test materials.mtl
                 v 0 1 0
                 v -1 0 0
@@ -705,12 +807,9 @@ f 1 2 3 4 5";
                 usemtl awful_green
                 f 1 2 3";
 
-                let obj_data = parse_obj(
-                    input,
-                    hashmap! { "test materials".to_owned() => Materials(hashmap! {
-                        "awful_green".to_owned() => Material { kind: MaterialKind::Solid(Colour::GREEN), ..Default::default() }
-                    }) },
-                );
+                let obj_data = parser.parse_obj(input);
+                assert!(obj_data.is_ok(), "{}", obj_data.unwrap_err());
+                let obj_data = obj_data.unwrap();
 
                 assert!(obj_data.groups[0].polygons[0].material.is_some());
                 assert_eq!(
@@ -725,6 +824,11 @@ f 1 2 3 4 5";
 
             #[test]
             fn usemtl_should_set_the_material_of_all_following_faces() {
+                let mut parser = WavefrontParser::new();
+                parser.mtl_cache.insert("test materials".to_owned(), Materials(hashmap! {
+                    "awful_green".to_owned() => Material { kind: MaterialKind::Solid(Colour::GREEN), ..Default::default() }
+                }));
+
                 let input = "mtllib test materials.mtl
                 v 0 1 0
                 v -1 0 0
@@ -735,12 +839,9 @@ f 1 2 3 4 5";
                 f 2 1 3
                 f 3 1 2";
 
-                let obj_data = parse_obj(
-                    input,
-                    hashmap! { "test materials".to_owned() => Materials(hashmap! {
-                        "awful_green".to_owned() => Material { kind: MaterialKind::Solid(Colour::GREEN), ..Default::default() }
-                    }) },
-                );
+                let obj_data = parser.parse_obj(input);
+                assert!(obj_data.is_ok(), "{}", obj_data.unwrap_err());
+                let obj_data = obj_data.unwrap();
 
                 assert!(obj_data.groups[0].polygons[0].material.is_some());
                 assert_eq!(
@@ -775,6 +876,13 @@ f 1 2 3 4 5";
 
             #[test]
             fn should_be_possible_to_give_different_faces_different_materials() {
+                let mut parser = WavefrontParser::new();
+                parser.mtl_cache.insert("test materials".to_owned(),Materials(hashmap! {
+                        "awful_green".to_owned() => Material { kind: MaterialKind::Solid(Colour::GREEN), ..Default::default() },
+                        "sunburned_red".to_owned() => Material { kind: MaterialKind::Solid(Colour::RED), ..Default::default() },
+                    })
+                );
+
                 let input = "mtllib test materials.mtl
                 v 0 1 0
                 v -1 0 0
@@ -786,13 +894,9 @@ f 1 2 3 4 5";
                 usemtl sunburned_red
                 f 3 1 2";
 
-                let obj_data = parse_obj(
-                    input,
-                    hashmap! { "test materials".to_owned() => Materials(hashmap! {
-                        "awful_green".to_owned() => Material { kind: MaterialKind::Solid(Colour::GREEN), ..Default::default() },
-                        "sunburned_red".to_owned() => Material { kind: MaterialKind::Solid(Colour::RED), ..Default::default() },
-                    }) },
-                );
+                let obj_data = parser.parse_obj(input);
+                assert!(obj_data.is_ok(), "{}", obj_data.unwrap_err());
+                let obj_data = obj_data.unwrap();
 
                 assert!(obj_data.groups[0].polygons[0].material.is_some());
                 assert_eq!(
@@ -827,6 +931,16 @@ f 1 2 3 4 5";
 
             #[test]
             fn should_be_able_to_use_material_loaded_from_a_second_library() {
+                let mut parser = WavefrontParser::new();
+                parser.mtl_cache = hashmap! {
+                    "test materials".to_owned() => Materials(hashmap! {
+                        "awful_green".to_owned() => Material { kind: MaterialKind::Solid(Colour::GREEN), ..Default::default() },
+                    }),
+                    "more materials".to_owned() => Materials(hashmap! {
+                        "sunburned_red".to_owned() => Material { kind: MaterialKind::Solid(Colour::RED), ..Default::default() },
+                    })
+                };
+
                 let input = "mtllib test materials.mtl more materials.mtl
                 v 0 1 0
                 v -1 0 0
@@ -838,17 +952,9 @@ f 1 2 3 4 5";
                 usemtl sunburned_red
                 f 3 1 2";
 
-                let obj_data = parse_obj(
-                    input,
-                    hashmap! {
-                        "test materials".to_owned() => Materials(hashmap! {
-                            "awful_green".to_owned() => Material { kind: MaterialKind::Solid(Colour::GREEN), ..Default::default() },
-                        }),
-                        "more materials".to_owned() => Materials(hashmap! {
-                            "sunburned_red".to_owned() => Material { kind: MaterialKind::Solid(Colour::RED), ..Default::default() },
-                        })
-                    },
-                );
+                let obj_data = parser.parse_obj(input);
+                assert!(obj_data.is_ok(), "{}", obj_data.unwrap_err());
+                let obj_data = obj_data.unwrap();
 
                 assert!(obj_data.groups[0].polygons[0].material.is_some());
                 assert_eq!(
@@ -884,6 +990,19 @@ f 1 2 3 4 5";
             #[test]
             fn should_prioritise_materials_from_an_earlier_library_over_conflicting_materials_from_a_later_library(
             ) {
+                let mut parser = WavefrontParser::new();
+                parser.mtl_cache = hashmap! {
+                    "test materials".to_owned() => Materials(hashmap! {
+                        "mystery".to_owned() => Material { kind: MaterialKind::Solid(Colour::GREEN), ..Default::default() },
+                    }),
+                    "more materials".to_owned() => Materials(hashmap! {
+                        "sunburned_red".to_owned() => Material { kind: MaterialKind::Solid(Colour::RED), ..Default::default() },
+                    }),
+                    "even more".to_owned() => Materials(hashmap! {
+                        "mystery".to_owned() => Material { kind: MaterialKind::Solid(Colour::BLACK), ..Default::default() },
+                    })
+                };
+
                 let input = "mtllib test materials.mtl more materials.mtl even more.mtl
                 v 0 1 0
                 v -1 0 0
@@ -892,20 +1011,9 @@ f 1 2 3 4 5";
                 usemtl mystery
                 f 1 2 3";
 
-                let obj_data = parse_obj(
-                    input,
-                    hashmap! {
-                        "test materials".to_owned() => Materials(hashmap! {
-                            "mystery".to_owned() => Material { kind: MaterialKind::Solid(Colour::GREEN), ..Default::default() },
-                        }),
-                        "more materials".to_owned() => Materials(hashmap! {
-                            "sunburned_red".to_owned() => Material { kind: MaterialKind::Solid(Colour::RED), ..Default::default() },
-                        }),
-                        "even more".to_owned() => Materials(hashmap! {
-                            "mystery".to_owned() => Material { kind: MaterialKind::Solid(Colour::BLACK), ..Default::default() },
-                        })
-                    },
-                );
+                let obj_data = parser.parse_obj(input);
+                assert!(obj_data.is_ok(), "{}", obj_data.unwrap_err());
+                let obj_data = obj_data.unwrap();
 
                 assert!(obj_data.groups[0].polygons[0].material.is_some());
                 assert_eq!(
@@ -919,9 +1027,18 @@ f 1 2 3 4 5";
             }
 
             #[test]
-            #[should_panic]
             fn should_fail_if_a_material_does_not_exist_in_a_loaded_library() {
-                let input = "mtllib test materials.mtl more materials.mtl even more.mtl
+                let mut parser = WavefrontParser::new();
+                parser.mtl_cache = hashmap! {
+                    "test materials".to_owned() => Materials(hashmap! {
+                        "awful_green".to_owned() => Material { kind: MaterialKind::Solid(Colour::GREEN), ..Default::default() },
+                    }),
+                    "more materials".to_owned() => Materials(hashmap! {
+                        "sunburned_red".to_owned() => Material { kind: MaterialKind::Solid(Colour::RED), ..Default::default() },
+                    })
+                };
+
+                let input = "mtllib test materials.mtl more materials.mtl
                 v 0 1 0
                 v -1 0 0
                 v 1 0 0
@@ -929,25 +1046,24 @@ f 1 2 3 4 5";
                 usemtl mystery
                 f 1 2 3";
 
-                parse_obj(
-                    input,
-                    hashmap! {
-                        "test materials".to_owned() => Materials(hashmap! {
-                            "awful_green".to_owned() => Material { kind: MaterialKind::Solid(Colour::GREEN), ..Default::default() },
-                        }),
-                        "more materials".to_owned() => Materials(hashmap! {
-                            "sunburned_red".to_owned() => Material { kind: MaterialKind::Solid(Colour::RED), ..Default::default() },
-                        })
-                    },
+                let output = parser.parse_obj(input);
+                assert!(output.is_err());
+                assert_eq!(
+                    output.unwrap_err(),
+                    "cannot `usemtl mystery` as it has not been loaded from an MTL library"
                 );
             }
         }
 
         #[test]
         fn converting_an_obj_and_mtl_file_to_an_object_should_assign_the_correct_materials() {
+            let mut parser = WavefrontParser::new();
+
             let mtl_input = "newmtl awful_green
             Kd 0 1 0";
-            let materials = hashmap!["materials".to_owned() => parse_mtl(mtl_input)];
+            parser
+                .mtl_cache
+                .insert("materials".to_owned(), parse_mtl(mtl_input).unwrap());
 
             let obj_input = "mtllib materials.mtl
             v 0 1 0
@@ -957,7 +1073,10 @@ f 1 2 3 4 5";
             usemtl awful_green
             f 1 2 3";
 
-            let obj_data = parse_obj(obj_input, materials);
+            let obj_data = parser.parse_obj(obj_input);
+            assert!(obj_data.is_ok(), "{}", obj_data.unwrap_err());
+            let obj_data = obj_data.unwrap();
+
             let object = obj_data.to_object();
             assert!(object.is_ok(), "{}", object.unwrap_err());
             let object = object.unwrap();
@@ -970,9 +1089,12 @@ f 1 2 3 4 5";
         #[test]
         fn converting_an_obj_containing_a_polygon_should_assign_the_correct_material_to_all_subtriangles(
         ) {
+            let mut parser = WavefrontParser::new();
             let mtl_input = "newmtl awful_green
             Kd 0 1 0";
-            let materials = hashmap!["materials".to_owned() => parse_mtl(mtl_input)];
+            parser
+                .mtl_cache
+                .insert("materials".to_owned(), parse_mtl(mtl_input).unwrap());
 
             let obj_input = "mtllib materials.mtl
             v 0 1 0
@@ -984,7 +1106,10 @@ f 1 2 3 4 5";
             usemtl awful_green
             f 1 2 3 4 5";
 
-            let obj_data = parse_obj(obj_input, materials);
+            let obj_data = parser.parse_obj(obj_input);
+            assert!(obj_data.is_ok(), "{}", obj_data.unwrap_err());
+            let obj_data = obj_data.unwrap();
+
             let object = obj_data.to_object();
             assert!(object.is_ok(), "{}", object.unwrap_err());
             let object = object.unwrap();

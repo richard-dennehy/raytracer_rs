@@ -15,9 +15,8 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="support MTL libs in obj parser">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP load required files in wavefront parser">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/wavefront_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/wavefront_parser/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/wavefront_parser/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/wavefront_parser/tests.rs" afterDir="false" />
     </list>
@@ -77,7 +76,7 @@
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.completion" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.postfix.templates" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -462,35 +461,11 @@
       <workItem from="1625395747068" duration="3543000" />
       <workItem from="1625508290401" duration="19000" />
       <workItem from="1625508326147" duration="2921000" />
-      <workItem from="1625594352593" duration="1962000" />
-    </task>
-    <task id="LOCAL-00163" summary="add early return for renders with less than 5 samples per pixel">
-      <created>1619872180473</created>
-      <option name="number" value="00163" />
-      <option name="presentableId" value="LOCAL-00163" />
-      <option name="project" value="LOCAL" />
-      <updated>1619872180473</updated>
-    </task>
-    <task id="LOCAL-00164" summary="added progress bar and experiment with supersampling">
-      <created>1619953505763</created>
-      <option name="number" value="00164" />
-      <option name="presentableId" value="LOCAL-00164" />
-      <option name="project" value="LOCAL" />
-      <updated>1619953505763</updated>
-    </task>
-    <task id="LOCAL-00165" summary="WIP implement texture mapping">
-      <created>1619955300391</created>
-      <option name="number" value="00165" />
-      <option name="presentableId" value="LOCAL-00165" />
-      <option name="project" value="LOCAL" />
-      <updated>1619955300391</updated>
-    </task>
-    <task id="LOCAL-00166" summary="implement spherical texture mapping">
-      <created>1620045540601</created>
-      <option name="number" value="00166" />
-      <option name="presentableId" value="LOCAL-00166" />
-      <option name="project" value="LOCAL" />
-      <updated>1620045540601</updated>
+      <workItem from="1625594352593" duration="1988000" />
+      <workItem from="1625680874130" duration="2673000" />
+      <workItem from="1625767273778" duration="3080000" />
+      <workItem from="1625850888356" duration="3593000" />
+      <workItem from="1625917697778" duration="3398000" />
     </task>
     <task id="LOCAL-00167" summary="implement planar and cylindrical uv mapping">
       <created>1620165444067</created>
@@ -807,7 +782,35 @@
       <option name="project" value="LOCAL" />
       <updated>1625511050934</updated>
     </task>
-    <option name="localTasksCounter" value="212" />
+    <task id="LOCAL-00212" summary="refactor obj parser model">
+      <created>1625596356906</created>
+      <option name="number" value="00212" />
+      <option name="presentableId" value="LOCAL-00212" />
+      <option name="project" value="LOCAL" />
+      <updated>1625596356906</updated>
+    </task>
+    <task id="LOCAL-00213" summary="WIP load required files in wavefront parser">
+      <created>1625683571422</created>
+      <option name="number" value="00213" />
+      <option name="presentableId" value="LOCAL-00213" />
+      <option name="project" value="LOCAL" />
+      <updated>1625683571427</updated>
+    </task>
+    <task id="LOCAL-00214" summary="WIP load required files in wavefront parser">
+      <created>1625770356506</created>
+      <option name="number" value="00214" />
+      <option name="presentableId" value="LOCAL-00214" />
+      <option name="project" value="LOCAL" />
+      <updated>1625770356507</updated>
+    </task>
+    <task id="LOCAL-00215" summary="WIP load required files in wavefront parser">
+      <created>1625854577462</created>
+      <option name="number" value="00215" />
+      <option name="presentableId" value="LOCAL-00215" />
+      <option name="project" value="LOCAL" />
+      <updated>1625854577462</updated>
+    </task>
+    <option name="localTasksCounter" value="216" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -833,8 +836,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP improve UV mapping&#10;&#10;WIP add tests for Shape UV mapping" />
-    <MESSAGE value="WIP improve UV mapping&#10;&#10;WIP add for Cube and Cylinder UV mapping" />
     <MESSAGE value="WIP improve UV mapping&#10;&#10;remove old UV mapping" />
     <MESSAGE value="WIP improve UV mapping&#10;&#10;fix cylinder mapping to work correctly on caps" />
     <MESSAGE value="WIP improve UV mapping&#10;&#10;implement UV mapping for cones based on cylinder UV mapping" />
@@ -858,7 +859,9 @@
     <MESSAGE value="implement basic MTL parser" />
     <MESSAGE value="WIP support MTL libs in obj parser" />
     <MESSAGE value="support MTL libs in obj parser" />
-    <option name="LAST_COMMIT_MESSAGE" value="support MTL libs in obj parser" />
+    <MESSAGE value="refactor obj parser model" />
+    <MESSAGE value="WIP load required files in wavefront parser" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP load required files in wavefront parser" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
