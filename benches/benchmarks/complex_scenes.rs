@@ -46,7 +46,8 @@ fn reflect_refract(c: &mut Criterion) {
     group.sample_size(10);
 
     let yaml = fs::read_to_string(
-        Path::new(env!("CARGO_MANIFEST_DIR")).join("scene_descriptions/reflect-refract.yml"),
+        Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("../../examples/reflect-refract/resources/reflect-refract.yml"),
     )
     .unwrap();
 
