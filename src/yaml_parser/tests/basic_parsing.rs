@@ -936,7 +936,7 @@ value:
 fn should_parse_scene_description() {
     let scene = include_str!(concat!(
         env!("CARGO_MANIFEST_DIR"),
-        "/scene_descriptions/cover.yml"
+        "/examples/cover/resources/cover.yml"
     ));
 
     let output = parse(scene, Default::default());

@@ -21,7 +21,7 @@ fn cover_image(c: &mut Criterion) {
     group.sample_size(10);
 
     let yaml = fs::read_to_string(
-        Path::new(env!("CARGO_MANIFEST_DIR")).join("scene_descriptions/cover.yml"),
+        Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/cover/resources/cover.yml"),
     )
     .unwrap();
 

@@ -15,16 +15,13 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="load required files in wavefront parser">
-      <change afterPath="$PROJECT_DIR$/examples/dragons/main.rs" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add example for dragons scene">
+      <change afterPath="$PROJECT_DIR$/examples/cover/cover.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/examples/cover/main.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scene_descriptions/bounding-boxes.yml" beforeDir="false" afterPath="$PROJECT_DIR$/examples/dragons/resources/bounding-boxes.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scene_descriptions/obj_files/dragon.obj" beforeDir="false" afterPath="$PROJECT_DIR$/examples/dragons/resources/dragon.obj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scene_descriptions/cover.yml" beforeDir="false" afterPath="$PROJECT_DIR$/examples/cover/resources/cover.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/creating_a_scene.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/creating_a_scene.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,11 +87,11 @@
       <recent name="C:\Users\Richard\CLionProjects\raytracer\scene_descriptions\obj_files" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Richard\CLionProjects\raytracer\examples\cover\resources" />
       <recent name="C:\Users\Richard\CLionProjects\raytracer\examples\dragons\resources" />
       <recent name="C:\Users\Richard\CLionProjects\raytracer\docs" />
       <recent name="C:\Users\Richard\CLionProjects\raytracer\benches\benchmarks" />
       <recent name="C:\Users\Richard\CLionProjects\raytracer\src" />
-      <recent name="C:\Users\Richard\CLionProjects\raytracer\src\lib" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -109,9 +106,10 @@
       <command value="cargo run --release" />
       <command value="cargo bench -- meshes" />
       <command value="cargo run --release --example dragons" />
+      <command value="cargo run --release --example cover" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.run">
+  <component name="RunManager" selected="Cargo.test">
     <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -183,7 +181,7 @@
       </method>
     </configuration>
     <configuration name="run" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="run --release --example dragons" />
+      <option name="command" value="run --release --example cover" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -224,11 +222,11 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.run" />
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.run" />
+        <item itemvalue="Cargo.run" />
         <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.Test wavefront_parser::tests::obj_parser_tests::material_tests::converting_an_obj_and_mtl_file_to_an_object_should_assign_the_correct_materials" />
-        <item itemvalue="Cargo.bench" />
       </list>
     </recent_temporary>
   </component>
@@ -480,14 +478,7 @@
       <workItem from="1625850888356" duration="3593000" />
       <workItem from="1625917697778" duration="3438000" />
       <workItem from="1625921530879" duration="130000" />
-      <workItem from="1626000169096" duration="1155000" />
-    </task>
-    <task id="LOCAL-00168" summary="WIP cubic mapping">
-      <created>1620673001152</created>
-      <option name="number" value="00168" />
-      <option name="presentableId" value="LOCAL-00168" />
-      <option name="project" value="LOCAL" />
-      <updated>1620673001153</updated>
+      <workItem from="1626000169096" duration="2098000" />
     </task>
     <task id="LOCAL-00169" summary="implement cubic UV mapping">
       <created>1620759218787</created>
@@ -825,7 +816,14 @@
       <option name="project" value="LOCAL" />
       <updated>1625921153305</updated>
     </task>
-    <option name="localTasksCounter" value="217" />
+    <task id="LOCAL-00217" summary="add example for dragons scene">
+      <created>1626001635405</created>
+      <option name="number" value="00217" />
+      <option name="presentableId" value="LOCAL-00217" />
+      <option name="project" value="LOCAL" />
+      <updated>1626001635405</updated>
+    </task>
+    <option name="localTasksCounter" value="218" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -851,7 +849,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP improve UV mapping&#10;&#10;fix cylinder mapping to work correctly on caps" />
     <MESSAGE value="WIP improve UV mapping&#10;&#10;implement UV mapping for cones based on cylinder UV mapping" />
     <MESSAGE value="implement UV maps for all primitive shapes" />
     <MESSAGE value="WIP improve UV mapping&#10;&#10;WIP triangle UVs" />
@@ -876,7 +873,8 @@
     <MESSAGE value="refactor obj parser model" />
     <MESSAGE value="WIP load required files in wavefront parser" />
     <MESSAGE value="load required files in wavefront parser" />
-    <option name="LAST_COMMIT_MESSAGE" value="load required files in wavefront parser" />
+    <MESSAGE value="add example for dragons scene" />
+    <option name="LAST_COMMIT_MESSAGE" value="add example for dragons scene" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
