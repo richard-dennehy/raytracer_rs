@@ -3,6 +3,8 @@ use yaml_rust::YamlLoader;
 use model::*;
 use parsers::*;
 use std::collections::HashMap;
+use std::fs;
+use std::path::PathBuf;
 
 #[cfg(test)]
 mod tests;
@@ -10,7 +12,12 @@ mod tests;
 mod model;
 mod parsers;
 
-pub fn parse(input: &str) -> Result<SceneDescription, String> {
+pub fn load(resource_dir: PathBuf, file_name: &str) -> Result<SceneDescription, String> {
+    let yaml = fs::read_to_string(resource_dir.join(file_name)).map_err(|e| e.to_string())?;
+    parse(&yaml, resource_dir)
+}
+
+fn parse(input: &str, resource_dir: PathBuf) -> Result<SceneDescription, String> {
     match YamlLoader::load_from_str(input) {
         Ok(yaml) => {
             let mut camera = None;
@@ -56,6 +63,7 @@ pub fn parse(input: &str) -> Result<SceneDescription, String> {
                 camera,
                 lights,
                 objects,
+                resource_dir,
             })
         }
         Err(error) => Err(error.to_string()),

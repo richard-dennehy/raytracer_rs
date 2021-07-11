@@ -24,7 +24,7 @@ fn with_camera_description(rest: &str) -> String {
 fn should_be_able_to_create_a_camera_from_a_valid_file() {
     let input = with_camera_description("");
 
-    let scene = parse(&input);
+    let scene = parse(&input, Default::default());
     assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
@@ -57,7 +57,7 @@ fn should_be_able_to_create_a_simple_object_with_a_colour_and_no_transforms() {
   transform: []",
     );
 
-    let scene = parse(&input);
+    let scene = parse(&input, Default::default());
     assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
@@ -93,7 +93,7 @@ fn should_be_able_to_create_an_object_with_a_checker_pattern() {
     reflective: 0.4",
     );
 
-    let scene = parse(&input);
+    let scene = parse(&input, Default::default());
     assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
@@ -140,7 +140,7 @@ fn should_be_able_to_create_an_object_with_a_pattern_with_a_transform() {
     reflective: 0.3",
     );
 
-    let scene = parse(&input);
+    let scene = parse(&input, Default::default());
     assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
@@ -184,7 +184,7 @@ fn should_be_able_to_create_an_object_referencing_a_defined_material() {
   transform: []",
     );
 
-    let scene = parse(&input);
+    let scene = parse(&input, Default::default());
     assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
@@ -230,7 +230,7 @@ fn should_be_to_create_an_object_with_a_material_extending_another_material() {
   transform: []",
     );
 
-    let scene = parse(&input);
+    let scene = parse(&input, Default::default());
     assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
@@ -281,7 +281,7 @@ fn should_create_an_object_with_a_material_extending_a_material_extending_anothe
   transform: []",
     );
 
-    let scene = parse(&input);
+    let scene = parse(&input, Default::default());
     assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
@@ -317,7 +317,7 @@ fn should_be_able_to_create_an_object_with_a_single_transform() {
     - [ translate, 1, 0, 0 ]",
     );
 
-    let scene = parse(&input);
+    let scene = parse(&input, Default::default());
     assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
@@ -352,7 +352,7 @@ fn should_be_able_to_create_an_object_with_multiple_transforms() {
   - [ scale, 1, 2, 1 ]",
     );
 
-    let scene = parse(&input);
+    let scene = parse(&input, Default::default());
     assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
@@ -395,7 +395,7 @@ fn should_be_able_to_create_an_object_referencing_a_defined_transform() {
     - standard-transform",
     );
 
-    let scene = parse(&input);
+    let scene = parse(&input, Default::default());
     assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
@@ -439,7 +439,7 @@ fn should_be_able_to_create_an_object_extending_a_defined_transform() {
     - [ translate, 4, 0, 0 ]",
     );
 
-    let scene = parse(&input);
+    let scene = parse(&input, Default::default());
     assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
@@ -489,7 +489,7 @@ fn should_be_able_to_create_an_object_extending_a_transform_extending_another_tr
     - [ translate, 4, 0, 0 ]",
     );
 
-    let scene = parse(&input);
+    let scene = parse(&input, Default::default());
     assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
@@ -534,7 +534,7 @@ fn should_be_able_to_create_a_group() {
         color: [ 0.373, 0.404, 0.550 ]",
     );
 
-    let scene = parse(&input);
+    let scene = parse(&input, Default::default());
     assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
@@ -583,7 +583,7 @@ fn should_be_able_to_create_a_group_with_a_subgroup() {
         - add: sphere",
     );
 
-    let scene = parse(&input);
+    let scene = parse(&input, Default::default());
     assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
@@ -619,7 +619,7 @@ fn should_be_able_to_add_group_from_define() {
 - add: raw-bbox",
     );
 
-    let scene = parse(&input);
+    let scene = parse(&input, Default::default());
     assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 
@@ -656,7 +656,7 @@ fn should_be_able_to_add_an_object_from_a_define_and_override_the_material() {
     color: [ 1, 0, 0 ]",
     );
 
-    let scene = parse(&input);
+    let scene = parse(&input, Default::default());
     assert!(scene.is_ok(), "{}", scene.unwrap_err());
     let scene = scene.unwrap();
 

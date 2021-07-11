@@ -15,10 +15,16 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP load required files in wavefront parser">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="load required files in wavefront parser">
+      <change afterPath="$PROJECT_DIR$/examples/dragons/main.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/wavefront_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/wavefront_parser/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/wavefront_parser/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/wavefront_parser/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scene_descriptions/bounding-boxes.yml" beforeDir="false" afterPath="$PROJECT_DIR$/examples/dragons/resources/bounding-boxes.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scene_descriptions/obj_files/dragon.obj" beforeDir="false" afterPath="$PROJECT_DIR$/examples/dragons/resources/dragon.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/creating_a_scene.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/creating_a_scene.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,6 +90,7 @@
       <recent name="C:\Users\Richard\CLionProjects\raytracer\scene_descriptions\obj_files" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Richard\CLionProjects\raytracer\examples\dragons\resources" />
       <recent name="C:\Users\Richard\CLionProjects\raytracer\docs" />
       <recent name="C:\Users\Richard\CLionProjects\raytracer\benches\benchmarks" />
       <recent name="C:\Users\Richard\CLionProjects\raytracer\src" />
@@ -101,9 +108,15 @@
       <command value="cargo bench" />
       <command value="cargo run --release" />
       <command value="cargo bench -- meshes" />
+      <command value="cargo run --release --example dragons" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.test">
+  <component name="RunManager" selected="Cargo.run">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -118,22 +131,6 @@
       <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Test wavefront_parser::tests::mtl_parser_tests::should_be_able_to_parse_mtl_file_containing_multiple_materials" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib wavefront_parser::tests::mtl_parser_tests::should_be_able_to_parse_mtl_file_containing_multiple_materials -- --exact" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <option name="channel" value="DEFAULT" />
-      <option name="requiredFeatures" value="true" />
-      <option name="allFeatures" value="false" />
-      <option name="emulateTerminal" value="false" />
-      <option name="withSudo" value="false" />
-      <option name="backtrace" value="SHORT" />
-      <envs />
-      <option name="isRedirectInput" value="false" />
-      <option name="redirectInputPath" value="" />
-      <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
@@ -185,6 +182,22 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration name="run" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="run --release --example dragons" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="withSudo" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="test" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="command" value="test" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -203,19 +216,19 @@
     </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
-      <item itemvalue="Cargo.Test wavefront_parser::tests::mtl_parser_tests::should_be_able_to_parse_mtl_file_containing_multiple_materials" />
       <item itemvalue="Cargo.bench" />
       <item itemvalue="Cargo.run (release)" />
       <item itemvalue="Cargo.test" />
       <item itemvalue="Cargo.Test wavefront_parser::tests::obj_parser_tests::material_tests::converting_an_obj_and_mtl_file_to_an_object_should_assign_the_correct_materials" />
+      <item itemvalue="Cargo.run" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.run" />
         <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.run (release)" />
         <item itemvalue="Cargo.Test wavefront_parser::tests::obj_parser_tests::material_tests::converting_an_obj_and_mtl_file_to_an_object_should_assign_the_correct_materials" />
         <item itemvalue="Cargo.bench" />
-        <item itemvalue="Cargo.Test wavefront_parser::tests::mtl_parser_tests::should_be_able_to_parse_mtl_file_containing_multiple_materials" />
       </list>
     </recent_temporary>
   </component>
@@ -465,14 +478,9 @@
       <workItem from="1625680874130" duration="2673000" />
       <workItem from="1625767273778" duration="3080000" />
       <workItem from="1625850888356" duration="3593000" />
-      <workItem from="1625917697778" duration="3398000" />
-    </task>
-    <task id="LOCAL-00167" summary="implement planar and cylindrical uv mapping">
-      <created>1620165444067</created>
-      <option name="number" value="00167" />
-      <option name="presentableId" value="LOCAL-00167" />
-      <option name="project" value="LOCAL" />
-      <updated>1620165444067</updated>
+      <workItem from="1625917697778" duration="3438000" />
+      <workItem from="1625921530879" duration="130000" />
+      <workItem from="1626000169096" duration="1155000" />
     </task>
     <task id="LOCAL-00168" summary="WIP cubic mapping">
       <created>1620673001152</created>
@@ -810,7 +818,14 @@
       <option name="project" value="LOCAL" />
       <updated>1625854577462</updated>
     </task>
-    <option name="localTasksCounter" value="216" />
+    <task id="LOCAL-00216" summary="load required files in wavefront parser">
+      <created>1625921153305</created>
+      <option name="number" value="00216" />
+      <option name="presentableId" value="LOCAL-00216" />
+      <option name="project" value="LOCAL" />
+      <updated>1625921153305</updated>
+    </task>
+    <option name="localTasksCounter" value="217" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -836,7 +851,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP improve UV mapping&#10;&#10;remove old UV mapping" />
     <MESSAGE value="WIP improve UV mapping&#10;&#10;fix cylinder mapping to work correctly on caps" />
     <MESSAGE value="WIP improve UV mapping&#10;&#10;implement UV mapping for cones based on cylinder UV mapping" />
     <MESSAGE value="implement UV maps for all primitive shapes" />
@@ -861,7 +875,8 @@
     <MESSAGE value="support MTL libs in obj parser" />
     <MESSAGE value="refactor obj parser model" />
     <MESSAGE value="WIP load required files in wavefront parser" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP load required files in wavefront parser" />
+    <MESSAGE value="load required files in wavefront parser" />
+    <option name="LAST_COMMIT_MESSAGE" value="load required files in wavefront parser" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

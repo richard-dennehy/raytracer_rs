@@ -7,13 +7,14 @@ use either::Either;
 use either::Either::{Left, Right};
 use std::collections::HashMap;
 use std::num::NonZeroU16;
-use std::path::Path;
+use std::path::PathBuf;
 
 #[derive(Debug, PartialEq)]
 pub struct SceneDescription {
     pub(crate) camera: CameraDescription,
     pub(crate) lights: Vec<Light>,
     pub(crate) objects: Vec<ObjectDescription>,
+    pub(crate) resource_dir: PathBuf,
 }
 
 impl SceneDescription {
@@ -91,11 +92,7 @@ impl SceneDescription {
                 .collect()
         }
 
-        let mut parser = WavefrontParser::new_with_path(
-            Path::new(env!("CARGO_MANIFEST_DIR"))
-                .join("scene_descriptions")
-                .join("obj_files"),
-        );
+        let mut parser = WavefrontParser::new_with_path(self.resource_dir.clone());
         inner(self, &self.objects, &mut parser)
     }
 }

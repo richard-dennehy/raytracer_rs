@@ -939,7 +939,7 @@ fn should_parse_scene_description() {
         "/scene_descriptions/cover.yml"
     ));
 
-    let output = parse(scene);
+    let output = parse(scene, Default::default());
     assert!(output.is_ok(), "{}", output.unwrap_err());
     let output = output.unwrap();
 
@@ -1588,6 +1588,7 @@ fn should_parse_scene_description() {
                     casts_shadow: true,
                 },
             ],
+            resource_dir: Default::default()
         }
     );
 }

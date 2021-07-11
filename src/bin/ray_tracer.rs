@@ -2,7 +2,6 @@ extern crate ray_tracer;
 
 use ray_tracer::renderer::Samples;
 use ray_tracer::*;
-use std::fs;
 use std::path::Path;
 use std::time::Instant;
 
@@ -16,11 +15,10 @@ use std::time::Instant;
 fn main() -> Result<(), String> {
     let timer = Instant::now();
 
-    let yaml = fs::read_to_string(
-        Path::new(env!("CARGO_MANIFEST_DIR")).join("scene_descriptions/bounding-boxes.yml"),
-    )
-    .map_err(|e| e.to_string())?;
-    let mut scene = yaml_parser::parse(&yaml)?;
+    let mut scene = yaml_parser::load(
+        Path::new(env!("CARGO_MANIFEST_DIR")).join("examples/dragons/resources"),
+        "bounding-boxes.yml",
+    )?;
     scene.override_resolution(1920, 1080);
 
     let mut world = World::empty();
