@@ -4,7 +4,7 @@ use std::path::Path;
 use std::time::Instant;
 
 fn main() -> Result<(), String> {
-    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("examples/reflect-refract");
+    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("");
     let timer = Instant::now();
 
     let mut scene = yaml_parser::load(root.join("resources"), "reflect-refract.yml")?;
@@ -20,7 +20,7 @@ fn main() -> Result<(), String> {
 
     let image = image_writer::write(canvas);
     image
-        .save(root.join("reflect-refract.png"))
+        .save(root.join("reflect_refract.png"))
         .expect("failed to write output file");
 
     println!("Completed at {:.2?}", timer.elapsed());

@@ -47,7 +47,7 @@ fn reflect_refract(c: &mut Criterion) {
 
     let yaml = fs::read_to_string(
         Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("../../examples/reflect-refract/resources/reflect-refract.yml"),
+            .join("../../examples/reflect_refract/resources/reflect_refract.yml"),
     )
     .unwrap();
 
