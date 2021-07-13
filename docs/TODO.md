@@ -1,7 +1,6 @@
-- Handle obj parser errors more gracefully
 - Maybe performance: replace partial comparison + expect with total comparison when sorting `Intersections` (see https://docs.rs/ordered-float/latest/ordered_float/index.html)
-- Separate primitives and composites
 - Check floating point modulo operations (may need to use euclid instead)
 - Check smooth triangle bounding box
 - https://forum.raytracerchallenge.com/thread/203/performance-tips-clarifications-book-errata
 - Improve project structure (fewer `mod.rs`/`test.rs` files)
+- Change everything to `f32` and see what happens

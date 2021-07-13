@@ -15,14 +15,10 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add example for reflection and refraction">
-      <change afterPath="$PROJECT_DIR$/examples/primitives/main.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/primitives/primitives.png" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add example for all primitives">
+      <change afterPath="$PROJECT_DIR$/examples/area_light/main.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/reflect-refract/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/reflect_refract/main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/reflect-refract/reflect-refract.png" beforeDir="false" afterPath="$PROJECT_DIR$/examples/reflect_refract/reflect-refract.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/reflect-refract/resources/reflect-refract.yml" beforeDir="false" afterPath="$PROJECT_DIR$/examples/reflect_refract/resources/reflect-refract.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,9 +106,15 @@
       <command value="cargo run --release --example cover" />
       <command value="cargo run --release --example reflect-refract" />
       <command value="cargo run --release --example primitives" />
+      <command value="cargo run --release --example area_light" />
     </option>
   </component>
   <component name="RunManager" selected="Cargo.run">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -179,7 +181,7 @@
       </method>
     </configuration>
     <configuration name="run" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="run --release --example primitives" />
+      <option name="command" value="run --release --example area_light" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -210,11 +212,6 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.bench" />
@@ -226,8 +223,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.run" />
-        <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.run" />
+        <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.run" />
         <item itemvalue="Cargo.run" />
       </list>
@@ -482,14 +479,8 @@
       <workItem from="1625917697778" duration="3438000" />
       <workItem from="1625921530879" duration="130000" />
       <workItem from="1626000169096" duration="2695000" />
-      <workItem from="1626112487570" duration="2598000" />
-    </task>
-    <task id="LOCAL-00171" summary="WIP move UV mapping to Shape implementations">
-      <created>1621019299159</created>
-      <option name="number" value="00171" />
-      <option name="presentableId" value="LOCAL-00171" />
-      <option name="project" value="LOCAL" />
-      <updated>1621019299159</updated>
+      <workItem from="1626112487570" duration="2618000" />
+      <workItem from="1626199249283" duration="1168000" />
     </task>
     <task id="LOCAL-00172" summary="WIP move UV mapping to Shape implementations">
       <created>1621076069796</created>
@@ -827,7 +818,14 @@
       <option name="project" value="LOCAL" />
       <updated>1626002860334</updated>
     </task>
-    <option name="localTasksCounter" value="220" />
+    <task id="LOCAL-00220" summary="add example for all primitives">
+      <created>1626115124572</created>
+      <option name="number" value="00220" />
+      <option name="presentableId" value="LOCAL-00220" />
+      <option name="project" value="LOCAL" />
+      <updated>1626115124572</updated>
+    </task>
+    <option name="localTasksCounter" value="221" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -853,7 +851,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP improve UV mapping&#10;&#10;WIP triangle UVs" />
     <MESSAGE value="WIP implement area lights" />
     <MESSAGE value="implement area lights" />
     <MESSAGE value="precalculate light samples" />
@@ -878,7 +875,8 @@
     <MESSAGE value="add example for dragons scene" />
     <MESSAGE value="add example for cover image" />
     <MESSAGE value="add example for reflection and refraction" />
-    <option name="LAST_COMMIT_MESSAGE" value="add example for reflection and refraction" />
+    <MESSAGE value="add example for all primitives" />
+    <option name="LAST_COMMIT_MESSAGE" value="add example for all primitives" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
