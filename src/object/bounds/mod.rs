@@ -98,6 +98,7 @@ impl BoundingBox {
         BoundingBox::new(Point3D::min(points), Point3D::max(points))
     }
 
+    // FIXME this possibly makes too many checks - in theory, only need to make at 3 checks to know ray must miss
     pub fn intersected_by(&self, ray: &Ray) -> bool {
         fn check_axis(origin: f64, direction: f64, min: f64, max: f64) -> (f64, f64) {
             let t_min_numerator = min - origin;

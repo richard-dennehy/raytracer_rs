@@ -1,4 +1,4 @@
-use crate::pattern::Kind::{Checkers, Gradient, Ring, Solid, Striped};
+use crate::pattern::Kind::{Checkers, Gradient, Ring, Striped};
 use crate::util::F64Ext;
 use crate::{Colour, Point3D, Transform};
 use image::RgbImage;
@@ -16,7 +16,6 @@ pub struct Pattern {
 
 #[derive(Clone, Debug, PartialEq)]
 enum Kind {
-    Solid(Colour),
     Striped(Colour, Colour),
     Gradient { from: Colour, delta: Colour },
     Ring(Colour, Colour),
@@ -58,13 +57,6 @@ enum UvPatternKind {
 }
 
 impl Pattern {
-    pub const fn solid(colour: Colour) -> Self {
-        Pattern {
-            kind: Solid(colour),
-            transform: Transform::identity(),
-        }
-    }
-
     pub const fn striped(primary: Colour, secondary: Colour) -> Self {
         Pattern {
             kind: Striped(primary, secondary),
@@ -111,7 +103,6 @@ impl Pattern {
         let (x, y, z) = (nudge(x), nudge(y), nudge(z));
 
         match &self.kind {
-            Solid(colour) => *colour,
             Striped(primary, _) if x.floor() % 2.0 == 0.0 => *primary,
             Striped(_, secondary) => *secondary,
             Gradient { from, delta } => from + &(delta * object_point.x().fract()),
