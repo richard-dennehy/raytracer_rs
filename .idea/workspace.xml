@@ -15,12 +15,9 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add example for area lighting">
-      <change afterPath="$PROJECT_DIR$/examples/patterns/main.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/patterns/patterns.png" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add example for patterns">
+      <change afterPath="$PROJECT_DIR$/examples/csgs/main.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/bounds/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/bounds/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pattern/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,9 +107,15 @@
       <command value="cargo run --release --example primitives" />
       <command value="cargo run --release --example area_light" />
       <command value="cargo run --release --example patterns" />
+      <command value="cargo run --release --example csgs" />
     </option>
   </component>
   <component name="RunManager" selected="Cargo.run">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -179,7 +182,7 @@
       </method>
     </configuration>
     <configuration name="run" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="run --release --example patterns" />
+      <option name="command" value="run --release --example csgs" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -223,8 +226,8 @@
         <item itemvalue="Cargo.run" />
         <item itemvalue="Cargo.run" />
         <item itemvalue="Cargo.run" />
-        <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.run" />
+        <item itemvalue="Cargo.test" />
       </list>
     </recent_temporary>
   </component>
@@ -479,14 +482,9 @@
       <workItem from="1626000169096" duration="2695000" />
       <workItem from="1626112487570" duration="2618000" />
       <workItem from="1626199249283" duration="2877000" />
-      <workItem from="1626286544915" duration="1465000" />
-    </task>
-    <task id="LOCAL-00173" summary="WIP implement cubic UV by stitching 6 face UVs together">
-      <created>1621157319804</created>
-      <option name="number" value="00173" />
-      <option name="presentableId" value="LOCAL-00173" />
-      <option name="project" value="LOCAL" />
-      <updated>1621157319805</updated>
+      <workItem from="1626286544915" duration="1516000" />
+      <workItem from="1626371601061" duration="1969000" />
+      <workItem from="1626453640357" duration="1327000" />
     </task>
     <task id="LOCAL-00174" summary="WIP improve UV mapping&#10;&#10; - create MaterialKind for Pattern, Colour, and UV; and use Arc for Image textures">
       <created>1621279358263</created>
@@ -824,7 +822,14 @@
       <option name="project" value="LOCAL" />
       <updated>1626200522327</updated>
     </task>
-    <option name="localTasksCounter" value="222" />
+    <task id="LOCAL-00222" summary="add example for patterns">
+      <created>1626288038034</created>
+      <option name="number" value="00222" />
+      <option name="presentableId" value="LOCAL-00222" />
+      <option name="project" value="LOCAL" />
+      <updated>1626288038034</updated>
+    </task>
+    <option name="localTasksCounter" value="223" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -850,7 +855,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="implement area lights" />
     <MESSAGE value="precalculate light samples" />
     <MESSAGE value="use random offsets into area light samples to reduce banding" />
     <MESSAGE value="add tests for area lighting" />
@@ -875,7 +879,8 @@
     <MESSAGE value="add example for reflection and refraction" />
     <MESSAGE value="add example for all primitives" />
     <MESSAGE value="add example for area lighting" />
-    <option name="LAST_COMMIT_MESSAGE" value="add example for area lighting" />
+    <MESSAGE value="add example for patterns" />
+    <option name="LAST_COMMIT_MESSAGE" value="add example for patterns" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
