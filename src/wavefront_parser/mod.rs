@@ -29,6 +29,7 @@ impl WavefrontParser {
     }
 
     pub fn load(&mut self, file_name: &str) -> Result<Object, String> {
+        // TODO just insist file ends with right extension
         let file_name = if !file_name.ends_with(".obj") {
             format!("{}.obj", file_name)
         } else {

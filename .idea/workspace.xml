@@ -15,9 +15,16 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add example for patterns">
-      <change afterPath="$PROJECT_DIR$/examples/csgs/main.rs" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add example for CSGs">
+      <change afterPath="$PROJECT_DIR$/examples/meshes/main.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/examples/meshes/meshes.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/examples/meshes/resources/suzanne high poly.obj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/meshes/green prism.mtl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/meshes/green prism.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/meshes/multicoloured prism.mtl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/meshes/resources/multicoloured prism.mtl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/meshes/multicoloured prism.obj" beforeDir="false" afterPath="$PROJECT_DIR$/examples/meshes/resources/multicoloured prism.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/wavefront_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/wavefront_parser/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +77,7 @@
     <property name="WebServerToolWindowFactoryState" value="true" />
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/textures" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/examples/meshes/resources" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
@@ -79,6 +86,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Richard\CLionProjects\raytracer\examples\meshes\resources" />
       <recent name="C:\Users\Richard\CLionProjects\raytracer\textures" />
       <recent name="C:\Users\Richard\CLionProjects\raytracer\scene_descriptions\obj_files" />
     </key>
@@ -108,14 +116,10 @@
       <command value="cargo run --release --example area_light" />
       <command value="cargo run --release --example patterns" />
       <command value="cargo run --release --example csgs" />
+      <command value="cargo run --release --example meshes" />
     </option>
   </component>
   <component name="RunManager" selected="Cargo.run">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -182,7 +186,7 @@
       </method>
     </configuration>
     <configuration name="run" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="run --release --example csgs" />
+      <option name="command" value="run --release --example meshes" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -213,6 +217,11 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.bench" />
@@ -227,7 +236,7 @@
         <item itemvalue="Cargo.run" />
         <item itemvalue="Cargo.run" />
         <item itemvalue="Cargo.run" />
-        <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.run" />
       </list>
     </recent_temporary>
   </component>
@@ -484,21 +493,8 @@
       <workItem from="1626199249283" duration="2877000" />
       <workItem from="1626286544915" duration="1516000" />
       <workItem from="1626371601061" duration="1969000" />
-      <workItem from="1626453640357" duration="1327000" />
-    </task>
-    <task id="LOCAL-00174" summary="WIP improve UV mapping&#10;&#10; - create MaterialKind for Pattern, Colour, and UV; and use Arc for Image textures">
-      <created>1621279358263</created>
-      <option name="number" value="00174" />
-      <option name="presentableId" value="LOCAL-00174" />
-      <option name="project" value="LOCAL" />
-      <updated>1621279358263</updated>
-    </task>
-    <task id="LOCAL-00175" summary="WIP improve UV mapping&#10;&#10;create MaterialKind for Pattern, Colour, and UV; and use Arc for Image textures">
-      <created>1621279381285</created>
-      <option name="number" value="00175" />
-      <option name="presentableId" value="LOCAL-00175" />
-      <option name="project" value="LOCAL" />
-      <updated>1621279381285</updated>
+      <workItem from="1626453640357" duration="1437000" />
+      <workItem from="1626514235061" duration="2158000" />
     </task>
     <task id="LOCAL-00176" summary="WIP improve UV mapping&#10;&#10;WIP add tests for Shape UV mapping">
       <created>1621449817304</created>
@@ -829,7 +825,21 @@
       <option name="project" value="LOCAL" />
       <updated>1626288038034</updated>
     </task>
-    <option name="localTasksCounter" value="223" />
+    <task id="LOCAL-00223" summary="add example for CSGs">
+      <created>1626454995769</created>
+      <option name="number" value="00223" />
+      <option name="presentableId" value="LOCAL-00223" />
+      <option name="project" value="LOCAL" />
+      <updated>1626454995769</updated>
+    </task>
+    <task id="LOCAL-00224" summary="add example for CSGs">
+      <created>1626455034034</created>
+      <option name="number" value="00224" />
+      <option name="presentableId" value="LOCAL-00224" />
+      <option name="project" value="LOCAL" />
+      <updated>1626455034034</updated>
+    </task>
+    <option name="localTasksCounter" value="225" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -855,7 +865,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="precalculate light samples" />
     <MESSAGE value="use random offsets into area light samples to reduce banding" />
     <MESSAGE value="add tests for area lighting" />
     <MESSAGE value="document area lights and avoid duplicating colour for each sample" />
@@ -880,7 +889,8 @@
     <MESSAGE value="add example for all primitives" />
     <MESSAGE value="add example for area lighting" />
     <MESSAGE value="add example for patterns" />
-    <option name="LAST_COMMIT_MESSAGE" value="add example for patterns" />
+    <MESSAGE value="add example for CSGs" />
+    <option name="LAST_COMMIT_MESSAGE" value="add example for CSGs" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
