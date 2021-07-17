@@ -15,16 +15,9 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add example for CSGs">
-      <change afterPath="$PROJECT_DIR$/examples/meshes/main.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/meshes/meshes.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/meshes/resources/suzanne high poly.obj" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add example for loading meshes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/meshes/green prism.mtl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/meshes/green prism.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/meshes/multicoloured prism.mtl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/meshes/resources/multicoloured prism.mtl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/meshes/multicoloured prism.obj" beforeDir="false" afterPath="$PROJECT_DIR$/examples/meshes/resources/multicoloured prism.obj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/wavefront_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/wavefront_parser/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/dragons/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/dragons/main.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,7 +102,6 @@
       <command value="cargo bench" />
       <command value="cargo run --release" />
       <command value="cargo bench -- meshes" />
-      <command value="cargo run --release --example dragons" />
       <command value="cargo run --release --example cover" />
       <command value="cargo run --release --example reflect-refract" />
       <command value="cargo run --release --example primitives" />
@@ -117,6 +109,7 @@
       <command value="cargo run --release --example patterns" />
       <command value="cargo run --release --example csgs" />
       <command value="cargo run --release --example meshes" />
+      <command value="cargo run --release --example dragons" />
     </option>
   </component>
   <component name="RunManager" selected="Cargo.run">
@@ -186,7 +179,7 @@
       </method>
     </configuration>
     <configuration name="run" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="run --release --example meshes" />
+      <option name="command" value="run --release --example dragons" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -494,14 +487,7 @@
       <workItem from="1626286544915" duration="1516000" />
       <workItem from="1626371601061" duration="1969000" />
       <workItem from="1626453640357" duration="1437000" />
-      <workItem from="1626514235061" duration="2158000" />
-    </task>
-    <task id="LOCAL-00176" summary="WIP improve UV mapping&#10;&#10;WIP add tests for Shape UV mapping">
-      <created>1621449817304</created>
-      <option name="number" value="00176" />
-      <option name="presentableId" value="LOCAL-00176" />
-      <option name="project" value="LOCAL" />
-      <updated>1621449817304</updated>
+      <workItem from="1626514235061" duration="3121000" />
     </task>
     <task id="LOCAL-00177" summary="WIP improve UV mapping&#10;&#10;WIP add for Cube and Cylinder UV mapping">
       <created>1621546510744</created>
@@ -839,7 +825,14 @@
       <option name="project" value="LOCAL" />
       <updated>1626455034034</updated>
     </task>
-    <option name="localTasksCounter" value="225" />
+    <task id="LOCAL-00225" summary="add example for loading meshes">
+      <created>1626516439889</created>
+      <option name="number" value="00225" />
+      <option name="presentableId" value="LOCAL-00225" />
+      <option name="project" value="LOCAL" />
+      <updated>1626516439889</updated>
+    </task>
+    <option name="localTasksCounter" value="226" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -865,7 +858,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="use random offsets into area light samples to reduce banding" />
     <MESSAGE value="add tests for area lighting" />
     <MESSAGE value="document area lights and avoid duplicating colour for each sample" />
     <MESSAGE value="add benchmarks for area lights" />
@@ -890,7 +882,8 @@
     <MESSAGE value="add example for area lighting" />
     <MESSAGE value="add example for patterns" />
     <MESSAGE value="add example for CSGs" />
-    <option name="LAST_COMMIT_MESSAGE" value="add example for CSGs" />
+    <MESSAGE value="add example for loading meshes" />
+    <option name="LAST_COMMIT_MESSAGE" value="add example for loading meshes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -1,3 +1,4 @@
+use image::imageops::FilterType;
 use ray_tracer::renderer::Samples;
 use ray_tracer::{image_writer, renderer, yaml_parser, World};
 use std::path::Path;
@@ -8,7 +9,7 @@ fn main() -> Result<(), String> {
     let timer = Instant::now();
 
     let mut scene = yaml_parser::load(root.join("resources"), "bounding-boxes.yml")?;
-    scene.override_resolution(1920, 1080);
+    scene.override_resolution(7680, 4320);
 
     let mut world = World::empty();
     scene.objects()?.into_iter().for_each(|obj| world.add(obj));
@@ -16,11 +17,12 @@ fn main() -> Result<(), String> {
 
     let camera = scene.camera()?;
 
-    let canvas = renderer::render(world, camera, &Samples::single());
+    let canvas = renderer::render(world, camera, &Samples::grid(nonzero_ext::nonzero!(4u8)));
 
-    let image = image_writer::write(canvas);
-    image
-        .save(root.join("dragons.png"))
+    let original = image_writer::write(canvas);
+    let resized = image::imageops::resize(&original, 1920, 1080, FilterType::Gaussian);
+    resized
+        .save(root.join("dragons_supersampled.png"))
         .expect("failed to write output file");
 
     println!("Completed at {:.2?}", timer.elapsed());
