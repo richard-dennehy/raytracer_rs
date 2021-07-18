@@ -940,7 +940,7 @@ mod cone_tests {
         vec![
             (
                 "Misses cone",
-                Point3D::new(0.0, 0.0, -5.0),
+                Point3D::new(0.51, -5.0, 0.0),
                 Vector3D::new(0.0, 1.0, 0.0),
                 0,
             ),
@@ -967,7 +967,16 @@ mod cone_tests {
     }
 
     #[test]
+    fn the_size_of_the_top_cap_of_a_capped_cone_should_scale_with_the_max_y_value() {
+        let cone = Object::cone().min_y(0.0).max_y(2.0).capped().build();
+        let ray = Ray::new(Point3D::new(0.0, 3.0, 1.5), Normal3D::NEGATIVE_Y);
+
+        let intersections = cone.intersect(&ray);
+        assert_eq!(intersections.len(), 2);
+    }
+
     #[rustfmt::skip]
+    #[test]
     fn should_be_able_to_calculate_the_normal_of_any_point_on_a_double_napped_cone() {
         let cone = Object::cone().build();
 

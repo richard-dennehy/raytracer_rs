@@ -27,19 +27,17 @@ impl Shape for Cone {
     }
 
     fn object_normal_at(&self, point: Point3D) -> Normal3D {
-        let distance = point.x().powi(2) + point.z().powi(2);
-
-        if distance < point.y() && point.y() >= self.max_y - f64::EPSILON {
+        if point.y().is_roughly_gte(self.max_y) {
             Normal3D::POSITIVE_Y
-        } else if distance < point.y() && point.y() <= self.min_y + f64::EPSILON {
+        } else if point.y().is_roughly_lte(self.min_y) {
             Normal3D::NEGATIVE_Y
         } else {
-            let y = distance.sqrt();
+            let y = (point.x().powi(2) + point.z().powi(2)).sqrt();
 
-            if point.y() > 0.0 {
-                Vector3D::new(point.x(), -y, point.z())
-            } else {
+            if point.y().is_roughly_lte(0.0) {
                 Vector3D::new(point.x(), y, point.z())
+            } else {
+                Vector3D::new(point.x(), -y, point.z())
             }
             .normalised()
         }
@@ -55,7 +53,8 @@ impl Shape for Cone {
             let y = ray.origin.y() + t * ray.direction.y();
             let z = ray.origin.z() + t * ray.direction.z();
 
-            (x.powi(2) + z.powi(2)) <= y.abs()
+            let distance = x.powi(2) + z.powi(2);
+            distance.sqrt().is_roughly_lte(y.abs())
         };
 
         let mut cap_intersections = if self.capped {

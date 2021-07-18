@@ -15,9 +15,14 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add example for loading meshes">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP add uv map example">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/dragons/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/dragons/main.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/cone.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cone.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/cylinder.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cylinder.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pattern/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/world/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/tests.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,7 +80,7 @@
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.postfix.templates" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -100,7 +105,6 @@
       <command value="bench -- lighting" />
       <command value="cargo bench -- lighting" />
       <command value="cargo bench" />
-      <command value="cargo run --release" />
       <command value="cargo bench -- meshes" />
       <command value="cargo run --release --example cover" />
       <command value="cargo run --release --example reflect-refract" />
@@ -110,9 +114,11 @@
       <command value="cargo run --release --example csgs" />
       <command value="cargo run --release --example meshes" />
       <command value="cargo run --release --example dragons" />
+      <command value="cargo run --release --example uv_patterns" />
+      <command value="cargo run --release" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.run">
+  <component name="RunManager" selected="Cargo.test">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -130,8 +136,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test wavefront_parser::tests::obj_parser_tests::material_tests::converting_an_obj_and_mtl_file_to_an_object_should_assign_the_correct_materials" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib wavefront_parser::tests::obj_parser_tests::material_tests::converting_an_obj_and_mtl_file_to_an_object_should_assign_the_correct_materials -- --exact" />
+    <configuration name="Test object::tests::cone_tests::a_ray_should_be_able_to_intersect_the_caps_of_a_capped_cone" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib object::tests::cone_tests::a_ray_should_be_able_to_intersect_the_caps_of_a_capped_cone -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -146,8 +152,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="bench" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="bench -- meshes" />
+    <configuration name="Test world::tests::shading::a_capped_cone_with_a_min_or_max_y_value_other_than_1_should_scale_the_caps_correctly" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib world::tests::shading::a_capped_cone_with_a_min_or_max_y_value_other_than_1_should_scale_the_caps_correctly -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -162,8 +168,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="run (release)" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="run --release" />
+    <configuration name="Test world::tests::shading::a_flipped_capped_cone_should_shade_the_bottom_cap_correctly" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib world::tests::shading::a_flipped_capped_cone_should_shade_the_bottom_cap_correctly -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -179,7 +185,7 @@
       </method>
     </configuration>
     <configuration name="run" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="run --release --example dragons" />
+      <option name="command" value="run --release --example uv_patterns" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -210,26 +216,21 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
-      <item itemvalue="Cargo.bench" />
-      <item itemvalue="Cargo.run (release)" />
-      <item itemvalue="Cargo.test" />
-      <item itemvalue="Cargo.Test wavefront_parser::tests::obj_parser_tests::material_tests::converting_an_obj_and_mtl_file_to_an_object_should_assign_the_correct_materials" />
       <item itemvalue="Cargo.run" />
+      <item itemvalue="Cargo.Test object::tests::cone_tests::a_ray_should_be_able_to_intersect_the_caps_of_a_capped_cone" />
+      <item itemvalue="Cargo.Test world::tests::shading::a_flipped_capped_cone_should_shade_the_bottom_cap_correctly" />
+      <item itemvalue="Cargo.Test world::tests::shading::a_capped_cone_with_a_min_or_max_y_value_other_than_1_should_scale_the_caps_correctly" />
+      <item itemvalue="Cargo.test" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.run" />
         <item itemvalue="Cargo.run" />
-        <item itemvalue="Cargo.run" />
-        <item itemvalue="Cargo.run" />
-        <item itemvalue="Cargo.run" />
+        <item itemvalue="Cargo.Test world::tests::shading::a_capped_cone_with_a_min_or_max_y_value_other_than_1_should_scale_the_caps_correctly" />
+        <item itemvalue="Cargo.Test world::tests::shading::a_flipped_capped_cone_should_shade_the_bottom_cap_correctly" />
       </list>
     </recent_temporary>
   </component>
@@ -487,21 +488,10 @@
       <workItem from="1626286544915" duration="1516000" />
       <workItem from="1626371601061" duration="1969000" />
       <workItem from="1626453640357" duration="1437000" />
-      <workItem from="1626514235061" duration="3121000" />
-    </task>
-    <task id="LOCAL-00177" summary="WIP improve UV mapping&#10;&#10;WIP add for Cube and Cylinder UV mapping">
-      <created>1621546510744</created>
-      <option name="number" value="00177" />
-      <option name="presentableId" value="LOCAL-00177" />
-      <option name="project" value="LOCAL" />
-      <updated>1621546510744</updated>
-    </task>
-    <task id="LOCAL-00178" summary="WIP improve UV mapping&#10;&#10;remove old UV mapping">
-      <created>1621621603589</created>
-      <option name="number" value="00178" />
-      <option name="presentableId" value="LOCAL-00178" />
-      <option name="project" value="LOCAL" />
-      <updated>1621621603589</updated>
+      <workItem from="1626514235061" duration="3317000" />
+      <workItem from="1626607840020" duration="2683000" />
+      <workItem from="1626714399243" duration="2198000" />
+      <workItem from="1626805057211" duration="1981000" />
     </task>
     <task id="LOCAL-00179" summary="WIP improve UV mapping&#10;&#10;fix cylinder mapping to work correctly on caps">
       <created>1621684362201</created>
@@ -832,7 +822,21 @@
       <option name="project" value="LOCAL" />
       <updated>1626516439889</updated>
     </task>
-    <option name="localTasksCounter" value="226" />
+    <task id="LOCAL-00226" summary="rerender dragon example downsampling from 16K">
+      <created>1626519931406</created>
+      <option name="number" value="00226" />
+      <option name="presentableId" value="LOCAL-00226" />
+      <option name="project" value="LOCAL" />
+      <updated>1626519931406</updated>
+    </task>
+    <task id="LOCAL-00227" summary="WIP add uv map example">
+      <created>1626610328980</created>
+      <option name="number" value="00227" />
+      <option name="presentableId" value="LOCAL-00227" />
+      <option name="project" value="LOCAL" />
+      <updated>1626610328980</updated>
+    </task>
+    <option name="localTasksCounter" value="228" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -858,8 +862,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add tests for area lighting" />
-    <MESSAGE value="document area lights and avoid duplicating colour for each sample" />
     <MESSAGE value="add benchmarks for area lights" />
     <MESSAGE value="attempt to improve performance of point lights" />
     <MESSAGE value="recalculate triangle UVs when calculating smoothed normals to avoid passing redundant data around" />
@@ -883,7 +885,9 @@
     <MESSAGE value="add example for patterns" />
     <MESSAGE value="add example for CSGs" />
     <MESSAGE value="add example for loading meshes" />
-    <option name="LAST_COMMIT_MESSAGE" value="add example for loading meshes" />
+    <MESSAGE value="rerender dragon example downsampling from 16K" />
+    <MESSAGE value="WIP add uv map example" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP add uv map example" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -894,9 +898,19 @@
           <option name="timeStamp" value="50" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/world/mod.rs</url>
-          <line>75</line>
-          <option name="timeStamp" value="51" />
+          <url>file://$PROJECT_DIR$/src/object/tests.rs</url>
+          <line>964</line>
+          <option name="timeStamp" value="52" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/object/cone.rs</url>
+          <line>29</line>
+          <option name="timeStamp" value="57" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/object/cone.rs</url>
+          <line>56</line>
+          <option name="timeStamp" value="60" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

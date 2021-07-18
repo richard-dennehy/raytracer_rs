@@ -71,7 +71,7 @@ mod shading {
     use super::*;
     use crate::{Camera, Normal3D, Pattern};
     use approx::*;
-    use std::f64::consts::PI;
+    use std::f64::consts::{FRAC_PI_3, PI};
 
     #[test]
     fn should_correctly_shade_an_external_hit() {
@@ -368,6 +368,132 @@ mod shading {
 
         let expected = Colour::new(0.7050763886303489, 0.07052050406256043, 0.07052050406256043);
         let actual = world.colour_at(camera.ray_at(891, 669, 0.5, 0.5));
+
+        assert_abs_diff_eq!(expected, actual);
+    }
+
+    fn cones() -> World {
+        let mut world = World::empty();
+        world
+            .lights
+            .push(Light::point(Colour::WHITE, Point3D::new(5.0, 10.0, -10.0)));
+
+        world.add(
+            Object::cone()
+                .min_y(-3.0)
+                .max_y(-1.0)
+                .capped()
+                .build()
+                .transformed(
+                    Transform::identity()
+                        .rotate_x(PI)
+                        .translate_x(-2.0)
+                        .translate_y(-2.0),
+                ),
+        );
+
+        world.add(
+            Object::cone()
+                .min_y(0.0)
+                .max_y(2.0)
+                .capped()
+                .build()
+                .transformed(Transform::identity().translate_x(4.0).translate_y(-1.0)),
+        );
+
+        world.add(
+            Object::cone()
+                .min_y(-0.75)
+                .max_y(0.75)
+                .capped()
+                .build()
+                .transformed(Transform::identity().translate_x(1.0).translate_z(-3.0)),
+        );
+
+        world
+    }
+
+    #[test]
+    fn a_flipped_capped_cone_should_shade_the_bottom_cap_correctly() {
+        let world = cones();
+        let camera = Camera::new(
+            nonzero_ext::nonzero!(1920u16),
+            nonzero_ext::nonzero!(1080u16),
+            FRAC_PI_3,
+            Transform::view_transform(
+                Point3D::new(2.0, 4.0, -10.0),
+                Point3D::new(1.0, 0.0, 0.0),
+                Normal3D::POSITIVE_Y,
+            ),
+        );
+
+        let expected = Colour::greyscale(0.6489945243953337);
+        let actual = world.colour_at(camera.ray_at(436, 426, 0.5, 0.5));
+
+        assert_abs_diff_eq!(expected, actual);
+
+        let expected = Colour::greyscale(0.6001118120633897);
+        let actual = world.colour_at(camera.ray_at(505, 347, 0.5, 0.5));
+
+        assert_abs_diff_eq!(expected, actual);
+    }
+
+    #[test]
+    fn a_cone_cap_should_not_have_acne() {
+        let world = cones();
+        let camera = Camera::new(
+            nonzero_ext::nonzero!(1920u16),
+            nonzero_ext::nonzero!(1080u16),
+            FRAC_PI_3,
+            Transform::view_transform(
+                Point3D::new(2.0, 4.0, -10.0),
+                Point3D::new(1.0, 0.0, 0.0),
+                Normal3D::POSITIVE_Y,
+            ),
+        );
+
+        let expected = Colour::greyscale(0.712835314500832);
+        let actual = world.colour_at(camera.ray_at(1300, 434, 0.5, 0.5));
+
+        assert_abs_diff_eq!(expected, actual);
+
+        let expected = Colour::greyscale(0.7278190359176664);
+        let actual = world.colour_at(camera.ray_at(1357, 455, 0.5, 0.5));
+
+        assert_abs_diff_eq!(expected, actual);
+
+        let expected = Colour::greyscale(0.6780026335218725);
+        let actual = world.colour_at(camera.ray_at(1365, 386, 0.5, 0.5));
+
+        assert_abs_diff_eq!(expected, actual);
+    }
+
+    #[test]
+    fn a_capped_cone_with_a_min_or_max_y_value_other_than_1_should_scale_the_caps_correctly() {
+        let world = cones();
+        let camera = Camera::new(
+            nonzero_ext::nonzero!(1920u16),
+            nonzero_ext::nonzero!(1080u16),
+            FRAC_PI_3,
+            Transform::view_transform(
+                Point3D::new(2.0, 4.0, -10.0),
+                Point3D::new(1.0, 0.0, 0.0),
+                Normal3D::POSITIVE_Y,
+            ),
+        );
+
+        let expected = Colour::BLACK;
+        let actual = world.colour_at(camera.ray_at(748, 887, 0.5, 0.5));
+
+        assert_abs_diff_eq!(expected, actual);
+
+        let expected = Colour::greyscale(0.67044727551916);
+        let actual = world.colour_at(camera.ray_at(1184, 380, 0.5, 0.5));
+
+        assert_abs_diff_eq!(expected, actual);
+
+        let expected = Colour::greyscale(0.708180258696673);
+        let actual = world.colour_at(camera.ray_at(493, 520, 0.5, 0.5));
 
         assert_abs_diff_eq!(expected, actual);
     }

@@ -26,6 +26,7 @@ impl Shape for Cylinder {
     fn object_normal_at(&self, point: Point3D) -> Normal3D {
         let distance = point.x().powi(2) + point.z().powi(2);
 
+        // FIXME comparisons - does the < 1 check do anything?
         if distance < 1.0 && point.y().is_roughly_gte(self.max_y) {
             Normal3D::POSITIVE_Y
         } else if distance < 1.0 && point.y().is_roughly_lte(self.min_y) {
@@ -44,7 +45,7 @@ impl Shape for Cylinder {
             let x = ray.origin.x() + t * ray.direction.x();
             let z = ray.origin.z() + t * ray.direction.z();
 
-            (x.powi(2) + z.powi(2)) <= 1.0
+            (x.powi(2) + z.powi(2)).is_roughly_lte(1.0)
         };
 
         let cap_intersections = if self.capped {

@@ -410,13 +410,6 @@ mod property_tests {
     use quickcheck_macros::quickcheck;
 
     #[quickcheck]
-    fn a_solid_pattern_should_have_the_same_colour_at_all_points(point: Point3D, colour: Colour) {
-        let pattern = Pattern::solid(colour);
-
-        assert_eq!(pattern.colour_at(point), colour);
-    }
-
-    #[quickcheck]
     fn a_striped_pattern_is_constant_across_y_values(y: ReasonableF64) {
         let pattern = Pattern::striped(Colour::WHITE, Colour::BLACK);
 
