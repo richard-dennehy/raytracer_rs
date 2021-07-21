@@ -24,12 +24,9 @@ impl Shape for Cylinder {
     }
 
     fn object_normal_at(&self, point: Point3D) -> Normal3D {
-        let distance = point.x().powi(2) + point.z().powi(2);
-
-        // FIXME comparisons - does the < 1 check do anything?
-        if distance < 1.0 && point.y().is_roughly_gte(self.max_y) {
+        if self.capped && point.y().is_roughly_gte(self.max_y) {
             Normal3D::POSITIVE_Y
-        } else if distance < 1.0 && point.y().is_roughly_lte(self.min_y) {
+        } else if self.capped && point.y().is_roughly_lte(self.min_y) {
             Normal3D::NEGATIVE_Y
         } else {
             Vector3D::new(point.x(), 0.0, point.z()).normalised()

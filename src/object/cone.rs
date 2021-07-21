@@ -27,9 +27,9 @@ impl Shape for Cone {
     }
 
     fn object_normal_at(&self, point: Point3D) -> Normal3D {
-        if point.y().is_roughly_gte(self.max_y) {
+        if self.capped && point.y().is_roughly_gte(self.max_y) {
             Normal3D::POSITIVE_Y
-        } else if point.y().is_roughly_lte(self.min_y) {
+        } else if self.capped && point.y().is_roughly_lte(self.min_y) {
             Normal3D::NEGATIVE_Y
         } else {
             let y = (point.x().powi(2) + point.z().powi(2)).sqrt();

@@ -15,14 +15,13 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP add uv map example">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add uv map example and fix cone rendering issues">
+      <change afterPath="$PROJECT_DIR$/examples/textured_earth/main.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/examples/textured_earth/textured_earth.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/reflect_refract/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/reflect_refract/main.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/cone.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cone.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/cylinder.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cylinder.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pattern/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/pattern/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/world/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/textures/earthmap1k.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/examples/textured_earth/textures/earthmap1k.jpg" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,7 +100,6 @@
       <command value="cargo clippy" />
       <command value="cargo clean" />
       <command value="cargo update" />
-      <command value="cargo test" />
       <command value="bench -- lighting" />
       <command value="cargo bench -- lighting" />
       <command value="cargo bench" />
@@ -114,11 +112,13 @@
       <command value="cargo run --release --example csgs" />
       <command value="cargo run --release --example meshes" />
       <command value="cargo run --release --example dragons" />
-      <command value="cargo run --release --example uv_patterns" />
       <command value="cargo run --release" />
+      <command value="cargo test" />
+      <command value="cargo run --release --example uv_patterns" />
+      <command value="cargo run --release --example textured_earth" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.test">
+  <component name="RunManager" selected="Cargo.run">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -185,7 +185,7 @@
       </method>
     </configuration>
     <configuration name="run" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="run --release --example uv_patterns" />
+      <option name="command" value="run --release --example textured_earth" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -216,6 +216,11 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.run" />
@@ -226,11 +231,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.run" />
         <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.run" />
         <item itemvalue="Cargo.run" />
-        <item itemvalue="Cargo.Test world::tests::shading::a_capped_cone_with_a_min_or_max_y_value_other_than_1_should_scale_the_caps_correctly" />
-        <item itemvalue="Cargo.Test world::tests::shading::a_flipped_capped_cone_should_shade_the_bottom_cap_correctly" />
+        <item itemvalue="Cargo.run" />
       </list>
     </recent_temporary>
   </component>
@@ -492,13 +497,7 @@
       <workItem from="1626607840020" duration="2683000" />
       <workItem from="1626714399243" duration="2198000" />
       <workItem from="1626805057211" duration="1981000" />
-    </task>
-    <task id="LOCAL-00179" summary="WIP improve UV mapping&#10;&#10;fix cylinder mapping to work correctly on caps">
-      <created>1621684362201</created>
-      <option name="number" value="00179" />
-      <option name="presentableId" value="LOCAL-00179" />
-      <option name="project" value="LOCAL" />
-      <updated>1621684362201</updated>
+      <workItem from="1626889299608" duration="1210000" />
     </task>
     <task id="LOCAL-00180" summary="WIP improve UV mapping&#10;&#10;implement UV mapping for cones based on cylinder UV mapping">
       <created>1621768819372</created>
@@ -836,7 +835,14 @@
       <option name="project" value="LOCAL" />
       <updated>1626610328980</updated>
     </task>
-    <option name="localTasksCounter" value="228" />
+    <task id="LOCAL-00228" summary="add uv map example and fix cone rendering issues">
+      <created>1626889597559</created>
+      <option name="number" value="00228" />
+      <option name="presentableId" value="LOCAL-00228" />
+      <option name="project" value="LOCAL" />
+      <updated>1626889597559</updated>
+    </task>
+    <option name="localTasksCounter" value="229" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -862,7 +868,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add benchmarks for area lights" />
     <MESSAGE value="attempt to improve performance of point lights" />
     <MESSAGE value="recalculate triangle UVs when calculating smoothed normals to avoid passing redundant data around" />
     <MESSAGE value="experiment with different inline vector sizes" />
@@ -887,7 +892,8 @@
     <MESSAGE value="add example for loading meshes" />
     <MESSAGE value="rerender dragon example downsampling from 16K" />
     <MESSAGE value="WIP add uv map example" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP add uv map example" />
+    <MESSAGE value="add uv map example and fix cone rendering issues" />
+    <option name="LAST_COMMIT_MESSAGE" value="add uv map example and fix cone rendering issues" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
