@@ -1,42 +1,38 @@
 use std::borrow::Borrow;
 use std::collections::HashMap;
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::str::SplitWhitespace;
 
 use crate::{Colour, Material, MaterialKind, Object, Point3D, Vector, Vector3D};
+use std::cell::RefCell;
 
 #[cfg(test)]
 mod tests;
 
+type Cache<T> = RefCell<HashMap<String, T>>;
+
 pub struct WavefrontParser {
-    mtl_cache: HashMap<String, Materials>,
-    obj_cache: HashMap<String, ObjData>,
+    mtl_cache: Cache<Materials>,
+    obj_cache: Cache<ObjData>,
     resource_path: PathBuf,
 }
 
 impl WavefrontParser {
-    pub fn new() -> Self {
-        Self::new_with_path(Path::new(env!("CARGO_MANIFEST_DIR")).join("meshes"))
-    }
-
-    pub fn new_with_path(resource_path: PathBuf) -> Self {
+    pub fn new(resource_path: PathBuf) -> Self {
         Self {
-            mtl_cache: HashMap::new(),
-            obj_cache: HashMap::new(),
+            mtl_cache: RefCell::new(HashMap::new()),
+            obj_cache: RefCell::new(HashMap::new()),
             resource_path,
         }
     }
 
-    pub fn load(&mut self, file_name: &str) -> Result<Object, String> {
-        // TODO just insist file ends with right extension
-        let file_name = if !file_name.ends_with(".obj") {
-            format!("{}.obj", file_name)
-        } else {
-            file_name.to_string()
+    pub fn load(&self, file_name: &str) -> Result<Object, String> {
+        if !file_name.ends_with(".obj") {
+            return Err(format!("{} is not a .obj file", file_name));
         };
 
-        if let Some(obj_data) = self.obj_cache.get(&file_name) {
+        if let Some(obj_data) = self.obj_cache.borrow().get(file_name) {
             return obj_data.to_object();
         }
 
@@ -48,12 +44,13 @@ impl WavefrontParser {
         let obj_data = self.parse_obj(&contents);
 
         self.obj_cache
-            .entry(file_name)
+            .borrow_mut()
+            .entry(file_name.to_string())
             .or_insert(obj_data?)
             .to_object()
     }
 
-    fn load_mtl_libraries(&mut self, file: &str) -> Result<(), String> {
+    fn load_mtl_libraries(&self, file: &str) -> Result<(), String> {
         file.lines()
             .map(|line| line.trim())
             .map(|line| match line.split_whitespace().next() {
@@ -77,8 +74,8 @@ impl WavefrontParser {
         Ok(())
     }
 
-    fn load_mtl(&mut self, file_name: &str) -> Result<(), String> {
-        if let Some(_) = self.mtl_cache.get(file_name) {
+    fn load_mtl(&self, file_name: &str) -> Result<(), String> {
+        if let Some(_) = self.mtl_cache.borrow().get(file_name) {
             return Ok(());
         }
 
@@ -87,12 +84,15 @@ impl WavefrontParser {
         let contents = fs::read_to_string(file).map_err(|e| e.to_string())?;
 
         self.mtl_cache
+            .borrow_mut()
             .insert(file_name.to_string(), parse_mtl(&contents)?);
 
         Ok(())
     }
 
-    fn parse_obj(&mut self, input: &str) -> Result<ObjData, String> {
+    fn parse_obj(&self, input: &str) -> Result<ObjData, String> {
+        let material_cache = self.mtl_cache.borrow();
+
         let mut vertices = vec![];
         let mut normals = vec![];
         let mut polys = vec![];
@@ -114,7 +114,7 @@ impl WavefrontParser {
                             .map(str::trim)
                             .filter(|s| !s.is_empty())
                             .map(|file_name| {
-                                self.mtl_cache.get(file_name).ok_or_else(|| {
+                                material_cache.get(file_name).ok_or_else(|| {
                                     format!(
                                         "material library `{}` must be loaded before obj file can be parsed",
                                         file_name

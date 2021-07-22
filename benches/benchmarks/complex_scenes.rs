@@ -6,7 +6,6 @@ use ray_tracer::{
     Pattern, Point3D, Transform, World,
 };
 use std::f64::consts::PI;
-use std::fs;
 use std::path::Path;
 
 criterion_group! {
@@ -20,14 +19,10 @@ fn cover_image(c: &mut Criterion) {
     let mut group = c.benchmark_group("render cover image from YAML");
     group.sample_size(10);
 
-    let yaml = fs::read_to_string(
-        Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/cover/resources/cover.yml"),
-    )
-    .unwrap();
-
     group.bench_function("600x600", |b| {
         b.iter(|| {
-            let mut scene = yaml_parser::parse(&yaml).unwrap();
+            let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("examples/cover/resources");
+            let mut scene = yaml_parser::load(path, "cover.yml").unwrap();
             scene.override_resolution(600, 600);
 
             let mut world = World::empty();
@@ -45,15 +40,11 @@ fn reflect_refract(c: &mut Criterion) {
     let mut group = c.benchmark_group("render reflection + refraction image from YAML");
     group.sample_size(10);
 
-    let yaml = fs::read_to_string(
-        Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("../../examples/reflect_refract/resources/reflect_refract.yml"),
-    )
-    .unwrap();
-
     group.bench_function("600x600", |b| {
         b.iter(|| {
-            let mut scene = yaml_parser::parse(&yaml).unwrap();
+            let path =
+                Path::new(env!("CARGO_MANIFEST_DIR")).join("examples/reflect_refract/resources");
+            let mut scene = yaml_parser::load(path, "reflect-refract.yml").unwrap();
             scene.override_resolution(600, 600);
 
             let mut world = World::empty();
@@ -97,7 +88,7 @@ fn fresnel(c: &mut Criterion) {
                 let outer_glass_sphere = Object::sphere()
                     .transformed(Transform::identity().translate_y(1.0).translate_z(0.5))
                     .with_material(Material {
-                        kind: MaterialKind::Pattern(Pattern::solid(Colour::BLACK)),
+                        kind: MaterialKind::Solid(Colour::BLACK),
                         transparency: 1.0,
                         refractive: 1.5,
                         reflective: 1.0,
@@ -116,7 +107,7 @@ fn fresnel(c: &mut Criterion) {
                             .translate_z(0.5),
                     )
                     .with_material(Material {
-                        kind: MaterialKind::Pattern(Pattern::solid(Colour::BLACK)),
+                        kind: MaterialKind::Solid(Colour::BLACK),
                         transparency: 1.0,
                         refractive: 1.0,
                         reflective: 1.0,

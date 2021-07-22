@@ -1,8 +1,8 @@
 use criterion::{criterion_group, Criterion};
 use ray_tracer::renderer::{render, Samples};
-use ray_tracer::{wavefront_parser, Camera, Colour, Light, Normal3D, Point3D, Transform, World};
+use ray_tracer::wavefront_parser::WavefrontParser;
+use ray_tracer::{Camera, Colour, Light, Normal3D, Point3D, Transform, World};
 use std::f64::consts::FRAC_PI_3;
-use std::fs;
 use std::path::Path;
 
 criterion_group! {
@@ -15,17 +15,13 @@ criterion_group! {
 fn basic_triangle_meshes(c: &mut Criterion) {
     let mut group = c.benchmark_group("basic meshes (800x600)");
 
-    for file_name in ["prism flat", "prism smooth"] {
-        let file = fs::read_to_string(
-            Path::new(env!("CARGO_MANIFEST_DIR")).join(format!("meshes/{}.obj", file_name)),
-        )
-        .expect(&format!("failed to read mesh file {}", file_name));
+    for file_name in ["prism flat.obj", "prism smooth.obj"] {
+        let parser = WavefrontParser::new(Path::new(env!("CARGO_MANIFEST_DIR")).join("meshes"));
+        let _ = parser.load(file_name).unwrap();
 
-        let obj = wavefront_parser::parse_obj(&file);
-
-        group.bench_with_input(file_name, &obj, |b, obj| {
+        group.bench_with_input(file_name, &parser, |b, parser| {
             b.iter(|| {
-                let prism = obj.to_object().unwrap();
+                let prism = parser.load(file_name).unwrap();
 
                 let mut world = World::empty();
                 world.add(prism);
@@ -53,17 +49,13 @@ fn basic_triangle_meshes(c: &mut Criterion) {
 fn complex_meshes(c: &mut Criterion) {
     let mut group = c.benchmark_group("complex meshes (600x600)");
 
-    for file_name in ["suzanne low poly", "suzanne lp smooth"] {
-        let file = fs::read_to_string(
-            Path::new(env!("CARGO_MANIFEST_DIR")).join(format!("meshes/{}.obj", file_name)),
-        )
-        .expect(&format!("failed to read mesh file {}", file_name));
+    for file_name in ["suzanne low poly.obj", "suzanne lp smooth.obj"] {
+        let parser = WavefrontParser::new(Path::new(env!("CARGO_MANIFEST_DIR")).join("meshes"));
+        let _ = parser.load(file_name).unwrap();
 
-        let obj = wavefront_parser::parse_obj(&file);
-
-        group.bench_with_input(file_name, &obj, |b, obj| {
+        group.bench_with_input(file_name, &parser, |b, parser| {
             b.iter(|| {
-                let prism = obj.to_object().unwrap();
+                let prism = parser.load(file_name).unwrap();
 
                 let mut world = World::empty();
                 world.add(prism);
@@ -93,20 +85,16 @@ fn very_complex_meshes(c: &mut Criterion) {
     group.sample_size(20);
 
     for file_name in [
-        "suzanne medium poly",
-        "suzanne high poly",
-        "suzanne mp smooth",
+        "suzanne medium poly.obj",
+        "suzanne high poly.obj",
+        "suzanne mp smooth.obj",
     ] {
-        let file = fs::read_to_string(
-            Path::new(env!("CARGO_MANIFEST_DIR")).join(format!("meshes/{}.obj", file_name)),
-        )
-        .expect(&format!("failed to read mesh file {}", file_name));
+        let parser = WavefrontParser::new(Path::new(env!("CARGO_MANIFEST_DIR")).join("meshes"));
+        let _ = parser.load(file_name).unwrap();
 
-        let obj = wavefront_parser::parse_obj(&file);
-
-        group.bench_with_input(file_name, &obj, |b, obj| {
+        group.bench_with_input(file_name, &parser, |b, parser| {
             b.iter(|| {
-                let prism = obj.to_object().unwrap();
+                let prism = parser.load(file_name).unwrap();
 
                 let mut world = World::empty();
                 world.add(prism);

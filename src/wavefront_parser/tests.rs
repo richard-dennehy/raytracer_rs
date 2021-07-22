@@ -389,7 +389,7 @@ mod obj_parser_tests {
 
     #[test]
     fn parser_should_ignore_unrecognised_lines() {
-        let mut parser = WavefrontParser::new();
+        let parser = WavefrontParser::new(PathBuf::new());
 
         let invalid_obj_file = "There was a young lady named Bright
 who traveled much faster than light.
@@ -408,7 +408,7 @@ and came back the previous night.";
 
     #[test]
     fn parser_should_parse_vertex_data() {
-        let mut parser = WavefrontParser::new();
+        let parser = WavefrontParser::new(PathBuf::new());
 
         let input = "v -1 1 0
         v -1.0000 0.5000 0.0000
@@ -427,7 +427,7 @@ and came back the previous night.";
 
     #[test]
     fn parser_should_parse_face_data() {
-        let mut parser = WavefrontParser::new();
+        let parser = WavefrontParser::new(PathBuf::new());
 
         let input = "v -1 1 0
         v 1 0 0
@@ -447,7 +447,7 @@ and came back the previous night.";
 
     #[test]
     fn parser_should_parse_polygons_with_more_than_3_vertices() {
-        let mut parser = WavefrontParser::new();
+        let parser = WavefrontParser::new(PathBuf::new());
 
         let input = "v -1 1 0
 v -1 0 0
@@ -466,7 +466,7 @@ f 1 2 3 4 5";
 
     #[test]
     fn obj_data_should_be_convertible_to_group_containing_parsed_faces() {
-        let mut parser = WavefrontParser::new();
+        let parser = WavefrontParser::new(PathBuf::new());
 
         let input = "v -1 1 0
         v 1 0 0
@@ -514,7 +514,7 @@ f 1 2 3 4 5";
 
     #[test]
     fn converting_to_group_should_triangulate_polygon_faces() {
-        let mut parser = WavefrontParser::new();
+        let parser = WavefrontParser::new(PathBuf::new());
 
         let input = "v -1 1 0
 v -1 0 0
@@ -574,7 +574,7 @@ f 1 2 3 4 5";
 
     #[test]
     fn obj_parser_should_preserve_named_groups() {
-        let mut parser = WavefrontParser::new();
+        let parser = WavefrontParser::new(PathBuf::new());
 
         let input = "v -1 1 0
         v -1 0 0
@@ -596,7 +596,7 @@ f 1 2 3 4 5";
 
     #[test]
     fn converting_obj_data_with_multiple_groups_should_create_a_group_with_subgroups() {
-        let mut parser = WavefrontParser::new();
+        let parser = WavefrontParser::new(PathBuf::new());
 
         let input = "v -1 1 0
         v -1 0 0
@@ -623,7 +623,7 @@ f 1 2 3 4 5";
 
     #[test]
     fn obj_parser_should_parse_vertex_normals() {
-        let mut parser = WavefrontParser::new();
+        let parser = WavefrontParser::new(PathBuf::new());
 
         let input = "vn 0 0 1
         vn 0.707 0 -0.707
@@ -640,7 +640,7 @@ f 1 2 3 4 5";
 
     #[test]
     fn obj_parser_should_parse_faces_with_texture_and_normal_indexes() {
-        let mut parser = WavefrontParser::new();
+        let parser = WavefrontParser::new(PathBuf::new());
 
         let input = "v 0 1 0
         v -1 0 0
@@ -710,7 +710,7 @@ f 1 2 3 4 5";
 
     #[test]
     fn converting_obj_data_should_convert_faces_with_normals_into_smooth_triangles() {
-        let mut parser = WavefrontParser::new();
+        let parser = WavefrontParser::new(PathBuf::new());
 
         let input = "v 0 1 0
         v -1 0 0
@@ -771,7 +771,7 @@ f 1 2 3 4 5";
 
         #[test]
         fn a_usemtl_statement_without_an_mtllib_statement_should_fail() {
-            let mut parser = WavefrontParser::new();
+            let parser = WavefrontParser::new(PathBuf::new());
 
             let input = "v 0 1 0
             v -1 0 0
@@ -794,8 +794,8 @@ f 1 2 3 4 5";
 
             #[test]
             fn when_the_material_exists_should_set_the_material_of_the_following_face() {
-                let mut parser = WavefrontParser::new();
-                parser.mtl_cache.insert("test materials".to_owned(), Materials(hashmap! {
+                let parser = WavefrontParser::new(PathBuf::new());
+                parser.mtl_cache.borrow_mut().insert("test materials".to_owned(), Materials(hashmap! {
                     "awful_green".to_owned() => Material { kind: MaterialKind::Solid(Colour::GREEN), ..Default::default() }
                 }));
 
@@ -824,8 +824,8 @@ f 1 2 3 4 5";
 
             #[test]
             fn usemtl_should_set_the_material_of_all_following_faces() {
-                let mut parser = WavefrontParser::new();
-                parser.mtl_cache.insert("test materials".to_owned(), Materials(hashmap! {
+                let parser = WavefrontParser::new(PathBuf::new());
+                parser.mtl_cache.borrow_mut().insert("test materials".to_owned(), Materials(hashmap! {
                     "awful_green".to_owned() => Material { kind: MaterialKind::Solid(Colour::GREEN), ..Default::default() }
                 }));
 
@@ -876,8 +876,8 @@ f 1 2 3 4 5";
 
             #[test]
             fn should_be_possible_to_give_different_faces_different_materials() {
-                let mut parser = WavefrontParser::new();
-                parser.mtl_cache.insert("test materials".to_owned(),Materials(hashmap! {
+                let parser = WavefrontParser::new(PathBuf::new());
+                parser.mtl_cache.borrow_mut().insert("test materials".to_owned(),Materials(hashmap! {
                         "awful_green".to_owned() => Material { kind: MaterialKind::Solid(Colour::GREEN), ..Default::default() },
                         "sunburned_red".to_owned() => Material { kind: MaterialKind::Solid(Colour::RED), ..Default::default() },
                     })
@@ -931,15 +931,15 @@ f 1 2 3 4 5";
 
             #[test]
             fn should_be_able_to_use_material_loaded_from_a_second_library() {
-                let mut parser = WavefrontParser::new();
-                parser.mtl_cache = hashmap! {
+                let mut parser = WavefrontParser::new(PathBuf::new());
+                parser.mtl_cache = RefCell::new(hashmap! {
                     "test materials".to_owned() => Materials(hashmap! {
                         "awful_green".to_owned() => Material { kind: MaterialKind::Solid(Colour::GREEN), ..Default::default() },
                     }),
                     "more materials".to_owned() => Materials(hashmap! {
                         "sunburned_red".to_owned() => Material { kind: MaterialKind::Solid(Colour::RED), ..Default::default() },
                     })
-                };
+                });
 
                 let input = "mtllib test materials.mtl more materials.mtl
                 v 0 1 0
@@ -990,8 +990,8 @@ f 1 2 3 4 5";
             #[test]
             fn should_prioritise_materials_from_an_earlier_library_over_conflicting_materials_from_a_later_library(
             ) {
-                let mut parser = WavefrontParser::new();
-                parser.mtl_cache = hashmap! {
+                let mut parser = WavefrontParser::new(PathBuf::new());
+                parser.mtl_cache = RefCell::new(hashmap! {
                     "test materials".to_owned() => Materials(hashmap! {
                         "mystery".to_owned() => Material { kind: MaterialKind::Solid(Colour::GREEN), ..Default::default() },
                     }),
@@ -1001,7 +1001,7 @@ f 1 2 3 4 5";
                     "even more".to_owned() => Materials(hashmap! {
                         "mystery".to_owned() => Material { kind: MaterialKind::Solid(Colour::BLACK), ..Default::default() },
                     })
-                };
+                });
 
                 let input = "mtllib test materials.mtl more materials.mtl even more.mtl
                 v 0 1 0
@@ -1028,15 +1028,15 @@ f 1 2 3 4 5";
 
             #[test]
             fn should_fail_if_a_material_does_not_exist_in_a_loaded_library() {
-                let mut parser = WavefrontParser::new();
-                parser.mtl_cache = hashmap! {
+                let mut parser = WavefrontParser::new(PathBuf::new());
+                parser.mtl_cache = RefCell::new(hashmap! {
                     "test materials".to_owned() => Materials(hashmap! {
                         "awful_green".to_owned() => Material { kind: MaterialKind::Solid(Colour::GREEN), ..Default::default() },
                     }),
                     "more materials".to_owned() => Materials(hashmap! {
                         "sunburned_red".to_owned() => Material { kind: MaterialKind::Solid(Colour::RED), ..Default::default() },
                     })
-                };
+                });
 
                 let input = "mtllib test materials.mtl more materials.mtl
                 v 0 1 0
@@ -1057,12 +1057,13 @@ f 1 2 3 4 5";
 
         #[test]
         fn converting_an_obj_and_mtl_file_to_an_object_should_assign_the_correct_materials() {
-            let mut parser = WavefrontParser::new();
+            let parser = WavefrontParser::new(PathBuf::new());
 
             let mtl_input = "newmtl awful_green
             Kd 0 1 0";
             parser
                 .mtl_cache
+                .borrow_mut()
                 .insert("materials".to_owned(), parse_mtl(mtl_input).unwrap());
 
             let obj_input = "mtllib materials.mtl
@@ -1089,11 +1090,12 @@ f 1 2 3 4 5";
         #[test]
         fn converting_an_obj_containing_a_polygon_should_assign_the_correct_material_to_all_subtriangles(
         ) {
-            let mut parser = WavefrontParser::new();
+            let parser = WavefrontParser::new(PathBuf::new());
             let mtl_input = "newmtl awful_green
             Kd 0 1 0";
             parser
                 .mtl_cache
+                .borrow_mut()
                 .insert("materials".to_owned(), parse_mtl(mtl_input).unwrap());
 
             let obj_input = "mtllib materials.mtl

@@ -54,7 +54,7 @@ impl SceneDescription {
         fn inner(
             this: &SceneDescription,
             objects: &Vec<ObjectDescription>,
-            parser: &mut WavefrontParser,
+            parser: &WavefrontParser,
         ) -> Result<Vec<Object>, String> {
             objects
                 .iter()
@@ -92,8 +92,8 @@ impl SceneDescription {
                 .collect()
         }
 
-        let mut parser = WavefrontParser::new_with_path(self.resource_dir.clone());
-        inner(self, &self.objects, &mut parser)
+        let parser = WavefrontParser::new(self.resource_dir.clone());
+        inner(self, &self.objects, &parser)
     }
 }
 

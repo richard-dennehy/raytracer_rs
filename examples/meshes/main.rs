@@ -48,7 +48,7 @@ fn main() -> Result<(), String> {
             .transformed(Transform::identity().rotate_x(FRAC_PI_2).translate_z(-20.0)),
     );
 
-    let mut parser = WavefrontParser::new_with_path(root.join("resources"));
+    let parser = WavefrontParser::new(root.join("resources"));
     let prism = parser.load("multicoloured prism.obj")?;
     let suzanne = parser.load("suzanne high poly.obj")?;
 
