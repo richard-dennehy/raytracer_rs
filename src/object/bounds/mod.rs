@@ -1,4 +1,4 @@
-use crate::{Point3D, Ray, Transform, Vector};
+use crate::{Point3D, Ray, Transform, Vector, Vector3D};
 
 #[cfg(test)]
 mod tests;
@@ -98,7 +98,7 @@ impl BoundingBox {
         BoundingBox::new(Point3D::min(points), Point3D::max(points))
     }
 
-    // FIXME this possibly makes too many checks - in theory, only need to make at 3 checks to know ray must miss
+    // see https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-box-intersection
     pub fn intersected_by(&self, ray: &Ray) -> bool {
         fn check_axis(origin: f64, direction: f64, min: f64, max: f64) -> (f64, f64) {
             let t_min_numerator = min - origin;
@@ -126,6 +126,11 @@ impl BoundingBox {
             self.min.y(),
             self.max.y(),
         );
+
+        if t_min_x > t_max_y || t_min_y > t_max_x {
+            return false;
+        }
+
         let (t_min_z, t_max_z) = check_axis(
             ray.origin.z(),
             ray.direction.z(),

@@ -15,14 +15,11 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add image texture example">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="fix benchmarks">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/meshes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/meshes.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/meshes/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/meshes/main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/wavefront_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/wavefront_parser/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/wavefront_parser/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/wavefront_parser/tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benches/benchmarks/bounding_boxes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/bounding_boxes.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/performance.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/performance.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/bounds/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/bounds/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -116,10 +113,13 @@
       <command value="cargo test" />
       <command value="cargo run --release --example uv_patterns" />
       <command value="cargo run --release --example textured_earth" />
+      <command value="cargo bench -- single_ray_many" />
+      <command value="cargo bench -- lots of objects" />
       <command value="cargo bench" />
+      <command value="cargo bench -- &quot;lots of objects&quot;" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.test">
+  <component name="RunManager" selected="Cargo.bench">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -170,7 +170,7 @@
       </method>
     </configuration>
     <configuration name="bench" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="bench" />
+      <option name="command" value="bench -- &quot;lots of objects&quot;" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -217,6 +217,11 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.run" />
@@ -227,11 +232,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.bench" />
-        <item itemvalue="Cargo.run" />
-        <item itemvalue="Cargo.run" />
-        <item itemvalue="Cargo.run" />
+        <item itemvalue="Cargo.bench" />
+        <item itemvalue="Cargo.bench" />
       </list>
     </recent_temporary>
   </component>
@@ -494,14 +499,8 @@
       <workItem from="1626714399243" duration="2198000" />
       <workItem from="1626805057211" duration="1981000" />
       <workItem from="1626889299608" duration="2323000" />
-      <workItem from="1626975794543" duration="1601000" />
-    </task>
-    <task id="LOCAL-00181" summary="WIP improve UV mapping&#10;&#10;WIP triangle UVs">
-      <created>1622054319646</created>
-      <option name="number" value="00181" />
-      <option name="presentableId" value="LOCAL-00181" />
-      <option name="project" value="LOCAL" />
-      <updated>1622054319646</updated>
+      <workItem from="1626975794543" duration="2232000" />
+      <workItem from="1627062664543" duration="3704000" />
     </task>
     <task id="LOCAL-00182" summary="WIP improve UV mapping&#10;&#10;WIP triangle UVs">
       <created>1622657100181</created>
@@ -839,7 +838,14 @@
       <option name="project" value="LOCAL" />
       <updated>1626890523851</updated>
     </task>
-    <option name="localTasksCounter" value="230" />
+    <task id="LOCAL-00230" summary="fix benchmarks">
+      <created>1626977418337</created>
+      <option name="number" value="00230" />
+      <option name="presentableId" value="LOCAL-00230" />
+      <option name="project" value="LOCAL" />
+      <updated>1626977418337</updated>
+    </task>
+    <option name="localTasksCounter" value="231" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -865,7 +871,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="recalculate triangle UVs when calculating smoothed normals to avoid passing redundant data around" />
     <MESSAGE value="experiment with different inline vector sizes" />
     <MESSAGE value="migrate tests to use `approx` instead of `float_cmp`" />
     <MESSAGE value="use `approx`/utility functions when comparing floats" />
@@ -890,7 +895,8 @@
     <MESSAGE value="WIP add uv map example" />
     <MESSAGE value="add uv map example and fix cone rendering issues" />
     <MESSAGE value="add image texture example" />
-    <option name="LAST_COMMIT_MESSAGE" value="add image texture example" />
+    <MESSAGE value="fix benchmarks" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix benchmarks" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

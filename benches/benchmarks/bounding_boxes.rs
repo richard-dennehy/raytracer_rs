@@ -14,7 +14,7 @@ fn single_ray_many_objects(c: &mut Criterion) {
     c.bench_function("cast single ray into scene with lots of objects", |b| {
         let mut world = World::empty();
 
-        let cube_size = 60;
+        let cube_size = 70;
         let spacing = 2.7;
         let mut spheres = Vec::with_capacity((cube_size as usize).pow(3));
 

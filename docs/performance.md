@@ -159,3 +159,6 @@ and other complex scenes performing worse (~10%).
 
 Generally, reducing the allocation size makes complex scenes perform significantly worse, and has little real-time impact on simple scenes (~15ms),
 and increasing the allocation size has rapidly diminishing returns on complex scenes, while substantially reducing performance of other scenes.
+
+### Optimise Bounding Box intersections
+Adding early return for ray missing box based on x and y intersections alone provides up to 20% speedup in worst case scenes
