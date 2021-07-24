@@ -161,4 +161,8 @@ Generally, reducing the allocation size makes complex scenes perform significant
 and increasing the allocation size has rapidly diminishing returns on complex scenes, while substantially reducing performance of other scenes.
 
 ### Optimise Bounding Box intersections
-Adding early return for ray missing box based on x and y intersections alone provides up to 20% speedup in worst case scenes
+Adding early return for ray missing box based on x and y intersections alone provides up to 20% speedup in worst case scenes  
+Changing short-circuiting `||` for `|` provides 10-15% speedup - the combined condition is possibly easier for the branch predictor to understand  
+Changing swap conditions to use the ray direction instead of direct comparison provides a slight performance boost
+
+Eliminating branching is possible, but produces mixed results, and makes the code substantially harder to read

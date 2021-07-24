@@ -11,8 +11,8 @@ mod unit_tests {
         let inner = BoundingBox::new(Point3D::new(-1.0, -1.0, -1.0), Point3D::new(1.0, 1.0, 1.0));
 
         let expanded = outer.expand_to_fit(&inner);
-        assert_eq!(expanded.min, Point3D::new(-2.0, -2.0, -2.0));
-        assert_eq!(expanded.max, Point3D::new(2.0, 2.0, 2.0));
+        assert_eq!(expanded.min(), Point3D::new(-2.0, -2.0, -2.0));
+        assert_eq!(expanded.max(), Point3D::new(2.0, 2.0, 2.0));
     }
 
     #[test]
@@ -21,8 +21,8 @@ mod unit_tests {
         let inner = BoundingBox::new(Point3D::new(-3.0, -1.0, -1.0), Point3D::new(3.0, 1.0, 1.0));
 
         let expanded = outer.expand_to_fit(&inner);
-        assert_eq!(expanded.min, Point3D::new(-3.0, -2.0, -2.0));
-        assert_eq!(expanded.max, Point3D::new(3.0, 2.0, 2.0));
+        assert_eq!(expanded.min(), Point3D::new(-3.0, -2.0, -2.0));
+        assert_eq!(expanded.max(), Point3D::new(3.0, 2.0, 2.0));
     }
 
     #[test]
@@ -31,8 +31,8 @@ mod unit_tests {
         let inner = BoundingBox::new(Point3D::new(-1.0, -3.0, -1.0), Point3D::new(1.0, 3.0, 1.0));
 
         let expanded = outer.expand_to_fit(&inner);
-        assert_eq!(expanded.min, Point3D::new(-2.0, -3.0, -2.0));
-        assert_eq!(expanded.max, Point3D::new(2.0, 3.0, 2.0));
+        assert_eq!(expanded.min(), Point3D::new(-2.0, -3.0, -2.0));
+        assert_eq!(expanded.max(), Point3D::new(2.0, 3.0, 2.0));
     }
 
     #[test]
@@ -41,8 +41,8 @@ mod unit_tests {
         let inner = BoundingBox::new(Point3D::new(-1.0, -1.0, -3.0), Point3D::new(1.0, 1.0, 3.0));
 
         let expanded = outer.expand_to_fit(&inner);
-        assert_eq!(expanded.min, Point3D::new(-2.0, -2.0, -3.0));
-        assert_eq!(expanded.max, Point3D::new(2.0, 2.0, 3.0));
+        assert_eq!(expanded.min(), Point3D::new(-2.0, -2.0, -3.0));
+        assert_eq!(expanded.max(), Point3D::new(2.0, 2.0, 3.0));
     }
 
     #[test]
@@ -51,8 +51,8 @@ mod unit_tests {
         let inner = BoundingBox::new(Point3D::new(-3.0, -3.0, -3.0), Point3D::new(3.0, 3.0, 3.0));
 
         let expanded = outer.expand_to_fit(&inner);
-        assert_eq!(expanded.min, Point3D::new(-3.0, -3.0, -3.0));
-        assert_eq!(expanded.max, Point3D::new(3.0, 3.0, 3.0));
+        assert_eq!(expanded.min(), Point3D::new(-3.0, -3.0, -3.0));
+        assert_eq!(expanded.max(), Point3D::new(3.0, 3.0, 3.0));
     }
 
     #[test]
@@ -132,8 +132,8 @@ mod unit_tests {
         let transform = Transform::identity().scale_all(2.0);
 
         let scaled = bounds.transformed(transform);
-        assert_eq!(scaled.min, Point3D::new(-2.0, -2.0, -2.0));
-        assert_eq!(scaled.max, Point3D::new(2.0, 2.0, 2.0));
+        assert_eq!(scaled.min(), Point3D::new(-2.0, -2.0, -2.0));
+        assert_eq!(scaled.max(), Point3D::new(2.0, 2.0, 2.0));
     }
 
     #[test]
@@ -145,8 +145,8 @@ mod unit_tests {
             .translate_z(1.0);
 
         let scaled = bounds.transformed(transform);
-        assert_eq!(scaled.min, Point3D::ORIGIN);
-        assert_eq!(scaled.max, Point3D::new(2.0, 2.0, 2.0));
+        assert_eq!(scaled.min(), Point3D::ORIGIN);
+        assert_eq!(scaled.max(), Point3D::new(2.0, 2.0, 2.0));
     }
 
     #[test]
@@ -158,11 +158,11 @@ mod unit_tests {
         let scaled = bounds.transformed(transform);
 
         assert_abs_diff_eq!(
-            scaled.min,
+            scaled.min(),
             Point3D::new(-SQRT_2, -1.7071067811865475, -1.7071067811865475)
         );
         assert_abs_diff_eq!(
-            scaled.max,
+            scaled.max(),
             Point3D::new(SQRT_2, 1.7071067811865475, 1.7071067811865475)
         );
     }
@@ -368,11 +368,11 @@ mod unit_tests {
 
             let (left, right) = bounds.split();
 
-            assert_eq!(left.min, Point3D::new(-1.0, -4.0, -5.0));
-            assert_eq!(left.max, Point3D::new(4.0, 6.0, 5.0));
+            assert_eq!(left.min(), Point3D::new(-1.0, -4.0, -5.0));
+            assert_eq!(left.max(), Point3D::new(4.0, 6.0, 5.0));
 
-            assert_eq!(right.min, Point3D::new(4.0, -4.0, -5.0));
-            assert_eq!(right.max, Point3D::new(9.0, 6.0, 5.0));
+            assert_eq!(right.min(), Point3D::new(4.0, -4.0, -5.0));
+            assert_eq!(right.max(), Point3D::new(9.0, 6.0, 5.0));
         }
 
         #[test]
@@ -382,11 +382,11 @@ mod unit_tests {
 
             let (left, right) = bounds.split();
 
-            assert_eq!(left.min, Point3D::new(-1.0, -2.0, -3.0));
-            assert_eq!(left.max, Point3D::new(4.0, 5.5, 3.0));
+            assert_eq!(left.min(), Point3D::new(-1.0, -2.0, -3.0));
+            assert_eq!(left.max(), Point3D::new(4.0, 5.5, 3.0));
 
-            assert_eq!(right.min, Point3D::new(4.0, -2.0, -3.0));
-            assert_eq!(right.max, Point3D::new(9.0, 5.5, 3.0));
+            assert_eq!(right.min(), Point3D::new(4.0, -2.0, -3.0));
+            assert_eq!(right.max(), Point3D::new(9.0, 5.5, 3.0));
         }
 
         #[test]
@@ -396,11 +396,11 @@ mod unit_tests {
 
             let (left, right) = bounds.split();
 
-            assert_eq!(left.min, Point3D::new(-1.0, -2.0, -3.0));
-            assert_eq!(left.max, Point3D::new(5.0, 3.0, 3.0));
+            assert_eq!(left.min(), Point3D::new(-1.0, -2.0, -3.0));
+            assert_eq!(left.max(), Point3D::new(5.0, 3.0, 3.0));
 
-            assert_eq!(right.min, Point3D::new(-1.0, 3.0, -3.0));
-            assert_eq!(right.max, Point3D::new(5.0, 8.0, 3.0));
+            assert_eq!(right.min(), Point3D::new(-1.0, 3.0, -3.0));
+            assert_eq!(right.max(), Point3D::new(5.0, 8.0, 3.0));
         }
 
         #[test]
@@ -410,11 +410,11 @@ mod unit_tests {
 
             let (left, right) = bounds.split();
 
-            assert_eq!(left.min, Point3D::new(-1.0, -2.0, -3.0));
-            assert_eq!(left.max, Point3D::new(5.0, 3.0, 2.0));
+            assert_eq!(left.min(), Point3D::new(-1.0, -2.0, -3.0));
+            assert_eq!(left.max(), Point3D::new(5.0, 3.0, 2.0));
 
-            assert_eq!(right.min, Point3D::new(-1.0, -2.0, 2.0));
-            assert_eq!(right.max, Point3D::new(5.0, 3.0, 7.0));
+            assert_eq!(right.min(), Point3D::new(-1.0, -2.0, 2.0));
+            assert_eq!(right.max(), Point3D::new(5.0, 3.0, 7.0));
         }
 
         #[test]
@@ -425,11 +425,11 @@ mod unit_tests {
             let (left, right) = infinite.split();
             let limit = BoundingBox::LIMIT;
 
-            assert_eq!(left.min, Point3D::new(-limit, -limit, -limit));
-            assert_eq!(left.max, Point3D::new(0.0, limit, limit));
+            assert_eq!(left.min(), Point3D::new(-limit, -limit, -limit));
+            assert_eq!(left.max(), Point3D::new(0.0, limit, limit));
 
-            assert_eq!(right.min, Point3D::new(0.0, -limit, -limit));
-            assert_eq!(right.max, Point3D::new(limit, limit, limit));
+            assert_eq!(right.min(), Point3D::new(0.0, -limit, -limit));
+            assert_eq!(right.max(), Point3D::new(limit, limit, limit));
         }
     }
 }
@@ -445,15 +445,15 @@ mod property_tests {
     ) {
         let bounds = bb1.expand_to_fit(&bb2);
 
-        assert!(bounds.contains(bb1.min));
-        assert!(bounds.contains(bb2.min));
-        assert!(bounds.contains(bb1.max));
-        assert!(bounds.contains(bb2.max));
+        assert!(bounds.contains(bb1.min()));
+        assert!(bounds.contains(bb2.min()));
+        assert!(bounds.contains(bb1.max()));
+        assert!(bounds.contains(bb2.max()));
     }
 
     #[quickcheck]
     fn a_bounding_box_should_contain_its_min_and_max_points(bounds: BoundingBox) {
-        assert!(bounds.contains(bounds.min));
-        assert!(bounds.contains(bounds.max));
+        assert!(bounds.contains(bounds.min()));
+        assert!(bounds.contains(bounds.max()));
     }
 }

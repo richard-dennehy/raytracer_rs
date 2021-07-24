@@ -35,10 +35,6 @@ pub trait Vector: Sized + Copy + Clone {
 
 impl Vector3D {
     pub fn new(x: f64, y: f64, z: f64) -> Self {
-        debug_assert!(
-            x.is_finite() && y.is_finite() && z.is_finite(),
-            "`x`, `y`, and `z` components must always be finite"
-        );
         Vector3D(x, y, z)
     }
 }
@@ -227,6 +223,14 @@ impl Div<f64> for Vector3D {
 
     fn div(self, rhs: f64) -> Self::Output {
         Vector3D(self.x() / rhs, self.y() / rhs, self.z() / rhs)
+    }
+}
+
+impl Div<Vector3D> for f64 {
+    type Output = Vector3D;
+
+    fn div(self, rhs: Vector3D) -> Self::Output {
+        Vector3D::new(self / rhs.x(), self / rhs.y(), self / rhs.z())
     }
 }
 

@@ -6,11 +6,12 @@ use std::f64::consts::PI;
 
 criterion_group! {
     benches,
-    single_ray_many_objects,
+    // single_ray_many_objects,
     single_ray_many_reflective_refractive_objects
 }
 
-fn single_ray_many_objects(c: &mut Criterion) {
+// FIXME this test is very broken (it takes several minutes to run, rather than ~8 seconds)
+fn _single_ray_many_objects(c: &mut Criterion) {
     c.bench_function("cast single ray into scene with lots of objects", |b| {
         let mut world = World::empty();
 

@@ -1544,8 +1544,8 @@ mod bounding_boxes {
                 .translate_z(5.0),
         );
 
-        assert_eq!(shape.bounds.min, Point3D::new(0.5, -5.0, 1.0));
-        assert_eq!(shape.bounds.max, Point3D::new(1.5, -1.0, 9.0));
+        assert_eq!(shape.bounds.min(), Point3D::new(0.5, -5.0, 1.0));
+        assert_eq!(shape.bounds.max(), Point3D::new(1.5, -1.0, 9.0));
     }
 
     #[test]
@@ -1573,8 +1573,8 @@ mod bounding_boxes {
                 ),
         ]);
 
-        assert_eq!(group.bounds.min, Point3D::new(-4.5, -3.0, -5.0));
-        assert_eq!(group.bounds.max, Point3D::new(4.0, 7.0, 4.5));
+        assert_eq!(group.bounds.min(), Point3D::new(-4.5, -3.0, -5.0));
+        assert_eq!(group.bounds.max(), Point3D::new(4.0, 7.0, 4.5));
     }
 
     #[test]
@@ -1589,8 +1589,8 @@ mod bounding_boxes {
             ),
         );
 
-        assert_eq!(csg.bounds.min, Point3D::new(-1.0, -1.0, -1.0));
-        assert_eq!(csg.bounds.max, Point3D::new(3.0, 4.0, 5.0));
+        assert_eq!(csg.bounds.min(), Point3D::new(-1.0, -1.0, -1.0));
+        assert_eq!(csg.bounds.max(), Point3D::new(3.0, 4.0, 5.0));
     }
 }
 
