@@ -5,8 +5,8 @@ mod tests;
 
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub struct BoundingBox {
-    // bounds[0] == min; bounds[1] == max
-    bounds: [Point3D; 2],
+    min: Point3D,
+    max: Point3D,
 }
 
 impl BoundingBox {
@@ -15,10 +15,8 @@ impl BoundingBox {
 
     pub fn infinite() -> Self {
         BoundingBox {
-            bounds: [
-                Point3D::new(-Self::LIMIT, -Self::LIMIT, -Self::LIMIT),
-                Point3D::new(Self::LIMIT, Self::LIMIT, Self::LIMIT),
-            ],
+            min: Point3D::new(-Self::LIMIT, -Self::LIMIT, -Self::LIMIT),
+            max: Point3D::new(Self::LIMIT, Self::LIMIT, Self::LIMIT),
         }
     }
 
@@ -35,21 +33,19 @@ impl BoundingBox {
             max.z().min(Self::LIMIT),
         );
 
-        BoundingBox { bounds: [min, max] }
+        BoundingBox { min, max }
     }
 
     pub fn expand_to_fit(&self, other: &Self) -> Self {
         BoundingBox {
-            bounds: [
-                Point3D::min([self.bounds[0], other.bounds[0]]),
-                Point3D::max([self.bounds[1], other.bounds[1]]),
-            ],
+            min: Point3D::min([self.min, other.min]),
+            max: Point3D::max([self.max, other.max]),
         }
     }
 
     pub fn contains(&self, point: Point3D) -> bool {
-        let min = self.bounds[0];
-        let max = self.bounds[1];
+        let min = self.min;
+        let max = self.max;
 
         min.x() <= point.x()
             && min.y() <= point.y()
@@ -65,7 +61,7 @@ impl BoundingBox {
     }
 
     pub fn fully_contains(&self, other: &BoundingBox) -> bool {
-        self.contains(other.bounds[0]) && self.contains(other.bounds[1])
+        self.contains(other.min) && self.contains(other.max)
     }
 
     #[allow(dead_code)]
@@ -75,8 +71,8 @@ impl BoundingBox {
 
     // TODO test plane (infinite) BBs don't break
     pub fn transformed(&self, transformation: Transform) -> Self {
-        let min = self.bounds[0];
-        let max = self.bounds[1];
+        let min = self.min;
+        let max = self.max;
 
         // implementation is slightly complicated because a BoundingBox must be axis-aligned, and
         // naive rotation breaks that invariant
@@ -107,8 +103,8 @@ impl BoundingBox {
         // roughly adapted from https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-box-intersection
         // note that the "optimised" version shown at the link above doesn't appear to be significantly faster when translated into rust
         // (including using unsafe functions to bypass array bounds checking) and definitely isn't fast enough to justify the excessively terse code
-        let t_min_x = (self.bounds[0].x() - ray.origin.x()) / ray.direction.x();
-        let t_max_x = (self.bounds[1].x() - ray.origin.x()) / ray.direction.x();
+        let t_min_x = (self.min.x() - ray.origin.x()) / ray.direction.x();
+        let t_max_x = (self.max.x() - ray.origin.x()) / ray.direction.x();
 
         let (t_min_x, t_max_x) = if ray.direction.x().is_sign_negative() {
             (t_max_x, t_min_x)
@@ -116,8 +112,8 @@ impl BoundingBox {
             (t_min_x, t_max_x)
         };
 
-        let t_min_y = (self.bounds[0].y() - ray.origin.y()) / ray.direction.y();
-        let t_max_y = (self.bounds[1].y() - ray.origin.y()) / ray.direction.y();
+        let t_min_y = (self.min.y() - ray.origin.y()) / ray.direction.y();
+        let t_max_y = (self.max.y() - ray.origin.y()) / ray.direction.y();
 
         let (t_min_y, t_max_y) = if ray.direction.y().is_sign_negative() {
             (t_max_y, t_min_y)
@@ -134,8 +130,8 @@ impl BoundingBox {
         let t_min = t_min_x.max(t_min_y);
         let t_max = t_max_x.min(t_max_y);
 
-        let t_min_z = (self.bounds[0].z() - ray.origin.z()) / ray.direction.z();
-        let t_max_z = (self.bounds[1].z() - ray.origin.z()) / ray.direction.z();
+        let t_min_z = (self.min.z() - ray.origin.z()) / ray.direction.z();
+        let t_max_z = (self.max.z() - ray.origin.z()) / ray.direction.z();
 
         let (t_min_z, t_max_z) = if ray.direction.z().is_sign_negative() {
             (t_max_z, t_min_z)
@@ -151,8 +147,8 @@ impl BoundingBox {
     }
 
     pub fn split(&self) -> (Self, Self) {
-        let min = self.bounds[0];
-        let max = self.bounds[1];
+        let min = self.min;
+        let max = self.max;
 
         let x_len = max.x() - min.x();
         let y_len = max.y() - min.y();
@@ -184,12 +180,12 @@ impl BoundingBox {
 
     #[cfg(test)]
     pub fn min(&self) -> Point3D {
-        self.bounds[0]
+        self.min
     }
 
     #[cfg(test)]
     pub fn max(&self) -> Point3D {
-        self.bounds[1]
+        self.max
     }
 }
 

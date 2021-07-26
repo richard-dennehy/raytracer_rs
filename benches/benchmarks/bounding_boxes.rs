@@ -1,4 +1,5 @@
 use criterion::{black_box, criterion_group, Criterion};
+use ray_tracer::renderer::{render, Samples};
 use ray_tracer::{
     Camera, Colour, Light, Material, MaterialKind, Normal3D, Object, Point3D, Transform, World,
 };
@@ -6,16 +7,16 @@ use std::f64::consts::PI;
 
 criterion_group! {
     benches,
-    // single_ray_many_objects,
-    single_ray_many_reflective_refractive_objects
+    single_ray_many_reflective_refractive_objects,
+    many_objects_full_scene
 }
 
 // FIXME this test is very broken (it takes several minutes to run, rather than ~8 seconds)
-fn _single_ray_many_objects(c: &mut Criterion) {
-    c.bench_function("cast single ray into scene with lots of objects", |b| {
+fn many_objects_full_scene(c: &mut Criterion) {
+    c.bench_function("render scene with lots of objects", |b| {
         let mut world = World::empty();
 
-        let cube_size = 70;
+        let cube_size = 10;
         let spacing = 2.7;
         let mut spheres = Vec::with_capacity((cube_size as usize).pow(3));
 
@@ -69,8 +70,8 @@ fn _single_ray_many_objects(c: &mut Criterion) {
         ));
 
         let camera = Camera::new(
-            nonzero_ext::nonzero!(800u16),
-            nonzero_ext::nonzero!(800u16),
+            nonzero_ext::nonzero!(200u16),
+            nonzero_ext::nonzero!(200u16),
             PI / 3.0,
             Transform::view_transform(
                 Point3D::new(
@@ -84,7 +85,7 @@ fn _single_ray_many_objects(c: &mut Criterion) {
         );
 
         b.iter(|| {
-            black_box(world.colour_at(camera.ray_at(400, 400, 0.5, 0.5)));
+            black_box(render(&world, &camera, &Samples::single()));
         })
     });
 }

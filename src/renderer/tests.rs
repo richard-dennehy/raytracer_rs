@@ -21,7 +21,7 @@ mod rendering {
             view_transform,
         );
 
-        let canvas = render(World::default(), camera, &Samples::single());
+        let canvas = render(&World::default(), &camera, &Samples::single());
         let expected = Colour::new(
             0.38066119308103435,
             0.47582649135129296,

@@ -7,7 +7,7 @@ use std::slice::Iter;
 #[cfg(test)]
 mod tests;
 
-pub fn render(world: World, camera: Camera, samples: &Samples) -> Canvas {
+pub fn render(world: &World, camera: &Camera, samples: &Samples) -> Canvas {
     let mut canvas =
         Canvas::new(camera.width(), camera.height()).expect("Camera dimensions are too large");
 

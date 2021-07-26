@@ -63,7 +63,7 @@ fn main() -> Result<(), String> {
         ),
     );
 
-    let canvas = renderer::render(world, camera, &Samples::single());
+    let canvas = renderer::render(&world, &camera, &Samples::single());
 
     let image = image_writer::write(canvas);
     image.save("out.png").expect("failed to write output file");

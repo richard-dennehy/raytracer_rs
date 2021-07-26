@@ -30,21 +30,21 @@ fn single_sphere_single_ray(c: &mut Criterion) {
 // test loop overhead
 fn empty_scene_full_render(c: &mut Criterion) {
     c.bench_function("render empty scene at 1920x1080", |b| {
+        let world = World::empty();
+
+        let camera = Camera::new(
+            nonzero!(1920u16),
+            nonzero!(1080u16),
+            PI / 3.0,
+            Transform::view_transform(
+                Point3D::new(0.0, 0.0, -5.0),
+                Point3D::new(0.0, 0.0, 0.0),
+                Normal3D::POSITIVE_Y,
+            ),
+        );
+
         b.iter(|| {
-            let world = World::empty();
-
-            let camera = Camera::new(
-                nonzero!(1920u16),
-                nonzero!(1080u16),
-                PI / 3.0,
-                Transform::view_transform(
-                    Point3D::new(0.0, 0.0, -5.0),
-                    Point3D::new(0.0, 0.0, 0.0),
-                    Normal3D::POSITIVE_Y,
-                ),
-            );
-
-            renderer::render(world, camera, &Samples::single());
+            renderer::render(&world, &camera, &Samples::single());
         })
     });
 }
@@ -67,22 +67,22 @@ fn single_object_full_render(c: &mut Criterion) {
 
     for (name, shape) in shapes.into_iter() {
         group.bench_with_input(BenchmarkId::from_parameter(name), &shape, |b, shape| {
+            let mut world = single_light_world();
+            world.add(shape());
+
+            let camera = Camera::new(
+                nonzero!(1920u16),
+                nonzero!(1080u16),
+                PI / 3.0,
+                Transform::view_transform(
+                    Point3D::new(0.0, 1.0, -5.0),
+                    Point3D::new(0.0, 0.0, 0.0),
+                    Normal3D::POSITIVE_Y,
+                ),
+            );
+
             b.iter(|| {
-                let mut world = single_light_world();
-                world.add(shape());
-
-                let camera = Camera::new(
-                    nonzero!(1920u16),
-                    nonzero!(1080u16),
-                    PI / 3.0,
-                    Transform::view_transform(
-                        Point3D::new(0.0, 1.0, -5.0),
-                        Point3D::new(0.0, 0.0, 0.0),
-                        Normal3D::POSITIVE_Y,
-                    ),
-                );
-
-                renderer::render(world, camera, &Samples::single());
+                renderer::render(&world, &camera, &Samples::single());
             })
         });
     }

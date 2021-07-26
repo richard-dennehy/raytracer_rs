@@ -20,28 +20,26 @@ fn basic_triangle_meshes(c: &mut Criterion) {
         let _ = parser.load(file_name).unwrap();
 
         group.bench_with_input(file_name, &parser, |b, parser| {
-            b.iter(|| {
-                let prism = parser.load(file_name).unwrap();
+            let prism = parser.load(file_name).unwrap();
 
-                let mut world = World::empty();
-                world.add(prism);
-                world
-                    .lights
-                    .push(Light::point(Colour::WHITE, Point3D::new(10.0, 10.0, 0.0)));
+            let mut world = World::empty();
+            world.add(prism);
+            world
+                .lights
+                .push(Light::point(Colour::WHITE, Point3D::new(10.0, 10.0, 0.0)));
 
-                let camera = Camera::new(
-                    nonzero_ext::nonzero!(800u16),
-                    nonzero_ext::nonzero!(600u16),
-                    FRAC_PI_3,
-                    Transform::view_transform(
-                        Point3D::new(0.0, 0.0, 5.0),
-                        Point3D::ORIGIN,
-                        Normal3D::POSITIVE_Y,
-                    ),
-                );
+            let camera = Camera::new(
+                nonzero_ext::nonzero!(800u16),
+                nonzero_ext::nonzero!(600u16),
+                FRAC_PI_3,
+                Transform::view_transform(
+                    Point3D::new(0.0, 0.0, 5.0),
+                    Point3D::ORIGIN,
+                    Normal3D::POSITIVE_Y,
+                ),
+            );
 
-                render(world, camera, &Samples::single())
-            })
+            b.iter(|| render(&world, &camera, &Samples::single()))
         });
     }
 }
@@ -54,28 +52,26 @@ fn complex_meshes(c: &mut Criterion) {
         let _ = parser.load(file_name).unwrap();
 
         group.bench_with_input(file_name, &parser, |b, parser| {
-            b.iter(|| {
-                let prism = parser.load(file_name).unwrap();
+            let prism = parser.load(file_name).unwrap();
 
-                let mut world = World::empty();
-                world.add(prism);
-                world
-                    .lights
-                    .push(Light::point(Colour::WHITE, Point3D::new(10.0, 10.0, 0.0)));
+            let mut world = World::empty();
+            world.add(prism);
+            world
+                .lights
+                .push(Light::point(Colour::WHITE, Point3D::new(10.0, 10.0, 0.0)));
 
-                let camera = Camera::new(
-                    nonzero_ext::nonzero!(600u16),
-                    nonzero_ext::nonzero!(600u16),
-                    FRAC_PI_3,
-                    Transform::view_transform(
-                        Point3D::new(0.0, 0.0, 5.0),
-                        Point3D::ORIGIN,
-                        Normal3D::POSITIVE_Y,
-                    ),
-                );
+            let camera = Camera::new(
+                nonzero_ext::nonzero!(600u16),
+                nonzero_ext::nonzero!(600u16),
+                FRAC_PI_3,
+                Transform::view_transform(
+                    Point3D::new(0.0, 0.0, 5.0),
+                    Point3D::ORIGIN,
+                    Normal3D::POSITIVE_Y,
+                ),
+            );
 
-                render(world, camera, &Samples::single())
-            })
+            b.iter(|| render(&world, &camera, &Samples::single()))
         });
     }
 }
@@ -93,28 +89,26 @@ fn very_complex_meshes(c: &mut Criterion) {
         let _ = parser.load(file_name).unwrap();
 
         group.bench_with_input(file_name, &parser, |b, parser| {
-            b.iter(|| {
-                let prism = parser.load(file_name).unwrap();
+            let prism = parser.load(file_name).unwrap();
 
-                let mut world = World::empty();
-                world.add(prism);
-                world
-                    .lights
-                    .push(Light::point(Colour::WHITE, Point3D::new(10.0, 10.0, 0.0)));
+            let mut world = World::empty();
+            world.add(prism);
+            world
+                .lights
+                .push(Light::point(Colour::WHITE, Point3D::new(10.0, 10.0, 0.0)));
 
-                let camera = Camera::new(
-                    nonzero_ext::nonzero!(400u16),
-                    nonzero_ext::nonzero!(400u16),
-                    FRAC_PI_3,
-                    Transform::view_transform(
-                        Point3D::new(0.0, 0.0, 5.0),
-                        Point3D::ORIGIN,
-                        Normal3D::POSITIVE_Y,
-                    ),
-                );
+            let camera = Camera::new(
+                nonzero_ext::nonzero!(400u16),
+                nonzero_ext::nonzero!(400u16),
+                FRAC_PI_3,
+                Transform::view_transform(
+                    Point3D::new(0.0, 0.0, 5.0),
+                    Point3D::ORIGIN,
+                    Normal3D::POSITIVE_Y,
+                ),
+            );
 
-                render(world, camera, &Samples::single())
-            })
+            b.iter(|| render(&world, &camera, &Samples::single()))
         });
     }
 }

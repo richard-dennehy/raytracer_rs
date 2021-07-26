@@ -96,7 +96,7 @@ fn main() -> Result<(), String> {
             Normal3D::POSITIVE_Y,
         ),
     );
-    let canvas = renderer::render(world, camera, &Samples::single());
+    let canvas = renderer::render(&world, &camera, &Samples::single());
 
     let image = image_writer::write(canvas);
     image
