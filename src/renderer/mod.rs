@@ -1,4 +1,5 @@
-use crate::{Camera, Canvas, Colour, World};
+use crate::core::Colour;
+use crate::{Camera, Canvas, World};
 use std::fmt;
 use std::fmt::{Display, Formatter};
 use std::num::NonZeroU8;
@@ -7,11 +8,14 @@ use std::slice::Iter;
 #[cfg(test)]
 mod tests;
 
-pub fn render(world: &World, camera: &Camera, samples: &Samples) -> Canvas {
+/// # Parameters
+/// `show_progress`: set to `true` when using e.g. `cargo run` for real-time progress updates;
+///                  set to `false` when running benchmarks, otherwise it'll cripple performance due to stdout locking
+pub fn render(world: &World, camera: &Camera, samples: &Samples, show_progress: bool) -> Canvas {
     let mut canvas =
         Canvas::new(camera.width(), camera.height()).expect("Camera dimensions are too large");
 
-    canvas.draw(|x, y| {
+    canvas.draw(show_progress, |x, y| {
         let mut corners = samples.corner_offsets();
         let (x_offset, y_offset) = corners.next().unwrap();
         let top_left = world.colour_at(camera.ray_at(x, y, *x_offset, *y_offset));

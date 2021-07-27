@@ -2,7 +2,7 @@ use super::*;
 
 mod rendering {
     use super::*;
-    use crate::{Colour, Normal3D, Point3D, Transform};
+    use crate::core::{Normal3D, Point3D, Transform};
     use approx::*;
     use std::f64::consts::PI;
     use std::num::NonZeroU16;
@@ -21,7 +21,7 @@ mod rendering {
             view_transform,
         );
 
-        let canvas = render(&World::default(), &camera, &Samples::single());
+        let canvas = render(&World::default(), &camera, &Samples::single(), false);
         let expected = Colour::new(
             0.38066119308103435,
             0.47582649135129296,

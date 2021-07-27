@@ -2,7 +2,7 @@ use super::*;
 
 mod unit_tests {
     use super::*;
-    use crate::Colour;
+    use crate::core::Colour;
     use std::num::NonZeroU16;
 
     #[test]

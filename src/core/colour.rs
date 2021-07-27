@@ -2,9 +2,6 @@ use approx::AbsDiffEq;
 use std::iter::Sum;
 use std::ops::{Add, Div, Mul, Sub};
 
-#[cfg(test)]
-mod tests;
-
 #[derive(PartialEq, Debug, Copy, Clone)]
 pub struct Colour(f64, f64, f64);
 

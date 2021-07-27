@@ -1,4 +1,6 @@
-use crate::{Point3D, Ray, Transform, Vector};
+use crate::core::Transform;
+use crate::core::Vector;
+use crate::core::{Point3D, Ray};
 
 #[cfg(test)]
 mod tests;
@@ -10,7 +12,7 @@ pub struct BoundingBox {
 }
 
 impl BoundingBox {
-    // keep the maths vaguely functional - using INFINITY or f64::MAX breaks the calculations
+    // keep the core vaguely functional - using INFINITY or f64::MAX breaks the calculations
     pub const LIMIT: f64 = f32::MAX as _;
 
     pub fn infinite() -> Self {
@@ -21,7 +23,7 @@ impl BoundingBox {
     }
 
     pub fn new(min: Point3D, max: Point3D) -> Self {
-        // keep the maths vaguely sane
+        // keep the core vaguely sane
         let min = Point3D::new(
             min.x().max(-Self::LIMIT),
             min.y().max(-Self::LIMIT),
@@ -191,8 +193,8 @@ impl BoundingBox {
 
 #[cfg(test)]
 mod test_utils {
+    use crate::core::Point3D;
     use crate::object::bounds::BoundingBox;
-    use crate::Point3D;
     use quickcheck::{Arbitrary, Gen};
     use rand::prelude::*;
 

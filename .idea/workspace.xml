@@ -15,25 +15,20 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="improve bounds checking algorithm">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/anti_aliasing.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/anti_aliasing.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/bounding_boxes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/bounding_boxes.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/lighting.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/lighting.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/meshes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/meshes.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/area_light/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/area_light/main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/cover/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/cover/main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/csgs/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/csgs/main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/primitives/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/primitives/main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/reflect_refract/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/reflect_refract/main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/textured_earth/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/textured_earth/main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/uv_patterns/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/uv_patterns/main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP move geometry primitives to `core` module">
+      <change afterPath="$PROJECT_DIR$/src/core/ray.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/tests/ray_tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/camera/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/camera/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/bounds/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/bounds/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/cone.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cone.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/cylinder.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cylinder.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/triangle.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ray/tests.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/world/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,7 +48,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="abbf21fe40596f92956e6eb606268c8d3f3706df" />
+        <entry key="$PROJECT_DIR$" value="dff26df385eb5023b2a9692c44228ceb2d2374b3" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -91,7 +86,7 @@
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="language.rust.cargo" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -135,7 +130,7 @@
       <command value="cargo bench" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.bench">
+  <component name="RunManager" selected="Cargo.test">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -149,6 +144,7 @@
       <option name="isRedirectInput" value="false" />
       <option name="redirectInputPath" value="" />
       <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
@@ -167,6 +163,7 @@
       <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
     <configuration name="Test object::bounds::tests::unit_tests::intersection::intersecting_a_ray_with_a_cubic_bounding_box_at_the_origin" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
@@ -183,6 +180,7 @@
       <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
     <configuration name="Test object::tests::cone_tests::a_ray_that_passes_through_a_double_napped_cone_should_intersect_twice" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
@@ -198,6 +196,7 @@
       <option name="isRedirectInput" value="false" />
       <option name="redirectInputPath" value="" />
       <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
@@ -231,6 +230,7 @@
       <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
     <list>
@@ -243,11 +243,11 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.bench" />
-        <item itemvalue="Cargo.bench" />
-        <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.test" />
-        <item itemvalue="Cargo.Test camera::tests::unit_tests::a_ray_through_a_transformed_camera_should_have_the_inverse_transform_applied" />
+        <item itemvalue="Cargo.bench" />
+        <item itemvalue="Cargo.bench" />
+        <item itemvalue="Cargo.bench" />
+        <item itemvalue="Cargo.bench" />
       </list>
     </recent_temporary>
   </component>
@@ -514,35 +514,14 @@
       <workItem from="1627062664543" duration="5005000" />
       <workItem from="1627125070416" duration="4796000" />
       <workItem from="1627214731663" duration="3895000" />
-      <workItem from="1627320662404" duration="1363000" />
-    </task>
-    <task id="LOCAL-00185" summary="WIP implement area lights">
-      <created>1622826913211</created>
-      <option name="number" value="00185" />
-      <option name="presentableId" value="LOCAL-00185" />
-      <option name="project" value="LOCAL" />
-      <updated>1622826913211</updated>
-    </task>
-    <task id="LOCAL-00186" summary="WIP implement area lights">
-      <created>1622827646717</created>
-      <option name="number" value="00186" />
-      <option name="presentableId" value="LOCAL-00186" />
-      <option name="project" value="LOCAL" />
-      <updated>1622827646717</updated>
-    </task>
-    <task id="LOCAL-00187" summary="WIP implement area lights">
-      <created>1622827880855</created>
-      <option name="number" value="00187" />
-      <option name="presentableId" value="LOCAL-00187" />
-      <option name="project" value="LOCAL" />
-      <updated>1622827880855</updated>
-    </task>
-    <task id="LOCAL-00188" summary="WIP implement area lights">
-      <created>1622888745927</created>
-      <option name="number" value="00188" />
-      <option name="presentableId" value="LOCAL-00188" />
-      <option name="project" value="LOCAL" />
-      <updated>1622888745927</updated>
+      <workItem from="1627320662404" duration="1723000" />
+      <workItem from="1627410025046" duration="3217000" />
+      <workItem from="1627494787106" duration="2432000" />
+      <workItem from="1627582087297" duration="15000" />
+      <workItem from="1627582301068" duration="51000" />
+      <workItem from="1627582364481" duration="866000" />
+      <workItem from="1627583308616" duration="44000" />
+      <workItem from="1627665153533" duration="1634000" />
     </task>
     <task id="LOCAL-00189" summary="implement area lights">
       <created>1622890459640</created>
@@ -859,7 +838,35 @@
       <option name="project" value="LOCAL" />
       <updated>1627218623583</updated>
     </task>
-    <option name="localTasksCounter" value="234" />
+    <task id="LOCAL-00234" summary="replace slow bounding box benchmark">
+      <created>1627322064387</created>
+      <option name="number" value="00234" />
+      <option name="presentableId" value="LOCAL-00234" />
+      <option name="project" value="LOCAL" />
+      <updated>1627322064392</updated>
+    </task>
+    <task id="LOCAL-00235" summary="WIP move geometry primitives to `maths` module">
+      <created>1627413497813</created>
+      <option name="number" value="00235" />
+      <option name="presentableId" value="LOCAL-00235" />
+      <option name="project" value="LOCAL" />
+      <updated>1627413497813</updated>
+    </task>
+    <task id="LOCAL-00236" summary="WIP move geometry primitives to `maths` module">
+      <created>1627496994053</created>
+      <option name="number" value="00236" />
+      <option name="presentableId" value="LOCAL-00236" />
+      <option name="project" value="LOCAL" />
+      <updated>1627496994053</updated>
+    </task>
+    <task id="LOCAL-00237" summary="WIP move geometry primitives to `core` module">
+      <created>1627665941357</created>
+      <option name="number" value="00237" />
+      <option name="presentableId" value="LOCAL-00237" />
+      <option name="project" value="LOCAL" />
+      <updated>1627665941357</updated>
+    </task>
+    <option name="localTasksCounter" value="238" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -885,9 +892,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="switch property tests back to quickcheck" />
-    <MESSAGE value="add benchmarks for triangle meshes" />
-    <MESSAGE value="WIP implement MTL parser" />
     <MESSAGE value="implement basic MTL parser" />
     <MESSAGE value="WIP support MTL libs in obj parser" />
     <MESSAGE value="support MTL libs in obj parser" />
@@ -909,15 +913,18 @@
     <MESSAGE value="fix benchmarks" />
     <MESSAGE value="improve bounding box intersection performance" />
     <MESSAGE value="WIP improve bounds checking" />
+    <MESSAGE value="replace slow bounding box benchmark" />
+    <MESSAGE value="WIP move geometry primitives to `maths` module" />
     <MESSAGE value="improve bounds checking algorithm" />
-    <option name="LAST_COMMIT_MESSAGE" value="improve bounds checking algorithm" />
+    <MESSAGE value="WIP move geometry primitives to `core` module" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP move geometry primitives to `core` module" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/world/mod.rs</url>
-          <line>108</line>
+          <line>107</line>
           <option name="timeStamp" value="50" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
@@ -927,27 +934,27 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/object/cone.rs</url>
-          <line>29</line>
+          <line>31</line>
           <option name="timeStamp" value="57" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/object/cone.rs</url>
-          <line>56</line>
+          <line>58</line>
           <option name="timeStamp" value="60" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/object/bounds/mod.rs</url>
-          <line>155</line>
+          <line>160</line>
           <option name="timeStamp" value="64" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/object/bounds/mod.rs</url>
-          <line>126</line>
+          <line>131</line>
           <option name="timeStamp" value="65" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/object/bounds/mod.rs</url>
-          <line>142</line>
+          <line>147</line>
           <option name="timeStamp" value="66" />
         </line-breakpoint>
       </breakpoints>

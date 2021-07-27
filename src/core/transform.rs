@@ -1,4 +1,6 @@
-use crate::{Normal3D, Point3D, Vector, Vector3D};
+use crate::core::Matrix4D;
+use crate::core::Point3D;
+use crate::core::{Normal3D, Vector, Vector3D};
 use approx::AbsDiffEq;
 use std::fmt;
 use std::fmt::{Debug, Formatter};
@@ -6,21 +8,15 @@ use std::ops::{Mul, MulAssign};
 #[cfg(test)]
 pub use test_utils::*;
 
-#[cfg(test)]
-mod tests;
-
-mod underlying;
-pub use underlying::Matrix4D;
-
 #[derive(PartialEq, Clone, Copy)]
 pub struct Transform {
     // calculating the inverse is relatively expensive, bearing in mind matrices are inverted millions of times per render,
     // so pre-calculating the inverse has massive performance implications
-    inverse: Matrix4D,
+    pub(in crate::core) inverse: Matrix4D,
 }
 
 impl Transform {
-    fn new(underlying: Matrix4D) -> Self {
+    pub(in crate::core) fn new(underlying: Matrix4D) -> Self {
         let inverse = underlying
             .inverse()
             .expect("transformation matrix is not invertible");
@@ -52,7 +48,7 @@ impl Transform {
         translation * self
     }
 
-    fn translation(x: f64, y: f64, z: f64) -> Self {
+    pub(in crate::core) fn translation(x: f64, y: f64, z: f64) -> Self {
         Self::new(Matrix4D::new(
             [1.0, 0.0, 0.0, x],
             [0.0, 1.0, 0.0, y],
@@ -85,7 +81,7 @@ impl Transform {
         transform * self
     }
 
-    fn scaling(x: f64, y: f64, z: f64) -> Self {
+    pub(in crate::core) fn scaling(x: f64, y: f64, z: f64) -> Self {
         assert!(
             x != 0.0 && y != 0.0 && z != 0.0,
             "cannot scale to 0 (not invertible)"
@@ -182,7 +178,7 @@ impl Transform {
     }
 
     #[rustfmt::skip]
-    fn shear(
+    pub(in crate::core) fn shear(
         x_proportionate_to_y: f64,
         x_proportionate_to_z: f64,
         y_proportionate_to_x: f64,
@@ -306,8 +302,7 @@ impl AbsDiffEq for Transform {
 
 #[cfg(test)]
 mod test_utils {
-    use crate::matrix::Matrix4D;
-    use crate::Transform;
+    use super::*;
     use quickcheck::{Arbitrary, Gen};
     use rand::prelude::*;
     use std::f64::consts::PI;

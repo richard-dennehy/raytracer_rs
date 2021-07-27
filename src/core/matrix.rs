@@ -1,12 +1,10 @@
-use crate::{Point3D, Vector};
+use crate::core::Point3D;
+use crate::core::Vector;
 use approx::AbsDiffEq;
 use std::ops::{Mul, MulAssign};
 
 #[cfg(test)]
 pub use test_utils::*;
-
-#[cfg(test)]
-mod tests;
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct Matrix4D {
@@ -81,14 +79,14 @@ impl Matrix4D {
         Some(Matrix4D::new(row0, row1, row2, row3))
     }
 
-    fn determinant(&self) -> f64 {
+    pub(in crate::core) fn determinant(&self) -> f64 {
         self.m00() * self.cofactor(0, 0)
             + self.m01() * self.cofactor(0, 1)
             + self.m02() * self.cofactor(0, 2)
             + self.m03() * self.cofactor(0, 3)
     }
 
-    fn cofactor(&self, row: u8, column: u8) -> f64 {
+    pub(in crate::core) fn cofactor(&self, row: u8, column: u8) -> f64 {
         let minor = self.minor(row, column);
 
         if (row + column) % 2 == 0 {
@@ -102,7 +100,7 @@ impl Matrix4D {
         self.submatrix(row, column).determinant()
     }
 
-    fn submatrix(&self, excluding_row: u8, excluding_column: u8) -> Matrix3D {
+    pub(in crate::core) fn submatrix(&self, excluding_row: u8, excluding_column: u8) -> Matrix3D {
         match (excluding_row, excluding_column) {
             (0, 0) => Matrix3D::new(
                 [self.m11(), self.m12(), self.m13()],
@@ -321,24 +319,24 @@ impl Mul<Point3D> for Matrix4D {
 }
 
 #[derive(Debug, PartialEq, Clone)]
-struct Matrix3D {
+pub(in crate::core) struct Matrix3D {
     underlying: [[f64; 3]; 3],
 }
 
 impl Matrix3D {
-    fn new(row0: [f64; 3], row1: [f64; 3], row2: [f64; 3]) -> Self {
+    pub fn new(row0: [f64; 3], row1: [f64; 3], row2: [f64; 3]) -> Self {
         Matrix3D {
             underlying: [row0, row1, row2],
         }
     }
 
-    fn determinant(&self) -> f64 {
+    pub(crate) fn determinant(&self) -> f64 {
         self.m00() * self.cofactor(0, 0)
             + self.m01() * self.cofactor(0, 1)
             + self.m02() * self.cofactor(0, 2)
     }
 
-    fn cofactor(&self, row: u8, column: u8) -> f64 {
+    pub(crate) fn cofactor(&self, row: u8, column: u8) -> f64 {
         let minor = self.minor(row, column);
 
         if (row + column) % 2 == 0 {
@@ -348,11 +346,11 @@ impl Matrix3D {
         }
     }
 
-    fn minor(&self, row: u8, column: u8) -> f64 {
+    pub(crate) fn minor(&self, row: u8, column: u8) -> f64 {
         self.submatrix(row, column).determinant()
     }
 
-    fn submatrix(&self, excluding_row: u8, excluding_column: u8) -> Matrix2D {
+    pub(crate) fn submatrix(&self, excluding_row: u8, excluding_column: u8) -> Matrix2D {
         match (excluding_row, excluding_column) {
             (0, 0) => Matrix2D::new([self.m11(), self.m12()], [self.m21(), self.m22()]),
             (0, 1) => Matrix2D::new([self.m10(), self.m12()], [self.m20(), self.m22()]),
@@ -370,7 +368,7 @@ impl Matrix3D {
         }
     }
 
-    fn m00(&self) -> f64 {
+    pub(crate) fn m00(&self) -> f64 {
         self.underlying[0][0]
     }
 
@@ -386,7 +384,7 @@ impl Matrix3D {
         self.underlying[1][0]
     }
 
-    fn m11(&self) -> f64 {
+    pub(crate) fn m11(&self) -> f64 {
         self.underlying[1][1]
     }
 
@@ -402,13 +400,13 @@ impl Matrix3D {
         self.underlying[2][1]
     }
 
-    fn m22(&self) -> f64 {
+    pub(crate) fn m22(&self) -> f64 {
         self.underlying[2][2]
     }
 }
 
 #[derive(Debug, PartialEq, Clone)]
-struct Matrix2D {
+pub(in crate::core) struct Matrix2D {
     underlying: [[f64; 2]; 2],
 }
 
@@ -419,23 +417,23 @@ impl Matrix2D {
         }
     }
 
-    fn determinant(&self) -> f64 {
+    pub(crate) fn determinant(&self) -> f64 {
         self.m00() * self.m11() - self.m01() * self.m10()
     }
 
-    fn m00(&self) -> f64 {
+    pub(crate) fn m00(&self) -> f64 {
         self.underlying[0][0]
     }
 
-    fn m01(&self) -> f64 {
+    pub(crate) fn m01(&self) -> f64 {
         self.underlying[0][1]
     }
 
-    fn m10(&self) -> f64 {
+    pub(crate) fn m10(&self) -> f64 {
         self.underlying[1][0]
     }
 
-    fn m11(&self) -> f64 {
+    pub(crate) fn m11(&self) -> f64 {
         self.underlying[1][1]
     }
 }
@@ -535,7 +533,7 @@ impl AbsDiffEq for Matrix4D {
 
 #[cfg(test)]
 mod test_utils {
-    use crate::matrix::Matrix4D;
+    use super::*;
     use crate::util::ReasonableF64;
     use quickcheck::{Arbitrary, Gen};
 

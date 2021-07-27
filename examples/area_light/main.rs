@@ -1,11 +1,10 @@
-use ray_tracer::renderer::Samples;
-use ray_tracer::{
-    image_writer, renderer, Camera, Colour, Light, Material, MaterialKind, Normal3D, Object,
-    Point3D, Transform, Vector3D, World,
-};
 use std::f64::consts::FRAC_PI_4;
 use std::path::Path;
 use std::time::Instant;
+
+use ray_tracer::core::{Colour, Normal3D, Point3D, Transform, Vector3D};
+use ray_tracer::renderer::Samples;
+use ray_tracer::{image_writer, renderer, Camera, Light, Material, MaterialKind, Object, World};
 
 fn main() -> Result<(), String> {
     let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("examples/area_light");
@@ -94,7 +93,7 @@ fn main() -> Result<(), String> {
             Normal3D::POSITIVE_Y,
         ),
     );
-    let canvas = renderer::render(&world, &camera, &Samples::single());
+    let canvas = renderer::render(&world, &camera, &Samples::single(), true);
 
     let image = image_writer::write(canvas);
     image

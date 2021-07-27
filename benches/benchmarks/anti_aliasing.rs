@@ -1,11 +1,11 @@
-use criterion::{criterion_group, BenchmarkId, Criterion};
-use ray_tracer::renderer::Samples;
-use ray_tracer::{
-    renderer, Camera, Colour, Light, Material, MaterialKind, Normal3D, Object, Pattern, Point3D,
-    Transform, World,
-};
 use std::array::IntoIter;
 use std::f64::consts::PI;
+
+use criterion::{criterion_group, BenchmarkId, Criterion};
+
+use ray_tracer::core::*;
+use ray_tracer::renderer::Samples;
+use ray_tracer::{renderer, Camera, Colour, Light, Material, MaterialKind, Object, Pattern, World};
 
 criterion_group! {
     benches,

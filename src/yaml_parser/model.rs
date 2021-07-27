@@ -1,8 +1,7 @@
+use crate::core::{Colour, Point3D, Transform, Vector, Vector3D};
 use crate::material::MaterialKind;
 use crate::wavefront_parser::WavefrontParser;
-use crate::{
-    Camera, Colour, Light, Material, Object, Pattern, Point3D, Transform, Vector, Vector3D,
-};
+use crate::{Camera, Light, Material, Object, Pattern};
 use either::Either;
 use either::Either::{Left, Right};
 use std::collections::HashMap;

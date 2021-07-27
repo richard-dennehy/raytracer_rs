@@ -1,4 +1,5 @@
-use crate::{Point3D, Ray, Transform, Vector};
+use crate::core::Ray;
+use crate::core::{Point3D, Transform, Vector};
 use std::num::NonZeroU16;
 
 #[cfg(test)]

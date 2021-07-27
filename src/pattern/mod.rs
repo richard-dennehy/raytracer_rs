@@ -1,6 +1,8 @@
+use crate::core::Colour;
+use crate::core::F64Ext;
+use crate::core::Point3D;
+use crate::core::Transform;
 use crate::pattern::Kind::{Checkers, Gradient, Ring, Striped};
-use crate::util::F64Ext;
-use crate::{Colour, Point3D, Transform};
 use image::RgbImage;
 use std::num::NonZeroUsize;
 use std::sync::Arc;

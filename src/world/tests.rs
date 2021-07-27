@@ -2,7 +2,7 @@ use super::*;
 
 mod intersections {
     use super::*;
-    use crate::Normal3D;
+    use crate::core::Normal3D;
     use std::f64::consts::PI;
 
     #[test]
@@ -69,7 +69,8 @@ mod intersections {
 
 mod shading {
     use super::*;
-    use crate::{Camera, Normal3D, Pattern};
+    use crate::core::Normal3D;
+    use crate::{Camera, Pattern};
     use approx::*;
     use std::f64::consts::{FRAC_PI_3, PI};
 
@@ -501,7 +502,8 @@ mod shading {
 
 mod lighting {
     use super::*;
-    use crate::{Camera, Normal3D, Vector3D};
+    use crate::core::{Normal3D, Vector3D};
+    use crate::Camera;
     use std::f64::consts::{FRAC_1_SQRT_2, FRAC_PI_4};
 
     #[test]
@@ -687,7 +689,7 @@ mod lighting {
 
 mod reflection_and_refraction {
     use super::*;
-    use crate::{Normal3D, Vector3D};
+    use crate::core::{Normal3D, Vector3D};
     use approx::*;
     use std::f64::consts::{PI, SQRT_2};
 
@@ -789,7 +791,8 @@ mod reflection_and_refraction {
 
 mod transparency {
     use super::*;
-    use crate::{Camera, Normal3D, Vector3D};
+    use crate::core::{Normal3D, Vector3D};
+    use crate::Camera;
     use approx::*;
     use std::f64::consts::{PI, SQRT_2};
 

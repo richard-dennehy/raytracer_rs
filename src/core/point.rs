@@ -1,11 +1,8 @@
-use crate::{Vector, Vector3D};
+use super::{Vector, Vector3D};
 use approx::AbsDiffEq;
 use std::ops::{Add, Sub};
 #[cfg(test)]
 pub use test_utils::*;
-
-#[cfg(test)]
-mod tests;
 
 #[derive(PartialEq, Clone, Copy, Debug)]
 pub struct Point3D(f64, f64, f64);
@@ -118,7 +115,7 @@ impl AbsDiffEq for Point3D {
 
 #[cfg(test)]
 mod test_utils {
-    use crate::Point3D;
+    use crate::core::Point3D;
     use quickcheck::{Arbitrary, Gen};
     use rand::prelude::*;
 

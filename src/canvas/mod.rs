@@ -1,4 +1,4 @@
-use crate::Colour;
+use crate::core::Colour;
 use indicatif::{ProgressBar, ProgressStyle};
 use std::num::NonZeroU16;
 
@@ -64,7 +64,7 @@ impl Canvas {
         self.0[y][x] = colour
     }
 
-    pub fn draw<F>(&mut self, f: F)
+    pub fn draw<F>(&mut self, show_progress: bool, f: F)
     where
         F: Fn(u16, u16) -> Colour,
         F: Sync + Send,
@@ -72,8 +72,12 @@ impl Canvas {
         use indicatif::ParallelProgressIterator;
         use rayon::prelude::*;
 
-        let progress_bar = ProgressBar::new(self.height() as u64)
-            .with_style(ProgressStyle::default_bar().template("Rendering: {percent}%"));
+        let progress_bar = if show_progress {
+            ProgressBar::new(self.height() as u64)
+                .with_style(ProgressStyle::default_bar().template("Rendering: {percent}%"))
+        } else {
+            ProgressBar::hidden()
+        };
 
         self.0
             .par_iter_mut()

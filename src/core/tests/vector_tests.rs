@@ -158,7 +158,7 @@ mod unit_tests {
 
 mod property_tests {
     use super::*;
-    use crate::util::{F64Ext, ReasonableF64};
+    use crate::util::ReasonableF64;
     use quickcheck_macros::quickcheck;
 
     #[quickcheck]

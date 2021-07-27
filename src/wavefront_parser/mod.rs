@@ -4,7 +4,8 @@ use std::fs;
 use std::path::PathBuf;
 use std::str::SplitWhitespace;
 
-use crate::{Colour, Material, MaterialKind, Object, Point3D, Vector, Vector3D};
+use crate::core::{Colour, Point3D, Vector, Vector3D};
+use crate::{Material, MaterialKind, Object};
 use std::cell::RefCell;
 
 #[cfg(test)]

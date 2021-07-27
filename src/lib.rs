@@ -1,22 +1,9 @@
-mod point;
-pub use point::Point3D;
-
-mod vector;
-pub use vector::*;
-
-mod colour;
-pub use colour::Colour;
+pub mod core;
 
 mod canvas;
 pub use canvas::*;
 
-mod matrix;
-pub use matrix::Transform;
-
 pub mod ppm_writer;
-
-mod ray;
-pub use ray::{Intersection, Intersections, Ray};
 
 mod light;
 pub use light::Light;

@@ -1,7 +1,8 @@
 use criterion::{criterion_group, Criterion};
+use ray_tracer::core::*;
 use ray_tracer::renderer::{render, Samples};
 use ray_tracer::wavefront_parser::WavefrontParser;
-use ray_tracer::{Camera, Colour, Light, Normal3D, Point3D, Transform, World};
+use ray_tracer::{Camera, Colour, Light, World};
 use std::f64::consts::FRAC_PI_3;
 use std::path::Path;
 

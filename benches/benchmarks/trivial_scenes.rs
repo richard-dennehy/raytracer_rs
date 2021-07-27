@@ -1,9 +1,8 @@
 use criterion::{criterion_group, BenchmarkId, Criterion};
 use nonzero_ext::*;
+use ray_tracer::core::*;
 use ray_tracer::renderer::Samples;
-use ray_tracer::{
-    renderer, Camera, Colour, Light, Normal3D, Object, Point3D, Ray, Transform, World,
-};
+use ray_tracer::{renderer, Camera, Colour, Light, Object, Ray, World};
 use std::f64::consts::PI;
 
 criterion_group! {

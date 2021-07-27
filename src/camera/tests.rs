@@ -2,7 +2,7 @@ use super::*;
 
 mod unit_tests {
     use super::*;
-    use crate::Vector3D;
+    use crate::core::Vector3D;
     use approx::*;
     use std::f64::consts::{PI, SQRT_2};
 

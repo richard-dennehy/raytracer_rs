@@ -1,8 +1,7 @@
 use criterion::{black_box, criterion_group, Criterion};
+use ray_tracer::core::*;
 use ray_tracer::renderer::{render, Samples};
-use ray_tracer::{
-    Camera, Colour, Light, Material, MaterialKind, Normal3D, Object, Point3D, Transform, World,
-};
+use ray_tracer::{Camera, Colour, Light, Material, MaterialKind, Object, World};
 use std::f64::consts::PI;
 
 criterion_group! {
@@ -11,7 +10,6 @@ criterion_group! {
     many_objects_full_scene
 }
 
-// FIXME this test is very broken (it takes several minutes to run, rather than ~8 seconds)
 fn many_objects_full_scene(c: &mut Criterion) {
     c.bench_function("render scene with lots of objects", |b| {
         let mut world = World::empty();

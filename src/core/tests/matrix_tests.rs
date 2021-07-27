@@ -1,3 +1,4 @@
+use super::super::matrix::*;
 use super::*;
 
 #[test]
@@ -97,7 +98,7 @@ fn should_be_able_to_take_a_3d_submatrix_of_a_4d_matrix() {
     );
 
     #[rustfmt::skip]
-        let submatrix_3d = Matrix3D::new(
+    let submatrix_3d = Matrix3D::new(
         [-6.0, 1.0, 6.0],
         [-8.0, 8.0, 6.0],
         [-7.0, -1.0, 1.0]
@@ -310,7 +311,7 @@ fn should_be_able_to_calculate_the_determinant_of_a_3d_matrix() {
 
 mod property_tests {
     use super::*;
-    use crate::Vector3D;
+    use crate::core::Vector3D;
     use approx::*;
     use quickcheck_macros::quickcheck;
 

@@ -17,7 +17,12 @@ fn main() -> Result<(), String> {
 
     let camera = scene.camera()?;
 
-    let canvas = renderer::render(world, camera, &Samples::grid(nonzero_ext::nonzero!(4u8)));
+    let canvas = renderer::render(
+        &world,
+        &camera,
+        &Samples::grid(nonzero_ext::nonzero!(4u8)),
+        true,
+    );
 
     let original = image_writer::write(canvas);
     let resized = image::imageops::resize(&original, 1920, 1080, FilterType::Gaussian);

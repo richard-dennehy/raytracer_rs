@@ -1,7 +1,9 @@
+use crate::core::F64Ext;
+use crate::core::{Intersection, Intersections, Ray};
+use crate::core::{Normal3D, Point3D, Vector, Vector3D};
 use crate::object::bounds::BoundingBox;
 use crate::object::Shape;
-use crate::util::F64Ext;
-use crate::{Intersection, Intersections, Normal3D, Object, Point3D, Ray, Vector, Vector3D};
+use crate::Object;
 use std::f64::consts::PI;
 
 /// An infinite double-napped cone (like a sand timer), tapering to a point at the origin,
@@ -94,7 +96,7 @@ impl Shape for Cone {
             return cap_intersections;
         };
 
-        let ts = if let Some((first, second)) = crate::util::quadratic(a, b, c) {
+        let ts = if let Some((first, second)) = crate::core::quadratic(a, b, c) {
             let mut ts = Intersections::empty();
 
             let y_first = ray.origin.y() + ray.direction.y() * first;

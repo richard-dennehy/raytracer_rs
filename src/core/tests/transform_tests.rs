@@ -307,6 +307,7 @@ mod unit_tests {
 }
 
 mod property_tests {
+    use super::super::transform::*;
     use super::*;
     use quickcheck_macros::quickcheck;
 

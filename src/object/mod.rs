@@ -1,7 +1,6 @@
-use crate::{
-    Colour, Intersection, Intersections, Material, Normal3D, Point3D, Ray, Transform, Vector,
-    Vector3D,
-};
+use crate::core::{Colour, Normal3D, Point3D, Transform, Vector, Vector3D};
+use crate::core::{Intersection, Intersections, Ray};
+use crate::Material;
 use std::fmt::Debug;
 use std::sync::atomic::{AtomicU32, Ordering};
 
@@ -18,9 +17,9 @@ mod triangle;
 use triangle::Triangle;
 
 mod bounds;
+use crate::core::F64Ext;
 use crate::light::LightSample;
 use crate::material::MaterialKind;
-use crate::util::F64Ext;
 use bounds::BoundingBox;
 use std::f64::consts::PI;
 
@@ -494,7 +493,7 @@ impl Shape for Sphere {
         let b = 2.0 * with.direction.dot(sphere_to_ray);
         let c = sphere_to_ray.dot(sphere_to_ray) - 1.0;
 
-        if let Some((first, second)) = crate::util::quadratic(a, b, c) {
+        if let Some((first, second)) = crate::core::quadratic(a, b, c) {
             Intersections::pair(
                 Intersection::new(first, parent),
                 Intersection::new(second, parent),

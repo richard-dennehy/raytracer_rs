@@ -1,5 +1,6 @@
 extern crate ray_tracer;
 
+use ray_tracer::core::{Colour, Normal3D, Point3D, Transform};
 use ray_tracer::renderer::Samples;
 use ray_tracer::*;
 use std::f64::consts::{FRAC_PI_3, PI};
@@ -63,7 +64,7 @@ fn main() -> Result<(), String> {
         ),
     );
 
-    let canvas = renderer::render(&world, &camera, &Samples::single());
+    let canvas = renderer::render(&world, &camera, &Samples::single(), true);
 
     let image = image_writer::write(canvas);
     image.save("out.png").expect("failed to write output file");

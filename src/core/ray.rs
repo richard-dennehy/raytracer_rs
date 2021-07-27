@@ -1,11 +1,9 @@
+use crate::core::F64Ext;
+use crate::core::Point3D;
+use crate::core::{Colour, Matrix4D, Normal3D, Vector, Vector3D};
 use crate::light::LightSample;
-use crate::matrix::Matrix4D;
-use crate::util::F64Ext;
-use crate::{Colour, Normal3D, Object, Point3D, Vector, Vector3D};
+use crate::Object;
 use smallvec::SmallVec;
-
-#[cfg(test)]
-mod tests;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Ray {
@@ -37,6 +35,7 @@ impl Ray {
     }
 }
 
+// FIXME move this to `scene` module
 #[derive(Debug, Clone)]
 pub struct Intersection<'with> {
     pub t: f64,
@@ -187,7 +186,7 @@ impl ReflectionData {
 /// Invariants:
 ///  - always sorted by ascending `t` values
 #[derive(Clone, Debug)]
-pub struct Intersections<'scene>(SmallVec<[Intersection<'scene>; 4]>);
+pub struct Intersections<'scene>(pub(in crate::core) SmallVec<[Intersection<'scene>; 4]>);
 
 impl<'scene> Intersections<'scene> {
     pub fn empty() -> Self {

@@ -1,9 +1,9 @@
 use criterion::{criterion_group, Criterion};
 use nonzero_ext::*;
+use ray_tracer::core::*;
 use ray_tracer::renderer::Samples;
 use ray_tracer::{
-    renderer, yaml_parser, Camera, Colour, Light, Material, MaterialKind, Normal3D, Object,
-    Pattern, Point3D, Transform, World,
+    renderer, yaml_parser, Camera, Colour, Light, Material, MaterialKind, Object, Pattern, World,
 };
 use std::f64::consts::PI;
 use std::path::Path;

@@ -1,9 +1,6 @@
-use crate::Point3D;
+use crate::core::Point3D;
 use approx::AbsDiffEq;
 use std::ops::{Add, Div, Mul, Neg, Sub};
-
-#[cfg(test)]
-mod tests;
 
 #[derive(PartialEq, Copy, Clone, Debug)]
 pub struct Vector3D(f64, f64, f64);
@@ -89,7 +86,7 @@ impl Normal3D {
     pub const POSITIVE_Z: Normal3D = Normal3D::new(0.0, 0.0, 1.0);
     pub const NEGATIVE_Z: Normal3D = Normal3D::new(0.0, 0.0, -1.0);
 
-    const fn new(x: f64, y: f64, z: f64) -> Self {
+    pub(in crate::core) const fn new(x: f64, y: f64, z: f64) -> Self {
         Normal3D(x, y, z)
     }
 }
@@ -275,7 +272,7 @@ pub use test_utils::*;
 
 #[cfg(test)]
 mod test_utils {
-    use crate::Vector3D;
+    use super::*;
     use quickcheck::{Arbitrary, Gen};
     use rand::prelude::*;
 

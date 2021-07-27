@@ -1,7 +1,9 @@
+use crate::core::F64Ext;
+use crate::core::{Intersection, Intersections, Ray};
+use crate::core::{Normal3D, Point3D, Vector, Vector3D};
 use crate::object::bounds::BoundingBox;
 use crate::object::Shape;
-use crate::util::F64Ext;
-use crate::{Intersection, Intersections, Normal3D, Object, Point3D, Ray, Vector, Vector3D};
+use crate::Object;
 use std::f64::consts::PI;
 
 /// An infinite cylinder centred on the y axis, with a constant radius of 1

@@ -1,7 +1,7 @@
+use ray_tracer::core::{Colour, Normal3D, Point3D, Transform};
 use ray_tracer::renderer::Samples;
 use ray_tracer::{
-    image_writer, renderer, Camera, Colour, Light, Material, MaterialKind, Normal3D, Object,
-    Point3D, Transform, UvPattern, World,
+    image_writer, renderer, Camera, Light, Material, MaterialKind, Object, UvPattern, World,
 };
 use std::f64::consts::{FRAC_PI_2, FRAC_PI_3, FRAC_PI_6};
 use std::path::Path;
@@ -171,7 +171,7 @@ fn main() -> Result<(), String> {
             Normal3D::POSITIVE_Y,
         ),
     );
-    let canvas = renderer::render(&world, &camera, &Samples::single());
+    let canvas = renderer::render(&world, &camera, &Samples::single(), true);
 
     let image = image_writer::write(canvas);
     image

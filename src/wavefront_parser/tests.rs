@@ -2,7 +2,7 @@ use super::*;
 
 mod mtl_parser_tests {
     use super::*;
-    use crate::util::F64Ext;
+    use crate::core::F64Ext;
 
     #[test]
     fn parser_should_ignore_unrecognised_lines() {

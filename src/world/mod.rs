@@ -1,8 +1,7 @@
+use crate::core::*;
 use crate::light::LightSample;
 use crate::material::MaterialKind;
-use crate::ray::HitData;
-use crate::util::F64Ext;
-use crate::{Colour, Intersections, Light, Material, Object, Point3D, Ray, Transform, Vector};
+use crate::{Light, Material, Object};
 
 #[cfg(test)]
 mod tests;

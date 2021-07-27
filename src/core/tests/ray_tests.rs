@@ -2,7 +2,8 @@ use super::*;
 
 mod ray_unit_tests {
     use super::*;
-    use crate::{Material, Transform};
+    use crate::core::Transform;
+    use crate::{Material, Object};
     use approx::*;
     use std::f64::consts::SQRT_2;
 

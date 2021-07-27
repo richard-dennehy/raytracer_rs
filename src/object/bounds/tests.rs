@@ -169,7 +169,7 @@ mod unit_tests {
 
     mod intersection {
         use super::*;
-        use crate::{Normal3D, Vector, Vector3D};
+        use crate::core::{Normal3D, Vector, Vector3D};
 
         #[test]
         fn intersecting_a_ray_with_a_cubic_bounding_box_at_the_origin() {

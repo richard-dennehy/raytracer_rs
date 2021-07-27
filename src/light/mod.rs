@@ -1,4 +1,5 @@
-use crate::{Colour, Point3D, Vector3D};
+use crate::core::Colour;
+use crate::core::{Point3D, Vector3D};
 use itertools::Itertools;
 use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};

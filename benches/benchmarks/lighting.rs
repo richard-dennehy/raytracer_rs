@@ -1,9 +1,7 @@
 use criterion::{criterion_group, Criterion};
+use ray_tracer::core::*;
 use ray_tracer::renderer::{render, Samples};
-use ray_tracer::{
-    Camera, Colour, Light, Material, MaterialKind, Normal3D, Object, Point3D, Transform, Vector3D,
-    World,
-};
+use ray_tracer::{Camera, Colour, Light, Material, MaterialKind, Object, World};
 use std::f64::consts::FRAC_PI_4;
 
 criterion_group! {
