@@ -15,20 +15,21 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP move geometry primitives to `core` module">
-      <change afterPath="$PROJECT_DIR$/src/core/ray.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/core/tests/ray_tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/camera/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/camera/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/bounds/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/bounds/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/cone.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cone.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/cylinder.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/cylinder.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object/triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/triangle.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray/mod.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ray/tests.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/world/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/world/mod.rs" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP move all scene data types to `scene` module">
+      <change afterPath="$PROJECT_DIR$/src/scene/shape/cone.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scene/shape/cube.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scene/shape/cylinder.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scene/shape/plane.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scene/shape/sphere.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scene/shape/triangle.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/cone.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/cube.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/cylinder.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/plane.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/shape.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/sphere.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/triangle.rs" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -231,6 +232,11 @@
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <list>
@@ -521,70 +527,11 @@
       <workItem from="1627582301068" duration="51000" />
       <workItem from="1627582364481" duration="866000" />
       <workItem from="1627583308616" duration="44000" />
-      <workItem from="1627665153533" duration="1634000" />
-    </task>
-    <task id="LOCAL-00189" summary="implement area lights">
-      <created>1622890459640</created>
-      <option name="number" value="00189" />
-      <option name="presentableId" value="LOCAL-00189" />
-      <option name="project" value="LOCAL" />
-      <updated>1622890459640</updated>
-    </task>
-    <task id="LOCAL-00190" summary="precalculate light samples">
-      <created>1622977161495</created>
-      <option name="number" value="00190" />
-      <option name="presentableId" value="LOCAL-00190" />
-      <option name="project" value="LOCAL" />
-      <updated>1622977161495</updated>
-    </task>
-    <task id="LOCAL-00191" summary="use random offsets into area light samples to reduce banding">
-      <created>1622979564645</created>
-      <option name="number" value="00191" />
-      <option name="presentableId" value="LOCAL-00191" />
-      <option name="project" value="LOCAL" />
-      <updated>1622979564645</updated>
-    </task>
-    <task id="LOCAL-00192" summary="add tests for area lighting">
-      <created>1623093333073</created>
-      <option name="number" value="00192" />
-      <option name="presentableId" value="LOCAL-00192" />
-      <option name="project" value="LOCAL" />
-      <updated>1623093333073</updated>
-    </task>
-    <task id="LOCAL-00193" summary="document area lights and avoid duplicating colour for each sample">
-      <created>1623178743274</created>
-      <option name="number" value="00193" />
-      <option name="presentableId" value="LOCAL-00193" />
-      <option name="project" value="LOCAL" />
-      <updated>1623178743274</updated>
-    </task>
-    <task id="LOCAL-00194" summary="add benchmarks for area lights">
-      <created>1623263919596</created>
-      <option name="number" value="00194" />
-      <option name="presentableId" value="LOCAL-00194" />
-      <option name="project" value="LOCAL" />
-      <updated>1623263919596</updated>
-    </task>
-    <task id="LOCAL-00195" summary="attempt to improve performance of point lights">
-      <created>1623348380821</created>
-      <option name="number" value="00195" />
-      <option name="presentableId" value="LOCAL-00195" />
-      <option name="project" value="LOCAL" />
-      <updated>1623348380821</updated>
-    </task>
-    <task id="LOCAL-00196" summary="recalculate triangle UVs when calculating smoothed normals to avoid passing redundant data around">
-      <created>1623351343212</created>
-      <option name="number" value="00196" />
-      <option name="presentableId" value="LOCAL-00196" />
-      <option name="project" value="LOCAL" />
-      <updated>1623351343212</updated>
-    </task>
-    <task id="LOCAL-00197" summary="experiment with different inline vector sizes">
-      <created>1623587247441</created>
-      <option name="number" value="00197" />
-      <option name="presentableId" value="LOCAL-00197" />
-      <option name="project" value="LOCAL" />
-      <updated>1623587247441</updated>
+      <workItem from="1627665153533" duration="1653000" />
+      <workItem from="1627723242309" duration="87000" />
+      <workItem from="1627740061625" duration="3452000" />
+      <workItem from="1627755238656" duration="100000" />
+      <workItem from="1627816065600" duration="2322000" />
     </task>
     <task id="LOCAL-00198" summary="migrate tests to use `approx` instead of `float_cmp`">
       <created>1623867281631</created>
@@ -866,7 +813,70 @@
       <option name="project" value="LOCAL" />
       <updated>1627665941357</updated>
     </task>
-    <option name="localTasksCounter" value="238" />
+    <task id="LOCAL-00238" summary="move geometry primitives to `core` module">
+      <created>1627666810143</created>
+      <option name="number" value="00238" />
+      <option name="presentableId" value="LOCAL-00238" />
+      <option name="project" value="LOCAL" />
+      <updated>1627666810143</updated>
+    </task>
+    <task id="LOCAL-00239" summary="WIP move all scene data types to `scene` module">
+      <created>1627741798096</created>
+      <option name="number" value="00239" />
+      <option name="presentableId" value="LOCAL-00239" />
+      <option name="project" value="LOCAL" />
+      <updated>1627741798097</updated>
+    </task>
+    <task id="LOCAL-00240" summary="WIP move all scene data types to `scene` module">
+      <created>1627742110270</created>
+      <option name="number" value="00240" />
+      <option name="presentableId" value="LOCAL-00240" />
+      <option name="project" value="LOCAL" />
+      <updated>1627742110270</updated>
+    </task>
+    <task id="LOCAL-00241" summary="WIP move all scene data types to `scene` module">
+      <created>1627743210117</created>
+      <option name="number" value="00241" />
+      <option name="presentableId" value="LOCAL-00241" />
+      <option name="project" value="LOCAL" />
+      <updated>1627743210117</updated>
+    </task>
+    <task id="LOCAL-00242" summary="WIP move all scene data types to `scene` module">
+      <created>1627743472681</created>
+      <option name="number" value="00242" />
+      <option name="presentableId" value="LOCAL-00242" />
+      <option name="project" value="LOCAL" />
+      <updated>1627743472681</updated>
+    </task>
+    <task id="LOCAL-00243" summary="WIP move all scene data types to `scene` module">
+      <created>1627816576857</created>
+      <option name="number" value="00243" />
+      <option name="presentableId" value="LOCAL-00243" />
+      <option name="project" value="LOCAL" />
+      <updated>1627816576857</updated>
+    </task>
+    <task id="LOCAL-00244" summary="WIP move all scene data types to `scene` module">
+      <created>1627816985163</created>
+      <option name="number" value="00244" />
+      <option name="presentableId" value="LOCAL-00244" />
+      <option name="project" value="LOCAL" />
+      <updated>1627816985163</updated>
+    </task>
+    <task id="LOCAL-00245" summary="WIP move all scene data types to `scene` module">
+      <created>1627817556590</created>
+      <option name="number" value="00245" />
+      <option name="presentableId" value="LOCAL-00245" />
+      <option name="project" value="LOCAL" />
+      <updated>1627817556591</updated>
+    </task>
+    <task id="LOCAL-00246" summary="WIP move all scene data types to `scene` module">
+      <created>1627817919263</created>
+      <option name="number" value="00246" />
+      <option name="presentableId" value="LOCAL-00246" />
+      <option name="project" value="LOCAL" />
+      <updated>1627817919263</updated>
+    </task>
+    <option name="localTasksCounter" value="247" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -892,8 +902,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="implement basic MTL parser" />
-    <MESSAGE value="WIP support MTL libs in obj parser" />
     <MESSAGE value="support MTL libs in obj parser" />
     <MESSAGE value="refactor obj parser model" />
     <MESSAGE value="WIP load required files in wavefront parser" />
@@ -917,45 +925,27 @@
     <MESSAGE value="WIP move geometry primitives to `maths` module" />
     <MESSAGE value="improve bounds checking algorithm" />
     <MESSAGE value="WIP move geometry primitives to `core` module" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP move geometry primitives to `core` module" />
+    <MESSAGE value="move geometry primitives to `core` module" />
+    <MESSAGE value="WIP move all scene data types to `scene` module" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP move all scene data types to `scene` module" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/world/mod.rs</url>
-          <line>107</line>
+          <line>108</line>
           <option name="timeStamp" value="50" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/object/tests.rs</url>
+          <url>file://$PROJECT_DIR$/src/scene/tests.rs</url>
           <line>964</line>
           <option name="timeStamp" value="52" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/object/cone.rs</url>
-          <line>31</line>
-          <option name="timeStamp" value="57" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/object/cone.rs</url>
-          <line>58</line>
-          <option name="timeStamp" value="60" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/object/bounds/mod.rs</url>
-          <line>160</line>
-          <option name="timeStamp" value="64" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/object/bounds/mod.rs</url>
+          <url>file://$PROJECT_DIR$/src/scene/bounding_box.rs</url>
           <line>131</line>
           <option name="timeStamp" value="65" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/object/bounds/mod.rs</url>
-          <line>147</line>
-          <option name="timeStamp" value="66" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

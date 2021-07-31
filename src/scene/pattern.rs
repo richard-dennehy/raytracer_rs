@@ -1,14 +1,11 @@
+use super::pattern::Kind::{Checkers, Gradient, Ring, Striped};
 use crate::core::Colour;
 use crate::core::F64Ext;
 use crate::core::Point3D;
 use crate::core::Transform;
-use crate::pattern::Kind::{Checkers, Gradient, Ring, Striped};
 use image::RgbImage;
 use std::num::NonZeroUsize;
 use std::sync::Arc;
-
-#[cfg(test)]
-mod tests;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Pattern {
@@ -26,13 +23,13 @@ enum Kind {
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct UvPattern {
-    kind: UvPatternKind,
-    width: usize,
-    height: usize,
+    pub(super) kind: UvPatternKind,
+    pub(super) width: usize,
+    pub(super) height: usize,
 }
 
 #[derive(Clone, Debug, PartialEq)]
-enum UvPatternKind {
+pub(super) enum UvPatternKind {
     Checkers(Colour, Colour),
     AlignmentCheck {
         main: Colour,
@@ -287,7 +284,7 @@ fn nudge(f: f64) -> f64 {
     let delta = f.ceil() - f;
 
     if delta != 0.0 && delta.is_roughly_zero() {
-        f + (f32::EPSILON as f64)
+        f + crate::core::EPSILON
     } else {
         f
     }

@@ -1,8 +1,8 @@
 use crate::core::{Intersection, Intersections, Ray};
 use crate::core::{Normal3D, Point3D, Vector, Vector3D};
-use crate::object::bounds::BoundingBox;
-use crate::object::Shape;
-use crate::Object;
+use crate::scene::bounding_box::BoundingBox;
+use crate::scene::Object;
+use crate::scene::Shape;
 
 #[derive(Debug, PartialEq)]
 pub struct Triangle {

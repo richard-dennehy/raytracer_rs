@@ -5,7 +5,8 @@ use std::path::PathBuf;
 use std::str::SplitWhitespace;
 
 use crate::core::{Colour, Point3D, Vector, Vector3D};
-use crate::{Material, MaterialKind, Object};
+use crate::scene::Object;
+use crate::scene::{Material, MaterialKind};
 use std::cell::RefCell;
 
 #[cfg(test)]

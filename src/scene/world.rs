@@ -1,13 +1,11 @@
 use crate::core::*;
-use crate::light::LightSample;
-use crate::material::MaterialKind;
-use crate::{Light, Material, Object};
-
-#[cfg(test)]
-mod tests;
+use crate::scene::Material;
+use crate::scene::MaterialKind;
+use crate::scene::Object;
+use crate::scene::{Light, LightSample};
 
 pub struct World {
-    objects: Vec<Object>,
+    pub(super) objects: Vec<Object>,
     pub lights: Vec<Light>,
     pub settings: WorldSettings,
 }
@@ -127,14 +125,14 @@ impl World {
         inner(self, ray, None, self.settings.recursion_depth)
     }
 
-    fn intersect(&self, ray: &Ray) -> Intersections {
+    pub(super) fn intersect(&self, ray: &Ray) -> Intersections {
         self.objects
             .iter()
             .map(|obj| obj.intersect(&ray))
             .fold(Intersections::empty(), Intersections::join)
     }
 
-    fn shade_hit(&self, hit_data: &HitData) -> Colour {
+    pub(super) fn shade_hit(&self, hit_data: &HitData) -> Colour {
         self.lights
             .iter()
             .map(|light| {

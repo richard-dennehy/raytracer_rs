@@ -1,7 +1,9 @@
 use crate::core::{Colour, Point3D, Transform, Vector, Vector3D};
-use crate::material::MaterialKind;
+use crate::scene::Light;
+use crate::scene::Object;
+use crate::scene::{Material, MaterialKind, Pattern};
 use crate::wavefront_parser::WavefrontParser;
-use crate::{Camera, Light, Material, Object, Pattern};
+use crate::Camera;
 use either::Either;
 use either::Either::{Left, Right};
 use std::collections::HashMap;
@@ -129,8 +131,8 @@ pub struct MaterialDescription {
 }
 
 impl MaterialDescription {
-    fn to_material(&self, casts_shadow: bool) -> crate::Material {
-        let mut material = crate::Material::default();
+    fn to_material(&self, casts_shadow: bool) -> Material {
+        let mut material = Material::default();
 
         self.pattern
             .to_owned()

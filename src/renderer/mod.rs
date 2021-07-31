@@ -1,5 +1,6 @@
 use crate::core::Colour;
-use crate::{Camera, Canvas, World};
+use crate::scene::World;
+use crate::{Camera, Canvas};
 use std::fmt;
 use std::fmt::{Display, Formatter};
 use std::num::NonZeroU8;

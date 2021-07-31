@@ -2,9 +2,6 @@ use crate::core::Transform;
 use crate::core::Vector;
 use crate::core::{Point3D, Ray};
 
-#[cfg(test)]
-mod tests;
-
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub struct BoundingBox {
     min: Point3D,
@@ -194,7 +191,7 @@ impl BoundingBox {
 #[cfg(test)]
 mod test_utils {
     use crate::core::Point3D;
-    use crate::object::bounds::BoundingBox;
+    use crate::scene::bounding_box::BoundingBox;
     use quickcheck::{Arbitrary, Gen};
     use rand::prelude::*;
 

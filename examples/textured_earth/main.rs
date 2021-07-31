@@ -1,8 +1,7 @@
 use ray_tracer::core::{Colour, Normal3D, Point3D, Transform};
 use ray_tracer::renderer::Samples;
-use ray_tracer::{
-    image_writer, renderer, Camera, Light, Material, MaterialKind, Object, UvPattern, World,
-};
+use ray_tracer::scene::{Light, Material, MaterialKind, Object, UvPattern, World};
+use ray_tracer::{image_writer, renderer, Camera};
 use std::f64::consts::PI;
 use std::path::Path;
 use std::sync::Arc;

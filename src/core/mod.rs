@@ -41,7 +41,7 @@ pub trait F64Ext {
 }
 
 // actual f64 epsilon isn't nearly lenient enough
-const EPSILON: f64 = f32::EPSILON as f64;
+pub const EPSILON: f64 = f32::EPSILON as f64;
 
 impl F64Ext for f64 {
     fn roughly_equals(&self, other: Self) -> bool {

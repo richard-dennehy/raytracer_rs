@@ -1,6 +1,6 @@
 use super::*;
 use crate::core::{Colour, Point3D, Vector3D};
-use crate::Light;
+use crate::scene::Light;
 use either::Either::{Left, Right};
 
 #[test]

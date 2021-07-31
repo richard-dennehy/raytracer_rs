@@ -1,8 +1,8 @@
 use crate::core::F64Ext;
 use crate::core::Point3D;
 use crate::core::{Colour, Matrix4D, Normal3D, Vector, Vector3D};
-use crate::light::LightSample;
-use crate::Object;
+use crate::scene::LightSample;
+use crate::scene::Object;
 use smallvec::SmallVec;
 
 #[derive(Clone, Debug, PartialEq)]

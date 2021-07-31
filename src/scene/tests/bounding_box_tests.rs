@@ -2,6 +2,7 @@ use super::*;
 
 mod unit_tests {
     use super::*;
+    use crate::core::{Point3D, Transform};
     use approx::*;
     use std::f64::consts::{PI, SQRT_2};
 
@@ -169,7 +170,7 @@ mod unit_tests {
 
     mod intersection {
         use super::*;
-        use crate::core::{Normal3D, Vector, Vector3D};
+        use crate::core::{Normal3D, Point3D, Ray, Vector, Vector3D};
 
         #[test]
         fn intersecting_a_ray_with_a_cubic_bounding_box_at_the_origin() {
@@ -360,6 +361,7 @@ mod unit_tests {
 
     mod splitting {
         use super::*;
+        use crate::core::Point3D;
 
         #[test]
         fn splitting_a_cubic_bounding_box_should_split_in_half_on_the_x_axis() {

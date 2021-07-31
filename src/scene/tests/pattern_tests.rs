@@ -2,6 +2,8 @@ use super::*;
 
 mod unit_tests {
     use super::*;
+    use crate::core::{Colour, Point3D, Transform};
+    use crate::scene::pattern::UvPatternKind;
     use std::f64::consts::PI;
 
     #[test]
@@ -364,7 +366,7 @@ mod unit_tests {
                 Colour::WHITE,
             ),
         );
-        
+
         vec![
             ("left",   (1.5, 3.5), Colour::new(1.0, 1.0, 0.0)),
             ("left",   (1.05, 3.95), Colour::new(0.0, 1.0, 1.0)),
@@ -406,6 +408,7 @@ mod unit_tests {
 
 mod property_tests {
     use super::*;
+    use crate::core::{Colour, Point3D};
     use crate::util::ReasonableF64;
     use quickcheck_macros::quickcheck;
 

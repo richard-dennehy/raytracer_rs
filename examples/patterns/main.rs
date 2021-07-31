@@ -1,8 +1,7 @@
 use ray_tracer::core::{Colour, Normal3D, Point3D, Transform};
 use ray_tracer::renderer::Samples;
-use ray_tracer::{
-    image_writer, renderer, Camera, Light, Material, MaterialKind, Object, Pattern, World,
-};
+use ray_tracer::scene::{Light, Material, MaterialKind, Object, Pattern, World};
+use ray_tracer::{image_writer, renderer, Camera};
 use std::f64::consts::{FRAC_PI_2, FRAC_PI_3, FRAC_PI_4};
 use std::path::Path;
 use std::time::Instant;

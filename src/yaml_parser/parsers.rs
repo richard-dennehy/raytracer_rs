@@ -1,10 +1,10 @@
 use crate::core::{Colour, Point3D, Vector3D};
+use crate::scene::Light;
 use crate::yaml_parser::model::{
     CameraDescription, MaterialDescription, ObjectDescription, ObjectKind, PatternDescription,
     PatternType, Transformation,
 };
 use crate::yaml_parser::model::{Define, Defines};
-use crate::Light;
 use either::Either::{Left, Right};
 use yaml_rust::Yaml;
 

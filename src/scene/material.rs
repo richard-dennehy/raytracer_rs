@@ -1,5 +1,5 @@
+use super::{Pattern, UvPattern};
 use crate::core::Colour;
-use crate::{Pattern, UvPattern};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Material {

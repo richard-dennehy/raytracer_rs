@@ -1,5 +1,6 @@
 use ray_tracer::renderer::Samples;
-use ray_tracer::{image_writer, renderer, yaml_parser, World};
+use ray_tracer::scene::World;
+use ray_tracer::{image_writer, renderer, yaml_parser};
 use std::path::Path;
 use std::time::Instant;
 

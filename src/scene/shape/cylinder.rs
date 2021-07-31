@@ -1,30 +1,27 @@
 use crate::core::F64Ext;
 use crate::core::{Intersection, Intersections, Ray};
 use crate::core::{Normal3D, Point3D, Vector, Vector3D};
-use crate::object::bounds::BoundingBox;
-use crate::object::Shape;
-use crate::Object;
+use crate::scene::bounding_box::BoundingBox;
+use crate::scene::Object;
+use crate::scene::Shape;
 use std::f64::consts::PI;
 
-/// An infinite double-napped cone (like a sand timer), tapering to a point at the origin,
-/// centred on the y axis, with a radius equal to the absolute y value (i.e. the radius is 1 at y -1)
+/// An infinite cylinder centred on the y axis, with a constant radius of 1
 ///
-/// May be truncated at either end, to make the shape finite. Truncating at y = 0 produces a single cone.
-/// May be capped, otherwise the end will be open and the inner face will be visible
+/// May be truncated at either end to make it finite.
+/// May be capped, otherwise the ends will be open, and the inner face will be visible
 #[derive(Debug, PartialEq)]
-pub struct Cone {
+pub struct Cylinder {
     max_y: f64,
     min_y: f64,
     capped: bool,
 }
 
-impl Shape for Cone {
+impl Shape for Cylinder {
     fn object_bounds(&self) -> BoundingBox {
-        let limit = self.min_y.abs().max(self.max_y.abs());
-
         BoundingBox::new(
-            Point3D::new(-limit, self.min_y, -limit),
-            Point3D::new(limit, self.max_y, limit),
+            Point3D::new(-1.0, self.min_y, -1.0),
+            Point3D::new(1.0, self.max_y, 1.0),
         )
     }
 
@@ -34,14 +31,7 @@ impl Shape for Cone {
         } else if self.capped && point.y().is_roughly_lte(self.min_y) {
             Normal3D::NEGATIVE_Y
         } else {
-            let y = (point.x().powi(2) + point.z().powi(2)).sqrt();
-
-            if point.y().is_roughly_lte(0.0) {
-                Vector3D::new(point.x(), y, point.z())
-            } else {
-                Vector3D::new(point.x(), -y, point.z())
-            }
-            .normalised()
+            Vector3D::new(point.x(), 0.0, point.z()).normalised()
         }
     }
 
@@ -52,14 +42,12 @@ impl Shape for Cone {
     ) -> Intersections<'parent> {
         let intersects_cap = |t: f64| {
             let x = ray.origin.x() + t * ray.direction.x();
-            let y = ray.origin.y() + t * ray.direction.y();
             let z = ray.origin.z() + t * ray.direction.z();
 
-            let distance = x.powi(2) + z.powi(2);
-            distance.sqrt().is_roughly_lte(y.abs())
+            (x.powi(2) + z.powi(2)).is_roughly_lte(1.0)
         };
 
-        let mut cap_intersections = if self.capped {
+        let cap_intersections = if self.capped {
             let mut ts = Intersections::empty();
             // check bottom cap
             let t = (self.min_y - ray.origin.y()) / ray.direction.y();
@@ -80,47 +68,43 @@ impl Shape for Cone {
             Intersections::empty()
         };
 
-        let a = ray.direction.x().powi(2) - ray.direction.y().powi(2) + ray.direction.z().powi(2);
-        let b = 2.0 * ray.origin.x() * ray.direction.x() - 2.0 * ray.origin.y() * ray.direction.y()
-            + 2.0 * ray.origin.z() * ray.direction.z();
-
-        let c = ray.origin.x().powi(2) - ray.origin.y().powi(2) + ray.origin.z().powi(2);
-
-        if a.abs() <= f64::EPSILON && b.abs() <= f64::EPSILON {
-            return cap_intersections;
-        };
+        let a = ray.direction.x().powi(2) + ray.direction.z().powi(2);
 
         if a.abs() <= f64::EPSILON {
-            let t = -c / (2.0 * b);
-            cap_intersections.push(Intersection::new(t, parent));
             return cap_intersections;
         };
 
-        let ts = if let Some((first, second)) = crate::core::quadratic(a, b, c) {
-            let mut ts = Intersections::empty();
+        let b = 2.0 * ray.origin.x() * ray.direction.x() + 2.0 * ray.origin.z() * ray.direction.z();
+        let c = ray.origin.x().powi(2) + ray.origin.z().powi(2) - 1.0;
 
-            let y_first = ray.origin.y() + ray.direction.y() * first;
-            if y_first > self.min_y && y_first < self.max_y {
-                ts.push(Intersection::new(first, parent));
-            }
+        let discriminant = b.powi(2) - 4.0 * a * c;
 
-            let y_second = ray.origin.y() + ray.direction.y() * second;
-            if y_second > self.min_y && y_second < self.max_y {
-                ts.push(Intersection::new(second, parent));
-            }
-
-            ts
-        } else {
-            Intersections::empty()
+        if discriminant < 0.0 {
+            return cap_intersections;
         };
+
+        let first = (-b - discriminant.sqrt()) / (2.0 * a);
+        let second = (-b + discriminant.sqrt()) / (2.0 * a);
+
+        let y_first = ray.origin.y() + ray.direction.y() * first;
+        let y_second = ray.origin.y() + ray.direction.y() * second;
+
+        let mut ts = Intersections::empty();
+        if y_first > self.min_y && y_first < self.max_y {
+            ts.push(Intersection::new(first, parent));
+        }
+
+        if y_second > self.min_y && y_second < self.max_y {
+            ts.push(Intersection::new(second, parent));
+        }
 
         ts.join(cap_intersections)
     }
 
     /// ranges from u <- 0..3 and v <- 0..1 such that:
-    ///  - u <- 0..1 maps to the sides of the cone,
-    ///  - u <- 1..2 maps to the top cap of the cone
-    ///  - u <- 2..3 maps to the bottom cap of the cone
+    ///  - u <- 0..1 maps to the sides of the cylinder
+    ///  - u <- 1..2 maps to the top cap of the cylinder
+    ///  - u <- 2..3 maps to the bottom cap of the cylinder
     fn uv_at(&self, point: Point3D) -> (f64, f64) {
         if self.capped && self.max_y.roughly_equals(point.y()) {
             let u = (point.x() + 1.0) / 2.0;
@@ -147,15 +131,15 @@ impl Shape for Cone {
     }
 }
 
-pub struct ConeBuilder {
+pub struct CylinderBuilder {
     min_y: f64,
     max_y: f64,
     capped: bool,
 }
 
-impl ConeBuilder {
-    pub(super) fn new() -> Self {
-        ConeBuilder {
+impl CylinderBuilder {
+    pub(in crate::scene) fn new() -> Self {
+        CylinderBuilder {
             min_y: -f64::MAX,
             max_y: f64::MAX,
             capped: false,
@@ -178,7 +162,7 @@ impl ConeBuilder {
     }
 
     pub fn build(self) -> Object {
-        Object::from_shape(Box::new(Cone {
+        Object::from_shape(Box::new(Cylinder {
             min_y: self.min_y,
             max_y: self.max_y,
             capped: self.capped,

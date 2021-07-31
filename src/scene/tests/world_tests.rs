@@ -2,7 +2,7 @@ use super::*;
 
 mod intersections {
     use super::*;
-    use crate::core::Normal3D;
+    use crate::core::{Colour, Normal3D, Point3D, Ray, Transform};
     use std::f64::consts::PI;
 
     #[test]
@@ -42,7 +42,7 @@ mod intersections {
                     ..Default::default()
                 })
                 .transformed(Transform::identity().rotate_x(-PI / 2.0));
-            world.objects.push(front);
+            world.add(front);
         };
 
         {
@@ -55,7 +55,7 @@ mod intersections {
                     ..Default::default()
                 })
                 .transformed(Transform::identity().translate_z(1.0));
-            world.objects.push(back);
+            world.add(back);
         };
 
         world
@@ -69,8 +69,9 @@ mod intersections {
 
 mod shading {
     use super::*;
-    use crate::core::Normal3D;
-    use crate::{Camera, Pattern};
+    use crate::core::{Colour, HitData, Normal3D, Point3D, Ray, Transform};
+    use crate::scene::Pattern;
+    use crate::Camera;
     use approx::*;
     use std::f64::consts::{FRAC_PI_3, PI};
 
@@ -167,7 +168,7 @@ mod shading {
         )
         .transformed(Transform::identity().translate_y(1.0).rotate_y(PI / 4.0));
 
-        world.objects.push(csg);
+        world.add(csg);
 
         let ray = Ray::new(Point3D::new(0.0, 2.0, -6.0), Normal3D::POSITIVE_Z);
         let actual = world.colour_at(ray);
@@ -189,7 +190,7 @@ mod shading {
             Colour::WHITE,
             Point3D::new(-10.0, 10.0, -10.0),
         ));
-        world.objects.push(
+        world.add(
             Object::plane()
                 .transformed(Transform::identity().rotate_x(-PI / 4.0))
                 .with_material(Material {
@@ -502,7 +503,7 @@ mod shading {
 
 mod lighting {
     use super::*;
-    use crate::core::{Normal3D, Vector3D};
+    use crate::core::{Colour, Normal3D, Point3D, Ray, Transform, Vector, Vector3D};
     use crate::Camera;
     use std::f64::consts::{FRAC_1_SQRT_2, FRAC_PI_4};
 
@@ -513,9 +514,9 @@ mod lighting {
             .lights
             .push(Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, -10.0)));
         // target object
-        world.objects.push(Object::sphere());
+        world.add(Object::sphere());
         // object in-between target/ray and light source
-        world.objects.push(
+        world.add(
             Object::sphere()
                 .transformed(Transform::identity().translate_z(-7.5))
                 .with_material(Material {
@@ -535,7 +536,7 @@ mod lighting {
         world
             .lights
             .push(Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, 10.0)));
-        world.objects.push(Object::sphere());
+        world.add(Object::sphere());
 
         let colour = world.colour_at(Ray::new(Point3D::new(0.0, 0.0, -5.0), Normal3D::POSITIVE_Z));
 
@@ -689,7 +690,7 @@ mod lighting {
 
 mod reflection_and_refraction {
     use super::*;
-    use crate::core::{Normal3D, Vector3D};
+    use crate::core::{Colour, Normal3D, Point3D, Ray, Transform, Vector, Vector3D};
     use approx::*;
     use std::f64::consts::{PI, SQRT_2};
 
@@ -704,7 +705,7 @@ mod reflection_and_refraction {
                 })
                 .transformed(Transform::identity().translate_y(-1.0));
 
-            world.objects.push(reflective_plane);
+            world.add(reflective_plane);
         };
 
         assert_abs_diff_eq!(
@@ -731,14 +732,14 @@ mod reflection_and_refraction {
             let upper = Object::plane()
                 .with_material(reflective_non_blinding_material.clone())
                 .transformed(Transform::identity().rotate_x(PI).translate_y(1.0));
-            world.objects.push(upper);
+            world.add(upper);
         };
 
         {
             let lower = Object::plane()
                 .with_material(reflective_non_blinding_material)
                 .transformed(Transform::identity().translate_y(-1.0));
-            world.objects.push(lower);
+            world.add(lower);
         };
         world
             .lights
@@ -762,7 +763,7 @@ mod reflection_and_refraction {
                     ..Default::default()
                 });
 
-            world.objects.push(refractive_plane);
+            world.add(refractive_plane);
         };
 
         {
@@ -774,7 +775,7 @@ mod reflection_and_refraction {
                     ..Default::default()
                 });
 
-            world.objects.push(ball);
+            world.add(ball);
         };
 
         let ray = Ray::new(
@@ -791,7 +792,7 @@ mod reflection_and_refraction {
 
 mod transparency {
     use super::*;
-    use crate::core::{Normal3D, Vector3D};
+    use crate::core::{Colour, Normal3D, Point3D, Ray, Transform, Vector, Vector3D};
     use crate::Camera;
     use approx::*;
     use std::f64::consts::{PI, SQRT_2};
@@ -812,7 +813,7 @@ mod transparency {
                     ..Default::default()
                 })
                 .transformed(Transform::identity().rotate_x(-PI / 2.0));
-            world.objects.push(front);
+            world.add(front);
         };
 
         {
@@ -825,7 +826,7 @@ mod transparency {
                     ..Default::default()
                 })
                 .transformed(Transform::identity().translate_z(1.0));
-            world.objects.push(back);
+            world.add(back);
         };
 
         world
@@ -848,7 +849,7 @@ mod transparency {
                     ..Default::default()
                 });
 
-            world.objects.push(refractive_plane);
+            world.add(refractive_plane);
         };
 
         {
@@ -860,7 +861,7 @@ mod transparency {
                     ..Default::default()
                 });
 
-            world.objects.push(ball);
+            world.add(ball);
         };
 
         let ray = Ray::new(
@@ -891,7 +892,7 @@ mod transparency {
                     ..Default::default()
                 });
 
-            world.objects.push(wall);
+            world.add(wall);
         };
 
         {
@@ -903,7 +904,7 @@ mod transparency {
                     ..Default::default()
                 });
 
-            world.objects.push(glass_sphere);
+            world.add(glass_sphere);
         };
 
         let ray = Ray::new(Point3D::ORIGIN, Normal3D::POSITIVE_Z);
@@ -920,7 +921,7 @@ mod transparency {
         world
             .lights
             .push(Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, -2.0)));
-        world.objects.push(
+        world.add(
             Object::plane()
                 .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(2.0))
                 .with_material(Material {
@@ -932,7 +933,7 @@ mod transparency {
                     ..Default::default()
                 }),
         );
-        world.objects.push(
+        world.add(
             Object::plane()
                 .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(1.0))
                 .with_material(Material {
@@ -955,7 +956,7 @@ mod transparency {
         world
             .lights
             .push(Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, -2.0)));
-        world.objects.push(
+        world.add(
             Object::plane()
                 .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(2.0))
                 .with_material(Material {
@@ -967,7 +968,7 @@ mod transparency {
                     ..Default::default()
                 }),
         );
-        world.objects.push(
+        world.add(
             Object::plane()
                 .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(1.0))
                 .with_material(Material {
@@ -991,7 +992,7 @@ mod transparency {
         world
             .lights
             .push(Light::point(Colour::WHITE, Point3D::new(0.0, 0.0, -2.0)));
-        world.objects.push(
+        world.add(
             Object::plane()
                 .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(2.0))
                 .with_material(Material {
@@ -1003,7 +1004,7 @@ mod transparency {
                     ..Default::default()
                 }),
         );
-        world.objects.push(
+        world.add(
             Object::plane()
                 .transformed(Transform::identity().rotate_x(-PI / 2.0).translate_z(1.0))
                 .with_material(Material {
@@ -1038,7 +1039,7 @@ mod transparency {
             ..Default::default()
         });
 
-        world.objects.push(floor);
+        world.add(floor);
 
         let red_pane = Object::cube()
             .transformed(
@@ -1053,7 +1054,7 @@ mod transparency {
                 ..Default::default()
             });
 
-        world.objects.push(red_pane);
+        world.add(red_pane);
 
         // use camera to calculate ray angle
         let camera = Camera::new(
@@ -1087,7 +1088,7 @@ mod transparency {
             ..Default::default()
         });
 
-        world.objects.push(floor);
+        world.add(floor);
 
         let yellow_pane = Object::cube()
             .transformed(
@@ -1102,7 +1103,7 @@ mod transparency {
                 ..Default::default()
             });
 
-        world.objects.push(yellow_pane);
+        world.add(yellow_pane);
 
         // use camera to calculate ray angle
         let camera = Camera::new(
