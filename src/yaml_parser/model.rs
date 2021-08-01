@@ -1,9 +1,9 @@
 use crate::core::{Colour, Point3D, Transform, Vector, Vector3D};
+use crate::renderer::Camera;
 use crate::scene::Light;
 use crate::scene::Object;
 use crate::scene::{Material, MaterialKind, Pattern};
 use crate::wavefront_parser::WavefrontParser;
-use crate::Camera;
 use either::Either;
 use either::Either::{Left, Right};
 use std::collections::HashMap;

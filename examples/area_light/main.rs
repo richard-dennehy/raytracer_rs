@@ -3,9 +3,9 @@ use std::path::Path;
 use std::time::Instant;
 
 use ray_tracer::core::{Colour, Normal3D, Point3D, Transform, Vector3D};
-use ray_tracer::renderer::Samples;
+use ray_tracer::renderer::{Camera, Samples};
 use ray_tracer::scene::{Light, Material, MaterialKind, Object, World};
-use ray_tracer::{image_writer, renderer, Camera};
+use ray_tracer::{image_writer, renderer};
 
 fn main() -> Result<(), String> {
     let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("examples/area_light");

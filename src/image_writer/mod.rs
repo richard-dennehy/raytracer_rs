@@ -1,4 +1,4 @@
-use crate::Canvas;
+use crate::renderer::Canvas;
 use image::{ImageBuffer, Rgb, RgbImage};
 
 pub fn write(canvas: Canvas) -> RgbImage {

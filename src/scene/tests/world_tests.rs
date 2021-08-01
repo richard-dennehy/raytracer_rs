@@ -70,8 +70,8 @@ mod intersections {
 mod shading {
     use super::*;
     use crate::core::{Colour, HitData, Normal3D, Point3D, Ray, Transform};
+    use crate::renderer::Camera;
     use crate::scene::Pattern;
-    use crate::Camera;
     use approx::*;
     use std::f64::consts::{FRAC_PI_3, PI};
 
@@ -504,7 +504,7 @@ mod shading {
 mod lighting {
     use super::*;
     use crate::core::{Colour, Normal3D, Point3D, Ray, Transform, Vector, Vector3D};
-    use crate::Camera;
+    use crate::renderer::Camera;
     use std::f64::consts::{FRAC_1_SQRT_2, FRAC_PI_4};
 
     #[test]
@@ -793,7 +793,7 @@ mod reflection_and_refraction {
 mod transparency {
     use super::*;
     use crate::core::{Colour, Normal3D, Point3D, Ray, Transform, Vector, Vector3D};
-    use crate::Camera;
+    use crate::renderer::Camera;
     use approx::*;
     use std::f64::consts::{PI, SQRT_2};
 

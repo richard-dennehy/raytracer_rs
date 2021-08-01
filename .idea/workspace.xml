@@ -15,21 +15,13 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP move all scene data types to `scene` module">
-      <change afterPath="$PROJECT_DIR$/src/scene/shape/cone.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/scene/shape/cube.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/scene/shape/cylinder.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/scene/shape/plane.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/scene/shape/sphere.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/scene/shape/triangle.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene/cone.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene/cube.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene/cylinder.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene/plane.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene/shape.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene/sphere.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene/triangle.rs" beforeDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="move all rendering types to `renderer` module">
+      <change beforePath="$PROJECT_DIR$/benches/benchmarks/anti_aliasing.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/anti_aliasing.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benches/benchmarks/bounding_boxes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/bounding_boxes.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benches/benchmarks/lighting.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/lighting.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benches/benchmarks/meshes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/meshes.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -131,7 +123,7 @@
       <command value="cargo bench" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.test">
+  <component name="RunManager" selected="Cargo.bench">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -249,8 +241,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.bench" />
+        <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.bench" />
@@ -531,35 +523,7 @@
       <workItem from="1627723242309" duration="87000" />
       <workItem from="1627740061625" duration="3452000" />
       <workItem from="1627755238656" duration="100000" />
-      <workItem from="1627816065600" duration="2322000" />
-    </task>
-    <task id="LOCAL-00198" summary="migrate tests to use `approx` instead of `float_cmp`">
-      <created>1623867281631</created>
-      <option name="number" value="00198" />
-      <option name="presentableId" value="LOCAL-00198" />
-      <option name="project" value="LOCAL" />
-      <updated>1623867281631</updated>
-    </task>
-    <task id="LOCAL-00199" summary="use `approx`/utility functions when comparing floats">
-      <created>1623958837122</created>
-      <option name="number" value="00199" />
-      <option name="presentableId" value="LOCAL-00199" />
-      <option name="project" value="LOCAL" />
-      <updated>1623958837122</updated>
-    </task>
-    <task id="LOCAL-00200" summary="switch property tests back to quickcheck">
-      <created>1624299241826</created>
-      <option name="number" value="00200" />
-      <option name="presentableId" value="LOCAL-00200" />
-      <option name="project" value="LOCAL" />
-      <updated>1624299241826</updated>
-    </task>
-    <task id="LOCAL-00201" summary="add benchmarks for triangle meshes">
-      <created>1624559921527</created>
-      <option name="number" value="00201" />
-      <option name="presentableId" value="LOCAL-00201" />
-      <option name="project" value="LOCAL" />
-      <updated>1624559921528</updated>
+      <workItem from="1627816065600" duration="3353000" />
     </task>
     <task id="LOCAL-00202" summary="WIP implement MTL parser">
       <created>1624719708788</created>
@@ -876,7 +840,35 @@
       <option name="project" value="LOCAL" />
       <updated>1627817919263</updated>
     </task>
-    <option name="localTasksCounter" value="247" />
+    <task id="LOCAL-00247" summary="move all scene data types to `scene` module">
+      <created>1627818403767</created>
+      <option name="number" value="00247" />
+      <option name="presentableId" value="LOCAL-00247" />
+      <option name="project" value="LOCAL" />
+      <updated>1627818403767</updated>
+    </task>
+    <task id="LOCAL-00248" summary="move all rendering types to `renderer` module">
+      <created>1627818669550</created>
+      <option name="number" value="00248" />
+      <option name="presentableId" value="LOCAL-00248" />
+      <option name="project" value="LOCAL" />
+      <updated>1627818669550</updated>
+    </task>
+    <task id="LOCAL-00249" summary="move all rendering types to `renderer` module">
+      <created>1627818973501</created>
+      <option name="number" value="00249" />
+      <option name="presentableId" value="LOCAL-00249" />
+      <option name="project" value="LOCAL" />
+      <updated>1627818973501</updated>
+    </task>
+    <task id="LOCAL-00250" summary="move all rendering types to `renderer` module">
+      <created>1627819189088</created>
+      <option name="number" value="00250" />
+      <option name="presentableId" value="LOCAL-00250" />
+      <option name="project" value="LOCAL" />
+      <updated>1627819189088</updated>
+    </task>
+    <option name="localTasksCounter" value="251" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -902,8 +894,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="support MTL libs in obj parser" />
-    <MESSAGE value="refactor obj parser model" />
     <MESSAGE value="WIP load required files in wavefront parser" />
     <MESSAGE value="load required files in wavefront parser" />
     <MESSAGE value="add example for dragons scene" />
@@ -927,7 +917,9 @@
     <MESSAGE value="WIP move geometry primitives to `core` module" />
     <MESSAGE value="move geometry primitives to `core` module" />
     <MESSAGE value="WIP move all scene data types to `scene` module" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP move all scene data types to `scene` module" />
+    <MESSAGE value="move all scene data types to `scene` module" />
+    <MESSAGE value="move all rendering types to `renderer` module" />
+    <option name="LAST_COMMIT_MESSAGE" value="move all rendering types to `renderer` module" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

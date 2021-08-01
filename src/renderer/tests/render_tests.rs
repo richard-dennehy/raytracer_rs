@@ -2,7 +2,8 @@ use super::*;
 
 mod rendering {
     use super::*;
-    use crate::core::{Normal3D, Point3D, Transform};
+    use crate::core::{Colour, Normal3D, Point3D, Transform};
+    use crate::scene::World;
     use approx::*;
     use std::f64::consts::PI;
     use std::num::NonZeroU16;

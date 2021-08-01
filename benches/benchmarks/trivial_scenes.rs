@@ -1,8 +1,9 @@
 use criterion::{criterion_group, BenchmarkId, Criterion};
 use nonzero_ext::*;
 use ray_tracer::core::*;
-use ray_tracer::renderer::Samples;
-use ray_tracer::{renderer, Camera, Colour, Light, Object, Ray, World};
+use ray_tracer::renderer;
+use ray_tracer::renderer::{Camera, Samples};
+use ray_tracer::scene::{Light, Object, World};
 use std::f64::consts::PI;
 
 criterion_group! {
@@ -43,7 +44,7 @@ fn empty_scene_full_render(c: &mut Criterion) {
         );
 
         b.iter(|| {
-            renderer::render(&world, &camera, &Samples::single());
+            renderer::render(&world, &camera, &Samples::single(), false);
         })
     });
 }
@@ -81,7 +82,7 @@ fn single_object_full_render(c: &mut Criterion) {
             );
 
             b.iter(|| {
-                renderer::render(&world, &camera, &Samples::single());
+                renderer::render(&world, &camera, &Samples::single(), false);
             })
         });
     }

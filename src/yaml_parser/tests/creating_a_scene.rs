@@ -1,7 +1,7 @@
 use super::*;
 use crate::core::{Colour, Point3D, Transform, Vector, Vector3D};
+use crate::renderer::Camera;
 use crate::scene::{Material, MaterialKind, Pattern};
-use crate::Camera;
 use nonzero_ext::nonzero;
 
 fn with_camera_description(rest: &str) -> String {

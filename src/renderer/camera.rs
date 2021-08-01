@@ -2,15 +2,12 @@ use crate::core::Ray;
 use crate::core::{Point3D, Transform, Vector};
 use std::num::NonZeroU16;
 
-#[cfg(test)]
-mod tests;
-
 #[derive(Debug, PartialEq)]
 pub struct Camera {
     width: NonZeroU16,
     height: NonZeroU16,
     transform: Transform,
-    pixel_size: f64,
+    pub(super) pixel_size: f64,
     half_canvas_width: f64,
     half_canvas_height: f64,
 }

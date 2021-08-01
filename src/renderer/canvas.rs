@@ -2,9 +2,6 @@ use crate::core::Colour;
 use indicatif::{ProgressBar, ProgressStyle};
 use std::num::NonZeroU16;
 
-#[cfg(test)]
-mod tests;
-
 pub struct Canvas(Vec<Vec<Colour>>);
 
 impl Canvas {

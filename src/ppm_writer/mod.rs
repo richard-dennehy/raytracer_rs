@@ -1,4 +1,4 @@
-use crate::Canvas;
+use crate::renderer::Canvas;
 
 #[cfg(test)]
 mod tests;

@@ -1,7 +1,7 @@
 use criterion::{criterion_group, Criterion};
 use ray_tracer::core::*;
-use ray_tracer::renderer::{render, Samples};
-use ray_tracer::{Camera, Colour, Light, Material, MaterialKind, Object, World};
+use ray_tracer::renderer::{render, Camera, Samples};
+use ray_tracer::scene::{Light, Material, MaterialKind, Object, World};
 use std::f64::consts::FRAC_PI_4;
 
 criterion_group! {
@@ -44,7 +44,7 @@ fn lighting_a_single_object_with_an_area_light(c: &mut Criterion) {
             ),
         );
 
-        b.iter(|| render(&world, &camera, &Samples::single()));
+        b.iter(|| render(&world, &camera, &Samples::single(), false));
     });
 }
 
@@ -134,6 +134,6 @@ fn lighting_multiple_objects_with_an_area_light(c: &mut Criterion) {
             ),
         );
 
-        b.iter(|| render(&world, &camera, &Samples::single()));
+        b.iter(|| render(&world, &camera, &Samples::single(), false));
     });
 }

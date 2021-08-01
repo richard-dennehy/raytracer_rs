@@ -1,7 +1,7 @@
 use criterion::{black_box, criterion_group, Criterion};
 use ray_tracer::core::*;
-use ray_tracer::renderer::{render, Samples};
-use ray_tracer::{Camera, Colour, Light, Material, MaterialKind, Object, World};
+use ray_tracer::renderer::{render, Camera, Samples};
+use ray_tracer::scene::{Light, Material, MaterialKind, Object, World};
 use std::f64::consts::PI;
 
 criterion_group! {
@@ -83,7 +83,7 @@ fn many_objects_full_scene(c: &mut Criterion) {
         );
 
         b.iter(|| {
-            black_box(render(&world, &camera, &Samples::single()));
+            black_box(render(&world, &camera, &Samples::single(), false));
         })
     });
 }

@@ -4,8 +4,9 @@ use std::f64::consts::PI;
 use criterion::{criterion_group, BenchmarkId, Criterion};
 
 use ray_tracer::core::*;
-use ray_tracer::renderer::Samples;
-use ray_tracer::{renderer, Camera, Colour, Light, Material, MaterialKind, Object, Pattern, World};
+use ray_tracer::renderer;
+use ray_tracer::renderer::{Camera, Samples};
+use ray_tracer::scene::{Light, Material, MaterialKind, Object, Pattern, World};
 
 criterion_group! {
     benches,
@@ -46,7 +47,7 @@ fn single_sphere(c: &mut Criterion) {
                 );
 
                 b.iter(|| {
-                    renderer::render(&world, &camera, samples);
+                    renderer::render(&world, &camera, samples, false);
                 });
             },
         );
@@ -123,7 +124,7 @@ fn basic_scene(c: &mut Criterion) {
                 );
 
                 b.iter(|| {
-                    renderer::render(&world, &camera, samples);
+                    renderer::render(&world, &camera, samples, false);
                 });
             },
         );
