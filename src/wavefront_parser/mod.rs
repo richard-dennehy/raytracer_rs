@@ -4,7 +4,7 @@ use std::fs;
 use std::path::PathBuf;
 use std::str::SplitWhitespace;
 
-use crate::core::{Colour, Point3D, Vector, Vector3D};
+use crate::core::{Colour, Point3D, Vector3D, VectorMaths};
 use crate::scene::Object;
 use crate::scene::{Material, MaterialKind};
 use std::cell::RefCell;

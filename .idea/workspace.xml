@@ -15,15 +15,17 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="move all rendering types to `renderer` module">
-      <change afterPath="$PROJECT_DIR$/src/scene/intersection.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/scene/tests/intersection_tests.rs" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="break circular dependency between `core` and `scene`">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/matrix.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/matrix.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/core/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/ray.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/ray.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/tests/ray_tests.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/point.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/point.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/transform.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/transform.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/core/vector.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/vector.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/camera.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/camera.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/render.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/render.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/bounding_box.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/bounding_box.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/intersection.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/intersection.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/scene/object.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/object.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/scene/shape/cone.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/shape/cone.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/scene/shape/cube.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/shape/cube.rs" afterDir="false" />
@@ -31,8 +33,19 @@
       <change beforePath="$PROJECT_DIR$/src/scene/shape/plane.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/shape/plane.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/scene/shape/sphere.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/shape/sphere.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/scene/shape/triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/shape/triangle.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/tests/bounding_box_tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/tests/bounding_box_tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/tests/cone_tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/tests/cone_tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/tests/cube_tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/tests/cube_tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/tests/cylinder_tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/tests/cylinder_tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/tests/intersection_tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/tests/intersection_tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/tests/object_tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/tests/object_tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/tests/sphere_tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/tests/sphere_tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/tests/triangle_tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/tests/triangle_tests.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/scene/tests/world_tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/tests/world_tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene/world.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/world.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/wavefront_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/wavefront_parser/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/creating_a_scene.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/creating_a_scene.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -134,7 +147,7 @@
       <command value="cargo bench" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.test">
+  <component name="RunManager" selected="Cargo.bench">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -247,8 +260,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.bench" />
+        <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.bench" />
@@ -531,14 +544,7 @@
       <workItem from="1627755238656" duration="100000" />
       <workItem from="1627816065600" duration="3586000" />
       <workItem from="1627830818762" duration="1000" />
-      <workItem from="1627925353512" duration="810000" />
-    </task>
-    <task id="LOCAL-00203" summary="WIP implement MTL parser">
-      <created>1624796774431</created>
-      <option name="number" value="00203" />
-      <option name="presentableId" value="LOCAL-00203" />
-      <option name="project" value="LOCAL" />
-      <updated>1624796774431</updated>
+      <workItem from="1627925353512" duration="2643000" />
     </task>
     <task id="LOCAL-00204" summary="WIP implement MTL parser">
       <created>1624798664035</created>
@@ -876,7 +882,14 @@
       <option name="project" value="LOCAL" />
       <updated>1627819492725</updated>
     </task>
-    <option name="localTasksCounter" value="252" />
+    <task id="LOCAL-00252" summary="break circular dependency between `core` and `scene`">
+      <created>1627926190086</created>
+      <option name="number" value="00252" />
+      <option name="presentableId" value="LOCAL-00252" />
+      <option name="project" value="LOCAL" />
+      <updated>1627926190086</updated>
+    </task>
+    <option name="localTasksCounter" value="253" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -902,7 +915,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP load required files in wavefront parser" />
     <MESSAGE value="load required files in wavefront parser" />
     <MESSAGE value="add example for dragons scene" />
     <MESSAGE value="add example for cover image" />
@@ -927,7 +939,8 @@
     <MESSAGE value="WIP move all scene data types to `scene` module" />
     <MESSAGE value="move all scene data types to `scene` module" />
     <MESSAGE value="move all rendering types to `renderer` module" />
-    <option name="LAST_COMMIT_MESSAGE" value="move all rendering types to `renderer` module" />
+    <MESSAGE value="break circular dependency between `core` and `scene`" />
+    <option name="LAST_COMMIT_MESSAGE" value="break circular dependency between `core` and `scene`" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

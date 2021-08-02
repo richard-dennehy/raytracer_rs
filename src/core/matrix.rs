@@ -1,5 +1,5 @@
 use crate::core::Point3D;
-use crate::core::Vector;
+use crate::core::VectorMaths;
 use approx::AbsDiffEq;
 use std::ops::{Mul, MulAssign};
 
@@ -289,7 +289,7 @@ impl Mul<Point3D> for &Matrix4D {
     }
 }
 
-impl<V: Vector> Mul<V> for &Matrix4D {
+impl<V: VectorMaths> Mul<V> for &Matrix4D {
     type Output = (f64, f64, f64, f64);
 
     fn mul(self, rhs: V) -> Self::Output {
@@ -302,7 +302,7 @@ impl<V: Vector> Mul<V> for &Matrix4D {
     }
 }
 
-impl<V: Vector> Mul<V> for Matrix4D {
+impl<V: VectorMaths> Mul<V> for Matrix4D {
     type Output = (f64, f64, f64, f64);
 
     fn mul(self, rhs: V) -> Self::Output {

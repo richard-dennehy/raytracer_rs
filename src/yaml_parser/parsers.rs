@@ -194,7 +194,7 @@ impl FromYaml for Vec<Transformation> {
                             let rotation = transform[1].parse(defines)?;
                             RotationZ(rotation)
                         }
-                        Some("shear") => todo!("shear"),
+                        Some("shear") => return Err("shear transforms are not supported".to_owned()),
                         Some(other) => return Err(format!("{:?} is not a type of transform (note: `define` references must be a string, not an array)", other)),
                         None => {
                             return Err(format!(
@@ -253,7 +253,6 @@ impl FromYaml for MaterialDescription {
             })
         }
 
-        // FIXME this is untidy
         // material is a simple reference to a define
         if let Some(reference) = yaml.as_str() {
             if let Some(define) = defines.get(reference) {
@@ -323,7 +322,7 @@ impl FromYaml for PatternDescription {
         let pattern_type = match yaml["type"].as_str() {
             Some("stripes") => PatternType::Stripes,
             Some("checkers") => PatternType::Checker,
-            Some(other) => todo!("pattern {}", other),
+            Some(other) => return Err(format!("pattern type {} is not supported", other)),
             None => return Err("pattern must have a `type`".to_string()),
         };
 

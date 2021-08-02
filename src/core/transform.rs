@@ -1,6 +1,6 @@
 use crate::core::Matrix4D;
 use crate::core::Point3D;
-use crate::core::{Normal3D, Vector, Vector3D};
+use crate::core::{Normal3D, Vector3D, VectorMaths};
 use approx::AbsDiffEq;
 use std::fmt;
 use std::fmt::{Debug, Formatter};

@@ -1,5 +1,5 @@
 use super::*;
-use crate::core::{Normal3D, Point3D, Ray, Transform, Vector, Vector3D};
+use crate::core::{Normal3D, Point3D, Ray, Transform, Vector3D, VectorMaths};
 use approx::*;
 use std::f64::consts::SQRT_2;
 

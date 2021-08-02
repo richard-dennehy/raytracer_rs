@@ -2,7 +2,7 @@ use super::*;
 
 mod shape_tests {
     use super::*;
-    use crate::core::{Colour, Normal3D, Point3D, Transform, Vector, Vector3D};
+    use crate::core::{Colour, Normal3D, Point3D, Transform, Vector3D, VectorMaths};
     use std::f64::consts::PI;
 
     #[test]
@@ -155,7 +155,7 @@ mod shape_tests {
 
 mod group_tests {
     use super::*;
-    use crate::core::{Normal3D, Point3D, Ray, Transform, Vector, Vector3D};
+    use crate::core::{Normal3D, Point3D, Ray, Transform, Vector3D, VectorMaths};
     use approx::*;
     use std::f64::consts::PI;
 

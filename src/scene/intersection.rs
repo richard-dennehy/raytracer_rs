@@ -1,4 +1,4 @@
-use crate::core::{Colour, F64Ext, Normal3D, Point3D, Ray, Vector, Vector3D};
+use crate::core::{Colour, F64Ext, Normal3D, Point3D, Ray, Vector3D, VectorMaths};
 use crate::scene::{LightSample, Object};
 use smallvec::SmallVec;
 

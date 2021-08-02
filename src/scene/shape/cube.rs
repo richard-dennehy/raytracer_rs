@@ -1,4 +1,4 @@
-use crate::core::{Normal3D, Point3D, Ray, Vector, Vector3D};
+use crate::core::{Normal3D, Point3D, Ray, Vector3D, VectorMaths};
 use crate::scene::bounding_box::BoundingBox;
 use crate::scene::intersection::{Intersection, Intersections};
 use crate::scene::shape::Shape;

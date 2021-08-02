@@ -1,5 +1,5 @@
 use crate::core::Ray;
-use crate::core::{Point3D, Transform, Vector};
+use crate::core::{Point3D, Transform, VectorMaths};
 use std::num::NonZeroU16;
 
 #[derive(Debug, PartialEq)]

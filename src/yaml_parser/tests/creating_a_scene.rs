@@ -1,5 +1,5 @@
 use super::*;
-use crate::core::{Colour, Point3D, Transform, Vector, Vector3D};
+use crate::core::{Colour, Point3D, Transform, Vector3D, VectorMaths};
 use crate::renderer::Camera;
 use crate::scene::{Material, MaterialKind, Pattern};
 use nonzero_ext::nonzero;

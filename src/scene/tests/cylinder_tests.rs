@@ -1,5 +1,5 @@
 use super::*;
-use crate::core::{Normal3D, Point3D, Ray, Vector, Vector3D};
+use crate::core::{Normal3D, Point3D, Ray, Vector3D, VectorMaths};
 use std::f64::consts::FRAC_1_SQRT_2;
 
 #[test]

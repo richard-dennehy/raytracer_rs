@@ -8,19 +8,18 @@ pub struct Vector3D(f64, f64, f64);
 #[derive(PartialEq, Copy, Clone, Debug)]
 pub struct Normal3D(f64, f64, f64);
 
-// FIXME rename
-pub trait Vector: Sized + Copy + Clone {
+pub trait VectorMaths: Sized + Copy + Clone {
     fn x(&self) -> f64;
     fn y(&self) -> f64;
     fn z(&self) -> f64;
 
     fn magnitude(&self) -> f64;
     fn normalised(&self) -> Normal3D;
-    fn dot<V: Vector>(&self, other: V) -> f64 {
+    fn dot<V: VectorMaths>(&self, other: V) -> f64 {
         self.x() * other.x() + self.y() * other.y() + self.z() * other.z()
     }
 
-    fn cross<V: Vector>(&self, other: V) -> Vector3D {
+    fn cross<V: VectorMaths>(&self, other: V) -> Vector3D {
         Vector3D::new(
             (self.y() * other.z()) - (self.z() * other.y()),
             (self.z() * other.x()) - (self.x() * other.z()),
@@ -43,7 +42,7 @@ impl From<Normal3D> for Vector3D {
     }
 }
 
-impl Vector for Vector3D {
+impl VectorMaths for Vector3D {
     fn x(&self) -> f64 {
         self.0
     }
@@ -92,7 +91,7 @@ impl Normal3D {
     }
 }
 
-impl Vector for Normal3D {
+impl VectorMaths for Normal3D {
     fn x(&self) -> f64 {
         self.0
     }
@@ -124,7 +123,7 @@ impl From<(f64, f64, f64)> for Vector3D {
     }
 }
 
-impl<V: Vector> Add<V> for Vector3D {
+impl<V: VectorMaths> Add<V> for Vector3D {
     type Output = Vector3D;
 
     fn add(mut self, rhs: V) -> Self::Output {
@@ -136,7 +135,7 @@ impl<V: Vector> Add<V> for Vector3D {
     }
 }
 
-impl<V: Vector> Add<V> for Normal3D {
+impl<V: VectorMaths> Add<V> for Normal3D {
     type Output = Vector3D;
 
     fn add(self, rhs: V) -> Self::Output {
@@ -160,7 +159,7 @@ impl Add<Point3D> for Normal3D {
     }
 }
 
-impl<V: Vector> Sub<V> for Vector3D {
+impl<V: VectorMaths> Sub<V> for Vector3D {
     type Output = Vector3D;
 
     fn sub(self, rhs: V) -> Self::Output {
@@ -168,7 +167,7 @@ impl<V: Vector> Sub<V> for Vector3D {
     }
 }
 
-impl<V: Vector> Sub<V> for Normal3D {
+impl<V: VectorMaths> Sub<V> for Normal3D {
     type Output = Vector3D;
 
     fn sub(self, rhs: V) -> Self::Output {

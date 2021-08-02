@@ -1,4 +1,4 @@
-use crate::core::{Colour, Point3D, Transform, Vector, Vector3D};
+use crate::core::{Colour, Point3D, Transform, Vector3D, VectorMaths};
 use crate::renderer::Camera;
 use crate::scene::Light;
 use crate::scene::Object;
@@ -196,7 +196,7 @@ impl PatternDescription {
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum PatternType {
-    Stripes, // TODO rest
+    Stripes,
     Checker,
 }
 
@@ -207,7 +207,6 @@ pub enum Transformation {
     RotationX(f64),
     RotationY(f64),
     RotationZ(f64),
-    // TODO shear
 }
 
 trait ToMatrix {

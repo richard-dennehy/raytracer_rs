@@ -1,5 +1,5 @@
 use crate::core::Transform;
-use crate::core::Vector;
+use crate::core::VectorMaths;
 use crate::core::{Point3D, Ray};
 
 #[derive(Debug, PartialEq, Copy, Clone)]

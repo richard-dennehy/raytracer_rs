@@ -2,7 +2,7 @@ mod point;
 pub use point::Point3D;
 
 mod vector;
-pub use vector::{Normal3D, Vector, Vector3D};
+pub use vector::{Normal3D, Vector3D, VectorMaths};
 
 mod matrix;
 pub use matrix::Matrix4D;

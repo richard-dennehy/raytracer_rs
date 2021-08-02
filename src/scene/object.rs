@@ -1,5 +1,5 @@
 use super::*;
-use crate::core::{Colour, Normal3D, Point3D, Ray, Transform, Vector, Vector3D};
+use crate::core::{Colour, Normal3D, Point3D, Ray, Transform, Vector3D, VectorMaths};
 use crate::scene::{Material, MaterialKind};
 use std::sync::atomic::{AtomicU32, Ordering};
 
@@ -258,30 +258,29 @@ impl Object {
                 right: second,
                 operator,
             } => {
-                // FIXME there must be a more idiomatic way to do this
                 let first_intersections = first.intersect(&with);
                 let second_intersections = second.intersect(&with);
 
                 let intersections = first_intersections.join(second_intersections);
 
-                let (mut in_first, mut in_second) = (false, false);
-                let mut out = Intersections::empty();
+                let (filtered, ..) = intersections.into_iter().fold(
+                    (Intersections::empty(), false, false),
+                    |(mut out, in_first, in_second), intersection| {
+                        let hit_first = first.contains(intersection.with.id);
 
-                for intersection in intersections.into_iter() {
-                    let hit_first = first.contains(intersection.with.id);
+                        if operator.is_intersection(hit_first, in_first, in_second) {
+                            out.push(intersection)
+                        };
 
-                    if operator.is_intersection(hit_first, in_first, in_second) {
-                        out.push(intersection)
-                    }
+                        if hit_first {
+                            (out, !in_first, in_second)
+                        } else {
+                            (out, in_first, !in_second)
+                        }
+                    },
+                );
 
-                    if hit_first {
-                        in_first = !in_first;
-                    } else {
-                        in_second = !in_second;
-                    }
-                }
-
-                out
+                filtered
             }
         }
     }

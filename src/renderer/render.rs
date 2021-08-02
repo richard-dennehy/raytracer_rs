@@ -1,6 +1,7 @@
 use super::*;
 use crate::core::Colour;
 use crate::scene::World;
+use smallvec::SmallVec;
 use std::fmt;
 use std::fmt::{Display, Formatter};
 use std::num::NonZeroU8;
@@ -38,15 +39,17 @@ pub fn render(world: &World, camera: &Camera, samples: &Samples, show_progress: 
 #[derive(Debug, PartialEq)]
 pub struct Samples {
     inner: Vec<(f64, f64)>,
-    // FIXME at most 4, use inline Vector type
-    corners: Vec<(f64, f64)>,
+    corners: SmallVec<[(f64, f64); 4]>,
 }
 
 impl Samples {
     pub fn single() -> Self {
+        let mut corners = SmallVec::new();
+        corners.push((0.5, 0.5));
+
         Self {
             inner: vec![],
-            corners: vec![(0.5, 0.5)],
+            corners,
         }
     }
 
@@ -61,12 +64,12 @@ impl Samples {
         let increment = 1.0 / grid_size as f64;
 
         let max = initial + (increment * (grid_size - 1) as f64);
-        let corners = vec![
+        let corners = SmallVec::from([
             (initial, initial),
             (max, initial),
             (initial, max),
             (max, max),
-        ];
+        ]);
 
         let offsets = (0..grid_size)
             .flat_map(|y| (0..grid_size).map(move |x| (x, y)))

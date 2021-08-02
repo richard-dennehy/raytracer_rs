@@ -204,7 +204,7 @@ mod triangle_tests {
 
 mod smooth_triangles {
     use super::*;
-    use crate::core::{Normal3D, Point3D, Ray, Vector, Vector3D};
+    use crate::core::{Normal3D, Point3D, Ray, Vector3D, VectorMaths};
 
     #[test]
     fn the_normal_of_a_smooth_triangle_should_be_based_off_the_uv_of_the_intersection() {
