@@ -69,7 +69,7 @@ mod intersections {
 
 mod shading {
     use super::*;
-    use crate::core::{Colour, HitData, Normal3D, Point3D, Ray, Transform};
+    use crate::core::{Colour, Normal3D, Point3D, Ray, Transform};
     use crate::renderer::Camera;
     use crate::scene::Pattern;
     use approx::*;

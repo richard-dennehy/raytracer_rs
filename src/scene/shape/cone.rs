@@ -1,6 +1,6 @@
+use super::{Intersection, Intersections};
 use crate::core::F64Ext;
-use crate::core::{Intersection, Intersections, Ray};
-use crate::core::{Normal3D, Point3D, Vector, Vector3D};
+use crate::core::{Normal3D, Point3D, Ray, Vector, Vector3D};
 use crate::scene::bounding_box::BoundingBox;
 use crate::scene::Object;
 use crate::scene::Shape;

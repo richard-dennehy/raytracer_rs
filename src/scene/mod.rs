@@ -16,12 +16,14 @@ pub use pattern::{Pattern, UvPattern};
 mod world;
 pub use world::{World, WorldSettings};
 
+mod intersection;
+pub use intersection::{HitData, Intersection, Intersections, ReflectionData};
+
 pub use shape::{cone::ConeBuilder, cylinder::CylinderBuilder};
 use shape::{cube::Cube, plane::Plane, sphere::Sphere, triangle::Triangle, Shape};
 mod shape {
-    use crate::core::{Intersections, Normal3D, Point3D, Ray};
-    use crate::scene::bounding_box::BoundingBox;
-    use crate::scene::Object;
+    use super::*;
+    use crate::core::{Normal3D, Point3D, Ray};
     use std::fmt::Debug;
 
     pub trait Shape: Debug + Sync {
@@ -53,6 +55,7 @@ mod tests {
     mod cone_tests;
     mod cube_tests;
     mod cylinder_tests;
+    mod intersection_tests;
     mod object_tests;
     mod pattern_tests;
     mod plane_tests;

@@ -16,12 +16,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="move all rendering types to `renderer` module">
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/anti_aliasing.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/anti_aliasing.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/bounding_boxes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/bounding_boxes.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/complex_scenes.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/lighting.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/lighting.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/meshes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/meshes.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benches/benchmarks/trivial_scenes.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scene/intersection.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scene/tests/intersection_tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/ray.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/ray.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/tests/ray_tests.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/vector.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/vector.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/object.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/object.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/shape/cone.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/shape/cone.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/shape/cube.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/shape/cube.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/shape/cylinder.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/shape/cylinder.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/shape/plane.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/shape/plane.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/shape/sphere.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/shape/sphere.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/shape/triangle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/shape/triangle.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/tests/world_tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/tests/world_tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/world.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/world.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -123,7 +134,7 @@
       <command value="cargo bench" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.bench">
+  <component name="RunManager" selected="Cargo.test">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -226,11 +237,6 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.test" />
@@ -241,8 +247,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.bench" />
@@ -523,14 +529,9 @@
       <workItem from="1627723242309" duration="87000" />
       <workItem from="1627740061625" duration="3452000" />
       <workItem from="1627755238656" duration="100000" />
-      <workItem from="1627816065600" duration="3353000" />
-    </task>
-    <task id="LOCAL-00202" summary="WIP implement MTL parser">
-      <created>1624719708788</created>
-      <option name="number" value="00202" />
-      <option name="presentableId" value="LOCAL-00202" />
-      <option name="project" value="LOCAL" />
-      <updated>1624719708788</updated>
+      <workItem from="1627816065600" duration="3586000" />
+      <workItem from="1627830818762" duration="1000" />
+      <workItem from="1627925353512" duration="810000" />
     </task>
     <task id="LOCAL-00203" summary="WIP implement MTL parser">
       <created>1624796774431</created>
@@ -868,7 +869,14 @@
       <option name="project" value="LOCAL" />
       <updated>1627819189088</updated>
     </task>
-    <option name="localTasksCounter" value="251" />
+    <task id="LOCAL-00251" summary="move all rendering types to `renderer` module">
+      <created>1627819492725</created>
+      <option name="number" value="00251" />
+      <option name="presentableId" value="LOCAL-00251" />
+      <option name="project" value="LOCAL" />
+      <updated>1627819492725</updated>
+    </task>
+    <option name="localTasksCounter" value="252" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">

@@ -15,7 +15,6 @@ pub use colour::Colour;
 
 mod ray;
 pub use ray::Ray;
-pub use ray::{HitData, Intersection, Intersections};
 
 pub fn quadratic(a: f64, b: f64, c: f64) -> Option<(f64, f64)> {
     let discriminant = b.powi(2) - 4.0 * a * c;
@@ -68,7 +67,6 @@ mod tests {
     mod colour_tests;
     mod matrix_tests;
     mod point_tests;
-    mod ray_tests;
     mod transform_tests;
     mod vector_tests;
 }

@@ -1,5 +1,5 @@
 use super::*;
-use crate::core::{Colour, Intersections, Normal3D, Point3D, Ray, Transform, Vector, Vector3D};
+use crate::core::{Colour, Normal3D, Point3D, Ray, Transform, Vector, Vector3D};
 use crate::scene::{Material, MaterialKind};
 use std::sync::atomic::{AtomicU32, Ordering};
 

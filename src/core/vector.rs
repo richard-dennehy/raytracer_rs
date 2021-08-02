@@ -8,6 +8,7 @@ pub struct Vector3D(f64, f64, f64);
 #[derive(PartialEq, Copy, Clone, Debug)]
 pub struct Normal3D(f64, f64, f64);
 
+// FIXME rename
 pub trait Vector: Sized + Copy + Clone {
     fn x(&self) -> f64;
     fn y(&self) -> f64;

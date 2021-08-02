@@ -1,4 +1,5 @@
 use crate::core::*;
+use crate::scene::intersection::{HitData, Intersections};
 use crate::scene::Material;
 use crate::scene::MaterialKind;
 use crate::scene::Object;
