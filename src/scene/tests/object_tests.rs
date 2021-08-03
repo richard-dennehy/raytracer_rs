@@ -641,4 +641,20 @@ mod optimising_groups {
         assert_eq!(optimised.children()[1].children()[0].id, right_front_id);
         assert_eq!(optimised.children()[1].children()[1].id, right_back_id);
     }
+
+    #[test]
+    fn optimising_a_group_containing_only_infinite_shapes_should_have_no_effect() {
+        let first = Object::plane();
+        let first_id = first.id;
+
+        let second = Object::plane();
+        let second_id = second.id;
+
+        let group = Object::group(vec![first, second]);
+        let optimised = group.optimised(1);
+
+        assert_eq!(optimised.children().len(), 2);
+        assert_eq!(optimised.children()[0].id, first_id);
+        assert_eq!(optimised.children()[1].id, second_id);
+    }
 }

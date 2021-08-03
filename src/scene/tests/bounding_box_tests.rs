@@ -156,15 +156,35 @@ mod unit_tests {
         let bounds = BoundingBox::new(Point3D::new(-1.0, -1.0, -1.0), Point3D::new(1.0, 1.0, 1.0));
         let transform = Transform::identity().rotate_y(PI / 4.0).rotate_x(PI / 4.0);
 
-        let scaled = bounds.transformed(transform);
+        let rotated = bounds.transformed(transform);
 
         assert_abs_diff_eq!(
-            scaled.min(),
+            rotated.min(),
             Point3D::new(-SQRT_2, -1.7071067811865475, -1.7071067811865475)
         );
         assert_abs_diff_eq!(
-            scaled.max(),
+            rotated.max(),
             Point3D::new(SQRT_2, 1.7071067811865475, 1.7071067811865475)
+        );
+    }
+
+    #[test]
+    fn transforming_an_infinite_bounding_box_with_a_rotation_matrix_should_produce_another_infinite_bounding_box(
+    ) {
+        let min = Point3D::new(-1.0, f64::NEG_INFINITY, -1.0);
+        let max = Point3D::new(1.0, f64::INFINITY, 1.0);
+
+        let bounds = BoundingBox::new(min, max);
+        let transform = Transform::identity().rotate_x(PI);
+
+        let rotated = bounds.transformed(transform);
+        assert_abs_diff_eq!(
+            rotated.min(),
+            Point3D::new(-1.0, -BoundingBox::LIMIT, -41671192378713110000000.0) // <- ???
+        );
+        assert_abs_diff_eq!(
+            rotated.max(),
+            Point3D::new(1.0, BoundingBox::LIMIT, 41671192378713110000000.0)
         );
     }
 

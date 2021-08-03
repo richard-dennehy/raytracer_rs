@@ -9,7 +9,7 @@ pub struct BoundingBox {
 }
 
 impl BoundingBox {
-    // keep the core vaguely functional - using INFINITY or f64::MAX breaks the calculations
+    // keep the maths vaguely functional - using INFINITY or f64::MAX breaks the calculations
     pub const LIMIT: f64 = f32::MAX as _;
 
     pub fn infinite() -> Self {
@@ -68,7 +68,6 @@ impl BoundingBox {
         !self.fully_contains(other)
     }
 
-    // TODO test plane (infinite) BBs don't break
     pub fn transformed(&self, transformation: Transform) -> Self {
         let min = self.min;
         let max = self.max;
