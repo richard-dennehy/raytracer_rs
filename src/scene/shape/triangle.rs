@@ -124,20 +124,19 @@ impl Shape for Triangle {
 
     // calculate Barycentric coordinates; see https://en.wikipedia.org/wiki/Barycentric_coordinate_system#Barycentric_coordinates_on_triangles
     fn uv_at(&self, point: Point3D) -> (f64, f64) {
-        let edge3 = self.p3 - self.p1;
         let point_to_origin = point - self.p1;
 
         let e1_dot_e1 = self.edge1.dot(self.edge1);
-        let e1_dot_e3 = self.edge1.dot(edge3);
-        let e3_dot_e3 = edge3.dot(edge3);
+        let e1_dot_e2 = self.edge1.dot(self.edge2);
+        let e2_dot_e2 = self.edge2.dot(self.edge2);
         // TODO this should probably be pre-computed (inverted)
-        let denominator = e1_dot_e1 * e3_dot_e3 - e1_dot_e3.powi(2);
+        let denominator = e1_dot_e1 * e2_dot_e2 - e1_dot_e2.powi(2);
 
         let point_dot_e1 = point_to_origin.dot(self.edge1);
-        let point_dot_e3 = point_to_origin.dot(edge3);
+        let point_dot_e2 = point_to_origin.dot(self.edge2);
 
-        let v = (e3_dot_e3 * point_dot_e1 - e1_dot_e3 * point_dot_e3) / denominator;
-        let w = (e1_dot_e1 * point_dot_e3 - e1_dot_e3 * point_dot_e1) / denominator;
+        let v = (e2_dot_e2 * point_dot_e1 - e1_dot_e2 * point_dot_e2) / denominator;
+        let w = (e1_dot_e1 * point_dot_e2 - e1_dot_e2 * point_dot_e1) / denominator;
 
         // using `v` and `w` like this (and ignoring `u`) gives the same coordinates as Möller–Trumbore
         (v, w)

@@ -158,15 +158,49 @@ fn main() -> Result<(), String> {
             ),
     );
 
-    // TODO add triangles
+    world.add(
+        Object::triangle(
+            Point3D::ORIGIN,
+            Point3D::new(0.0, 2.0, 0.0),
+            Point3D::new(2.0, 0.0, 0.0),
+        )
+        .with_material(Material {
+            kind: MaterialKind::Uv(UvPattern::checkers(
+                Colour::new(0.0, 0.5, 0.0),
+                Colour::WHITE,
+                nonzero_ext::nonzero!(4usize),
+                nonzero_ext::nonzero!(4usize),
+            )),
+            ..Default::default()
+        })
+        .transformed(Transform::identity().translate_x(9.0)),
+    );
+
+    world.add(
+        Object::triangle(
+            Point3D::ORIGIN,
+            Point3D::new(0.0, -2.0, 0.0),
+            Point3D::new(-2.0, 0.0, 0.0),
+        )
+        .with_material(Material {
+            kind: MaterialKind::Uv(UvPattern::checkers(
+                Colour::new(0.0, 0.5, 0.0),
+                Colour::WHITE,
+                nonzero_ext::nonzero!(4usize),
+                nonzero_ext::nonzero!(4usize),
+            )),
+            ..Default::default()
+        })
+        .transformed(Transform::identity().translate_y(2.5).translate_x(11.0)),
+    );
 
     let camera = Camera::new(
         nonzero_ext::nonzero!(1920u16),
         nonzero_ext::nonzero!(1080u16),
         FRAC_PI_3,
         Transform::view_transform(
-            Point3D::new(2.0, 4.0, -14.0),
-            Point3D::new(1.0, 0.0, 0.0),
+            Point3D::new(3.5, 4.0, -16.0),
+            Point3D::new(2.5, 0.0, 0.0),
             Normal3D::POSITIVE_Y,
         ),
     );
