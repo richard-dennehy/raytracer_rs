@@ -11,6 +11,7 @@ pub struct Triangle {
     p3: Point3D,
     edge1: Vector3D,
     edge2: Vector3D,
+    denominator: f64,
     kind: NormalKind,
 }
 
@@ -20,6 +21,7 @@ impl Triangle {
         let edge2 = point3 - point1;
 
         let normal = (edge2.cross(edge1)).normalised();
+        let denominator = 1.0 / (edge1.dot(edge1) * edge2.dot(edge2) - edge1.dot(edge2).powi(2));
 
         Triangle {
             p1: point1,
@@ -27,6 +29,7 @@ impl Triangle {
             p3: point3,
             edge1,
             edge2,
+            denominator,
             kind: NormalKind::Uniform(normal),
         }
     }
@@ -41,6 +44,7 @@ impl Triangle {
     ) -> Self {
         let edge1 = point2 - point1;
         let edge2 = point3 - point1;
+        let denominator = 1.0 / (edge1.dot(edge1) * edge2.dot(edge2) - edge1.dot(edge2).powi(2));
 
         Triangle {
             p1: point1,
@@ -48,6 +52,7 @@ impl Triangle {
             p3: point3,
             edge1,
             edge2,
+            denominator,
             kind: NormalKind::Smooth {
                 normal1,
                 normal2,
@@ -129,14 +134,12 @@ impl Shape for Triangle {
         let e1_dot_e1 = self.edge1.dot(self.edge1);
         let e1_dot_e2 = self.edge1.dot(self.edge2);
         let e2_dot_e2 = self.edge2.dot(self.edge2);
-        // TODO this should probably be pre-computed (inverted)
-        let denominator = e1_dot_e1 * e2_dot_e2 - e1_dot_e2.powi(2);
 
         let point_dot_e1 = point_to_origin.dot(self.edge1);
         let point_dot_e2 = point_to_origin.dot(self.edge2);
 
-        let v = (e2_dot_e2 * point_dot_e1 - e1_dot_e2 * point_dot_e2) / denominator;
-        let w = (e1_dot_e1 * point_dot_e2 - e1_dot_e2 * point_dot_e1) / denominator;
+        let v = (e2_dot_e2 * point_dot_e1 - e1_dot_e2 * point_dot_e2) * self.denominator;
+        let w = (e1_dot_e1 * point_dot_e2 - e1_dot_e2 * point_dot_e1) * self.denominator;
 
         // using `v` and `w` like this (and ignoring `u`) gives the same coordinates as Möller–Trumbore
         (v, w)

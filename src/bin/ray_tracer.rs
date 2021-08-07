@@ -1,10 +1,10 @@
 extern crate ray_tracer;
 
-use ray_tracer::core::{Colour, Normal3D, Point3D, Transform};
+use ray_tracer::core::{Colour, Normal3D, Point3D, Transform, Vector3D, VectorMaths};
 use ray_tracer::renderer::{Camera, Samples};
-use ray_tracer::scene::{Light, Object, World};
+use ray_tracer::scene::{Light, Material, MaterialKind, Object, Pattern, World};
 use ray_tracer::*;
-use std::f64::consts::{FRAC_PI_3, PI};
+use std::f64::consts::{FRAC_1_SQRT_2, FRAC_PI_3};
 use std::time::Instant;
 
 /// Notes on axes and rotation:
@@ -20,47 +20,31 @@ fn main() -> Result<(), String> {
     let mut world = World::empty();
     world
         .lights
-        .push(Light::point(Colour::WHITE, Point3D::new(5.0, 10.0, -10.0)));
-
+        .push(Light::point(Colour::WHITE, Point3D::new(-5.0, 0.0, -5.0)));
     world.add(
-        Object::cone()
-            .min_y(-3.0)
-            .max_y(-1.0)
-            .capped()
-            .build()
-            .transformed(
-                Transform::identity()
-                    .rotate_x(PI)
-                    .translate_x(-2.0)
-                    .translate_y(-2.0),
-            ),
+        Object::plane()
+            .with_material(Material {
+                kind: MaterialKind::Pattern(Pattern::checkers(Colour::BLACK, Colour::WHITE)),
+                ..Default::default()
+            })
+            .transformed(Transform::identity().translate_y(-1.0)),
     );
-
-    world.add(
-        Object::cone()
-            .min_y(0.0)
-            .max_y(2.0)
-            .capped()
-            .build()
-            .transformed(Transform::identity().translate_x(4.0).translate_y(-1.0)),
-    );
-
-    world.add(
-        Object::cone()
-            .min_y(-0.75)
-            .max_y(0.75)
-            .capped()
-            .build()
-            .transformed(Transform::identity().translate_x(1.0).translate_z(-3.0)),
-    );
+    world.add(Object::smooth_triangle(
+        Point3D::ORIGIN,
+        Point3D::new(0.0, 1.0, 0.0),
+        Point3D::new(1.0, 0.0, 0.0),
+        Vector3D::new(-FRAC_1_SQRT_2, -0.5, -0.5).normalised(),
+        Vector3D::new(0.0, 1.7071, -FRAC_1_SQRT_2).normalised(),
+        Vector3D::new(1.7071, 0.0, -FRAC_1_SQRT_2).normalised(),
+    ));
 
     let camera = Camera::new(
         nonzero_ext::nonzero!(1920u16),
         nonzero_ext::nonzero!(1080u16),
         FRAC_PI_3,
         Transform::view_transform(
-            Point3D::new(2.0, 4.0, -10.0),
-            Point3D::new(1.0, 0.0, 0.0),
+            Point3D::new(-3.0, 2.0, -2.0),
+            Point3D::new(0.0, 0.0, 0.0),
             Normal3D::POSITIVE_Y,
         ),
     );

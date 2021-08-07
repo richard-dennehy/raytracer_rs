@@ -1,5 +1,5 @@
 mod object;
-pub use object::Object;
+pub use object::{CsgOperator, Object};
 
 mod bounding_box;
 use bounding_box::BoundingBox;

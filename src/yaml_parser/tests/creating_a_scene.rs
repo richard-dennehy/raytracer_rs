@@ -371,11 +371,7 @@ fn should_be_able_to_create_an_object_with_multiple_transforms() {
     );
     assert_eq!(
         objects[0].transform(),
-        Transform::identity()
-            .scale_x(1.0)
-            .scale_y(2.0)
-            .scale_z(1.0)
-            .translate_x(1.0)
+        Transform::identity().translate_x(1.0).scale_y(2.0)
     );
 }
 
@@ -674,5 +670,59 @@ fn should_be_able_to_add_an_object_from_a_define_and_override_the_material() {
             casts_shadow: false,
             ..Default::default()
         }
+    );
+}
+
+#[test]
+fn should_be_able_to_create_a_csg() {
+    let input = with_camera_description(
+        "\
+- add: csg
+  operation: difference
+  left:
+    type: cube
+    transform:
+      - [ scale, 1, 0.25, 1 ]
+      - [ translate, 1, 0, 1 ]
+      - [ rotate-y, 0.7854 ]
+      - [ scale, 1, 1, 0.1 ]
+  right:
+    type: cylinder
+    min: -0.26
+    max: 0.26
+    closed: true
+    transform:
+      - [ scale, 0.8, 1, 0.8 ]",
+    );
+
+    let scene = parse(&input, Default::default());
+    assert!(scene.is_ok(), "{}", scene.unwrap_err());
+    let scene = scene.unwrap();
+
+    let objects = scene.objects();
+    assert!(objects.is_ok(), "{}", objects.unwrap_err());
+    let objects = objects.unwrap();
+    assert_eq!(objects.len(), 1);
+
+    let (left, right) = objects[0].csg_children();
+    assert_eq!(format!("{:?}", left.shape()), "Cube");
+    approx::assert_abs_diff_eq!(
+        left.transform(),
+        Transform::identity()
+            .scale_y(0.25)
+            .translate_x(1.0)
+            .translate_z(1.0)
+            .rotate_y(0.785 + 0.004)
+            .scale_z(0.1),
+        epsilon = 0.05 // rounding errors are absurd in this instance
+    );
+
+    assert_eq!(
+        format!("{:?}", right.shape()),
+        "Cylinder { max_y: 0.26, min_y: -0.26, capped: true }"
+    );
+    assert_eq!(
+        right.transform(),
+        Transform::identity().scale_x(0.8).scale_z(0.8)
     );
 }

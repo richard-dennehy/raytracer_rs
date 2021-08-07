@@ -1,6 +1,6 @@
 use super::*;
 use crate::core::{Colour, Point3D, Vector3D};
-use crate::scene::Light;
+use crate::scene::{CsgOperator, Light};
 use either::Either::{Left, Right};
 
 #[test]
@@ -66,6 +66,36 @@ intensity: [ 0.2, 0.2, 0.2 ]
     assert_eq!(
         output,
         Light::point(Colour::greyscale(0.2), Point3D::new(-400.0, 50.0, -10.0))
+    );
+}
+
+#[test]
+fn should_parse_an_area_light() {
+    let input = "\
+add: light
+corner: [-1, 2, 4]
+uvec: [2, 0, 0]
+vvec: [0, 2, 0]
+usteps: 10
+vsteps: 10
+jitter: true
+intensity: [1.5, 1.5, 1.5]";
+
+    let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+    let output = yaml.parse::<Light>(&HashMap::new());
+    assert!(output.is_ok(), "{}", output.unwrap_err());
+    let output = output.unwrap();
+    assert_eq!(
+        output,
+        Light::area(
+            Colour::greyscale(1.5),
+            Point3D::new(-1.0, 2.0, 4.0),
+            Vector3D::new(2.0, 0.0, 0.0),
+            Vector3D::new(0.0, 2.0, 0.0),
+            nonzero_ext::nonzero!(10u8),
+            nonzero_ext::nonzero!(10u8),
+            DEFAULT_AREA_LIGHT_SEED
+        )
     );
 }
 
@@ -675,6 +705,80 @@ add: cylinder";
             material: MaterialDescription::default(),
             transform: vec![],
             casts_shadow: true
+        }
+    );
+}
+
+#[test]
+fn should_parse_csg_difference() {
+    let input = "\
+add: csg
+operation: difference
+left:
+  type: cube
+  transform:
+    - [ scale, 1, 0.25, 1 ]
+    - [ translate, 1, 0, 1 ]
+    - [ rotate-y, 0.7854 ]
+    - [ scale, 1, 1, 0.1 ]
+right:
+  type: cylinder
+  min: -0.26
+  max: 0.26
+  closed: true
+  transform:
+    - [ scale, 0.8, 1, 0.8 ]";
+
+    let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+    let object = yaml.parse::<ObjectDescription>(&HashMap::new());
+    assert!(object.is_ok(), "{}", object.unwrap_err());
+    let object = object.unwrap();
+    assert_eq!(
+        object,
+        ObjectDescription {
+            kind: ObjectKind::Csg {
+                operator: CsgOperator::Subtract,
+                left: Box::new(ObjectDescription {
+                    kind: ObjectKind::Cube,
+                    transform: vec![
+                        Transformation::Scale {
+                            x: 1.0,
+                            y: 0.25,
+                            z: 1.0
+                        },
+                        Transformation::Translate {
+                            x: 1.0,
+                            y: 0.0,
+                            z: 1.0
+                        },
+                        Transformation::RotationY(0.7 + 0.0854), // pls go away clippy
+                        Transformation::Scale {
+                            x: 1.0,
+                            y: 1.0,
+                            z: 0.1
+                        }
+                    ],
+                    casts_shadow: true,
+                    material: MaterialDescription::default()
+                }),
+                right: Box::new(ObjectDescription {
+                    kind: ObjectKind::Cylinder {
+                        min: Some(-0.26),
+                        max: Some(0.26),
+                        capped: true
+                    },
+                    transform: vec![Transformation::Scale {
+                        x: 0.8,
+                        y: 1.0,
+                        z: 0.8
+                    }],
+                    casts_shadow: true,
+                    material: MaterialDescription::default()
+                })
+            },
+            transform: vec![],
+            casts_shadow: true,
+            material: MaterialDescription::default()
         }
     );
 }

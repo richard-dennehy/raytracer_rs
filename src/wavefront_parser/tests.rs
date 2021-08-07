@@ -493,6 +493,7 @@ f 1 2 3 4 5";
             p3: Point3D(1.0, 0.0, 0.0), \
             edge1: Vector3D(2.0, -1.0, 0.0), \
             edge2: Vector3D(2.0, -1.0, 0.0), \
+            denominator: inf, \
             kind: Uniform(Normal3D(0.0, 0.0, 0.0)) \
             }"
             .to_string()
@@ -506,6 +507,7 @@ f 1 2 3 4 5";
             p3: Point3D(1.0, 1.0, 0.0), \
             edge1: Vector3D(2.0, -1.0, 0.0), \
             edge2: Vector3D(2.0, 0.0, 0.0), \
+            denominator: 0.25, \
             kind: Uniform(Normal3D(0.0, 0.0, -1.0)) \
             }"
             .to_string()
@@ -540,6 +542,7 @@ f 1 2 3 4 5";
             p3: Point3D(1.0, 0.0, 0.0), \
             edge1: Vector3D(0.0, -1.0, 0.0), \
             edge2: Vector3D(2.0, -1.0, 0.0), \
+            denominator: 0.25, \
             kind: Uniform(Normal3D(0.0, 0.0, -1.0)) \
             }"
             .to_string()
@@ -553,6 +556,7 @@ f 1 2 3 4 5";
             p3: Point3D(1.0, 1.0, 0.0), \
             edge1: Vector3D(2.0, -1.0, 0.0), \
             edge2: Vector3D(2.0, 0.0, 0.0), \
+            denominator: 0.25, \
             kind: Uniform(Normal3D(0.0, 0.0, -1.0)) \
             }"
             .to_string()
@@ -566,6 +570,7 @@ f 1 2 3 4 5";
              p3: Point3D(0.0, 2.0, 0.0), \
              edge1: Vector3D(2.0, 0.0, 0.0), \
              edge2: Vector3D(1.0, 1.0, 0.0), \
+             denominator: 0.25, \
              kind: Uniform(Normal3D(0.0, 0.0, -1.0)) \
              }"
             .to_string()
@@ -739,6 +744,7 @@ f 1 2 3 4 5";
             p3: Point3D(1.0, 0.0, 0.0), \
             edge1: Vector3D(-1.0, -1.0, 0.0), \
             edge2: Vector3D(1.0, -1.0, 0.0), \
+            denominator: 0.25, \
             kind: Smooth { \
             normal1: Normal3D(0.0, 1.0, 0.0), \
             normal2: Normal3D(-1.0, 0.0, 0.0), \
@@ -756,6 +762,7 @@ f 1 2 3 4 5";
             p3: Point3D(1.0, 0.0, 0.0), \
             edge1: Vector3D(-1.0, -1.0, 0.0), \
             edge2: Vector3D(1.0, -1.0, 0.0), \
+            denominator: 0.25, \
             kind: Smooth { \
             normal1: Normal3D(0.0, 1.0, 0.0), \
             normal2: Normal3D(-1.0, 0.0, 0.0), \

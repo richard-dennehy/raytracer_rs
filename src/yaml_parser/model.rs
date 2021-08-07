@@ -1,7 +1,7 @@
 use crate::core::{Colour, Point3D, Transform, Vector3D, VectorMaths};
 use crate::renderer::Camera;
-use crate::scene::Light;
 use crate::scene::Object;
+use crate::scene::{CsgOperator, Light};
 use crate::scene::{Material, MaterialKind, Pattern};
 use crate::wavefront_parser::WavefrontParser;
 use either::Either;
@@ -54,47 +54,66 @@ impl SceneDescription {
     pub fn objects(&self) -> Result<Vec<Object>, String> {
         fn inner(
             this: &SceneDescription,
-            objects: &Vec<ObjectDescription>,
+            desc: &ObjectDescription,
             parser: &WavefrontParser,
-        ) -> Result<Vec<Object>, String> {
-            objects
-                .iter()
-                .map(|desc| {
-                    let object = match &desc.kind {
-                        ObjectKind::Plane => Ok(Object::plane()),
-                        ObjectKind::Sphere => Ok(Object::sphere()),
-                        ObjectKind::Cube => Ok(Object::cube()),
-                        ObjectKind::Cylinder { min, max, capped } => {
-                            let cylinder = Object::cylinder()
-                                .min_y(min.unwrap_or(f64::INFINITY))
-                                .max_y(max.unwrap_or(f64::INFINITY));
+        ) -> Result<Object, String> {
+            let object = match &desc.kind {
+                ObjectKind::Plane => Ok(Object::plane()),
+                ObjectKind::Sphere => Ok(Object::sphere()),
+                ObjectKind::Cube => Ok(Object::cube()),
+                ObjectKind::Cylinder { min, max, capped } => {
+                    let cylinder = Object::cylinder()
+                        .min_y(min.unwrap_or(f64::INFINITY))
+                        .max_y(max.unwrap_or(f64::INFINITY));
 
-                            let cylinder = if *capped { cylinder.capped() } else { cylinder };
+                    let cylinder = if *capped { cylinder.capped() } else { cylinder };
 
-                            Ok(cylinder.build())
-                        }
-                        ObjectKind::ObjFile { file_name } => parser.load(file_name),
-                        ObjectKind::Group { children } => {
-                            inner(this, children, parser).map(Object::group)
-                        }
-                    };
+                    Ok(cylinder.build())
+                }
+                ObjectKind::ObjFile { file_name } => parser.load(file_name),
+                ObjectKind::Group { children } => children
+                    .iter()
+                    .map(|c| inner(this, c, parser))
+                    .collect::<Result<Vec<_>, _>>()
+                    .map(Object::group),
+                ObjectKind::Csg {
+                    operator: CsgOperator::Subtract,
+                    left,
+                    right,
+                } => inner(this, left, parser)
+                    .and_then(|l| inner(this, right, parser).map(|r| Object::csg_difference(l, r))),
+                ObjectKind::Csg {
+                    operator: CsgOperator::Union,
+                    left,
+                    right,
+                } => inner(this, left, parser)
+                    .and_then(|l| inner(this, right, parser).map(|r| Object::csg_union(l, r))),
+                ObjectKind::Csg {
+                    operator: CsgOperator::Intersection,
+                    left,
+                    right,
+                } => inner(this, left, parser).and_then(|l| {
+                    inner(this, right, parser).map(|r| Object::csg_intersection(l, r))
+                }),
+            };
 
-                    let material = desc.material.to_material(desc.casts_shadow);
-                    let transform = desc.transform.to_matrix();
+            let material = desc.material.to_material(desc.casts_shadow);
+            let transform = desc.transform.to_matrix();
 
-                    object.map(|obj| {
-                        if material == Material::default() {
-                            obj.transformed(transform)
-                        } else {
-                            obj.transformed(transform).with_material(material)
-                        }
-                    })
-                })
-                .collect()
+            object.map(|obj| {
+                if material == Material::default() {
+                    obj.transformed(transform)
+                } else {
+                    obj.transformed(transform).with_material(material)
+                }
+            })
         }
 
         let parser = WavefrontParser::new(self.resource_dir.clone());
-        inner(self, &self.objects, &parser)
+        self.objects
+            .iter()
+            .map(|desc| inner(self, desc, &parser))
+            .collect()
     }
 }
 
@@ -282,5 +301,10 @@ pub enum ObjectKind {
     },
     Group {
         children: Vec<ObjectDescription>,
+    },
+    Csg {
+        operator: CsgOperator,
+        left: Box<ObjectDescription>,
+        right: Box<ObjectDescription>,
     },
 }

@@ -23,8 +23,8 @@ enum ObjectKind {
     },
 }
 
-#[derive(Debug, Copy, Clone)]
-enum CsgOperator {
+#[derive(Debug, Copy, Clone, PartialEq)]
+pub enum CsgOperator {
     Intersection,
     Subtract,
     Union,

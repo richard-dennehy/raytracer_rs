@@ -1,11 +1,12 @@
 use crate::core::{Colour, Point3D, Vector3D};
-use crate::scene::Light;
+use crate::scene::{CsgOperator, Light};
 use crate::yaml_parser::model::{
     CameraDescription, MaterialDescription, ObjectDescription, ObjectKind, PatternDescription,
     PatternType, Transformation,
 };
 use crate::yaml_parser::model::{Define, Defines};
 use either::Either::{Left, Right};
+use std::num::NonZeroU8;
 use yaml_rust::Yaml;
 
 pub trait YamlExt {
@@ -22,6 +23,7 @@ pub trait FromYaml: Sized {
     fn from_yaml_and_defines(yaml: &Yaml, defines: &Defines) -> Result<Self, String>;
 }
 
+// FIXME ideally there'd be some kind of stack trace when parsing fails
 impl FromYaml for f64 {
     fn from_yaml_and_defines(yaml: &Yaml, _: &Defines) -> Result<Self, String> {
         match &yaml {
@@ -42,6 +44,18 @@ impl FromYaml for usize {
             Yaml::BadValue => Err("value is undefined".into()),
             _ => Err(format!("cannot parse {:?} as an integer", yaml)),
         }
+    }
+}
+
+impl FromYaml for NonZeroU8 {
+    fn from_yaml_and_defines(yaml: &Yaml, defines: &Defines) -> Result<Self, String> {
+        yaml.parse::<usize>(defines).and_then(|int| {
+            if int > u8::MAX as usize {
+                Err(format!("value {:?} is too large", int))
+            } else {
+                NonZeroU8::new(int as u8).ok_or("value must not be 0".to_owned())
+            }
+        })
     }
 }
 
@@ -80,10 +94,12 @@ impl FromYaml for (f64, f64, f64) {
 
 impl FromYaml for ObjectDescription {
     fn from_yaml_and_defines(yaml: &Yaml, defines: &Defines) -> Result<Self, String> {
-        let add = yaml["add"].as_str().ok_or_else(|| {
-            "unreachable: should not be parsing yaml as ObjectDescription if there is no `add`"
-                .to_string()
-        })?;
+        let add = yaml["add"]
+            .as_str()
+            .or_else(|| yaml["type"].as_str())
+            .ok_or_else(|| {
+                "cannot parse YAML as ObjectDescription as it does not specify an `add` or a `type`"
+            })?;
 
         let material = yaml["material"].parse(defines)?;
         let transforms = yaml["transform"].parse(defines)?;
@@ -121,6 +137,13 @@ impl FromYaml for ObjectDescription {
                 "group" => {
                     ObjectKind::Group { children: yaml["children"].parse(defines)? }
                 }
+                "csg" => {
+                    let operator = yaml["operation"].parse(defines)?;
+                    let left = yaml["left"].parse(defines)?;
+                    let right = yaml["right"].parse(defines)?;
+
+                    ObjectKind::Csg { operator, left, right }
+                }
                 _ => return Err(format!("{:?} is not a primitive or a `define` (note: defines must be created before being referenced)", add)),
             };
 
@@ -130,6 +153,18 @@ impl FromYaml for ObjectDescription {
                 transform: transforms.unwrap_or_default(),
                 casts_shadow: casts_shadow.unwrap_or(true),
             })
+        }
+    }
+}
+
+impl FromYaml for CsgOperator {
+    fn from_yaml_and_defines(yaml: &Yaml, _: &Defines) -> Result<Self, String> {
+        match yaml.as_str() {
+            Some("difference") => Ok(CsgOperator::Subtract),
+            Some("union") => Ok(CsgOperator::Union),
+            Some("intersection") => Ok(CsgOperator::Intersection),
+            Some(other) => Err(format!("{:?} is not a valid CSG operation", other)),
+            _ => Err(format!("cannot parse {:?} as a CSG operation", yaml)),
         }
     }
 }
@@ -308,12 +343,32 @@ impl FromYaml for CameraDescription {
     }
 }
 
+pub(in crate::yaml_parser) const DEFAULT_AREA_LIGHT_SEED: u64 = 4; // totally randomly chosen
+
 impl FromYaml for Light {
     fn from_yaml_and_defines(yaml: &Yaml, defines: &Defines) -> Result<Self, String> {
         let colour = yaml["intensity"].parse(defines)?;
-        let position = yaml["at"].parse(defines)?;
 
-        Ok(Light::point(colour, position))
+        // scene description format doesn't specify what kind of light to add, so have to guess based on what data is provided
+        if let Some(position) = yaml["at"].parse(defines)? {
+            Ok(Light::point(colour, position))
+        } else {
+            let bottom_left = yaml["corner"].parse(defines)?;
+            let u = yaml["uvec"].parse(defines)?;
+            let v = yaml["vvec"].parse(defines)?;
+            let u_steps = yaml["usteps"].parse(defines)?;
+            let v_steps = yaml["vsteps"].parse(defines)?;
+            // ignore `jitter` - you don't get a choice between fixed vs random sampling
+            Ok(Light::area(
+                colour,
+                bottom_left,
+                u,
+                v,
+                u_steps,
+                v_steps,
+                DEFAULT_AREA_LIGHT_SEED,
+            ))
+        }
     }
 }
 
@@ -398,5 +453,14 @@ where
                 .collect(),
             _ => Err(format!("expected array, got {:?}", yaml)),
         }
+    }
+}
+
+impl<T> FromYaml for Box<T>
+where
+    T: FromYaml,
+{
+    fn from_yaml_and_defines(yaml: &Yaml, defines: &Defines) -> Result<Self, String> {
+        T::from_yaml_and_defines(yaml, defines).map(Box::new)
     }
 }
