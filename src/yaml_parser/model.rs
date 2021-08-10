@@ -1,14 +1,15 @@
 use crate::core::{Colour, Point3D, Transform, Vector3D, VectorMaths};
 use crate::renderer::Camera;
-use crate::scene::Object;
 use crate::scene::{CsgOperator, Light};
 use crate::scene::{Material, MaterialKind, Pattern};
+use crate::scene::{Object, UvPattern};
 use crate::wavefront_parser::WavefrontParser;
 use either::Either;
 use either::Either::{Left, Right};
 use std::collections::HashMap;
-use std::num::NonZeroU16;
+use std::num::{NonZeroU16, NonZeroUsize};
 use std::path::PathBuf;
+use std::sync::Arc;
 
 #[derive(Debug, PartialEq)]
 pub struct SceneDescription {
@@ -97,7 +98,9 @@ impl SceneDescription {
                 }),
             };
 
-            let material = desc.material.to_material(desc.casts_shadow);
+            let material = desc
+                .material
+                .to_material(desc.casts_shadow, &this.resource_dir);
             let transform = desc.transform.to_matrix();
 
             object.map(|obj| {
@@ -150,14 +153,20 @@ pub struct MaterialDescription {
 }
 
 impl MaterialDescription {
-    fn to_material(&self, casts_shadow: bool) -> Material {
+    // FIXME passing PathBuf here really sucks
+    fn to_material(&self, casts_shadow: bool, resource_dir: &PathBuf) -> Material {
         let mut material = Material::default();
 
         self.pattern
             .to_owned()
             .map(|pattern_desc| match pattern_desc {
                 Left(colour) => material.kind = MaterialKind::Solid(colour),
-                Right(pattern) => material.kind = MaterialKind::Pattern(pattern.to_pattern()),
+                Right(pattern) => {
+                    material.kind = match pattern.to_pattern(resource_dir) {
+                        Right(uv) => MaterialKind::Uv(uv),
+                        Left(pattern) => MaterialKind::Pattern(pattern),
+                    }
+                }
             });
         self.diffuse.map(|diffuse| material.diffuse = diffuse);
         self.ambient.map(|ambient| material.ambient = ambient);
@@ -192,31 +201,65 @@ impl MaterialDescription {
 #[derive(Debug, PartialEq, Clone)]
 pub struct PatternDescription {
     pub(crate) pattern_type: PatternType,
-    pub(crate) colours: (Colour, Colour),
     pub(crate) transforms: Option<Vec<Transformation>>,
 }
 
 impl PatternDescription {
-    pub fn to_pattern(&self) -> Pattern {
-        let (primary, secondary) = self.colours;
-
-        let pattern = match self.pattern_type {
-            PatternType::Stripes => Pattern::striped(primary, secondary),
-            PatternType::Checker => Pattern::checkers(primary, secondary),
+    // FIXME passing PathBuf here kind of sucks
+    pub fn to_pattern(&self, resource_dir: &PathBuf) -> Either<Pattern, UvPattern> {
+        let pattern = match &self.pattern_type {
+            PatternType::Stripes { primary, secondary } => {
+                Left(Pattern::striped(*primary, *secondary))
+            }
+            PatternType::Checkers { primary, secondary } => {
+                Left(Pattern::checkers(*primary, *secondary))
+            }
+            PatternType::Rings { primary, secondary } => Left(Pattern::ring(*primary, *secondary)),
+            PatternType::Uv(UvPatternType::Checkers {
+                primary,
+                secondary,
+                width,
+                height,
+            }) => Right(UvPattern::checkers(*primary, *secondary, *width, *height)),
+            PatternType::Uv(UvPatternType::Image { file_name }) => {
+                let file_path = resource_dir.join(file_name);
+                let img = image::open(&file_path)
+                    .expect(&format!("failed to load uv pattern from {:?}", file_path));
+                Right(UvPattern::image(Arc::new(img.to_rgb8())))
+            }
         };
 
         if let Some(tfs) = &self.transforms {
-            pattern.with_transform(tfs.to_matrix())
+            match pattern {
+                Right(uv) => Right(uv), // FIXME oops doesn't support transforms
+                Left(pattern) => Left(pattern.with_transform(tfs.to_matrix())),
+            }
         } else {
             pattern
         }
     }
 }
 
-#[derive(Debug, PartialEq, Clone, Copy)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum PatternType {
-    Stripes,
-    Checker,
+    Stripes { primary: Colour, secondary: Colour },
+    Checkers { primary: Colour, secondary: Colour },
+    Rings { primary: Colour, secondary: Colour },
+    // FIXME should probably just use `UvPatternType` directly
+    Uv(UvPatternType),
+}
+
+#[derive(Debug, PartialEq, Clone)]
+pub enum UvPatternType {
+    Checkers {
+        primary: Colour,
+        secondary: Colour,
+        width: NonZeroUsize,
+        height: NonZeroUsize,
+    },
+    Image {
+        file_name: String,
+    },
 }
 
 #[derive(PartialEq, Debug, Clone, Copy)]

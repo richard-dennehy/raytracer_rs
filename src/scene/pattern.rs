@@ -213,9 +213,13 @@ impl UvPattern {
             UvPatternKind::AlignmentCheck { main, .. } => *main,
             UvPatternKind::Image(img) => {
                 let v = 1.0 - v;
+                // TODO add test for out-of-bounds access
+                let x = u.min(1.0) * (img.width() - 1) as f64;
+                let y = v.max(0.0) * (img.height() - 1) as f64;
 
-                let x = u * (img.width() - 1) as f64;
-                let y = v * (img.height() - 1) as f64;
+                if x.round() as u32 == 2503 {
+                    dbg!(u, v, x, y);
+                };
 
                 let pixel = img.get_pixel(x.round() as _, y.round() as _);
                 Colour::new(

@@ -201,8 +201,10 @@ value:
         define,
         Define::Material(MaterialDescription {
             pattern: Some(Right(PatternDescription {
-                pattern_type: PatternType::Stripes,
-                colours: (Colour::greyscale(0.45), Colour::greyscale(0.55)),
+                pattern_type: PatternType::Stripes {
+                    primary: Colour::greyscale(0.45),
+                    secondary: Colour::greyscale(0.55),
+                },
                 transforms: Some(vec![
                     Transformation::Scale {
                         x: 0.25,
@@ -243,8 +245,10 @@ value:
         define,
         Define::Material(MaterialDescription {
             pattern: Some(Right(PatternDescription {
-                pattern_type: PatternType::Checker,
-                colours: (Colour::greyscale(0.35), Colour::greyscale(0.65)),
+                pattern_type: PatternType::Checkers {
+                    primary: Colour::greyscale(0.35),
+                    secondary: Colour::greyscale(0.65)
+                },
                 transforms: None
             })),
             specular: Some(0.0),
@@ -1033,6 +1037,112 @@ value:
             transform: vec![],
             casts_shadow: false
         })
+    );
+}
+
+#[test]
+fn should_parse_a_material_with_a_uv_pattern() {
+    let input = "\
+pattern:
+  type: map
+  mapping: spherical
+  uv_pattern:
+    type: checkers
+    width: 16
+    height: 8
+    colors:
+      - [ 0, 0, 0 ]
+      - [ 0.5, 0.5, 0.5 ]";
+
+    let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+    let material = yaml.parse::<MaterialDescription>(&HashMap::new());
+    assert!(material.is_ok(), "{}", material.unwrap_err());
+    let material = material.unwrap();
+
+    assert_eq!(
+        material,
+        MaterialDescription {
+            pattern: Some(Right(PatternDescription {
+                pattern_type: PatternType::Uv(UvPatternType::Checkers {
+                    width: nonzero_ext::nonzero!(16usize),
+                    height: nonzero_ext::nonzero!(8usize),
+                    primary: Colour::BLACK,
+                    secondary: Colour::greyscale(0.5)
+                }),
+                transforms: None,
+            })),
+            ..Default::default()
+        }
+    );
+}
+
+#[test]
+fn should_parse_a_material_with_a_uv_image_pattern() {
+    let input = "\
+pattern:
+  type: map
+  mapping: planar
+  uv_pattern:
+    type: image
+    file: wood.jpg
+  transform:
+    - [ scale, 0.5, 0.5, 0.5 ]";
+
+    let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+    let material = yaml.parse::<MaterialDescription>(&HashMap::new());
+    assert!(material.is_ok(), "{}", material.unwrap_err());
+    let material = material.unwrap();
+
+    assert_eq!(
+        material,
+        MaterialDescription {
+            pattern: Some(Right(PatternDescription {
+                pattern_type: PatternType::Uv(UvPatternType::Image {
+                    file_name: "wood.jpg".into()
+                }),
+                transforms: Some(vec![Transformation::Scale {
+                    x: 0.5,
+                    y: 0.5,
+                    z: 0.5
+                }])
+            })),
+            ..Default::default()
+        }
+    );
+}
+
+#[test]
+fn should_parse_material_with_rings_pattern() {
+    let input = "\
+pattern:
+  type: rings
+  colors:
+    - [ 1, 1, 0.5 ]
+    - [ 1, 1, 0 ]
+  transform:
+    - [ scale, 0.05, 1, 0.05 ]";
+
+    let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+    let material = yaml.parse::<MaterialDescription>(&HashMap::new());
+    assert!(material.is_ok(), "{}", material.unwrap_err());
+    let material = material.unwrap();
+
+    assert_eq!(
+        material,
+        MaterialDescription {
+            pattern: Some(Right(PatternDescription {
+                pattern_type: PatternType::Rings {
+                    primary: Colour::new(1.0, 1.0, 0.5),
+                    secondary: Colour::new(1.0, 1.0, 0.0),
+                },
+                transforms: Some(vec![Transformation::Scale {
+                    x: 0.05,
+                    y: 1.0,
+                    z: 0.05
+                }])
+            })),
+            ..Default::default()
+        }
     );
 }
 
