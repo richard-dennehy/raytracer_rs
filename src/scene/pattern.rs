@@ -25,8 +25,10 @@ enum Kind {
 #[derive(Clone, Debug, PartialEq)]
 pub struct UvPattern {
     pub(super) kind: UvPatternKind,
+    // fixme most patterns don't use these
     pub(super) width: usize,
     pub(super) height: usize,
+    pub transform: Transform,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -112,6 +114,7 @@ impl UvPattern {
             kind: UvPatternKind::Checkers(primary, secondary),
             width: width.get(),
             height: height.get(),
+            transform: Transform::identity(),
         }
     }
 
@@ -134,6 +137,7 @@ impl UvPattern {
             ]),
             width: 1,
             height: 1,
+            transform: Transform::identity(),
         }
     }
 
@@ -146,6 +150,7 @@ impl UvPattern {
             ]),
             width: 1,
             height: 1,
+            transform: Transform::identity(),
         }
     }
 
@@ -166,6 +171,7 @@ impl UvPattern {
             },
             width: 1,
             height: 1,
+            transform: Transform::identity(),
         }
     }
 
@@ -174,7 +180,13 @@ impl UvPattern {
             kind: UvPatternKind::Image(img),
             width: 1,
             height: 1,
+            transform: Transform::identity(),
         }
+    }
+
+    pub fn with_transform(mut self, transform: Transform) -> Self {
+        self.transform = transform;
+        self
     }
 }
 
@@ -216,10 +228,6 @@ impl UvPattern {
                 // TODO add test for out-of-bounds access
                 let x = u.min(1.0) * (img.width() - 1) as f64;
                 let y = v.max(0.0) * (img.height() - 1) as f64;
-
-                if x.round() as u32 == 2503 {
-                    dbg!(u, v, x, y);
-                };
 
                 let pixel = img.get_pixel(x.round() as _, y.round() as _);
                 Colour::new(

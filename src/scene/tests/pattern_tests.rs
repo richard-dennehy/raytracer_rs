@@ -250,6 +250,7 @@ mod unit_tests {
             kind: UvPatternKind::Checkers(Colour::BLACK, Colour::WHITE),
             width: 2,
             height: 2,
+            transform: Transform::identity(),
         };
 
         vec![
@@ -269,6 +270,7 @@ mod unit_tests {
             kind: UvPatternKind::Checkers(Colour::BLACK, Colour::WHITE),
             width: 2,
             height: 2,
+            transform: Transform::identity(),
         };
 
         assert_eq!(pattern.colour_at((1.0, 1.0)), Colour::BLACK);
@@ -287,6 +289,7 @@ mod unit_tests {
             },
             width: 1,
             height: 1,
+            transform: Transform::identity(),
         };
 
         vec![
@@ -303,7 +306,7 @@ mod unit_tests {
     }
 
     #[test]
-    fn an_alignment_check_pattern_should_tesselate_correctly() {
+    fn an_alignment_check_pattern_should_tessellate_correctly() {
         let pattern = UvPattern {
             kind: UvPatternKind::AlignmentCheck {
                 main: Colour::WHITE,
@@ -314,6 +317,7 @@ mod unit_tests {
             },
             width: 1,
             height: 1,
+            transform: Transform::identity(),
         };
 
         assert_eq!(pattern.colour_at((1.1, 1.1)), Colour::GREEN);

@@ -227,7 +227,15 @@ impl Object {
             MaterialKind::Solid(colour) => *colour,
             MaterialKind::Uv(uv_pattern) => {
                 let uv = match &self.kind {
-                    ObjectKind::Shape(shape) => shape.uv_at(object_point),
+                    ObjectKind::Shape(shape) => {
+                        // this isn't the best place (or at least, it's inconsistent),
+                        // but it's not obvious how to apply the inverse once the Point has been converted to a UV
+                        // FIXME test this
+                        let inverse = uv_pattern.transform.inverse();
+
+                        let (x, y, z, _) = inverse * object_point;
+                        shape.uv_at(Point3D::new(x, y, z))
+                    }
                     ObjectKind::Group(_) => panic!("cannot UV map a group"),
                     ObjectKind::Csg { .. } => panic!("cannot UV map a CSG"),
                 };

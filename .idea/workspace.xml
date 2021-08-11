@@ -15,15 +15,17 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implement support for orrery YAML file&#10;&#10;- support area lights in scene YAML&#10;- support CSGs in scene YAML">
-      <change afterPath="$PROJECT_DIR$/examples/orrery/resources/artist_workshop_2k.jpg" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implement support for orrery YAML file&#10;&#10;- note: missing UV transform support">
+      <change afterPath="$PROJECT_DIR$/examples/orrery/orrery.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/examples/orrery/resources/artist_workshop_8k.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/orrery/resources/artist_workshop_2k.exr" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/orrery/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/orrery/main.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/orrery/resources/artist_workshop_2k.jpg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/examples/orrery/resources/orrery.yml" beforeDir="false" afterPath="$PROJECT_DIR$/examples/orrery/resources/orrery.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/object.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/object.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/scene/pattern.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/pattern.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/tests/pattern_tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/tests/pattern_tests.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -118,7 +120,6 @@
       <command value="cargo run --release --example meshes" />
       <command value="cargo run --release --example dragons" />
       <command value="cargo run --release" />
-      <command value="cargo test" />
       <command value="cargo run --release --example textured_earth" />
       <command value="cargo bench -- single_ray_many" />
       <command value="cargo bench -- lots of objects" />
@@ -128,9 +129,15 @@
       <command value="cargo bench" />
       <command value="cargo run --release --example uv_patterns" />
       <command value="cargo run --release --example orrery" />
+      <command value="cargo test" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.run">
+  <component name="RunManager" selected="Cargo.test">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -197,22 +204,6 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test yaml_parser::tests::creating_a_scene::should_be_able_to_create_a_csg" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib yaml_parser::tests::creating_a_scene::should_be_able_to_create_a_csg -- --exact" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <option name="channel" value="DEFAULT" />
-      <option name="requiredFeatures" value="true" />
-      <option name="allFeatures" value="false" />
-      <option name="emulateTerminal" value="false" />
-      <option name="withSudo" value="false" />
-      <option name="backtrace" value="SHORT" />
-      <envs />
-      <option name="isRedirectInput" value="false" />
-      <option name="redirectInputPath" value="" />
-      <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="run" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="command" value="run --release --example orrery" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -229,26 +220,37 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+    <configuration name="test" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="withSudo" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
       <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.run" />
-      <item itemvalue="Cargo.Test yaml_parser::tests::creating_a_scene::should_be_able_to_create_a_csg" />
       <item itemvalue="Cargo.Test yaml_parser::tests::basic_parsing::should_parse_a_material_with_a_uv_pattern" />
       <item itemvalue="Cargo.Test yaml_parser::tests::basic_parsing::should_parse_a_material_with_a_uv_image_pattern" />
       <item itemvalue="Cargo.Test yaml_parser::tests::basic_parsing::should_parse_material_with_rings_pattern" />
+      <item itemvalue="Cargo.test" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.run" />
         <item itemvalue="Cargo.Test yaml_parser::tests::basic_parsing::should_parse_material_with_rings_pattern" />
         <item itemvalue="Cargo.Test yaml_parser::tests::basic_parsing::should_parse_a_material_with_a_uv_image_pattern" />
         <item itemvalue="Cargo.Test yaml_parser::tests::basic_parsing::should_parse_a_material_with_a_uv_pattern" />
-        <item itemvalue="Cargo.Test yaml_parser::tests::creating_a_scene::should_be_able_to_create_a_csg" />
       </list>
     </recent_temporary>
   </component>
@@ -536,14 +538,8 @@
       <workItem from="1628336976062" duration="3933000" />
       <workItem from="1628420758661" duration="3867000" />
       <workItem from="1628531449420" duration="3873000" />
-      <workItem from="1628618730639" duration="1814000" />
-    </task>
-    <task id="LOCAL-00209" summary="WIP support MTL libs in obj parser">
-      <created>1625313724096</created>
-      <option name="number" value="00209" />
-      <option name="presentableId" value="LOCAL-00209" />
-      <option name="project" value="LOCAL" />
-      <updated>1625313724097</updated>
+      <workItem from="1628618730639" duration="1840000" />
+      <workItem from="1628704493281" duration="1933000" />
     </task>
     <task id="LOCAL-00210" summary="WIP support MTL libs in obj parser">
       <created>1625399540539</created>
@@ -881,7 +877,14 @@
       <option name="project" value="LOCAL" />
       <updated>1628424623946</updated>
     </task>
-    <option name="localTasksCounter" value="258" />
+    <task id="LOCAL-00258" summary="implement support for orrery YAML file&#10;&#10;- note: missing UV transform support">
+      <created>1628620577927</created>
+      <option name="number" value="00258" />
+      <option name="presentableId" value="LOCAL-00258" />
+      <option name="project" value="LOCAL" />
+      <updated>1628620577927</updated>
+    </task>
+    <option name="localTasksCounter" value="259" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -907,7 +910,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add example for area lighting" />
     <MESSAGE value="add example for patterns" />
     <MESSAGE value="add example for CSGs" />
     <MESSAGE value="add example for loading meshes" />
@@ -932,7 +934,8 @@
     <MESSAGE value="add benchmarks for UVs" />
     <MESSAGE value="WIP load orrery yaml file" />
     <MESSAGE value="implement support for orrery YAML file&#10;&#10;- support area lights in scene YAML&#10;- support CSGs in scene YAML" />
-    <option name="LAST_COMMIT_MESSAGE" value="implement support for orrery YAML file&#10;&#10;- support area lights in scene YAML&#10;- support CSGs in scene YAML" />
+    <MESSAGE value="implement support for orrery YAML file&#10;&#10;- note: missing UV transform support" />
+    <option name="LAST_COMMIT_MESSAGE" value="implement support for orrery YAML file&#10;&#10;- note: missing UV transform support" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

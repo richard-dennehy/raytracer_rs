@@ -681,7 +681,7 @@
       mapping: spherical
       uv_pattern:
         type: image
-        file: artist_workshop_2k.jpg
+        file: artist_workshop_8k.jpg
       transform:
         - [ rotate-y, -2.7 ]
     diffuse: 0

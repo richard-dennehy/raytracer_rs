@@ -10,7 +10,7 @@ fn main() -> Result<(), String> {
     let timer = Instant::now();
 
     let mut scene = yaml_parser::load(root.join("resources"), "orrery.yml")?;
-    scene.override_resolution(1080, 1080);
+    scene.override_resolution(1920, 1080);
 
     let mut world = World::empty();
     scene.objects()?.into_iter().for_each(|obj| world.add(obj));

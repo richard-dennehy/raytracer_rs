@@ -231,7 +231,7 @@ impl PatternDescription {
 
         if let Some(tfs) = &self.transforms {
             match pattern {
-                Right(uv) => Right(uv), // FIXME oops doesn't support transforms
+                Right(uv) => Right(uv.with_transform(tfs.to_matrix())),
                 Left(pattern) => Left(pattern.with_transform(tfs.to_matrix())),
             }
         } else {
