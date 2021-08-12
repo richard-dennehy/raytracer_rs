@@ -3,7 +3,6 @@ use super::*;
 mod unit_tests {
     use super::*;
     use crate::core::{Colour, Point3D, Transform};
-    use crate::scene::pattern::UvPatternKind;
     use std::f64::consts::PI;
 
     #[test]
@@ -246,12 +245,12 @@ mod unit_tests {
 
     #[test]
     fn a_checker_uv_pattern_alternates_between_the_two_colours() {
-        let pattern = UvPattern {
-            kind: UvPatternKind::Checkers(Colour::BLACK, Colour::WHITE),
-            width: 2,
-            height: 2,
-            transform: Transform::identity(),
-        };
+        let pattern = UvPattern::checkers(
+            Colour::BLACK,
+            Colour::WHITE,
+            nonzero_ext::nonzero!(2usize),
+            nonzero_ext::nonzero!(2usize),
+        );
 
         vec![
             (0.0, 0.0, Colour::BLACK),
@@ -266,12 +265,12 @@ mod unit_tests {
 
     #[test]
     fn a_checker_uv_pattern_should_handle_slight_floating_point_errors_correctly() {
-        let pattern = UvPattern {
-            kind: UvPatternKind::Checkers(Colour::BLACK, Colour::WHITE),
-            width: 2,
-            height: 2,
-            transform: Transform::identity(),
-        };
+        let pattern = UvPattern::checkers(
+            Colour::BLACK,
+            Colour::WHITE,
+            nonzero_ext::nonzero!(2usize),
+            nonzero_ext::nonzero!(2usize),
+        );
 
         assert_eq!(pattern.colour_at((1.0, 1.0)), Colour::BLACK);
         assert_eq!(pattern.colour_at((1.0, 1.0 - f64::EPSILON)), Colour::BLACK);
@@ -279,18 +278,13 @@ mod unit_tests {
 
     #[test]
     fn an_alignment_check_pattern_should_have_different_colours_in_each_corner() {
-        let pattern = UvPattern {
-            kind: UvPatternKind::AlignmentCheck {
-                main: Colour::WHITE,
-                top_left: Colour::RED,
-                top_right: Colour::new(1.0, 1.0, 0.0),
-                bottom_left: Colour::GREEN,
-                bottom_right: Colour::new(0.0, 1.0, 1.0),
-            },
-            width: 1,
-            height: 1,
-            transform: Transform::identity(),
-        };
+        let pattern = UvPattern::alignment_check(
+            Colour::WHITE,
+            Colour::RED,
+            Colour::new(1.0, 1.0, 0.0),
+            Colour::GREEN,
+            Colour::new(0.0, 1.0, 1.0),
+        );
 
         vec![
             ((0.5, 0.5), Colour::WHITE),
@@ -307,18 +301,13 @@ mod unit_tests {
 
     #[test]
     fn an_alignment_check_pattern_should_tessellate_correctly() {
-        let pattern = UvPattern {
-            kind: UvPatternKind::AlignmentCheck {
-                main: Colour::WHITE,
-                top_left: Colour::RED,
-                top_right: Colour::new(1.0, 1.0, 0.0),
-                bottom_left: Colour::GREEN,
-                bottom_right: Colour::new(0.0, 1.0, 1.0),
-            },
-            width: 1,
-            height: 1,
-            transform: Transform::identity(),
-        };
+        let pattern = UvPattern::alignment_check(
+            Colour::WHITE,
+            Colour::RED,
+            Colour::new(1.0, 1.0, 0.0),
+            Colour::GREEN,
+            Colour::new(0.0, 1.0, 1.0),
+        );
 
         assert_eq!(pattern.colour_at((1.1, 1.1)), Colour::GREEN);
     }

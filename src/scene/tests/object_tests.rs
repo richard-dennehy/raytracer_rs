@@ -151,6 +151,27 @@ mod shape_tests {
             Colour::WHITE
         );
     }
+
+    #[test]
+    fn rotating_a_uv_checkers_pattern_180_degrees_should_invert_it() {
+        let checkers_cube = Object::cube().with_material(Material {
+            kind: MaterialKind::Uv(
+                UvPattern::checkers(
+                    Colour::RED,
+                    Colour::WHITE,
+                    nonzero_ext::nonzero!(2usize),
+                    nonzero_ext::nonzero!(2usize),
+                )
+                .with_transform(Transform::identity().rotate_y(PI)),
+            ),
+            ..Default::default()
+        });
+
+        assert_eq!(
+            checkers_cube.raw_colour_at(Point3D::new(-0.5, 0.5, -1.0)),
+            Colour::RED
+        )
+    }
 }
 
 mod group_tests {

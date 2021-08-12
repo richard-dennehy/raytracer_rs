@@ -1,10 +1,10 @@
 extern crate ray_tracer;
 
-use ray_tracer::core::{Colour, Normal3D, Point3D, Transform, Vector3D, VectorMaths};
+use ray_tracer::core::{Colour, Normal3D, Point3D, Transform};
 use ray_tracer::renderer::{Camera, Samples};
-use ray_tracer::scene::{Light, Material, MaterialKind, Object, Pattern, World};
+use ray_tracer::scene::{Light, Material, MaterialKind, Object, UvPattern, World};
 use ray_tracer::*;
-use std::f64::consts::{FRAC_1_SQRT_2, FRAC_PI_3};
+use std::f64::consts::{FRAC_PI_3, PI};
 use std::time::Instant;
 
 /// Notes on axes and rotation:
@@ -22,29 +22,27 @@ fn main() -> Result<(), String> {
         .lights
         .push(Light::point(Colour::WHITE, Point3D::new(-5.0, 0.0, -5.0)));
     world.add(
-        Object::plane()
-            .with_material(Material {
-                kind: MaterialKind::Pattern(Pattern::checkers(Colour::BLACK, Colour::WHITE)),
-                ..Default::default()
-            })
-            .transformed(Transform::identity().translate_y(-1.0)),
+        Object::cube().with_material(Material {
+            kind: MaterialKind::Uv(
+                UvPattern::checkers(
+                    Colour::RED,
+                    Colour::WHITE,
+                    nonzero_ext::nonzero!(2usize),
+                    nonzero_ext::nonzero!(2usize),
+                )
+                .with_transform(Transform::identity().rotate_y(PI)),
+            ),
+            ..Default::default()
+        }),
     );
-    world.add(Object::smooth_triangle(
-        Point3D::ORIGIN,
-        Point3D::new(0.0, 1.0, 0.0),
-        Point3D::new(1.0, 0.0, 0.0),
-        Vector3D::new(-FRAC_1_SQRT_2, -0.5, -0.5).normalised(),
-        Vector3D::new(0.0, 1.7071, -FRAC_1_SQRT_2).normalised(),
-        Vector3D::new(1.7071, 0.0, -FRAC_1_SQRT_2).normalised(),
-    ));
 
     let camera = Camera::new(
         nonzero_ext::nonzero!(1920u16),
         nonzero_ext::nonzero!(1080u16),
         FRAC_PI_3,
         Transform::view_transform(
-            Point3D::new(-3.0, 2.0, -2.0),
-            Point3D::new(0.0, 0.0, 0.0),
+            Point3D::new(0.0, 0.0, -5.0),
+            Point3D::ORIGIN,
             Normal3D::POSITIVE_Y,
         ),
     );

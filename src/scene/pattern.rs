@@ -24,16 +24,18 @@ enum Kind {
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct UvPattern {
-    pub(super) kind: UvPatternKind,
-    // fixme most patterns don't use these
-    pub(super) width: usize,
-    pub(super) height: usize,
+    kind: UvPatternKind,
     pub transform: Transform,
 }
 
 #[derive(Clone, Debug, PartialEq)]
 pub(super) enum UvPatternKind {
-    Checkers(Colour, Colour),
+    Checkers {
+        primary: Colour,
+        secondary: Colour,
+        width: usize,
+        height: usize,
+    },
     AlignmentCheck {
         main: Colour,
         top_left: Colour,
@@ -111,9 +113,12 @@ impl UvPattern {
         height: NonZeroUsize,
     ) -> Self {
         UvPattern {
-            kind: UvPatternKind::Checkers(primary, secondary),
-            width: width.get(),
-            height: height.get(),
+            kind: UvPatternKind::Checkers {
+                primary,
+                secondary,
+                width: width.get(),
+                height: height.get(),
+            },
             transform: Transform::identity(),
         }
     }
@@ -135,8 +140,6 @@ impl UvPattern {
                 (2.0..3.0, 2.0..3.0, back),
                 (1.0..2.0, 3.0..4.0, left),
             ]),
-            width: 1,
-            height: 1,
             transform: Transform::identity(),
         }
     }
@@ -148,8 +151,6 @@ impl UvPattern {
                 (1.0..2.0, 0.0..1.0, top),
                 (2.0..3.0, 0.0..1.0, bottom),
             ]),
-            width: 1,
-            height: 1,
             transform: Transform::identity(),
         }
     }
@@ -169,8 +170,6 @@ impl UvPattern {
                 bottom_left,
                 bottom_right,
             },
-            width: 1,
-            height: 1,
             transform: Transform::identity(),
         }
     }
@@ -178,8 +177,6 @@ impl UvPattern {
     pub fn image(img: Arc<RgbImage>) -> Self {
         UvPattern {
             kind: UvPatternKind::Image(img),
-            width: 1,
-            height: 1,
             transform: Transform::identity(),
         }
     }
@@ -192,16 +189,22 @@ impl UvPattern {
 
 impl UvPattern {
     pub fn colour_at(&self, (u, v): (f64, f64)) -> Colour {
-        let u = nudge(u) * self.width as f64;
-        let v = nudge(v) * self.height as f64;
-
         match &self.kind {
-            UvPatternKind::Checkers(primary, _)
-                if (u.floor() + v.floor()) % 2.0 <= f64::EPSILON =>
-            {
-                *primary
+            UvPatternKind::Checkers {
+                primary,
+                secondary,
+                width,
+                height,
+            } => {
+                let u = nudge(u) * *width as f64;
+                let v = nudge(v) * *height as f64;
+
+                if (u.floor() + v.floor()) % 2.0 <= f64::EPSILON {
+                    *primary
+                } else {
+                    *secondary
+                }
             }
-            UvPatternKind::Checkers(_, secondary) => *secondary,
             UvPatternKind::AlignmentCheck { top_left, .. }
                 if (u.fract() - 0.2) <= f64::EPSILON && (v.fract() + 0.2) >= 1.0 =>
             {
@@ -225,9 +228,9 @@ impl UvPattern {
             UvPatternKind::AlignmentCheck { main, .. } => *main,
             UvPatternKind::Image(img) => {
                 let v = 1.0 - v;
-                // TODO add test for out-of-bounds access
-                let x = u.min(1.0) * (img.width() - 1) as f64;
-                let y = v.max(0.0) * (img.height() - 1) as f64;
+                // TODO add test for planar mapping on cube (i.e. providing 1 face instead of 6)
+                let x = u.rem_euclid(1.0) * (img.width() - 1) as f64;
+                let y = v.rem_euclid(1.0) * (img.height() - 1) as f64;
 
                 let pixel = img.get_pixel(x.round() as _, y.round() as _);
                 Colour::new(

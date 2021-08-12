@@ -230,7 +230,6 @@ impl Object {
                     ObjectKind::Shape(shape) => {
                         // this isn't the best place (or at least, it's inconsistent),
                         // but it's not obvious how to apply the inverse once the Point has been converted to a UV
-                        // FIXME test this
                         let inverse = uv_pattern.transform.inverse();
 
                         let (x, y, z, _) = inverse * object_point;
