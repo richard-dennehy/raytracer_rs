@@ -228,7 +228,7 @@ impl UvPattern {
             UvPatternKind::AlignmentCheck { main, .. } => *main,
             UvPatternKind::Image(img) => {
                 let v = 1.0 - v;
-                // TODO add test for planar mapping on cube (i.e. providing 1 face instead of 6)
+
                 let x = u.rem_euclid(1.0) * (img.width() - 1) as f64;
                 let y = v.rem_euclid(1.0) * (img.height() - 1) as f64;
 

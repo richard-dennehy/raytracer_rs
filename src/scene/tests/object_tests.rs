@@ -172,6 +172,32 @@ mod shape_tests {
             Colour::RED
         )
     }
+
+    #[test]
+    fn applying_a_planar_uv_to_a_cube_should_wrap_the_plane_around_the_6_faces() {
+        let cube = Object::cube().with_material(Material {
+            kind: MaterialKind::Uv(UvPattern::checkers(
+                Colour::GREEN,
+                Colour::WHITE,
+                nonzero_ext::nonzero!(2usize),
+                nonzero_ext::nonzero!(2usize),
+            )),
+            ..Default::default()
+        });
+
+        vec![
+            ("top", Point3D::new(0.1, 1.0, 0.0), Colour::GREEN),
+            ("bottom", Point3D::new(0.1, -1.0, 0.0), Colour::GREEN),
+            ("left", Point3D::new(-1.0, 0.1, 0.0), Colour::GREEN),
+            ("right", Point3D::new(1.0, 0.1, 0.0), Colour::GREEN),
+            ("front", Point3D::new(0.1, 0.0, -1.0), Colour::WHITE),
+            ("back", Point3D::new(0.1, 0.0, 1.0), Colour::GREEN),
+        ]
+        .into_iter()
+        .for_each(|(scenario, point, expected)| {
+            assert_eq!(cube.raw_colour_at(point), expected, "{:?}", scenario)
+        })
+    }
 }
 
 mod group_tests {

@@ -4,8 +4,6 @@ use crate::scene::{CsgOperator, Light};
 use crate::scene::{Material, MaterialKind, Pattern};
 use crate::scene::{Object, UvPattern};
 use crate::wavefront_parser::WavefrontParser;
-use either::Either;
-use either::Either::{Left, Right};
 use std::collections::HashMap;
 use std::num::{NonZeroU16, NonZeroUsize};
 use std::path::PathBuf;
@@ -104,6 +102,7 @@ impl SceneDescription {
             let transform = desc.transform.to_matrix();
 
             object.map(|obj| {
+                // awkward edge case - if an object is part of a group, and doesn't define a material, it should use the group material
                 if material == Material::default() {
                     obj.transformed(transform)
                 } else {
@@ -141,8 +140,7 @@ pub type Defines = HashMap<String, Define>;
 
 #[derive(PartialEq, Debug, Default, Clone)]
 pub struct MaterialDescription {
-    // TODO doesn't support UVs
-    pub(crate) pattern: Option<Either<Colour, PatternDescription>>,
+    pub(crate) pattern: Option<PatternKind>,
     pub(crate) diffuse: Option<f64>,
     pub(crate) ambient: Option<f64>,
     pub(crate) specular: Option<f64>,
@@ -158,16 +156,8 @@ impl MaterialDescription {
         let mut material = Material::default();
 
         self.pattern
-            .to_owned()
-            .map(|pattern_desc| match pattern_desc {
-                Left(colour) => material.kind = MaterialKind::Solid(colour),
-                Right(pattern) => {
-                    material.kind = match pattern.to_pattern(resource_dir) {
-                        Right(uv) => MaterialKind::Uv(uv),
-                        Left(pattern) => MaterialKind::Pattern(pattern),
-                    }
-                }
-            });
+            .as_ref()
+            .map(|pattern_kind| material.kind = pattern_kind.to_material_kind(resource_dir));
         self.diffuse.map(|diffuse| material.diffuse = diffuse);
         self.ambient.map(|ambient| material.ambient = ambient);
         self.specular.map(|specular| material.specular = specular);
@@ -198,44 +188,76 @@ impl MaterialDescription {
     }
 }
 
-#[derive(Debug, PartialEq, Clone)]
-pub struct PatternDescription {
-    pub(crate) pattern_type: PatternType,
-    pub(crate) transforms: Option<Vec<Transformation>>,
+#[derive(PartialEq, Debug, Clone)]
+pub enum PatternKind {
+    Solid(Colour),
+    Pattern {
+        pattern_type: PatternType,
+        transforms: Option<Vec<Transformation>>,
+    },
+    Uv {
+        uv_type: UvPatternType,
+        transforms: Option<Vec<Transformation>>,
+    },
 }
 
-impl PatternDescription {
-    // FIXME passing PathBuf here kind of sucks
-    pub fn to_pattern(&self, resource_dir: &PathBuf) -> Either<Pattern, UvPattern> {
-        let pattern = match &self.pattern_type {
-            PatternType::Stripes { primary, secondary } => {
-                Left(Pattern::striped(*primary, *secondary))
-            }
-            PatternType::Checkers { primary, secondary } => {
-                Left(Pattern::checkers(*primary, *secondary))
-            }
-            PatternType::Rings { primary, secondary } => Left(Pattern::ring(*primary, *secondary)),
-            PatternType::Uv(UvPatternType::Checkers {
+impl PatternKind {
+    // FIXME still sucks
+    pub fn to_material_kind(&self, resource_dir: &PathBuf) -> MaterialKind {
+        match self {
+            PatternKind::Solid(colour) => MaterialKind::Solid(*colour),
+            PatternKind::Pattern {
+                pattern_type,
+                transforms,
+            } => Self::pattern_to_material_kind(pattern_type, transforms),
+            PatternKind::Uv {
+                uv_type,
+                transforms,
+            } => Self::uv_pattern_to_material_kind(uv_type, transforms, resource_dir),
+        }
+    }
+
+    fn pattern_to_material_kind(
+        pattern_type: &PatternType,
+        transforms: &Option<Vec<Transformation>>,
+    ) -> MaterialKind {
+        let pattern = match pattern_type {
+            PatternType::Stripes { primary, secondary } => Pattern::striped(*primary, *secondary),
+            PatternType::Checkers { primary, secondary } => Pattern::checkers(*primary, *secondary),
+            PatternType::Rings { primary, secondary } => Pattern::ring(*primary, *secondary),
+        };
+
+        if let Some(tfs) = &transforms {
+            MaterialKind::Pattern(pattern.with_transform(tfs.to_matrix()))
+        } else {
+            MaterialKind::Pattern(pattern)
+        }
+    }
+
+    fn uv_pattern_to_material_kind(
+        uv_type: &UvPatternType,
+        transforms: &Option<Vec<Transformation>>,
+        resource_dir: &PathBuf,
+    ) -> MaterialKind {
+        let uv = match uv_type {
+            UvPatternType::Checkers {
                 primary,
                 secondary,
                 width,
                 height,
-            }) => Right(UvPattern::checkers(*primary, *secondary, *width, *height)),
-            PatternType::Uv(UvPatternType::Image { file_name }) => {
+            } => UvPattern::checkers(*primary, *secondary, *width, *height),
+            UvPatternType::Image { file_name } => {
                 let file_path = resource_dir.join(file_name);
                 let img = image::open(&file_path)
                     .expect(&format!("failed to load uv pattern from {:?}", file_path));
-                Right(UvPattern::image(Arc::new(img.to_rgb8())))
+                UvPattern::image(Arc::new(img.to_rgb8()))
             }
         };
 
-        if let Some(tfs) = &self.transforms {
-            match pattern {
-                Right(uv) => Right(uv.with_transform(tfs.to_matrix())),
-                Left(pattern) => Left(pattern.with_transform(tfs.to_matrix())),
-            }
+        if let Some(tfs) = &transforms {
+            MaterialKind::Uv(uv.with_transform(tfs.to_matrix()))
         } else {
-            pattern
+            MaterialKind::Uv(uv)
         }
     }
 }
@@ -245,8 +267,6 @@ pub enum PatternType {
     Stripes { primary: Colour, secondary: Colour },
     Checkers { primary: Colour, secondary: Colour },
     Rings { primary: Colour, secondary: Colour },
-    // FIXME should probably just use `UvPatternType` directly
-    Uv(UvPatternType),
 }
 
 #[derive(Debug, PartialEq, Clone)]

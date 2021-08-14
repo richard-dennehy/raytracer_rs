@@ -1,7 +1,6 @@
 use super::*;
 use crate::core::{Colour, Point3D, Vector3D};
 use crate::scene::{CsgOperator, Light};
-use either::Either::{Left, Right};
 
 #[test]
 fn should_parse_camera_description() {
@@ -118,7 +117,7 @@ value:
     assert_eq!(
         define,
         Define::Material(MaterialDescription {
-            pattern: Some(Left(Colour::WHITE)),
+            pattern: Some(PatternKind::Solid(Colour::WHITE)),
             diffuse: Some(0.7),
             ambient: Some(0.1),
             specular: Some(0.0),
@@ -143,7 +142,7 @@ value:
     defines.insert(
         "white-material".into(),
         Define::Material(MaterialDescription {
-            pattern: Some(Left(Colour::WHITE)),
+            pattern: Some(PatternKind::Solid(Colour::WHITE)),
             diffuse: Some(0.7),
             ambient: Some(0.1),
             specular: Some(0.0),
@@ -161,7 +160,7 @@ value:
     assert_eq!(
         define,
         Define::Material(MaterialDescription {
-            pattern: Some(Left(Colour::new(0.537, 0.831, 0.914))),
+            pattern: Some(PatternKind::Solid(Colour::new(0.537, 0.831, 0.914))),
             diffuse: Some(0.7),
             ambient: Some(0.1),
             specular: Some(0.0),
@@ -200,7 +199,7 @@ value:
     assert_eq!(
         define,
         Define::Material(MaterialDescription {
-            pattern: Some(Right(PatternDescription {
+            pattern: Some(PatternKind::Pattern {
                 pattern_type: PatternType::Stripes {
                     primary: Colour::greyscale(0.45),
                     secondary: Colour::greyscale(0.55),
@@ -213,7 +212,7 @@ value:
                     },
                     Transformation::RotationY(1.5708)
                 ])
-            })),
+            }),
             ambient: Some(0.0),
             diffuse: Some(0.4),
             specular: Some(0.0),
@@ -244,13 +243,13 @@ value:
     assert_eq!(
         define,
         Define::Material(MaterialDescription {
-            pattern: Some(Right(PatternDescription {
+            pattern: Some(PatternKind::Pattern {
                 pattern_type: PatternType::Checkers {
                     primary: Colour::greyscale(0.35),
                     secondary: Colour::greyscale(0.65)
                 },
                 transforms: None
-            })),
+            }),
             specular: Some(0.0),
             reflective: Some(0.4),
             ..Default::default()
@@ -363,7 +362,7 @@ transform:
         ObjectDescription {
             kind: ObjectKind::Plane,
             material: MaterialDescription {
-                pattern: Some(Left(Colour::WHITE)),
+                pattern: Some(PatternKind::Solid(Colour::WHITE)),
                 ambient: Some(1.0),
                 diffuse: Some(0.0),
                 specular: Some(0.0),
@@ -429,7 +428,7 @@ transform:
         ObjectDescription {
             kind: ObjectKind::Sphere,
             material: MaterialDescription {
-                pattern: Some(Left(Colour::new(0.373, 0.404, 0.550))),
+                pattern: Some(PatternKind::Solid(Colour::new(0.373, 0.404, 0.550))),
                 diffuse: Some(0.2),
                 ambient: Some(0.0),
                 specular: Some(1.0),
@@ -494,7 +493,7 @@ transform:
     defines.insert(
         "white-material".into(),
         Define::Material(MaterialDescription {
-            pattern: Some(Left(Colour::WHITE)),
+            pattern: Some(PatternKind::Solid(Colour::WHITE)),
             diffuse: Some(0.7),
             ambient: Some(0.1),
             specular: Some(0.0),
@@ -514,7 +513,7 @@ transform:
         ObjectDescription {
             kind: ObjectKind::Cube,
             material: MaterialDescription {
-                pattern: Some(Left(Colour::WHITE)),
+                pattern: Some(PatternKind::Solid(Colour::WHITE)),
                 diffuse: Some(0.7),
                 ambient: Some(0.1),
                 specular: Some(0.0),
@@ -962,7 +961,9 @@ children:
                                         file_name: "dragon.obj".into(),
                                     },
                                     material: MaterialDescription {
-                                        pattern: Some(Left(Colour::new(1.0, 0.0, 0.1))),
+                                        pattern: Some(PatternKind::Solid(Colour::new(
+                                            1.0, 0.0, 0.1
+                                        ))),
                                         diffuse: Some(0.6),
                                         ambient: Some(0.1),
                                         specular: Some(0.3),
@@ -1062,15 +1063,15 @@ pattern:
     assert_eq!(
         material,
         MaterialDescription {
-            pattern: Some(Right(PatternDescription {
-                pattern_type: PatternType::Uv(UvPatternType::Checkers {
+            pattern: Some(PatternKind::Uv {
+                uv_type: UvPatternType::Checkers {
                     width: nonzero_ext::nonzero!(16usize),
                     height: nonzero_ext::nonzero!(8usize),
                     primary: Colour::BLACK,
                     secondary: Colour::greyscale(0.5)
-                }),
+                },
                 transforms: None,
-            })),
+            }),
             ..Default::default()
         }
     );
@@ -1096,16 +1097,16 @@ pattern:
     assert_eq!(
         material,
         MaterialDescription {
-            pattern: Some(Right(PatternDescription {
-                pattern_type: PatternType::Uv(UvPatternType::Image {
+            pattern: Some(PatternKind::Uv {
+                uv_type: UvPatternType::Image {
                     file_name: "wood.jpg".into()
-                }),
+                },
                 transforms: Some(vec![Transformation::Scale {
                     x: 0.5,
                     y: 0.5,
                     z: 0.5
                 }])
-            })),
+            }),
             ..Default::default()
         }
     );
@@ -1130,7 +1131,7 @@ pattern:
     assert_eq!(
         material,
         MaterialDescription {
-            pattern: Some(Right(PatternDescription {
+            pattern: Some(PatternKind::Pattern {
                 pattern_type: PatternType::Rings {
                     primary: Colour::new(1.0, 1.0, 0.5),
                     secondary: Colour::new(1.0, 1.0, 0.0),
@@ -1140,7 +1141,7 @@ pattern:
                     y: 1.0,
                     z: 0.05
                 }])
-            })),
+            }),
             ..Default::default()
         }
     );
@@ -1177,7 +1178,7 @@ fn should_parse_scene_description() {
                 ObjectDescription {
                     kind: ObjectKind::Plane,
                     material: MaterialDescription {
-                        pattern: Some(Left(Colour::WHITE)),
+                        pattern: Some(PatternKind::Solid(Colour::WHITE)),
                         ambient: Some(1.0),
                         diffuse: Some(0.0),
                         specular: Some(0.0),
@@ -1196,7 +1197,7 @@ fn should_parse_scene_description() {
                 ObjectDescription {
                     kind: ObjectKind::Sphere,
                     material: MaterialDescription {
-                        pattern: Some(Left(Colour::new(0.373, 0.404, 0.550))),
+                        pattern: Some(PatternKind::Solid(Colour::new(0.373, 0.404, 0.550))),
                         diffuse: Some(0.2),
                         ambient: Some(0.0),
                         specular: Some(1.0),
@@ -1227,7 +1228,7 @@ fn should_parse_scene_description() {
                 ObjectDescription {
                     kind: ObjectKind::Cube,
                     material: MaterialDescription {
-                        pattern: Some(Left(Colour::WHITE)),
+                        pattern: Some(PatternKind::Solid(Colour::WHITE)),
                         ambient: Some(0.1),
                         diffuse: Some(0.7),
                         specular: Some(0.0),
@@ -1261,7 +1262,7 @@ fn should_parse_scene_description() {
                 ObjectDescription {
                     kind: ObjectKind::Cube,
                     material: MaterialDescription {
-                        pattern: Some(Left(Colour::new(0.537, 0.831, 0.914))),
+                        pattern: Some(PatternKind::Solid(Colour::new(0.537, 0.831, 0.914))),
                         ambient: Some(0.1),
                         diffuse: Some(0.7),
                         specular: Some(0.0),
@@ -1295,7 +1296,7 @@ fn should_parse_scene_description() {
                 ObjectDescription {
                     kind: ObjectKind::Cube,
                     material: MaterialDescription {
-                        pattern: Some(Left(Colour::new(0.941, 0.322, 0.388))),
+                        pattern: Some(PatternKind::Solid(Colour::new(0.941, 0.322, 0.388))),
                         ambient: Some(0.1),
                         diffuse: Some(0.7),
                         specular: Some(0.0),
@@ -1329,7 +1330,7 @@ fn should_parse_scene_description() {
                 ObjectDescription {
                     kind: ObjectKind::Cube,
                     material: MaterialDescription {
-                        pattern: Some(Left(Colour::WHITE)),
+                        pattern: Some(PatternKind::Solid(Colour::WHITE)),
                         ambient: Some(0.1),
                         diffuse: Some(0.7),
                         specular: Some(0.0),
@@ -1363,7 +1364,7 @@ fn should_parse_scene_description() {
                 ObjectDescription {
                     kind: ObjectKind::Cube,
                     material: MaterialDescription {
-                        pattern: Some(Left(Colour::new(0.373, 0.404, 0.55))),
+                        pattern: Some(PatternKind::Solid(Colour::new(0.373, 0.404, 0.55))),
                         ambient: Some(0.1),
                         diffuse: Some(0.7),
                         specular: Some(0.0),
@@ -1397,7 +1398,7 @@ fn should_parse_scene_description() {
                 ObjectDescription {
                     kind: ObjectKind::Cube,
                     material: MaterialDescription {
-                        pattern: Some(Left(Colour::WHITE)),
+                        pattern: Some(PatternKind::Solid(Colour::WHITE)),
                         ambient: Some(0.1),
                         diffuse: Some(0.7),
                         specular: Some(0.0),
@@ -1431,7 +1432,7 @@ fn should_parse_scene_description() {
                 ObjectDescription {
                     kind: ObjectKind::Cube,
                     material: MaterialDescription {
-                        pattern: Some(Left(Colour::new(0.537, 0.831, 0.914))),
+                        pattern: Some(PatternKind::Solid(Colour::new(0.537, 0.831, 0.914))),
                         ambient: Some(0.1),
                         diffuse: Some(0.7),
                         specular: Some(0.0),
@@ -1465,7 +1466,7 @@ fn should_parse_scene_description() {
                 ObjectDescription {
                     kind: ObjectKind::Cube,
                     material: MaterialDescription {
-                        pattern: Some(Left(Colour::new(0.941, 0.322, 0.388))),
+                        pattern: Some(PatternKind::Solid(Colour::new(0.941, 0.322, 0.388))),
                         ambient: Some(0.1),
                         diffuse: Some(0.7),
                         specular: Some(0.0),
@@ -1499,7 +1500,7 @@ fn should_parse_scene_description() {
                 ObjectDescription {
                     kind: ObjectKind::Cube,
                     material: MaterialDescription {
-                        pattern: Some(Left(Colour::WHITE)),
+                        pattern: Some(PatternKind::Solid(Colour::WHITE)),
                         ambient: Some(0.1),
                         diffuse: Some(0.7),
                         specular: Some(0.0),
@@ -1533,7 +1534,7 @@ fn should_parse_scene_description() {
                 ObjectDescription {
                     kind: ObjectKind::Cube,
                     material: MaterialDescription {
-                        pattern: Some(Left(Colour::WHITE)),
+                        pattern: Some(PatternKind::Solid(Colour::WHITE)),
                         ambient: Some(0.1),
                         diffuse: Some(0.7),
                         specular: Some(0.0),
@@ -1567,7 +1568,7 @@ fn should_parse_scene_description() {
                 ObjectDescription {
                     kind: ObjectKind::Cube,
                     material: MaterialDescription {
-                        pattern: Some(Left(Colour::new(0.537, 0.831, 0.914))),
+                        pattern: Some(PatternKind::Solid(Colour::new(0.537, 0.831, 0.914))),
                         ambient: Some(0.1),
                         diffuse: Some(0.7),
                         specular: Some(0.0),
@@ -1601,7 +1602,7 @@ fn should_parse_scene_description() {
                 ObjectDescription {
                     kind: ObjectKind::Cube,
                     material: MaterialDescription {
-                        pattern: Some(Left(Colour::new(0.941, 0.322, 0.388))),
+                        pattern: Some(PatternKind::Solid(Colour::new(0.941, 0.322, 0.388))),
                         ambient: Some(0.1),
                         diffuse: Some(0.7),
                         specular: Some(0.0),
@@ -1635,7 +1636,7 @@ fn should_parse_scene_description() {
                 ObjectDescription {
                     kind: ObjectKind::Cube,
                     material: MaterialDescription {
-                        pattern: Some(Left(Colour::WHITE)),
+                        pattern: Some(PatternKind::Solid(Colour::WHITE)),
                         ambient: Some(0.1),
                         diffuse: Some(0.7),
                         specular: Some(0.0),
@@ -1669,7 +1670,7 @@ fn should_parse_scene_description() {
                 ObjectDescription {
                     kind: ObjectKind::Cube,
                     material: MaterialDescription {
-                        pattern: Some(Left(Colour::WHITE)),
+                        pattern: Some(PatternKind::Solid(Colour::WHITE)),
                         ambient: Some(0.1),
                         diffuse: Some(0.7),
                         specular: Some(0.0),
@@ -1703,7 +1704,7 @@ fn should_parse_scene_description() {
                 ObjectDescription {
                     kind: ObjectKind::Cube,
                     material: MaterialDescription {
-                        pattern: Some(Left(Colour::new(0.373, 0.404, 0.55))),
+                        pattern: Some(PatternKind::Solid(Colour::new(0.373, 0.404, 0.55))),
                         ambient: Some(0.1),
                         diffuse: Some(0.7),
                         specular: Some(0.0),
@@ -1737,7 +1738,7 @@ fn should_parse_scene_description() {
                 ObjectDescription {
                     kind: ObjectKind::Cube,
                     material: MaterialDescription {
-                        pattern: Some(Left(Colour::WHITE)),
+                        pattern: Some(PatternKind::Solid(Colour::WHITE)),
                         ambient: Some(0.1),
                         diffuse: Some(0.7),
                         specular: Some(0.0),
@@ -1771,7 +1772,7 @@ fn should_parse_scene_description() {
                 ObjectDescription {
                     kind: ObjectKind::Cube,
                     material: MaterialDescription {
-                        pattern: Some(Left(Colour::WHITE)),
+                        pattern: Some(PatternKind::Solid(Colour::WHITE)),
                         ambient: Some(0.1),
                         diffuse: Some(0.7),
                         specular: Some(0.0),

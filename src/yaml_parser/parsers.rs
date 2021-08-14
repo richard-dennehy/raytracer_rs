@@ -1,11 +1,10 @@
 use crate::core::{Colour, Point3D, Vector3D};
 use crate::scene::{CsgOperator, Light};
 use crate::yaml_parser::model::{
-    CameraDescription, MaterialDescription, ObjectDescription, ObjectKind, PatternDescription,
+    CameraDescription, MaterialDescription, ObjectDescription, ObjectKind, PatternKind,
     PatternType, Transformation, UvPatternType,
 };
 use crate::yaml_parser::model::{Define, Defines};
-use either::Either::{Left, Right};
 use std::num::{NonZeroU8, NonZeroUsize};
 use yaml_rust::Yaml;
 
@@ -271,9 +270,9 @@ impl FromYaml for MaterialDescription {
         fn parse(yaml: &Yaml, defines: &Defines) -> Result<MaterialDescription, String> {
             let pattern = if yaml["color"].as_vec().is_some() {
                 let colour = yaml["color"].parse(defines)?;
-                Some(Left(colour))
+                Some(PatternKind::Solid(colour))
             } else {
-                yaml["pattern"].parse::<Option<_>>(defines)?.map(Right)
+                yaml["pattern"].parse::<Option<_>>(defines)?
             };
             let diffuse = yaml["diffuse"].parse(defines)?;
             let ambient = yaml["ambient"].parse(defines)?;
@@ -379,37 +378,47 @@ impl FromYaml for Light {
     }
 }
 
-impl FromYaml for PatternDescription {
+impl FromYaml for PatternKind {
     fn from_yaml_and_defines(yaml: &Yaml, defines: &Defines) -> Result<Self, String> {
-        let pattern_type = match yaml["type"].as_str() {
-            Some("stripes") => {
-                let colours: Vec<Colour> = yaml["colors"].parse(defines)?;
+        let transforms = yaml["transform"].parse(defines)?;
+        let colours = yaml["colors"]
+            .parse::<Option<Vec<Colour>>>(defines)?
+            .map(|colours| {
                 if colours.len() != 2 {
-                    return Err("a pattern must have exactly 2 colours".to_string());
+                    Err("a pattern must have exactly 2 colours".to_string())
+                } else {
+                    Ok((colours[0], colours[1]))
                 }
-                let (primary, secondary) = (colours[0], colours[1]);
+            });
 
-                PatternType::Stripes { primary, secondary }
+        let pattern = match yaml["type"].as_str() {
+            Some("stripes") => {
+                let (primary, secondary) = colours
+                    .ok_or("`stripes` pattern must specify exactly 2 colours".to_owned())??;
+
+                PatternKind::Pattern {
+                    pattern_type: PatternType::Stripes { primary, secondary },
+                    transforms,
+                }
             }
             Some("checkers") => {
-                let colours: Vec<Colour> = yaml["colors"].parse(defines)?;
-                if colours.len() != 2 {
-                    return Err("a pattern must have exactly 2 colours".to_string());
-                }
-                let (primary, secondary) = (colours[0], colours[1]);
+                let (primary, secondary) = colours
+                    .ok_or("`checkers` pattern must specify exactly 2 colours".to_owned())??;
 
-                PatternType::Checkers { primary, secondary }
+                PatternKind::Pattern {
+                    pattern_type: PatternType::Checkers { primary, secondary },
+                    transforms,
+                }
             }
             Some("rings") => {
-                let colours: Vec<Colour> = yaml["colors"].parse(defines)?;
-                if colours.len() != 2 {
-                    return Err("a pattern must have exactly 2 colours".to_string());
-                }
-                let (primary, secondary) = (colours[0], colours[1]);
+                let (primary, secondary) = colours
+                    .ok_or("`rings` pattern must specify exactly 2 colours".to_owned())??;
 
-                PatternType::Rings { primary, secondary }
+                PatternKind::Pattern {
+                    pattern_type: PatternType::Rings { primary, secondary },
+                    transforms,
+                }
             }
-            // FIXME split this properly
             Some("map") => {
                 let yaml = &yaml["uv_pattern"];
                 match yaml["type"].as_str() {
@@ -417,9 +426,12 @@ impl FromYaml for PatternDescription {
                         let file_name = yaml["file"]
                             .as_str()
                             .ok_or("a UV image pattern must have a `file`".to_owned())?;
-                        PatternType::Uv(UvPatternType::Image {
-                            file_name: file_name.to_owned(),
-                        })
+                        PatternKind::Uv {
+                            uv_type: UvPatternType::Image {
+                                file_name: file_name.to_owned(),
+                            },
+                            transforms,
+                        }
                     }
                     Some("checkers") => {
                         let colours: Vec<Colour> = yaml["colors"].parse(defines)?;
@@ -430,12 +442,15 @@ impl FromYaml for PatternDescription {
                         let width = yaml["width"].parse(defines)?;
                         let height = yaml["height"].parse(defines)?;
 
-                        PatternType::Uv(UvPatternType::Checkers {
-                            primary,
-                            secondary,
-                            width,
-                            height,
-                        })
+                        PatternKind::Uv {
+                            uv_type: UvPatternType::Checkers {
+                                primary,
+                                secondary,
+                                width,
+                                height,
+                            },
+                            transforms,
+                        }
                     }
                     Some(other) => {
                         return Err(format!("UV pattern type {} is not unsupported", other))
@@ -447,12 +462,7 @@ impl FromYaml for PatternDescription {
             None => return Err("pattern must have a `type`".to_string()),
         };
 
-        let transforms = yaml["transform"].parse(defines)?;
-
-        Ok(PatternDescription {
-            pattern_type,
-            transforms,
-        })
+        Ok(pattern)
     }
 }
 

@@ -15,14 +15,15 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add Orrery example">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="resolve some TODOs/FIXMEs">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/orrery/orrery.png" beforeDir="false" afterPath="$PROJECT_DIR$/examples/orrery/orrery.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/ray_tracer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/ray_tracer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene/object.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/object.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/scene/pattern.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/pattern.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/scene/tests/object_tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/tests/object_tests.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene/tests/pattern_tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/tests/pattern_tests.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -129,7 +130,12 @@
       <command value="cargo run --release --example orrery" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.run">
+  <component name="RunManager" selected="Cargo.test">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -145,6 +151,22 @@
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test scene::tests::object_tests::shape_tests::applying_a_planar_uv_to_a_cube_should_wrap_the_plane_around_the_6_faces" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib scene::tests::object_tests::shape_tests::applying_a_planar_uv_to_a_cube_should_wrap_the_plane_around_the_6_faces -- --exact" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="withSudo" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
@@ -164,24 +186,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test yaml_parser::tests::basic_parsing::should_parse_a_material_with_a_uv_image_pattern" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib yaml_parser::tests::basic_parsing::should_parse_a_material_with_a_uv_image_pattern -- --exact" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <option name="channel" value="DEFAULT" />
-      <option name="requiredFeatures" value="true" />
-      <option name="allFeatures" value="false" />
-      <option name="emulateTerminal" value="false" />
-      <option name="withSudo" value="false" />
-      <option name="backtrace" value="SHORT" />
-      <envs />
-      <option name="isRedirectInput" value="false" />
-      <option name="redirectInputPath" value="" />
-      <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Test yaml_parser::tests::basic_parsing::should_parse_material_with_rings_pattern" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib yaml_parser::tests::basic_parsing::should_parse_material_with_rings_pattern -- --exact" />
+    <configuration name="Test yaml_parser::tests::creating_a_scene::should_be_able_to_create_a_group" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib yaml_parser::tests::creating_a_scene::should_be_able_to_create_a_group -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -228,25 +234,20 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.run" />
-      <item itemvalue="Cargo.Test yaml_parser::tests::basic_parsing::should_parse_a_material_with_a_uv_image_pattern" />
-      <item itemvalue="Cargo.Test yaml_parser::tests::basic_parsing::should_parse_material_with_rings_pattern" />
       <item itemvalue="Cargo.test" />
       <item itemvalue="Cargo.Test scene::tests::object_tests::shape_tests::rotating_a_uv_checkers_pattern_180_degrees_should_invert_it" />
+      <item itemvalue="Cargo.Test scene::tests::object_tests::shape_tests::applying_a_planar_uv_to_a_cube_should_wrap_the_plane_around_the_6_faces" />
+      <item itemvalue="Cargo.Test yaml_parser::tests::creating_a_scene::should_be_able_to_create_a_group" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.run" />
         <item itemvalue="Cargo.test" />
-        <item itemvalue="Cargo.Test scene::tests::object_tests::shape_tests::rotating_a_uv_checkers_pattern_180_degrees_should_invert_it" />
-        <item itemvalue="Cargo.run" />
+        <item itemvalue="Cargo.Test yaml_parser::tests::creating_a_scene::should_be_able_to_create_a_group" />
+        <item itemvalue="Cargo.Test scene::tests::object_tests::shape_tests::applying_a_planar_uv_to_a_cube_should_wrap_the_plane_around_the_6_faces" />
         <item itemvalue="Cargo.run" />
       </list>
     </recent_temporary>
@@ -537,14 +538,10 @@
       <workItem from="1628531449420" duration="3873000" />
       <workItem from="1628618730639" duration="1840000" />
       <workItem from="1628704493281" duration="1996000" />
-      <workItem from="1628791062760" duration="2168000" />
-    </task>
-    <task id="LOCAL-00211" summary="support MTL libs in obj parser">
-      <created>1625511050934</created>
-      <option name="number" value="00211" />
-      <option name="presentableId" value="LOCAL-00211" />
-      <option name="project" value="LOCAL" />
-      <updated>1625511050934</updated>
+      <workItem from="1628791062760" duration="2274000" />
+      <workItem from="1628795165724" duration="6000" />
+      <workItem from="1628874132349" duration="2496000" />
+      <workItem from="1628938390468" duration="2294000" />
     </task>
     <task id="LOCAL-00212" summary="refactor obj parser model">
       <created>1625596356906</created>
@@ -882,7 +879,14 @@
       <option name="project" value="LOCAL" />
       <updated>1628706451501</updated>
     </task>
-    <option name="localTasksCounter" value="260" />
+    <task id="LOCAL-00260" summary="resolve some TODOs/FIXMEs">
+      <created>1628793352721</created>
+      <option name="number" value="00260" />
+      <option name="presentableId" value="LOCAL-00260" />
+      <option name="project" value="LOCAL" />
+      <updated>1628793352721</updated>
+    </task>
+    <option name="localTasksCounter" value="261" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -908,7 +912,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add example for CSGs" />
     <MESSAGE value="add example for loading meshes" />
     <MESSAGE value="rerender dragon example downsampling from 16K" />
     <MESSAGE value="WIP add uv map example" />
@@ -933,7 +936,8 @@
     <MESSAGE value="implement support for orrery YAML file&#10;&#10;- support area lights in scene YAML&#10;- support CSGs in scene YAML" />
     <MESSAGE value="implement support for orrery YAML file&#10;&#10;- note: missing UV transform support" />
     <MESSAGE value="add Orrery example" />
-    <option name="LAST_COMMIT_MESSAGE" value="add Orrery example" />
+    <MESSAGE value="resolve some TODOs/FIXMEs" />
+    <option name="LAST_COMMIT_MESSAGE" value="resolve some TODOs/FIXMEs" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -957,6 +961,21 @@
           <url>file://$PROJECT_DIR$/src/core/transform.rs</url>
           <line>298</line>
           <option name="timeStamp" value="67" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/yaml_parser/parsers.rs</url>
+          <line>272</line>
+          <option name="timeStamp" value="69" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/yaml_parser/model.rs</url>
+          <line>207</line>
+          <option name="timeStamp" value="70" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/yaml_parser/model.rs</url>
+          <line>160</line>
+          <option name="timeStamp" value="71" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

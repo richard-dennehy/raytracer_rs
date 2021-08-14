@@ -660,7 +660,6 @@ version = "0.1.0"
 dependencies = [
  "approx",
  "criterion",
- "either",
  "image",
  "indicatif",
  "itertools 0.10.0",
