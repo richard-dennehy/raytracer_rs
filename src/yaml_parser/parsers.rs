@@ -130,7 +130,14 @@ impl FromYaml for ObjectDescription {
 
                     ObjectKind::Cylinder { min, max, capped }
                 },
-                "cone" => todo!("support cones"),
+                "cone" => {
+                    let min = yaml["min"].parse(defines)?;
+                    let max = yaml["max"].parse(defines)?;
+
+                    let capped = yaml["closed"].parse::<Option<_>>(defines)?.unwrap_or(false);
+
+                    ObjectKind::Cone { min, max, capped }
+                },
                 "triangle" => return Err("adding triangles directly not supported - use an wavefront `obj` file to import meshes".into()),
                 "obj" => {
                     let file_name = yaml["file"]

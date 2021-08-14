@@ -726,3 +726,28 @@ fn should_be_able_to_create_a_csg() {
         Transform::identity().scale_x(0.8).scale_z(0.8)
     );
 }
+
+#[test]
+fn should_be_able_to_create_a_cone() {
+    let input = with_camera_description(
+        "\
+- add: cone
+  min: -1.0
+  max: 0.0
+  closed: true",
+    );
+
+    let scene = parse(&input, Default::default());
+    assert!(scene.is_ok(), "{}", scene.unwrap_err());
+    let scene = scene.unwrap();
+
+    let objects = scene.objects();
+    assert!(objects.is_ok(), "{}", objects.unwrap_err());
+    let objects = objects.unwrap();
+    assert_eq!(objects.len(), 1);
+
+    assert_eq!(
+        format!("{:?}", objects[0].shape()),
+        "Cone { max_y: 0.0, min_y: -1.0, capped: true }"
+    );
+}

@@ -15,15 +15,11 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="resolve some TODOs/FIXMEs">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="refactor YAML parser Pattern model">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene/pattern.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/pattern.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene/tests/object_tests.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/tests/object_tests.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/creating_a_scene.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/creating_a_scene.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,7 +56,7 @@
     <option name="directoryName" value="7aea3jlo" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedIndex" value="2" />
+    <option name="selectedIndex" value="1" />
   </component>
   <component name="ProjectId" id="1lF0p4ne265IL8xMdGxtCHgoWba" />
   <component name="ProjectLevelVcsManager">
@@ -244,8 +240,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.run" />
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.run" />
         <item itemvalue="Cargo.Test yaml_parser::tests::creating_a_scene::should_be_able_to_create_a_group" />
         <item itemvalue="Cargo.Test scene::tests::object_tests::shape_tests::applying_a_planar_uv_to_a_cube_should_wrap_the_plane_around_the_6_faces" />
         <item itemvalue="Cargo.run" />
@@ -541,14 +537,7 @@
       <workItem from="1628791062760" duration="2274000" />
       <workItem from="1628795165724" duration="6000" />
       <workItem from="1628874132349" duration="2496000" />
-      <workItem from="1628938390468" duration="2294000" />
-    </task>
-    <task id="LOCAL-00212" summary="refactor obj parser model">
-      <created>1625596356906</created>
-      <option name="number" value="00212" />
-      <option name="presentableId" value="LOCAL-00212" />
-      <option name="project" value="LOCAL" />
-      <updated>1625596356906</updated>
+      <workItem from="1628938390468" duration="3217000" />
     </task>
     <task id="LOCAL-00213" summary="WIP load required files in wavefront parser">
       <created>1625683571422</created>
@@ -886,7 +875,14 @@
       <option name="project" value="LOCAL" />
       <updated>1628793352721</updated>
     </task>
-    <option name="localTasksCounter" value="261" />
+    <task id="LOCAL-00261" summary="refactor YAML parser Pattern model">
+      <created>1628940760474</created>
+      <option name="number" value="00261" />
+      <option name="presentableId" value="LOCAL-00261" />
+      <option name="project" value="LOCAL" />
+      <updated>1628940760474</updated>
+    </task>
+    <option name="localTasksCounter" value="262" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -912,7 +908,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add example for loading meshes" />
     <MESSAGE value="rerender dragon example downsampling from 16K" />
     <MESSAGE value="WIP add uv map example" />
     <MESSAGE value="add uv map example and fix cone rendering issues" />
@@ -937,7 +932,8 @@
     <MESSAGE value="implement support for orrery YAML file&#10;&#10;- note: missing UV transform support" />
     <MESSAGE value="add Orrery example" />
     <MESSAGE value="resolve some TODOs/FIXMEs" />
-    <option name="LAST_COMMIT_MESSAGE" value="resolve some TODOs/FIXMEs" />
+    <MESSAGE value="refactor YAML parser Pattern model" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor YAML parser Pattern model" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -964,18 +960,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/yaml_parser/parsers.rs</url>
-          <line>272</line>
+          <line>279</line>
           <option name="timeStamp" value="69" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/yaml_parser/model.rs</url>
-          <line>207</line>
-          <option name="timeStamp" value="70" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/yaml_parser/model.rs</url>
-          <line>160</line>
-          <option name="timeStamp" value="71" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

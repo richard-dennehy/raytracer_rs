@@ -69,6 +69,15 @@ impl SceneDescription {
 
                     Ok(cylinder.build())
                 }
+                ObjectKind::Cone { min, max, capped } => {
+                    let cone = Object::cone()
+                        .min_y(min.unwrap_or(f64::INFINITY))
+                        .max_y(max.unwrap_or(f64::INFINITY));
+
+                    let cone = if *capped { cone.capped() } else { cone };
+
+                    Ok(cone.build())
+                }
                 ObjectKind::ObjFile { file_name } => parser.load(file_name),
                 ObjectKind::Group { children } => children
                     .iter()
@@ -96,9 +105,7 @@ impl SceneDescription {
                 }),
             };
 
-            let material = desc
-                .material
-                .to_material(desc.casts_shadow, &this.resource_dir);
+            let material = this.to_material(&desc.material, desc.casts_shadow);
             let transform = desc.transform.to_matrix();
 
             object.map(|obj| {
@@ -116,6 +123,87 @@ impl SceneDescription {
             .iter()
             .map(|desc| inner(self, desc, &parser))
             .collect()
+    }
+
+    fn to_material(&self, desc: &MaterialDescription, casts_shadow: bool) -> Material {
+        let mut material = Material::default();
+
+        desc.pattern
+            .as_ref()
+            .map(|pattern_kind| material.kind = self.to_material_kind(pattern_kind));
+        desc.diffuse.map(|diffuse| material.diffuse = diffuse);
+        desc.ambient.map(|ambient| material.ambient = ambient);
+        desc.specular.map(|specular| material.specular = specular);
+        desc.shininess
+            .map(|shininess| material.shininess = shininess);
+        desc.reflective
+            .map(|reflective| material.reflective = reflective);
+        desc.transparency
+            .map(|transparency| material.transparency = transparency);
+        desc.refractive
+            .map(|refractive| material.refractive = refractive);
+        material.casts_shadow = casts_shadow;
+
+        material
+    }
+
+    fn to_material_kind(&self, pattern_kind: &PatternKind) -> MaterialKind {
+        match pattern_kind {
+            PatternKind::Solid(colour) => MaterialKind::Solid(*colour),
+            PatternKind::Pattern {
+                pattern_type,
+                transforms,
+            } => self.pattern_to_material_kind(pattern_type, transforms),
+            PatternKind::Uv {
+                uv_type,
+                transforms,
+            } => self.uv_pattern_to_material_kind(uv_type, transforms),
+        }
+    }
+
+    fn pattern_to_material_kind(
+        &self,
+        pattern_type: &PatternType,
+        transforms: &Option<Vec<Transformation>>,
+    ) -> MaterialKind {
+        let pattern = match pattern_type {
+            PatternType::Stripes { primary, secondary } => Pattern::striped(*primary, *secondary),
+            PatternType::Checkers { primary, secondary } => Pattern::checkers(*primary, *secondary),
+            PatternType::Rings { primary, secondary } => Pattern::ring(*primary, *secondary),
+        };
+
+        if let Some(tfs) = &transforms {
+            MaterialKind::Pattern(pattern.with_transform(tfs.to_matrix()))
+        } else {
+            MaterialKind::Pattern(pattern)
+        }
+    }
+
+    fn uv_pattern_to_material_kind(
+        &self,
+        uv_type: &UvPatternType,
+        transforms: &Option<Vec<Transformation>>,
+    ) -> MaterialKind {
+        let uv = match uv_type {
+            UvPatternType::Checkers {
+                primary,
+                secondary,
+                width,
+                height,
+            } => UvPattern::checkers(*primary, *secondary, *width, *height),
+            UvPatternType::Image { file_name } => {
+                let file_path = self.resource_dir.join(file_name);
+                let img = image::open(&file_path)
+                    .expect(&format!("failed to load uv pattern from {:?}", file_path));
+                UvPattern::image(Arc::new(img.to_rgb8()))
+            }
+        };
+
+        if let Some(tfs) = &transforms {
+            MaterialKind::Uv(uv.with_transform(tfs.to_matrix()))
+        } else {
+            MaterialKind::Uv(uv)
+        }
     }
 }
 
@@ -151,29 +239,6 @@ pub struct MaterialDescription {
 }
 
 impl MaterialDescription {
-    // FIXME passing PathBuf here really sucks
-    fn to_material(&self, casts_shadow: bool, resource_dir: &PathBuf) -> Material {
-        let mut material = Material::default();
-
-        self.pattern
-            .as_ref()
-            .map(|pattern_kind| material.kind = pattern_kind.to_material_kind(resource_dir));
-        self.diffuse.map(|diffuse| material.diffuse = diffuse);
-        self.ambient.map(|ambient| material.ambient = ambient);
-        self.specular.map(|specular| material.specular = specular);
-        self.shininess
-            .map(|shininess| material.shininess = shininess);
-        self.reflective
-            .map(|reflective| material.reflective = reflective);
-        self.transparency
-            .map(|transparency| material.transparency = transparency);
-        self.refractive
-            .map(|refractive| material.refractive = refractive);
-        material.casts_shadow = casts_shadow;
-
-        material
-    }
-
     pub(crate) fn extend(self, base: &Self) -> Self {
         Self {
             pattern: self.pattern.or_else(|| base.pattern.clone()),
@@ -199,67 +264,6 @@ pub enum PatternKind {
         uv_type: UvPatternType,
         transforms: Option<Vec<Transformation>>,
     },
-}
-
-impl PatternKind {
-    // FIXME still sucks
-    pub fn to_material_kind(&self, resource_dir: &PathBuf) -> MaterialKind {
-        match self {
-            PatternKind::Solid(colour) => MaterialKind::Solid(*colour),
-            PatternKind::Pattern {
-                pattern_type,
-                transforms,
-            } => Self::pattern_to_material_kind(pattern_type, transforms),
-            PatternKind::Uv {
-                uv_type,
-                transforms,
-            } => Self::uv_pattern_to_material_kind(uv_type, transforms, resource_dir),
-        }
-    }
-
-    fn pattern_to_material_kind(
-        pattern_type: &PatternType,
-        transforms: &Option<Vec<Transformation>>,
-    ) -> MaterialKind {
-        let pattern = match pattern_type {
-            PatternType::Stripes { primary, secondary } => Pattern::striped(*primary, *secondary),
-            PatternType::Checkers { primary, secondary } => Pattern::checkers(*primary, *secondary),
-            PatternType::Rings { primary, secondary } => Pattern::ring(*primary, *secondary),
-        };
-
-        if let Some(tfs) = &transforms {
-            MaterialKind::Pattern(pattern.with_transform(tfs.to_matrix()))
-        } else {
-            MaterialKind::Pattern(pattern)
-        }
-    }
-
-    fn uv_pattern_to_material_kind(
-        uv_type: &UvPatternType,
-        transforms: &Option<Vec<Transformation>>,
-        resource_dir: &PathBuf,
-    ) -> MaterialKind {
-        let uv = match uv_type {
-            UvPatternType::Checkers {
-                primary,
-                secondary,
-                width,
-                height,
-            } => UvPattern::checkers(*primary, *secondary, *width, *height),
-            UvPatternType::Image { file_name } => {
-                let file_path = resource_dir.join(file_name);
-                let img = image::open(&file_path)
-                    .expect(&format!("failed to load uv pattern from {:?}", file_path));
-                UvPattern::image(Arc::new(img.to_rgb8()))
-            }
-        };
-
-        if let Some(tfs) = &transforms {
-            MaterialKind::Uv(uv.with_transform(tfs.to_matrix()))
-        } else {
-            MaterialKind::Uv(uv)
-        }
-    }
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -355,6 +359,11 @@ pub enum ObjectKind {
     Sphere,
     Cube,
     Cylinder {
+        min: Option<f64>,
+        max: Option<f64>,
+        capped: bool,
+    },
+    Cone {
         min: Option<f64>,
         max: Option<f64>,
         capped: bool,
