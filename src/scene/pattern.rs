@@ -155,6 +155,8 @@ impl UvPattern {
         }
     }
 
+    /// intended for manually testing UV mapping on cubes - each corner should have the same colour
+    /// on each face sharing that corner
     pub fn alignment_check(
         main: Colour,
         top_left: Colour,

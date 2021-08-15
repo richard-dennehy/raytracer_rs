@@ -28,14 +28,15 @@ A camera description must contain:
 
 ## Describing the Lights
 A scene may have zero or many lights (noting that a scene with no lights will only render a black image).
-The YAML parser (and ray tracer generally) currently only supports point lights - 
-infinitely bright single points in space, which cast light rays in all directions equally, and create sharp shadows.
+The YAML parser and ray tracer support point lights, and area lights. 
+Both kinds of light cast light infinitely in all directions, but a point light casts from a single point, whereas an area light
+casts from an area, and therefore allows soft shadows, as a point in space can be partially lit by an area light.
 
-A light description must contain:
+A point light is a light description containing:
  - `at`, an array of 3 floating point numbers giving the light's position in 3D space
  - `intensity`, the light's colour; an array of 3 floating point numbers
 
-### Example
+### Point light example
 ```yaml
 - add: light
   at: [ 50, 100, -50 ]
@@ -46,6 +47,30 @@ A light description must contain:
   at: [ -400, 50, -10 ]
   intensity: [ 0.2, 0.2, 0.2 ]
 ```
+
+An area light is a light description containing:
+- `corner`, an array of 3 floating point numbers defining the bottom left corner of the area
+- `uvec`, an array of 3 floating point numbers defining the bottom edge of the area
+- `vvec`, an array of 3 floating point numbers defining the left edge of the area
+- `usteps` and `vsteps`, integers defining the number of samples to take, such that the total number of samples is `usteps * vsteps`. When these values are too low, shadows will have clearly visible banding; when these values are large, rendering will take significantly longer.
+- `intensity`, an array of 3 floating point numbers defining the colour of the light
+### Area light example
+```yaml
+- add: light
+  corner: [-1, 2, 4]
+  uvec: [2, 0, 0]
+  vvec: [0, 2, 0]
+  usteps: 10
+  vsteps: 10
+  # there's no limit on how bright a light (or any colour) can be
+  intensity: [1.5, 1.5, 1.5]
+```
+
+Note: the YAML examples from the bonus chapters also provide a `jitter` boolean value, intended to enable randomised sampling, to break up banding caused by low sample counts.
+This implementation always randomly samples, so the `jitter` value has no effect and does not need to be provided.
+
+Additionally, the rust API for area lights requires a `seed` for the RNG, to allow rendering to be deterministic. 
+The YAML parser does not currently support overriding this seed, and a fixed value is used for all YAML scenes, such that rendering the same YAML file multiple times always produces the same image.
 
 ## Describing Objects
 Objects are the shapes, and potentially meshes, that are ultimately rendered into an image. A scene may have zero or many objects,
@@ -59,7 +84,7 @@ An object description may contain:
    - This material may reference a `define` instead of being described inline
  - A `transform` - all objects exist at the world origin, and have a fixed size and orientation. Applying transforms is the only way to affect this. 
  - `children`, if the object is a group. This must be an array of object descriptions. Groups may contain other groups.
- - `file`, if the object type is an `obj`. This file must exist within `scene_descriptions/obj_files`, and must be a Wavefront `obj` file.
+ - `file`, if the object type is an `obj`. This file must exist within the same folder as the YAML file, and must be a Wavefront `obj` file. Note that if the `obj` file references an `mtl` library, and the `mtl` file is co-located, this file will also be loaded, and the material applied.
  - `shadow` - when `false`, excludes the object from all shadow casting calculations
 
 ### Examples
@@ -194,8 +219,8 @@ A material may contain:
  - A `color` _or_ a `pattern` - defaults to white if neither provided
    - a `color` is an array of three floating point values (RGB)
    - a `pattern` must contain:
-     - `type` - one of `stripes`, `checkers`, `gradient`, or `ring`
-     - `colors` - an array of RGB colour values
+     - `type` - one of `stripes`, `checkers`, `gradient`, `ring`, or `map` (see [UV patterns](#describing-uv-patterns))
+     - `colors` - an array of 2 RGB colour values; not required by `map` patterns
      - `transform` (optional)
  - `ambient` - between 0 and 1, default 0.1
  - `diffuse` - between 0 and 1, default 0.9
@@ -206,6 +231,69 @@ A material may contain:
  - `refractive-index` - positive floating point number, should be at least 1, default 1
 
 See also [Phong reflection model](https://en.wikipedia.org/wiki/Phong_reflection_model)
+
+## Describing UV patterns
+An object material may use UV mapping, where 3D points on the surface of the object are converted into 2D UV coordinates,
+which can then be used to project a 2D image onto a 3D object, e.g. textures.
+
+A UV pattern can only be provided as part of a material.
+
+This is intended to be used with single primitives - using this with e.g. triangle meshes should function, but hasn't been tested, and will likely produce strange results.
+
+A UV pattern must contain:
+- a `type` of `map`
+- a `mapping`, either `planar`, `cylindrical`, `spherical`, or `cube` - see notes
+- a `uv_pattern`, unless `mapping` is `cube`, which must contain:
+  - a `type`, either `checkers` or `image`
+  - a `width` and `height`, when `type` is `checkers` - the number of squares in the checker pattern, rows and columns, respectively
+  - a pair of `colours`, when `type` is `checkers`, defining the primary and secondary colours of the checkers
+  - a `file`, when the type is `image` - the name of a file, co-located with the YAML file. This must contain an image compatible with the [image crate](https://docs.rs/image/0.23.14/image/), i.e. it is not necessary to convert all images to PPM format
+- optionally, `top` and `bottom` UV patterns, as described above, when `mapping` is `cylindrical`, for providing separate textures for the top and bottom caps of cylinders and cones
+- `left`, `right`, `front`, `back`, `up`, and `down`, when the mapping is `cube`, UV patterns as described above, for each face of the cube
+
+### Examples
+```yaml
+# within a `material`
+pattern:
+  type: map
+  mapping: spherical
+  uv_pattern:
+    type: checkers
+    width: 16
+    height: 8
+    colors:
+      - [ 0, 0, 0 ]
+      - [ 0.5, 0.5, 0.5 ]
+```
+
+```yaml
+# within a `material`
+pattern:
+  type: map
+  mapping: cube
+  left:
+    type: image
+    file: negx.ppm
+  right:
+    type: image
+    file: posx.ppm
+  front:
+    type: image
+    file: posz.ppm
+  back:
+    type: image
+    file: negz.ppm
+  up:
+    type: image
+    file: posy.ppm
+  down:
+    type: image
+    file: negy.ppm
+```
+
+Note: in this implementation, objects are responsible for providing their own UV unwrapping, and therefore `spherical` and `planar` mapping behave identically on all objects
+(the motivation for creating `spherical` mapping in the bonus chapter is because UV mapping a sphere as if it were a plane results in distortion, 
+but that's not possible in this implementation)
 
 ## Describing Transforms
 A transform array may be used as the `value` of a define, or as a property of an object, or as a property of a `pattern` in a material.

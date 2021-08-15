@@ -271,6 +271,7 @@ pub enum PatternType {
     Stripes { primary: Colour, secondary: Colour },
     Checkers { primary: Colour, secondary: Colour },
     Rings { primary: Colour, secondary: Colour },
+    // FIXME gradient
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -284,6 +285,7 @@ pub enum UvPatternType {
     Image {
         file_name: String,
     },
+    // TODO support cubic mapping
 }
 
 #[derive(PartialEq, Debug, Clone, Copy)]

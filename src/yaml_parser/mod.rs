@@ -17,6 +17,7 @@ pub fn load(resource_dir: PathBuf, file_name: &str) -> Result<SceneDescription, 
     parse(&yaml, resource_dir)
 }
 
+// TODO improve errors e.g. stacktrace
 fn parse(input: &str, resource_dir: PathBuf) -> Result<SceneDescription, String> {
     match YamlLoader::load_from_str(input) {
         Ok(yaml) => {

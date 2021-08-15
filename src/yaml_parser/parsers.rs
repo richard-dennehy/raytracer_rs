@@ -22,7 +22,6 @@ pub trait FromYaml: Sized {
     fn from_yaml_and_defines(yaml: &Yaml, defines: &Defines) -> Result<Self, String>;
 }
 
-// FIXME ideally there'd be some kind of stack trace when parsing fails
 impl FromYaml for f64 {
     fn from_yaml_and_defines(yaml: &Yaml, _: &Defines) -> Result<Self, String> {
         match &yaml {

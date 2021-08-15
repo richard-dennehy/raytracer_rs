@@ -15,11 +15,14 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="refactor YAML parser Pattern model">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implement support for cones in YAML scene descriptions">
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/pattern.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/pattern.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/creating_a_scene.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/creating_a_scene.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,11 +130,6 @@
     </option>
   </component>
   <component name="RunManager" selected="Cargo.test">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -228,6 +226,11 @@
       <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <list>
@@ -537,14 +540,8 @@
       <workItem from="1628791062760" duration="2274000" />
       <workItem from="1628795165724" duration="6000" />
       <workItem from="1628874132349" duration="2496000" />
-      <workItem from="1628938390468" duration="3217000" />
-    </task>
-    <task id="LOCAL-00213" summary="WIP load required files in wavefront parser">
-      <created>1625683571422</created>
-      <option name="number" value="00213" />
-      <option name="presentableId" value="LOCAL-00213" />
-      <option name="project" value="LOCAL" />
-      <updated>1625683571427</updated>
+      <workItem from="1628938390468" duration="3262000" />
+      <workItem from="1629024328804" duration="4806000" />
     </task>
     <task id="LOCAL-00214" summary="WIP load required files in wavefront parser">
       <created>1625770356506</created>
@@ -882,7 +879,14 @@
       <option name="project" value="LOCAL" />
       <updated>1628940760474</updated>
     </task>
-    <option name="localTasksCounter" value="262" />
+    <task id="LOCAL-00262" summary="implement support for cones in YAML scene descriptions">
+      <created>1628941655529</created>
+      <option name="number" value="00262" />
+      <option name="presentableId" value="LOCAL-00262" />
+      <option name="project" value="LOCAL" />
+      <updated>1628941655529</updated>
+    </task>
+    <option name="localTasksCounter" value="263" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -908,7 +912,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="rerender dragon example downsampling from 16K" />
     <MESSAGE value="WIP add uv map example" />
     <MESSAGE value="add uv map example and fix cone rendering issues" />
     <MESSAGE value="add image texture example" />
@@ -933,7 +936,8 @@
     <MESSAGE value="add Orrery example" />
     <MESSAGE value="resolve some TODOs/FIXMEs" />
     <MESSAGE value="refactor YAML parser Pattern model" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor YAML parser Pattern model" />
+    <MESSAGE value="implement support for cones in YAML scene descriptions" />
+    <option name="LAST_COMMIT_MESSAGE" value="implement support for cones in YAML scene descriptions" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -960,7 +964,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/yaml_parser/parsers.rs</url>
-          <line>279</line>
+          <line>278</line>
           <option name="timeStamp" value="69" />
         </line-breakpoint>
       </breakpoints>
