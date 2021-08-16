@@ -152,8 +152,9 @@ impl SceneDescription {
             PatternKind::Solid(colour) => MaterialKind::Solid(*colour),
             PatternKind::Pattern {
                 pattern_type,
+                colours,
                 transforms,
-            } => self.pattern_to_material_kind(pattern_type, transforms),
+            } => self.pattern_to_material_kind(pattern_type, colours, transforms),
             PatternKind::Uv {
                 uv_type,
                 transforms,
@@ -164,12 +165,14 @@ impl SceneDescription {
     fn pattern_to_material_kind(
         &self,
         pattern_type: &PatternType,
+        (primary, secondary): &(Colour, Colour),
         transforms: &Option<Vec<Transformation>>,
     ) -> MaterialKind {
         let pattern = match pattern_type {
-            PatternType::Stripes { primary, secondary } => Pattern::striped(*primary, *secondary),
-            PatternType::Checkers { primary, secondary } => Pattern::checkers(*primary, *secondary),
-            PatternType::Rings { primary, secondary } => Pattern::ring(*primary, *secondary),
+            PatternType::Stripes => Pattern::striped(*primary, *secondary),
+            PatternType::Checkers => Pattern::checkers(*primary, *secondary),
+            PatternType::Rings => Pattern::ring(*primary, *secondary),
+            PatternType::Gradient => Pattern::gradient(*primary, *secondary),
         };
 
         if let Some(tfs) = &transforms {
@@ -258,6 +261,7 @@ pub enum PatternKind {
     Solid(Colour),
     Pattern {
         pattern_type: PatternType,
+        colours: (Colour, Colour),
         transforms: Option<Vec<Transformation>>,
     },
     Uv {
@@ -268,10 +272,10 @@ pub enum PatternKind {
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum PatternType {
-    Stripes { primary: Colour, secondary: Colour },
-    Checkers { primary: Colour, secondary: Colour },
-    Rings { primary: Colour, secondary: Colour },
-    // FIXME gradient
+    Stripes,
+    Checkers,
+    Rings,
+    Gradient,
 }
 
 #[derive(Debug, PartialEq, Clone)]

@@ -200,10 +200,8 @@ value:
         define,
         Define::Material(MaterialDescription {
             pattern: Some(PatternKind::Pattern {
-                pattern_type: PatternType::Stripes {
-                    primary: Colour::greyscale(0.45),
-                    secondary: Colour::greyscale(0.55),
-                },
+                pattern_type: PatternType::Stripes,
+                colours: (Colour::greyscale(0.45), Colour::greyscale(0.55)),
                 transforms: Some(vec![
                     Transformation::Scale {
                         x: 0.25,
@@ -244,10 +242,8 @@ value:
         define,
         Define::Material(MaterialDescription {
             pattern: Some(PatternKind::Pattern {
-                pattern_type: PatternType::Checkers {
-                    primary: Colour::greyscale(0.35),
-                    secondary: Colour::greyscale(0.65)
-                },
+                pattern_type: PatternType::Checkers,
+                colours: (Colour::greyscale(0.35), Colour::greyscale(0.65)),
                 transforms: None
             }),
             specular: Some(0.0),
@@ -1132,15 +1128,40 @@ pattern:
         material,
         MaterialDescription {
             pattern: Some(PatternKind::Pattern {
-                pattern_type: PatternType::Rings {
-                    primary: Colour::new(1.0, 1.0, 0.5),
-                    secondary: Colour::new(1.0, 1.0, 0.0),
-                },
+                pattern_type: PatternType::Rings,
+                colours: (Colour::new(1.0, 1.0, 0.5), Colour::new(1.0, 1.0, 0.0)),
                 transforms: Some(vec![Transformation::Scale {
                     x: 0.05,
                     y: 1.0,
                     z: 0.05
                 }])
+            }),
+            ..Default::default()
+        }
+    );
+}
+
+#[test]
+fn should_parse_material_with_gradient_pattern() {
+    let input = "\
+pattern:
+  type: gradient
+  colors:
+    - [ 1, 1, 0.5 ]
+    - [ 1, 1, 0 ]";
+
+    let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+    let material = yaml.parse::<MaterialDescription>(&HashMap::new());
+    assert!(material.is_ok(), "{}", material.unwrap_err());
+    let material = material.unwrap();
+
+    assert_eq!(
+        material,
+        MaterialDescription {
+            pattern: Some(PatternKind::Pattern {
+                pattern_type: PatternType::Gradient,
+                colours: (Colour::new(1.0, 1.0, 0.5), Colour::new(1.0, 1.0, 0.0)),
+                transforms: None
             }),
             ..Default::default()
         }

@@ -15,14 +15,12 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="implement support for cones in YAML scene descriptions">
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="update documentation">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene/pattern.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/pattern.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/uv_patterns/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/uv_patterns/main.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -123,13 +121,18 @@
       <command value="cargo bench -- YAML" />
       <command value="cargo bench -- &quot;lots of objects&quot;" />
       <command value="cargo bench" />
-      <command value="cargo run --release --example uv_patterns" />
       <command value="cargo test" />
       <command value="cargo run --release" />
       <command value="cargo run --release --example orrery" />
+      <command value="cargo run --release --example uv_patterns" />
     </option>
   </component>
   <component name="RunManager" selected="Cargo.test">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -164,8 +167,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test scene::tests::object_tests::shape_tests::rotating_a_uv_checkers_pattern_180_degrees_should_invert_it" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib scene::tests::object_tests::shape_tests::rotating_a_uv_checkers_pattern_180_degrees_should_invert_it -- --exact" />
+    <configuration name="Test yaml_parser::tests::basic_parsing::should_parse_material_with_gradient_pattern" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib yaml_parser::tests::basic_parsing::should_parse_material_with_gradient_pattern -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -197,7 +200,7 @@
       </method>
     </configuration>
     <configuration name="run" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="run --release --example orrery" />
+      <option name="command" value="run --release --example uv_patterns" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -228,26 +231,21 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="Cargo.Run" />
       <item itemvalue="Cargo.run" />
       <item itemvalue="Cargo.test" />
-      <item itemvalue="Cargo.Test scene::tests::object_tests::shape_tests::rotating_a_uv_checkers_pattern_180_degrees_should_invert_it" />
       <item itemvalue="Cargo.Test scene::tests::object_tests::shape_tests::applying_a_planar_uv_to_a_cube_should_wrap_the_plane_around_the_6_faces" />
       <item itemvalue="Cargo.Test yaml_parser::tests::creating_a_scene::should_be_able_to_create_a_group" />
+      <item itemvalue="Cargo.Test yaml_parser::tests::basic_parsing::should_parse_material_with_gradient_pattern" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.Test yaml_parser::tests::basic_parsing::should_parse_material_with_gradient_pattern" />
+        <item itemvalue="Cargo.run" />
         <item itemvalue="Cargo.run" />
         <item itemvalue="Cargo.Test yaml_parser::tests::creating_a_scene::should_be_able_to_create_a_group" />
-        <item itemvalue="Cargo.Test scene::tests::object_tests::shape_tests::applying_a_planar_uv_to_a_cube_should_wrap_the_plane_around_the_6_faces" />
-        <item itemvalue="Cargo.run" />
       </list>
     </recent_temporary>
   </component>
@@ -541,14 +539,8 @@
       <workItem from="1628795165724" duration="6000" />
       <workItem from="1628874132349" duration="2496000" />
       <workItem from="1628938390468" duration="3262000" />
-      <workItem from="1629024328804" duration="4806000" />
-    </task>
-    <task id="LOCAL-00214" summary="WIP load required files in wavefront parser">
-      <created>1625770356506</created>
-      <option name="number" value="00214" />
-      <option name="presentableId" value="LOCAL-00214" />
-      <option name="project" value="LOCAL" />
-      <updated>1625770356507</updated>
+      <workItem from="1629024328804" duration="5055000" />
+      <workItem from="1629135942050" duration="1576000" />
     </task>
     <task id="LOCAL-00215" summary="WIP load required files in wavefront parser">
       <created>1625854577462</created>
@@ -886,7 +878,14 @@
       <option name="project" value="LOCAL" />
       <updated>1628941655529</updated>
     </task>
-    <option name="localTasksCounter" value="263" />
+    <task id="LOCAL-00263" summary="update documentation">
+      <created>1629029192516</created>
+      <option name="number" value="00263" />
+      <option name="presentableId" value="LOCAL-00263" />
+      <option name="project" value="LOCAL" />
+      <updated>1629029192516</updated>
+    </task>
+    <option name="localTasksCounter" value="264" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -912,7 +911,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP add uv map example" />
     <MESSAGE value="add uv map example and fix cone rendering issues" />
     <MESSAGE value="add image texture example" />
     <MESSAGE value="fix benchmarks" />
@@ -937,7 +935,8 @@
     <MESSAGE value="resolve some TODOs/FIXMEs" />
     <MESSAGE value="refactor YAML parser Pattern model" />
     <MESSAGE value="implement support for cones in YAML scene descriptions" />
-    <option name="LAST_COMMIT_MESSAGE" value="implement support for cones in YAML scene descriptions" />
+    <MESSAGE value="update documentation" />
+    <option name="LAST_COMMIT_MESSAGE" value="update documentation" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

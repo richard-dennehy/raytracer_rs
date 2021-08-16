@@ -386,89 +386,72 @@ impl FromYaml for Light {
 
 impl FromYaml for PatternKind {
     fn from_yaml_and_defines(yaml: &Yaml, defines: &Defines) -> Result<Self, String> {
+        let parse_as_uv =
+            |yaml: &Yaml, transforms: Option<Vec<Transformation>>| match yaml["type"].as_str() {
+                Some("image") => {
+                    let file_name = yaml["file"]
+                        .as_str()
+                        .ok_or("a UV image pattern must have a `file`".to_owned())?;
+                    Ok(PatternKind::Uv {
+                        uv_type: UvPatternType::Image {
+                            file_name: file_name.to_owned(),
+                        },
+                        transforms,
+                    })
+                }
+                Some("checkers") => {
+                    let colours: Vec<Colour> = yaml["colors"].parse(defines)?;
+                    if colours.len() != 2 {
+                        return Err("a pattern must have exactly 2 colours".to_string());
+                    }
+                    let (primary, secondary) = (colours[0], colours[1]);
+                    let width = yaml["width"].parse(defines)?;
+                    let height = yaml["height"].parse(defines)?;
+
+                    Ok(PatternKind::Uv {
+                        uv_type: UvPatternType::Checkers {
+                            primary,
+                            secondary,
+                            width,
+                            height,
+                        },
+                        transforms,
+                    })
+                }
+                Some(other) => Err(format!("UV pattern type {} is not unsupported", other)),
+                None => Err(format!("A UV pattern must have a `type`")),
+            };
+
         let transforms = yaml["transform"].parse(defines)?;
+
+        let pattern_type = match yaml["type"].as_str() {
+            Some("map") => {
+                // awkwardness caused by awkward format
+                return parse_as_uv(&yaml["uv_pattern"], transforms);
+            }
+            Some("stripes") => PatternType::Stripes,
+            Some("checkers") => PatternType::Checkers,
+            Some("rings") => PatternType::Rings,
+            Some("gradient") => PatternType::Gradient,
+            Some(other) => return Err(format!("pattern type {} is not supported", other)),
+            None => return Err("pattern must have a `type`".to_string()),
+        };
+
         let colours = yaml["colors"]
-            .parse::<Option<Vec<Colour>>>(defines)?
-            .map(|colours| {
+            .parse::<Vec<Colour>>(defines)
+            .and_then(|colours| {
                 if colours.len() != 2 {
                     Err("a pattern must have exactly 2 colours".to_string())
                 } else {
                     Ok((colours[0], colours[1]))
                 }
-            });
+            })?;
 
-        let pattern = match yaml["type"].as_str() {
-            Some("stripes") => {
-                let (primary, secondary) = colours
-                    .ok_or("`stripes` pattern must specify exactly 2 colours".to_owned())??;
-
-                PatternKind::Pattern {
-                    pattern_type: PatternType::Stripes { primary, secondary },
-                    transforms,
-                }
-            }
-            Some("checkers") => {
-                let (primary, secondary) = colours
-                    .ok_or("`checkers` pattern must specify exactly 2 colours".to_owned())??;
-
-                PatternKind::Pattern {
-                    pattern_type: PatternType::Checkers { primary, secondary },
-                    transforms,
-                }
-            }
-            Some("rings") => {
-                let (primary, secondary) = colours
-                    .ok_or("`rings` pattern must specify exactly 2 colours".to_owned())??;
-
-                PatternKind::Pattern {
-                    pattern_type: PatternType::Rings { primary, secondary },
-                    transforms,
-                }
-            }
-            Some("map") => {
-                let yaml = &yaml["uv_pattern"];
-                match yaml["type"].as_str() {
-                    Some("image") => {
-                        let file_name = yaml["file"]
-                            .as_str()
-                            .ok_or("a UV image pattern must have a `file`".to_owned())?;
-                        PatternKind::Uv {
-                            uv_type: UvPatternType::Image {
-                                file_name: file_name.to_owned(),
-                            },
-                            transforms,
-                        }
-                    }
-                    Some("checkers") => {
-                        let colours: Vec<Colour> = yaml["colors"].parse(defines)?;
-                        if colours.len() != 2 {
-                            return Err("a pattern must have exactly 2 colours".to_string());
-                        }
-                        let (primary, secondary) = (colours[0], colours[1]);
-                        let width = yaml["width"].parse(defines)?;
-                        let height = yaml["height"].parse(defines)?;
-
-                        PatternKind::Uv {
-                            uv_type: UvPatternType::Checkers {
-                                primary,
-                                secondary,
-                                width,
-                                height,
-                            },
-                            transforms,
-                        }
-                    }
-                    Some(other) => {
-                        return Err(format!("UV pattern type {} is not unsupported", other))
-                    }
-                    None => return Err(format!("A UV pattern must have a `type`")),
-                }
-            }
-            Some(other) => return Err(format!("pattern type {} is not supported", other)),
-            None => return Err("pattern must have a `type`".to_string()),
-        };
-
-        Ok(pattern)
+        Ok(PatternKind::Pattern {
+            pattern_type,
+            colours,
+            transforms,
+        })
     }
 }
 

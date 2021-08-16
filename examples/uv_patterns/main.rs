@@ -20,25 +20,14 @@ fn main() -> Result<(), String> {
         Object::plane().transformed(Transform::identity().rotate_x(FRAC_PI_2).translate_z(5.0)),
     );
 
-    fn green_white_checkers() -> UvPattern {
-        UvPattern::checkers(
-            Colour::new(0.0, 0.5, 0.0),
-            Colour::WHITE,
-            nonzero_ext::nonzero!(8usize),
-            nonzero_ext::nonzero!(8usize),
-        )
-    }
-
     world.add(
         Object::cube()
             .with_material(Material {
-                kind: MaterialKind::Uv(UvPattern::cubic(
-                    green_white_checkers(),
-                    green_white_checkers(),
-                    green_white_checkers(),
-                    green_white_checkers(),
-                    green_white_checkers(),
-                    green_white_checkers(),
+                kind: MaterialKind::Uv(UvPattern::checkers(
+                    Colour::new(0.0, 0.5, 0.0),
+                    Colour::WHITE,
+                    nonzero_ext::nonzero!(8usize),
+                    nonzero_ext::nonzero!(8usize),
                 )),
                 ..Default::default()
             })
