@@ -386,48 +386,17 @@ impl FromYaml for Light {
 
 impl FromYaml for PatternKind {
     fn from_yaml_and_defines(yaml: &Yaml, defines: &Defines) -> Result<Self, String> {
-        let parse_as_uv =
-            |yaml: &Yaml, transforms: Option<Vec<Transformation>>| match yaml["type"].as_str() {
-                Some("image") => {
-                    let file_name = yaml["file"]
-                        .as_str()
-                        .ok_or("a UV image pattern must have a `file`".to_owned())?;
-                    Ok(PatternKind::Uv {
-                        uv_type: UvPatternType::Image {
-                            file_name: file_name.to_owned(),
-                        },
-                        transforms,
-                    })
-                }
-                Some("checkers") => {
-                    let colours: Vec<Colour> = yaml["colors"].parse(defines)?;
-                    if colours.len() != 2 {
-                        return Err("a pattern must have exactly 2 colours".to_string());
-                    }
-                    let (primary, secondary) = (colours[0], colours[1]);
-                    let width = yaml["width"].parse(defines)?;
-                    let height = yaml["height"].parse(defines)?;
-
-                    Ok(PatternKind::Uv {
-                        uv_type: UvPatternType::Checkers {
-                            primary,
-                            secondary,
-                            width,
-                            height,
-                        },
-                        transforms,
-                    })
-                }
-                Some(other) => Err(format!("UV pattern type {} is not unsupported", other)),
-                None => Err(format!("A UV pattern must have a `type`")),
-            };
-
         let transforms = yaml["transform"].parse(defines)?;
 
         let pattern_type = match yaml["type"].as_str() {
             Some("map") => {
                 // awkwardness caused by awkward format
-                return parse_as_uv(&yaml["uv_pattern"], transforms);
+                return yaml
+                    .parse::<UvPatternType>(defines)
+                    .map(|uv_type| PatternKind::Uv {
+                        uv_type,
+                        transforms,
+                    });
             }
             Some("stripes") => PatternType::Stripes,
             Some("checkers") => PatternType::Checkers,
@@ -452,6 +421,58 @@ impl FromYaml for PatternKind {
             colours,
             transforms,
         })
+    }
+}
+
+impl FromYaml for UvPatternType {
+    fn from_yaml_and_defines(yaml: &Yaml, defines: &Defines) -> Result<Self, String> {
+        match yaml["mapping"].as_str() {
+            // todo skybox yaml example
+            Some("cube") => {
+                return Ok(UvPatternType::Cube {
+                    front: yaml["front"].parse(defines)?,
+                    back: yaml["back"].parse(defines)?,
+                    top: yaml["up"].parse(defines)?,
+                    bottom: yaml["down"].parse(defines)?,
+                    left: yaml["left"].parse(defines)?,
+                    right: yaml["right"].parse(defines)?,
+                })
+            }
+            Some("cylindrical") => todo!("cylinder UV"),
+            Some("planar" | "spherical") => return yaml["uv_pattern"].parse(defines),
+            Some(other) => return Err(format!("Unsupported UV mapping type {}", other)),
+            _ => (), // recursive call
+        }
+
+        match yaml["type"].as_str() {
+            Some("image") => {
+                let file_name = yaml["file"]
+                    .as_str()
+                    .ok_or("a UV image pattern must have a `file`".to_owned())?;
+
+                Ok(UvPatternType::Image {
+                    file_name: file_name.to_owned(),
+                })
+            }
+            Some("checkers") => {
+                let colours: Vec<Colour> = yaml["colors"].parse(defines)?;
+                if colours.len() != 2 {
+                    return Err("a pattern must have exactly 2 colours".to_string());
+                }
+                let (primary, secondary) = (colours[0], colours[1]);
+                let width = yaml["width"].parse(defines)?;
+                let height = yaml["height"].parse(defines)?;
+
+                Ok(UvPatternType::Checkers {
+                    primary,
+                    secondary,
+                    width,
+                    height,
+                })
+            }
+            Some(other) => Err(format!("UV pattern type {} is not unsupported", other)),
+            None => Err(format!("A UV pattern must have a `type`")),
+        }
     }
 }
 

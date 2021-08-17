@@ -15,9 +15,8 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="update documentation">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add gradient pattern support to YAML parser">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/uv_patterns/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/uv_patterns/main.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" afterDir="false" />
@@ -128,11 +127,6 @@
     </option>
   </component>
   <component name="RunManager" selected="Cargo.test">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -146,6 +140,7 @@
       <option name="isRedirectInput" value="false" />
       <option name="redirectInputPath" value="" />
       <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
@@ -165,6 +160,7 @@
       <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
     <configuration name="Test yaml_parser::tests::basic_parsing::should_parse_material_with_gradient_pattern" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
@@ -180,6 +176,7 @@
       <option name="isRedirectInput" value="false" />
       <option name="redirectInputPath" value="" />
       <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
@@ -197,6 +194,7 @@
       <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
     <configuration name="run" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
@@ -213,6 +211,7 @@
       <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
     <configuration name="test" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
@@ -228,6 +227,7 @@
       <option name="isRedirectInput" value="false" />
       <option name="redirectInputPath" value="" />
       <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
@@ -540,14 +540,10 @@
       <workItem from="1628874132349" duration="2496000" />
       <workItem from="1628938390468" duration="3262000" />
       <workItem from="1629024328804" duration="5055000" />
-      <workItem from="1629135942050" duration="1576000" />
-    </task>
-    <task id="LOCAL-00215" summary="WIP load required files in wavefront parser">
-      <created>1625854577462</created>
-      <option name="number" value="00215" />
-      <option name="presentableId" value="LOCAL-00215" />
-      <option name="project" value="LOCAL" />
-      <updated>1625854577462</updated>
+      <workItem from="1629135942050" duration="2545000" />
+      <workItem from="1629221904698" duration="246000" />
+      <workItem from="1629222165373" duration="27000" />
+      <workItem from="1629222202088" duration="2934000" />
     </task>
     <task id="LOCAL-00216" summary="load required files in wavefront parser">
       <created>1625921153305</created>
@@ -885,7 +881,14 @@
       <option name="project" value="LOCAL" />
       <updated>1629029192516</updated>
     </task>
-    <option name="localTasksCounter" value="264" />
+    <task id="LOCAL-00264" summary="add gradient pattern support to YAML parser">
+      <created>1629137573590</created>
+      <option name="number" value="00264" />
+      <option name="presentableId" value="LOCAL-00264" />
+      <option name="project" value="LOCAL" />
+      <updated>1629137573590</updated>
+    </task>
+    <option name="localTasksCounter" value="265" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -911,7 +914,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add uv map example and fix cone rendering issues" />
     <MESSAGE value="add image texture example" />
     <MESSAGE value="fix benchmarks" />
     <MESSAGE value="improve bounding box intersection performance" />
@@ -936,7 +938,8 @@
     <MESSAGE value="refactor YAML parser Pattern model" />
     <MESSAGE value="implement support for cones in YAML scene descriptions" />
     <MESSAGE value="update documentation" />
-    <option name="LAST_COMMIT_MESSAGE" value="update documentation" />
+    <MESSAGE value="add gradient pattern support to YAML parser" />
+    <option name="LAST_COMMIT_MESSAGE" value="add gradient pattern support to YAML parser" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

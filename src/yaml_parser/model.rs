@@ -187,26 +187,45 @@ impl SceneDescription {
         uv_type: &UvPatternType,
         transforms: &Option<Vec<Transformation>>,
     ) -> MaterialKind {
-        let uv = match uv_type {
-            UvPatternType::Checkers {
-                primary,
-                secondary,
-                width,
-                height,
-            } => UvPattern::checkers(*primary, *secondary, *width, *height),
-            UvPatternType::Image { file_name } => {
-                let file_path = self.resource_dir.join(file_name);
-                let img = image::open(&file_path)
-                    .expect(&format!("failed to load uv pattern from {:?}", file_path));
-                UvPattern::image(Arc::new(img.to_rgb8()))
+        fn inner(this: &SceneDescription, uv_type: &UvPatternType) -> UvPattern {
+            match uv_type {
+                UvPatternType::Checkers {
+                    primary,
+                    secondary,
+                    width,
+                    height,
+                } => UvPattern::checkers(*primary, *secondary, *width, *height),
+                UvPatternType::Image { file_name } => {
+                    let file_path = this.resource_dir.join(file_name);
+                    let img = image::open(&file_path)
+                        .expect(&format!("failed to load uv pattern from {:?}", file_path));
+                    UvPattern::image(Arc::new(img.to_rgb8()))
+                }
+                UvPatternType::Cube {
+                    left,
+                    right,
+                    front,
+                    back,
+                    top,
+                    bottom,
+                } => UvPattern::cubic(
+                    inner(this, front),
+                    inner(this, back),
+                    inner(this, left),
+                    inner(this, right),
+                    inner(this, top),
+                    inner(this, bottom),
+                ),
             }
-        };
-
-        if let Some(tfs) = &transforms {
-            MaterialKind::Uv(uv.with_transform(tfs.to_matrix()))
-        } else {
-            MaterialKind::Uv(uv)
         }
+
+        let uv = inner(self, uv_type);
+        let uv = if let Some(tfs) = &transforms {
+            uv.with_transform(tfs.to_matrix())
+        } else {
+            uv
+        };
+        MaterialKind::Uv(uv)
     }
 }
 
@@ -289,7 +308,15 @@ pub enum UvPatternType {
     Image {
         file_name: String,
     },
-    // TODO support cubic mapping
+    Cube {
+        left: Box<UvPatternType>,
+        right: Box<UvPatternType>,
+        front: Box<UvPatternType>,
+        back: Box<UvPatternType>,
+        top: Box<UvPatternType>,
+        bottom: Box<UvPatternType>,
+    },
+    // todo cylindrical
 }
 
 #[derive(PartialEq, Debug, Clone, Copy)]

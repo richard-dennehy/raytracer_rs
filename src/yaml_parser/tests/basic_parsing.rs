@@ -1169,6 +1169,67 @@ pattern:
 }
 
 #[test]
+fn should_parse_cubic_uv_pattern() {
+    let input = "\
+pattern:
+  type: map
+  mapping: cube
+  left:
+    type: image
+    file: negx.ppm
+  right:
+    type: image
+    file: posx.ppm
+  front:
+    type: image
+    file: posz.ppm
+  back:
+    type: image
+    file: negz.ppm
+  up:
+    type: image
+    file: posy.ppm
+  down:
+    type: image
+    file: negy.ppm";
+
+    let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+    let material = yaml.parse::<MaterialDescription>(&HashMap::new());
+    assert!(material.is_ok(), "{}", material.unwrap_err());
+    let material = material.unwrap();
+
+    assert_eq!(
+        material,
+        MaterialDescription {
+            pattern: Some(PatternKind::Uv {
+                uv_type: UvPatternType::Cube {
+                    left: Box::new(UvPatternType::Image {
+                        file_name: "negx.ppm".into()
+                    }),
+                    right: Box::new(UvPatternType::Image {
+                        file_name: "posx.ppm".into()
+                    }),
+                    front: Box::new(UvPatternType::Image {
+                        file_name: "posz.ppm".into()
+                    }),
+                    back: Box::new(UvPatternType::Image {
+                        file_name: "negz.ppm".into()
+                    }),
+                    top: Box::new(UvPatternType::Image {
+                        file_name: "posy.ppm".into()
+                    }),
+                    bottom: Box::new(UvPatternType::Image {
+                        file_name: "negy.ppm".into()
+                    }),
+                },
+                transforms: None
+            }),
+            ..Default::default()
+        }
+    );
+}
+
+#[test]
 #[allow(clippy::approx_constant)] // approximation of PI/2 matches the file
 fn should_parse_scene_description() {
     let scene = include_str!(concat!(
