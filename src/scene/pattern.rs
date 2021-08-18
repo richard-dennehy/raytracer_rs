@@ -1,12 +1,15 @@
-use super::pattern::Kind::{Checkers, Gradient, Ring, Striped};
+use std::num::NonZeroUsize;
+use std::ops::RangeInclusive;
+use std::sync::Arc;
+
+use image::RgbImage;
+
 use crate::core::Colour;
 use crate::core::F64Ext;
 use crate::core::Point3D;
 use crate::core::Transform;
-use image::RgbImage;
-use std::num::NonZeroUsize;
-use std::ops::Range;
-use std::sync::Arc;
+
+use super::pattern::Kind::{Checkers, Gradient, Ring, Striped};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Pattern {
@@ -44,7 +47,7 @@ pub(super) enum UvPatternKind {
         bottom_right: Colour,
     },
     Image(Arc<RgbImage>),
-    MultiFace(Vec<(Range<f64>, Range<f64>, UvPattern)>),
+    MultiFace(Vec<(RangeInclusive<f64>, RangeInclusive<f64>, UvPattern)>),
 }
 
 impl Pattern {
@@ -133,12 +136,12 @@ impl UvPattern {
     ) -> Self {
         UvPattern {
             kind: UvPatternKind::MultiFace(vec![
-                (1.0..2.0, 0.0..1.0, top),
-                (1.0..2.0, 1.0..2.0, right),
-                (0.0..1.0, 2.0..3.0, front),
-                (1.0..2.0, 2.0..3.0, bottom),
-                (2.0..3.0, 2.0..3.0, back),
-                (1.0..2.0, 3.0..4.0, left),
+                (1.0..=2.0, 0.0..=1.0, top),
+                (1.0..=2.0, 1.0..=2.0, right),
+                (0.0..=1.0, 2.0..=3.0, front),
+                (1.0..=2.0, 2.0..=3.0, bottom),
+                (2.0..=3.0, 2.0..=3.0, back),
+                (1.0..=2.0, 3.0..=4.0, left),
             ]),
             transform: Transform::identity(),
         }
@@ -147,9 +150,9 @@ impl UvPattern {
     pub fn capped_cylinder(sides: UvPattern, top: UvPattern, bottom: UvPattern) -> Self {
         UvPattern {
             kind: UvPatternKind::MultiFace(vec![
-                (0.0..1.0, 0.0..1.0, sides),
-                (1.0..2.0, 0.0..1.0, top),
-                (2.0..3.0, 0.0..1.0, bottom),
+                (0.0..=1.0, 0.0..=1.0, sides),
+                (1.0..=2.0, 0.0..=1.0, top),
+                (2.0..=3.0, 0.0..=1.0, bottom),
             ]),
             transform: Transform::identity(),
         }
