@@ -427,7 +427,6 @@ impl FromYaml for PatternKind {
 impl FromYaml for UvPatternType {
     fn from_yaml_and_defines(yaml: &Yaml, defines: &Defines) -> Result<Self, String> {
         match yaml["mapping"].as_str() {
-            // todo skybox yaml example
             Some("cube") => {
                 return Ok(UvPatternType::Cube {
                     front: yaml["front"].parse(defines)?,
@@ -438,7 +437,27 @@ impl FromYaml for UvPatternType {
                     right: yaml["right"].parse(defines)?,
                 })
             }
-            Some("cylindrical") => todo!("cylinder UV"),
+            Some("cylindrical") => {
+                let sides = yaml["uv_pattern"].parse(defines)?;
+
+                let top = yaml["top"].parse::<Option<UvPatternType>>(defines)?;
+                let bottom = yaml["bottom"].parse::<Option<UvPatternType>>(defines)?;
+
+                let caps = match (top, bottom) {
+                    (None, None) => None,
+                    (Some(top), Some(bottom)) => Some((Box::new(top), Box::new(bottom))),
+                    (Some(_), None) => return Err(
+                        "a cylindrical map with a `top` pattern must also have a `bottom` pattern"
+                            .to_owned(),
+                    ),
+                    (_, Some(_)) => return Err(
+                        "a cylindrical map with a `bottom` pattern must also have a `top` pattern"
+                            .to_owned(),
+                    ),
+                };
+
+                return Ok(UvPatternType::Cylindrical { sides, caps });
+            }
             Some("planar" | "spherical") => return yaml["uv_pattern"].parse(defines),
             Some(other) => return Err(format!("Unsupported UV mapping type {}", other)),
             _ => (), // recursive call

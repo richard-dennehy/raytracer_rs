@@ -1230,6 +1230,168 @@ pattern:
 }
 
 #[test]
+fn should_parse_cylinder_with_single_uv_pattern() {
+    let input = "\
+pattern:
+  type: map
+  mapping: cylindrical
+  uv_pattern:
+    type: checkers
+    width: 16
+    height: 8
+    colors:
+      - [ 0, 0, 0 ]
+      - [ 0.5, 0.5, 0.5 ]";
+
+    let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+    let material = yaml.parse::<MaterialDescription>(&HashMap::new());
+    assert!(material.is_ok(), "{}", material.unwrap_err());
+    let material = material.unwrap();
+
+    assert_eq!(
+        material,
+        MaterialDescription {
+            pattern: Some(PatternKind::Uv {
+                uv_type: UvPatternType::Cylindrical {
+                    sides: Box::new(UvPatternType::Checkers {
+                        width: nonzero_ext::nonzero!(16usize),
+                        height: nonzero_ext::nonzero!(8usize),
+                        primary: Colour::BLACK,
+                        secondary: Colour::greyscale(0.5)
+                    }),
+                    caps: None,
+                },
+                transforms: None
+            }),
+            ..Default::default()
+        }
+    );
+}
+
+#[test]
+fn should_parse_cylinder_with_uv_pattern_on_top_and_bottom_caps() {
+    let input = "\
+pattern:
+  type: map
+  mapping: cylindrical
+  uv_pattern:
+    type: checkers
+    width: 16
+    height: 8
+    colors:
+      - [ 0, 0, 0 ]
+      - [ 0.5, 0.5, 0.5 ]
+  top:
+    type: checkers
+    width: 16
+    height: 8
+    colors:
+      - [ 0, 0, 0 ]
+      - [ 0.5, 0.5, 0.5 ]
+  bottom:
+    type: checkers
+    width: 16
+    height: 8
+    colors:
+      - [ 0, 0, 0 ]
+      - [ 0.5, 0.5, 0.5 ]";
+
+    let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+    let material = yaml.parse::<MaterialDescription>(&HashMap::new());
+    assert!(material.is_ok(), "{}", material.unwrap_err());
+    let material = material.unwrap();
+
+    fn checkers_pattern() -> UvPatternType {
+        UvPatternType::Checkers {
+            width: nonzero_ext::nonzero!(16usize),
+            height: nonzero_ext::nonzero!(8usize),
+            primary: Colour::BLACK,
+            secondary: Colour::greyscale(0.5),
+        }
+    }
+
+    assert_eq!(
+        material,
+        MaterialDescription {
+            pattern: Some(PatternKind::Uv {
+                uv_type: UvPatternType::Cylindrical {
+                    sides: Box::new(checkers_pattern()),
+                    caps: Some((Box::new(checkers_pattern()), Box::new(checkers_pattern()))),
+                },
+                transforms: None
+            }),
+            ..Default::default()
+        }
+    );
+}
+
+#[test]
+fn should_not_parse_cylinder_with_uv_pattern_on_top_but_not_bottom_cap() {
+    let input = "\
+pattern:
+  type: map
+  mapping: cylindrical
+  uv_pattern:
+    type: checkers
+    width: 16
+    height: 8
+    colors:
+      - [ 0, 0, 0 ]
+      - [ 0.5, 0.5, 0.5 ]
+  top:
+    type: checkers
+    width: 16
+    height: 8
+    colors:
+      - [ 0, 0, 0 ]
+      - [ 0.5, 0.5, 0.5 ]";
+
+    let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+    let material = yaml.parse::<MaterialDescription>(&HashMap::new());
+    assert!(
+        material.is_err(),
+        "expected parsing to fail, but it succeeded"
+    );
+    assert_eq!(
+        material.unwrap_err(),
+        "a cylindrical map with a `top` pattern must also have a `bottom` pattern"
+    );
+}
+
+#[test]
+fn should_not_parse_cylinder_with_uv_pattern_on_bottom_but_not_top_cap() {
+    let input = "\
+pattern:
+  type: map
+  mapping: cylindrical
+  uv_pattern:
+    type: checkers
+    width: 16
+    height: 8
+    colors:
+      - [ 0, 0, 0 ]
+      - [ 0.5, 0.5, 0.5 ]
+  bottom:
+    type: checkers
+    width: 16
+    height: 8
+    colors:
+      - [ 0, 0, 0 ]
+      - [ 0.5, 0.5, 0.5 ]";
+
+    let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
+    let material = yaml.parse::<MaterialDescription>(&HashMap::new());
+    assert!(
+        material.is_err(),
+        "expected parsing to fail, but it succeeded"
+    );
+    assert_eq!(
+        material.unwrap_err(),
+        "a cylindrical map with a `bottom` pattern must also have a `top` pattern"
+    );
+}
+
+#[test]
 #[allow(clippy::approx_constant)] // approximation of PI/2 matches the file
 fn should_parse_scene_description() {
     let scene = include_str!(concat!(

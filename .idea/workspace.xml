@@ -15,18 +15,11 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add cube UV mapping support to YAML parser">
-      <change afterPath="$PROJECT_DIR$/examples/skybox/main.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/skybox/resources/negx.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/skybox/resources/negy.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/skybox/resources/negz.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/skybox/resources/posx.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/skybox/resources/posy.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/skybox/resources/posz.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/skybox/resources/skybox.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/skybox/skybox.png" afterDir="false" />
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add skybox example">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene/pattern.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/pattern.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -132,14 +125,10 @@
       <command value="cargo run --release" />
       <command value="cargo run --release --example orrery" />
       <command value="cargo run --release --example uv_patterns" />
+      <command value="cargo run --release --example skybox" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.run">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="Cargo.test">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -243,10 +232,15 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.run" />
         <item itemvalue="Cargo.test" />
+        <item itemvalue="Cargo.run" />
       </list>
     </recent_temporary>
   </component>
@@ -547,14 +541,8 @@
       <workItem from="1629222202088" duration="3126000" />
       <workItem from="1629307792997" duration="32000" />
       <workItem from="1629307835862" duration="152000" />
-      <workItem from="1629308014717" duration="1341000" />
-    </task>
-    <task id="LOCAL-00217" summary="add example for dragons scene">
-      <created>1626001635405</created>
-      <option name="number" value="00217" />
-      <option name="presentableId" value="LOCAL-00217" />
-      <option name="project" value="LOCAL" />
-      <updated>1626001635405</updated>
+      <workItem from="1629308014717" duration="2602000" />
+      <workItem from="1629399432514" duration="1429000" />
     </task>
     <task id="LOCAL-00218" summary="add example for cover image">
       <created>1626002278040</created>
@@ -892,7 +880,14 @@
       <option name="project" value="LOCAL" />
       <updated>1629225323004</updated>
     </task>
-    <option name="localTasksCounter" value="266" />
+    <task id="LOCAL-00266" summary="add skybox example">
+      <created>1629309769267</created>
+      <option name="number" value="00266" />
+      <option name="presentableId" value="LOCAL-00266" />
+      <option name="project" value="LOCAL" />
+      <updated>1629309769268</updated>
+    </task>
+    <option name="localTasksCounter" value="267" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -918,7 +913,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix benchmarks" />
     <MESSAGE value="improve bounding box intersection performance" />
     <MESSAGE value="WIP improve bounds checking" />
     <MESSAGE value="replace slow bounding box benchmark" />
@@ -943,7 +937,8 @@
     <MESSAGE value="update documentation" />
     <MESSAGE value="add gradient pattern support to YAML parser" />
     <MESSAGE value="add cube UV mapping support to YAML parser" />
-    <option name="LAST_COMMIT_MESSAGE" value="add cube UV mapping support to YAML parser" />
+    <MESSAGE value="add skybox example" />
+    <option name="LAST_COMMIT_MESSAGE" value="add skybox example" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

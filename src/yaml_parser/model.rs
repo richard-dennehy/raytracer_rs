@@ -216,6 +216,15 @@ impl SceneDescription {
                     inner(this, top),
                     inner(this, bottom),
                 ),
+                UvPatternType::Cylindrical {
+                    sides,
+                    caps: Some((top, bottom)),
+                } => UvPattern::capped_cylinder(
+                    inner(this, sides),
+                    inner(this, top),
+                    inner(this, bottom),
+                ),
+                UvPatternType::Cylindrical { sides, .. } => inner(this, sides),
             }
         }
 
@@ -316,7 +325,10 @@ pub enum UvPatternType {
         top: Box<UvPatternType>,
         bottom: Box<UvPatternType>,
     },
-    // todo cylindrical
+    Cylindrical {
+        sides: Box<UvPatternType>,
+        caps: Option<(Box<UvPatternType>, Box<UvPatternType>)>,
+    },
 }
 
 #[derive(PartialEq, Debug, Clone, Copy)]
