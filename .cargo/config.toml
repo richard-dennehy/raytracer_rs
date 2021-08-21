@@ -1,0 +1,10 @@
+# speedier compiles (maybe)
+
+# to install tools required for this:
+#    cargo install -f cargo-binutils
+#    rustup component add llvm-tools-preview
+
+[target.x86_64-pc-windows-msvc]
+linker = "rust-lld.exe"
+# requires nightly
+# rustflags = ["-Zshare-generics=y"]

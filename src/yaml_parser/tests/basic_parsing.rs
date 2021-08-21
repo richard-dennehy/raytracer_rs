@@ -14,7 +14,10 @@ to: [ 6, 0, 6 ]
 up: [ -0.45, 1, 0 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let output = yaml.parse::<CameraDescription>(&HashMap::new());
+    let defines = HashMap::new();
+    let output = ParseState::new(yaml, &defines)
+        .with_context("add")
+        .parse::<CameraDescription>();
     assert!(output.is_ok(), "{}", output.unwrap_err());
     let output = output.unwrap();
 
@@ -39,7 +42,10 @@ at: [ 50, 100, -50 ]
 intensity: [ 1, 1, 1 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let output = yaml.parse::<Light>(&HashMap::new());
+    let defines = HashMap::new();
+    let output = ParseState::new(yaml, &defines)
+        .with_context("add")
+        .parse::<Light>();
     assert!(output.is_ok(), "{}", output.unwrap_err());
     let output = output.unwrap();
 
@@ -58,7 +64,10 @@ intensity: [ 0.2, 0.2, 0.2 ]
 ";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let output = yaml.parse::<Light>(&HashMap::new());
+    let defines = HashMap::new();
+    let output = ParseState::new(yaml, &defines)
+        .with_context("add")
+        .parse::<Light>();
     assert!(output.is_ok(), "{}", output.unwrap_err());
     let output = output.unwrap();
 
@@ -81,7 +90,10 @@ jitter: true
 intensity: [1.5, 1.5, 1.5]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let output = yaml.parse::<Light>(&HashMap::new());
+    let defines = HashMap::new();
+    let output = ParseState::new(yaml, &defines)
+        .with_context("add")
+        .parse::<Light>();
     assert!(output.is_ok(), "{}", output.unwrap_err());
     let output = output.unwrap();
     assert_eq!(
@@ -110,7 +122,10 @@ value:
   reflective: 0.1";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let define = yaml.parse::<Define>(&HashMap::new());
+    let defines = HashMap::new();
+    let define = ParseState::new(yaml, &defines)
+        .with_context("add")
+        .parse::<Define>();
     assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
@@ -153,7 +168,9 @@ value:
         }),
     );
 
-    let define = yaml.parse::<Define>(&defines);
+    let define = ParseState::new(yaml, &defines)
+        .with_context("define")
+        .parse::<Define>();
     assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
@@ -192,7 +209,10 @@ value:
   reflective: 0.3";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let define = yaml.parse::<Define>(&HashMap::new());
+    let defines = HashMap::new();
+    let define = ParseState::new(yaml, &defines)
+        .with_context("define")
+        .parse::<Define>();
     assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
@@ -234,7 +254,10 @@ value:
   reflective: 0.4";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let define = yaml.parse::<Define>(&HashMap::new());
+    let defines = HashMap::new();
+    let define = ParseState::new(yaml, &defines)
+        .with_context("define")
+        .parse::<Define>();
     assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
@@ -262,7 +285,10 @@ value:
 - [ scale, 0.5, 0.5, 0.5 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let define = yaml.parse::<Define>(&HashMap::new());
+    let defines = HashMap::new();
+    let define = ParseState::new(yaml, &defines)
+        .with_context("define")
+        .parse::<Define>();
     assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
@@ -308,7 +334,9 @@ value:
             },
         ]),
     );
-    let define = yaml.parse::<Define>(&defines);
+    let define = ParseState::new(yaml, &defines)
+        .with_context("define")
+        .parse::<Define>();
     assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
@@ -349,7 +377,10 @@ transform:
   - [ translate, 0, 0, 500 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let object = yaml.parse::<ObjectDescription>(&HashMap::new());
+    let defines = HashMap::new();
+    let object = ParseState::new(yaml, &defines)
+        .with_context("add")
+        .parse::<ObjectDescription>();
     assert!(object.is_ok(), "{}", object.unwrap_err());
     let object = object.unwrap();
 
@@ -415,7 +446,9 @@ transform:
             },
         ]),
     );
-    let object = yaml.parse::<ObjectDescription>(&defines);
+    let object = ParseState::new(yaml, &defines)
+        .with_context("add")
+        .parse::<ObjectDescription>();
     assert!(object.is_ok(), "{}", object.unwrap_err());
     let object = object.unwrap();
 
@@ -500,7 +533,9 @@ transform:
         }),
     );
 
-    let object = yaml.parse::<ObjectDescription>(&defines);
+    let object = ParseState::new(yaml, &defines)
+        .with_context("add")
+        .parse::<ObjectDescription>();
     assert!(object.is_ok(), "{}", object.unwrap_err());
     let object = object.unwrap();
 
@@ -554,7 +589,10 @@ transform:
   - [ scale, 3.73335, 2.5845, 1.6283 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let object = yaml.parse::<ObjectDescription>(&HashMap::new());
+    let defines = HashMap::new();
+    let object = ParseState::new(yaml, &defines)
+        .with_context("add")
+        .parse::<ObjectDescription>();
     assert!(object.is_ok(), "{}", object.unwrap_err());
     let object = object.unwrap();
 
@@ -590,7 +628,10 @@ transform:
   - [ scale, 3.73335, 2.5845, 1.6283 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let object = yaml.parse::<ObjectDescription>(&HashMap::new());
+    let defines = HashMap::new();
+    let object = ParseState::new(yaml, &defines)
+        .with_context("add")
+        .parse::<ObjectDescription>();
     assert!(object.is_ok(), "{}", object.unwrap_err());
     let object = object.unwrap();
 
@@ -626,7 +667,10 @@ transform:
     - [ scale, 0.268, 0.268, 0.268 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let object = yaml.parse::<ObjectDescription>(&HashMap::new());
+    let defines = HashMap::new();
+    let object = ParseState::new(yaml, &defines)
+        .with_context("add")
+        .parse::<ObjectDescription>();
     assert!(object.is_ok(), "{}", object.unwrap_err());
     let object = object.unwrap();
 
@@ -664,7 +708,10 @@ closed: true
 transform: []";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let object = yaml.parse::<ObjectDescription>(&HashMap::new());
+    let defines = HashMap::new();
+    let object = ParseState::new(yaml, &defines)
+        .with_context("add")
+        .parse::<ObjectDescription>();
     assert!(object.is_ok(), "{}", object.unwrap_err());
     let object = object.unwrap();
 
@@ -689,7 +736,10 @@ fn should_parse_adding_primitive_with_no_transform() {
 add: cylinder";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let object = yaml.parse::<ObjectDescription>(&HashMap::new());
+    let defines = HashMap::new();
+    let object = ParseState::new(yaml, &defines)
+        .with_context("add")
+        .parse::<ObjectDescription>();
     assert!(object.is_ok(), "{}", object.unwrap_err());
     let object = object.unwrap();
 
@@ -729,7 +779,10 @@ right:
     - [ scale, 0.8, 1, 0.8 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let object = yaml.parse::<ObjectDescription>(&HashMap::new());
+    let defines = HashMap::new();
+    let object = ParseState::new(yaml, &defines)
+        .with_context("add")
+        .parse::<ObjectDescription>();
     assert!(object.is_ok(), "{}", object.unwrap_err());
     let object = object.unwrap();
     assert_eq!(
@@ -803,7 +856,9 @@ add: pedestal";
         }),
     );
 
-    let object = yaml.parse::<ObjectDescription>(&defines);
+    let object = ParseState::new(yaml, &defines)
+        .with_context("add")
+        .parse::<ObjectDescription>();
     assert!(object.is_ok(), "{}", object.unwrap_err());
     let object = object.unwrap();
 
@@ -832,7 +887,10 @@ children:
   - add: cube";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let object = yaml.parse::<ObjectDescription>(&HashMap::new());
+    let defines = HashMap::new();
+    let object = ParseState::new(yaml, &defines)
+        .with_context("add")
+        .parse::<ObjectDescription>();
     assert!(object.is_ok(), "{}", object.unwrap_err());
     let object = object.unwrap();
 
@@ -930,7 +988,9 @@ children:
         }),
     );
 
-    let object = yaml.parse::<ObjectDescription>(&defines);
+    let object = ParseState::new(yaml, &defines)
+        .with_context("add")
+        .parse::<ObjectDescription>();
     assert!(object.is_ok(), "{}", object.unwrap_err());
     let object = object.unwrap();
 
@@ -1022,7 +1082,10 @@ value:
 ";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let define = yaml.parse::<Define>(&HashMap::new());
+    let defines = HashMap::new();
+    let define = ParseState::new(yaml, &defines)
+        .with_context("define")
+        .parse::<Define>();
     assert!(define.is_ok(), "{}", define.unwrap_err());
     let define = define.unwrap();
 
@@ -1052,7 +1115,10 @@ pattern:
       - [ 0.5, 0.5, 0.5 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let material = yaml.parse::<MaterialDescription>(&HashMap::new());
+    let defines = HashMap::new();
+    let material = ParseState::new(yaml, &defines)
+        .with_context("material")
+        .parse::<MaterialDescription>();
     assert!(material.is_ok(), "{}", material.unwrap_err());
     let material = material.unwrap();
 
@@ -1086,7 +1152,10 @@ pattern:
     - [ scale, 0.5, 0.5, 0.5 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let material = yaml.parse::<MaterialDescription>(&HashMap::new());
+    let defines = HashMap::new();
+    let material = ParseState::new(yaml, &defines)
+        .with_context("material")
+        .parse::<MaterialDescription>();
     assert!(material.is_ok(), "{}", material.unwrap_err());
     let material = material.unwrap();
 
@@ -1120,7 +1189,10 @@ pattern:
     - [ scale, 0.05, 1, 0.05 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let material = yaml.parse::<MaterialDescription>(&HashMap::new());
+    let defines = HashMap::new();
+    let material = ParseState::new(yaml, &defines)
+        .with_context("material")
+        .parse::<MaterialDescription>();
     assert!(material.is_ok(), "{}", material.unwrap_err());
     let material = material.unwrap();
 
@@ -1151,7 +1223,10 @@ pattern:
     - [ 1, 1, 0 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let material = yaml.parse::<MaterialDescription>(&HashMap::new());
+    let defines = HashMap::new();
+    let material = ParseState::new(yaml, &defines)
+        .with_context("material")
+        .parse::<MaterialDescription>();
     assert!(material.is_ok(), "{}", material.unwrap_err());
     let material = material.unwrap();
 
@@ -1194,7 +1269,10 @@ pattern:
     file: negy.ppm";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let material = yaml.parse::<MaterialDescription>(&HashMap::new());
+    let defines = HashMap::new();
+    let material = ParseState::new(yaml, &defines)
+        .with_context("material")
+        .parse::<MaterialDescription>();
     assert!(material.is_ok(), "{}", material.unwrap_err());
     let material = material.unwrap();
 
@@ -1244,7 +1322,10 @@ pattern:
       - [ 0.5, 0.5, 0.5 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let material = yaml.parse::<MaterialDescription>(&HashMap::new());
+    let defines = HashMap::new();
+    let material = ParseState::new(yaml, &defines)
+        .with_context("material")
+        .parse::<MaterialDescription>();
     assert!(material.is_ok(), "{}", material.unwrap_err());
     let material = material.unwrap();
 
@@ -1297,7 +1378,10 @@ pattern:
       - [ 0.5, 0.5, 0.5 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let material = yaml.parse::<MaterialDescription>(&HashMap::new());
+    let defines = HashMap::new();
+    let material = ParseState::new(yaml, &defines)
+        .with_context("material")
+        .parse::<MaterialDescription>();
     assert!(material.is_ok(), "{}", material.unwrap_err());
     let material = material.unwrap();
 
@@ -1347,14 +1431,20 @@ pattern:
       - [ 0.5, 0.5, 0.5 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let material = yaml.parse::<MaterialDescription>(&HashMap::new());
+    let defines = HashMap::new();
+    let material = ParseState::new(yaml, &defines)
+        .with_context("material")
+        .parse::<MaterialDescription>();
     assert!(
         material.is_err(),
         "expected parsing to fail, but it succeeded"
     );
     assert_eq!(
         material.unwrap_err(),
-        "a cylindrical map with a `top` pattern must also have a `bottom` pattern"
+        "a cylindrical map with a `top` pattern must also have a `bottom` pattern
+| when parsing `pattern` as UV pattern
+| when parsing `pattern` as Pattern (Optional)
+| when parsing `material` as Material"
     );
 }
 
@@ -1380,14 +1470,20 @@ pattern:
       - [ 0.5, 0.5, 0.5 ]";
 
     let yaml = &YamlLoader::load_from_str(input).unwrap()[0];
-    let material = yaml.parse::<MaterialDescription>(&HashMap::new());
+    let defines = HashMap::new();
+    let material = ParseState::new(yaml, &defines)
+        .with_context("material")
+        .parse::<MaterialDescription>();
     assert!(
         material.is_err(),
         "expected parsing to fail, but it succeeded"
     );
     assert_eq!(
         material.unwrap_err(),
-        "a cylindrical map with a `bottom` pattern must also have a `top` pattern"
+        "a cylindrical map with a `bottom` pattern must also have a `top` pattern
+| when parsing `pattern` as UV pattern
+| when parsing `pattern` as Pattern (Optional)
+| when parsing `material` as Material"
     );
 }
 

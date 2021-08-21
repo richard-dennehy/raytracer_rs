@@ -15,9 +15,9 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="add skybox example">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP improve error reporting in YAML parser">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/model.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/yaml_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" afterDir="false" />
     </list>
@@ -120,15 +120,15 @@
       <command value="cargo bench -- &quot;lots of reflective, transparent, and refractive&quot;" />
       <command value="cargo bench -- YAML" />
       <command value="cargo bench -- &quot;lots of objects&quot;" />
-      <command value="cargo bench" />
       <command value="cargo test" />
       <command value="cargo run --release" />
-      <command value="cargo run --release --example orrery" />
       <command value="cargo run --release --example uv_patterns" />
       <command value="cargo run --release --example skybox" />
+      <command value="cargo run --release --example orrery" />
+      <command value="cargo bench" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.test">
+  <component name="RunManager" selected="Cargo.bench">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -148,8 +148,8 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test scene::tests::object_tests::shape_tests::applying_a_planar_uv_to_a_cube_should_wrap_the_plane_around_the_6_faces" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib scene::tests::object_tests::shape_tests::applying_a_planar_uv_to_a_cube_should_wrap_the_plane_around_the_6_faces -- --exact" />
+    <configuration name="Test yaml_parser::tests::basic_parsing::should_parse_a_material_extending_another_material" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib yaml_parser::tests::basic_parsing::should_parse_a_material_extending_another_material -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -161,12 +161,11 @@
       <option name="isRedirectInput" value="false" />
       <option name="redirectInputPath" value="" />
       <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test yaml_parser::tests::basic_parsing::should_parse_material_with_gradient_pattern" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib yaml_parser::tests::basic_parsing::should_parse_material_with_gradient_pattern -- --exact" />
+    <configuration name="Test yaml_parser::tests::basic_parsing::should_parse_an_object_with_no_material" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package ray_tracer --lib yaml_parser::tests::basic_parsing::should_parse_an_object_with_no_material -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -178,12 +177,11 @@
       <option name="isRedirectInput" value="false" />
       <option name="redirectInputPath" value="" />
       <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test yaml_parser::tests::creating_a_scene::should_be_able_to_create_a_group" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="test --package ray_tracer --lib yaml_parser::tests::creating_a_scene::should_be_able_to_create_a_group -- --exact" />
+    <configuration name="bench" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="bench" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -195,12 +193,11 @@
       <option name="isRedirectInput" value="false" />
       <option name="redirectInputPath" value="" />
       <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
     <configuration name="run" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="run --release --example skybox" />
+      <option name="command" value="run --release --example orrery" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
@@ -239,8 +236,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.run" />
+        <item itemvalue="Cargo.Test yaml_parser::tests::basic_parsing::should_parse_a_material_extending_another_material" />
+        <item itemvalue="Cargo.Test yaml_parser::tests::basic_parsing::should_parse_an_object_with_no_material" />
       </list>
     </recent_temporary>
   </component>
@@ -542,42 +542,13 @@
       <workItem from="1629307792997" duration="32000" />
       <workItem from="1629307835862" duration="152000" />
       <workItem from="1629308014717" duration="2602000" />
-      <workItem from="1629399432514" duration="1429000" />
-    </task>
-    <task id="LOCAL-00218" summary="add example for cover image">
-      <created>1626002278040</created>
-      <option name="number" value="00218" />
-      <option name="presentableId" value="LOCAL-00218" />
-      <option name="project" value="LOCAL" />
-      <updated>1626002278040</updated>
-    </task>
-    <task id="LOCAL-00219" summary="add example for reflection and refraction">
-      <created>1626002860334</created>
-      <option name="number" value="00219" />
-      <option name="presentableId" value="LOCAL-00219" />
-      <option name="project" value="LOCAL" />
-      <updated>1626002860334</updated>
-    </task>
-    <task id="LOCAL-00220" summary="add example for all primitives">
-      <created>1626115124572</created>
-      <option name="number" value="00220" />
-      <option name="presentableId" value="LOCAL-00220" />
-      <option name="project" value="LOCAL" />
-      <updated>1626115124572</updated>
-    </task>
-    <task id="LOCAL-00221" summary="add example for area lighting">
-      <created>1626200522327</created>
-      <option name="number" value="00221" />
-      <option name="presentableId" value="LOCAL-00221" />
-      <option name="project" value="LOCAL" />
-      <updated>1626200522327</updated>
-    </task>
-    <task id="LOCAL-00222" summary="add example for patterns">
-      <created>1626288038034</created>
-      <option name="number" value="00222" />
-      <option name="presentableId" value="LOCAL-00222" />
-      <option name="project" value="LOCAL" />
-      <updated>1626288038034</updated>
+      <workItem from="1629399432514" duration="1478000" />
+      <workItem from="1629479391110" duration="3097000" />
+      <workItem from="1629541357509" duration="5551000" />
+      <workItem from="1629582448322" duration="127000" />
+      <workItem from="1629628944593" duration="3891000" />
+      <workItem from="1629740081460" duration="2485000" />
+      <workItem from="1629828295871" duration="1356000" />
     </task>
     <task id="LOCAL-00223" summary="add example for CSGs">
       <created>1626454995769</created>
@@ -887,7 +858,42 @@
       <option name="project" value="LOCAL" />
       <updated>1629309769268</updated>
     </task>
-    <option name="localTasksCounter" value="267" />
+    <task id="LOCAL-00267" summary="add support for cylindrical maps in YAML parser">
+      <created>1629400902052</created>
+      <option name="number" value="00267" />
+      <option name="presentableId" value="LOCAL-00267" />
+      <option name="project" value="LOCAL" />
+      <updated>1629400902053</updated>
+    </task>
+    <task id="LOCAL-00268" summary="WIP improve error reporting in YAML parser">
+      <created>1629543931150</created>
+      <option name="number" value="00268" />
+      <option name="presentableId" value="LOCAL-00268" />
+      <option name="project" value="LOCAL" />
+      <updated>1629543931150</updated>
+    </task>
+    <task id="LOCAL-00269" summary="WIP improve error reporting in YAML parser">
+      <created>1629545610106</created>
+      <option name="number" value="00269" />
+      <option name="presentableId" value="LOCAL-00269" />
+      <option name="project" value="LOCAL" />
+      <updated>1629545610106</updated>
+    </task>
+    <task id="LOCAL-00270" summary="WIP improve error reporting in YAML parser">
+      <created>1629632866632</created>
+      <option name="number" value="00270" />
+      <option name="presentableId" value="LOCAL-00270" />
+      <option name="project" value="LOCAL" />
+      <updated>1629632866632</updated>
+    </task>
+    <task id="LOCAL-00271" summary="WIP improve error reporting in YAML parser">
+      <created>1629742562691</created>
+      <option name="number" value="00271" />
+      <option name="presentableId" value="LOCAL-00271" />
+      <option name="project" value="LOCAL" />
+      <updated>1629742562692</updated>
+    </task>
+    <option name="localTasksCounter" value="272" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -913,8 +919,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="improve bounding box intersection performance" />
-    <MESSAGE value="WIP improve bounds checking" />
     <MESSAGE value="replace slow bounding box benchmark" />
     <MESSAGE value="WIP move geometry primitives to `maths` module" />
     <MESSAGE value="improve bounds checking algorithm" />
@@ -938,7 +942,9 @@
     <MESSAGE value="add gradient pattern support to YAML parser" />
     <MESSAGE value="add cube UV mapping support to YAML parser" />
     <MESSAGE value="add skybox example" />
-    <option name="LAST_COMMIT_MESSAGE" value="add skybox example" />
+    <MESSAGE value="add support for cylindrical maps in YAML parser" />
+    <MESSAGE value="WIP improve error reporting in YAML parser" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP improve error reporting in YAML parser" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -965,7 +971,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/yaml_parser/parsers.rs</url>
-          <line>278</line>
+          <line>353</line>
+          <option name="timeStamp" value="68" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/yaml_parser/parsers.rs</url>
+          <line>336</line>
           <option name="timeStamp" value="69" />
         </line-breakpoint>
       </breakpoints>
