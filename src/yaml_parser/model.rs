@@ -4,6 +4,7 @@ use crate::scene::{CsgOperator, Light};
 use crate::scene::{Material, MaterialKind, Pattern};
 use crate::scene::{Object, UvPattern};
 use crate::wavefront_parser::WavefrontParser;
+use anyhow::*;
 use std::collections::HashMap;
 use std::num::{NonZeroU16, NonZeroUsize};
 use std::path::PathBuf;
@@ -23,15 +24,15 @@ impl SceneDescription {
         self.camera.height = height;
     }
 
-    pub fn camera(&self) -> Result<Camera, String> {
-        fn validate_nonzero_u16(dimension: &str, value: usize) -> Result<NonZeroU16, String> {
+    pub fn camera(&self) -> anyhow::Result<Camera> {
+        fn validate_nonzero_u16(dimension: &str, value: usize) -> anyhow::Result<NonZeroU16> {
             let value = if value > (u16::MAX as usize) {
-                return Err(format!("Camera {} is too large: {}", dimension, value));
+                bail!("Camera {} is too large: {}", dimension, value)
             } else {
                 value as u16
             };
 
-            NonZeroU16::new(value).ok_or_else(|| format!("Camera {} cannot be zero", dimension))
+            NonZeroU16::new(value).ok_or_else(|| anyhow!("Camera {} cannot be zero", dimension))
         }
 
         let width = validate_nonzero_u16("width", self.camera.width)?;
@@ -50,12 +51,12 @@ impl SceneDescription {
         self.lights.clone()
     }
 
-    pub fn objects(&self) -> Result<Vec<Object>, String> {
+    pub fn objects(&self) -> anyhow::Result<Vec<Object>> {
         fn inner(
             this: &SceneDescription,
             desc: &ObjectDescription,
             parser: &WavefrontParser,
-        ) -> Result<Object, String> {
+        ) -> anyhow::Result<Object> {
             let object = match &desc.kind {
                 ObjectKind::Plane => Ok(Object::plane()),
                 ObjectKind::Sphere => Ok(Object::sphere()),
@@ -82,7 +83,7 @@ impl SceneDescription {
                 ObjectKind::Group { children } => children
                     .iter()
                     .map(|c| inner(this, c, parser))
-                    .collect::<Result<Vec<_>, _>>()
+                    .collect::<anyhow::Result<Vec<_>>>()
                     .map(Object::group),
                 ObjectKind::Csg {
                     operator: CsgOperator::Subtract,

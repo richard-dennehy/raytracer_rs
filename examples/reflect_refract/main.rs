@@ -4,7 +4,7 @@ use ray_tracer::{image_writer, renderer, yaml_parser};
 use std::path::Path;
 use std::time::Instant;
 
-fn main() -> Result<(), String> {
+fn main() -> anyhow::Result<()> {
     let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("examples/reflect_refract");
     let timer = Instant::now();
 

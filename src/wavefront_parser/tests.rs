@@ -37,7 +37,7 @@ illum 2";
 
             let out = parse_mtl(input);
             assert!(out.is_err(), "expected parsing to fail, but it succeeded");
-            assert_eq!(out.unwrap_err(), "A material must be defined with a `newmtl` statement before material properties can be defined");
+            assert_eq!(&out.unwrap_err().to_string(), "A material must be defined with a `newmtl` statement before material properties can be defined");
         }
 
         #[test]
@@ -790,7 +790,7 @@ f 1 2 3 4 5";
             let output = parser.parse_obj(input);
             assert!(output.is_err());
             assert_eq!(
-                output.unwrap_err(),
+                &output.unwrap_err().to_string(),
                 "cannot `usemtl awful_green` as it has not been loaded from an MTL library"
             );
         }
@@ -1056,7 +1056,7 @@ f 1 2 3 4 5";
                 let output = parser.parse_obj(input);
                 assert!(output.is_err());
                 assert_eq!(
-                    output.unwrap_err(),
+                    &output.unwrap_err().to_string(),
                     "cannot `usemtl mystery` as it has not been loaded from an MTL library"
                 );
             }

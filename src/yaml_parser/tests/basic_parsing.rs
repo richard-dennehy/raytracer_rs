@@ -1440,11 +1440,13 @@ pattern:
         "expected parsing to fail, but it succeeded"
     );
     assert_eq!(
-        material.unwrap_err(),
-        "a cylindrical map with a `top` pattern must also have a `bottom` pattern
-| when parsing `pattern` as UV pattern
-| when parsing `pattern` as Pattern (Optional)
-| when parsing `material` as Material"
+        &format!("{:?}", material.unwrap_err()),
+        "cannot parse `material` as Material
+
+Caused by:
+    0: cannot parse `pattern` as Pattern (Optional)
+    1: cannot parse `pattern` as UV pattern
+    2: a cylindrical map with a `top` pattern must also have a `bottom` pattern"
     );
 }
 
@@ -1479,11 +1481,13 @@ pattern:
         "expected parsing to fail, but it succeeded"
     );
     assert_eq!(
-        material.unwrap_err(),
-        "a cylindrical map with a `bottom` pattern must also have a `top` pattern
-| when parsing `pattern` as UV pattern
-| when parsing `pattern` as Pattern (Optional)
-| when parsing `material` as Material"
+        &format!("{:?}", material.unwrap_err()),
+        "cannot parse `material` as Material
+
+Caused by:
+    0: cannot parse `pattern` as Pattern (Optional)
+    1: cannot parse `pattern` as UV pattern
+    2: a cylindrical map with a `bottom` pattern must also have a `top` pattern"
     );
 }
 

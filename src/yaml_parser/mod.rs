@@ -1,5 +1,6 @@
 use yaml_rust::{Yaml, YamlLoader};
 
+use anyhow::*;
 use model::*;
 use parsers::*;
 use std::collections::HashMap;
@@ -12,12 +13,12 @@ mod tests;
 mod model;
 mod parsers;
 
-pub fn load(resource_dir: PathBuf, file_name: &str) -> Result<SceneDescription, String> {
-    let yaml = fs::read_to_string(resource_dir.join(file_name)).map_err(|e| e.to_string())?;
+pub fn load(resource_dir: PathBuf, file_name: &str) -> anyhow::Result<SceneDescription> {
+    let yaml = fs::read_to_string(resource_dir.join(file_name))?;
     parse(&yaml, resource_dir)
 }
 
-fn parse(input: &str, resource_dir: PathBuf) -> Result<SceneDescription, String> {
+fn parse(input: &str, resource_dir: PathBuf) -> anyhow::Result<SceneDescription> {
     match YamlLoader::load_from_str(input) {
         Ok(yaml) => {
             let mut camera = None;
@@ -64,17 +65,17 @@ fn parse(input: &str, resource_dir: PathBuf) -> Result<SceneDescription, String>
                         let name = name.to_owned();
 
                         if let Some(_) = new_defines.insert(name.clone(), define) {
-                            return Err(format!("duplicate `define` with name {:?}", name));
+                            bail!("duplicate `define` with name {:?}", name);
                         }
 
                         continue;
                     }
                 }
             } else {
-                return Err("Expected a list of directives".to_string());
+                bail!("Expected a list of directives");
             }
 
-            let camera = camera.ok_or("No `add: camera` directive found".to_string())?;
+            let camera = camera.ok_or(anyhow!("No `add: camera` directive found"))?;
 
             Ok(SceneDescription {
                 camera,
@@ -83,11 +84,11 @@ fn parse(input: &str, resource_dir: PathBuf) -> Result<SceneDescription, String>
                 resource_dir,
             })
         }
-        Err(error) => Err(error.to_string()),
+        Err(error) => bail!(error),
     }
 }
 
-pub(in crate::yaml_parser) struct ParseState<'yaml> {
+struct ParseState<'yaml> {
     current: &'yaml Yaml,
     context: &'yaml str,
     extra_context: Option<String>,
@@ -104,16 +105,15 @@ impl<'yaml> ParseState<'yaml> {
         }
     }
 
-    pub fn parse<T: FromYaml>(&self) -> Result<T, String> {
-        T::from_yaml(&self).map_err(|error| {
-            let extra_context = match &self.extra_context {
-                Some(ctx) => format!(" [{}]", ctx),
-                None => "".into(),
-            };
+    pub fn parse<T: FromYaml>(&self) -> anyhow::Result<T> {
+        let extra_context = match &self.extra_context {
+            Some(ctx) => format!(" [{}]", ctx),
+            None => "".into(),
+        };
 
+        T::from_yaml(&self).with_context(|| {
             format!(
-                "{}\n| when parsing `{}`{} as {}",
-                error,
+                "cannot parse `{}`{} as {}",
                 self.context,
                 extra_context,
                 T::type_name()

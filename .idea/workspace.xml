@@ -15,11 +15,8 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="WIP improve error reporting in YAML parser">
+    <list default="true" id="694f19ad-fcf8-49db-99e4-e3fa0a5dc9ea" name="Default Changelist" comment="use anyhow for improved error reporting">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/parsers.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/yaml_parser/tests/basic_parsing.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -128,7 +125,12 @@
       <command value="cargo bench" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.bench">
+  <component name="RunManager" selected="Cargo.test">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run --package raytracer --bin raytracer" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -229,16 +231,11 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.test" />
         <item itemvalue="Cargo.run" />
+        <item itemvalue="Cargo.bench" />
         <item itemvalue="Cargo.Test yaml_parser::tests::basic_parsing::should_parse_a_material_extending_another_material" />
         <item itemvalue="Cargo.Test yaml_parser::tests::basic_parsing::should_parse_an_object_with_no_material" />
       </list>
@@ -548,21 +545,9 @@
       <workItem from="1629582448322" duration="127000" />
       <workItem from="1629628944593" duration="3891000" />
       <workItem from="1629740081460" duration="2485000" />
-      <workItem from="1629828295871" duration="1356000" />
-    </task>
-    <task id="LOCAL-00223" summary="add example for CSGs">
-      <created>1626454995769</created>
-      <option name="number" value="00223" />
-      <option name="presentableId" value="LOCAL-00223" />
-      <option name="project" value="LOCAL" />
-      <updated>1626454995769</updated>
-    </task>
-    <task id="LOCAL-00224" summary="add example for CSGs">
-      <created>1626455034034</created>
-      <option name="number" value="00224" />
-      <option name="presentableId" value="LOCAL-00224" />
-      <option name="project" value="LOCAL" />
-      <updated>1626455034034</updated>
+      <workItem from="1629828295871" duration="1373000" />
+      <workItem from="1629914719762" duration="3021000" />
+      <workItem from="1630004580840" duration="2072000" />
     </task>
     <task id="LOCAL-00225" summary="add example for loading meshes">
       <created>1626516439889</created>
@@ -893,7 +878,21 @@
       <option name="project" value="LOCAL" />
       <updated>1629742562692</updated>
     </task>
-    <option name="localTasksCounter" value="272" />
+    <task id="LOCAL-00272" summary="improve error reporting in YAML parser">
+      <created>1629829834394</created>
+      <option name="number" value="00272" />
+      <option name="presentableId" value="LOCAL-00272" />
+      <option name="project" value="LOCAL" />
+      <updated>1629829834394</updated>
+    </task>
+    <task id="LOCAL-00273" summary="use anyhow for improved error reporting">
+      <created>1630006663367</created>
+      <option name="number" value="00273" />
+      <option name="presentableId" value="LOCAL-00273" />
+      <option name="project" value="LOCAL" />
+      <updated>1630006663367</updated>
+    </task>
+    <option name="localTasksCounter" value="274" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -919,8 +918,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="replace slow bounding box benchmark" />
-    <MESSAGE value="WIP move geometry primitives to `maths` module" />
     <MESSAGE value="improve bounds checking algorithm" />
     <MESSAGE value="WIP move geometry primitives to `core` module" />
     <MESSAGE value="move geometry primitives to `core` module" />
@@ -944,7 +941,9 @@
     <MESSAGE value="add skybox example" />
     <MESSAGE value="add support for cylindrical maps in YAML parser" />
     <MESSAGE value="WIP improve error reporting in YAML parser" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP improve error reporting in YAML parser" />
+    <MESSAGE value="improve error reporting in YAML parser" />
+    <MESSAGE value="use anyhow for improved error reporting" />
+    <option name="LAST_COMMIT_MESSAGE" value="use anyhow for improved error reporting" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -971,12 +970,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/yaml_parser/parsers.rs</url>
-          <line>353</line>
+          <line>349</line>
           <option name="timeStamp" value="68" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/yaml_parser/parsers.rs</url>
-          <line>336</line>
+          <line>332</line>
           <option name="timeStamp" value="69" />
         </line-breakpoint>
       </breakpoints>

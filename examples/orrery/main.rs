@@ -5,7 +5,7 @@ use ray_tracer::{image_writer, yaml_parser};
 use std::path::Path;
 use std::time::Instant;
 
-fn main() -> Result<(), String> {
+fn main() -> anyhow::Result<()> {
     let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("examples/orrery");
     let timer = Instant::now();
 

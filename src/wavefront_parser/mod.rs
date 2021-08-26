@@ -7,6 +7,7 @@ use std::str::SplitWhitespace;
 use crate::core::{Colour, Point3D, Vector3D, VectorMaths};
 use crate::scene::Object;
 use crate::scene::{Material, MaterialKind};
+use anyhow::*;
 use std::cell::RefCell;
 
 #[cfg(test)]
@@ -29,9 +30,9 @@ impl WavefrontParser {
         }
     }
 
-    pub fn load(&self, file_name: &str) -> Result<Object, String> {
+    pub fn load(&self, file_name: &str) -> anyhow::Result<Object> {
         if !file_name.ends_with(".obj") {
-            return Err(format!("{} is not a .obj file", file_name));
+            bail!("{} is not a .obj file", file_name);
         };
 
         if let Some(obj_data) = self.obj_cache.borrow().get(file_name) {
@@ -40,7 +41,7 @@ impl WavefrontParser {
 
         let file = self.resource_path.join(&file_name);
         println!("loading OBJ file {}", file.to_str().unwrap());
-        let contents = fs::read_to_string(file).map_err(|e| e.to_string())?;
+        let contents = fs::read_to_string(file)?;
 
         self.load_mtl_libraries(&contents)?;
         let obj_data = self.parse_obj(&contents);
@@ -52,7 +53,7 @@ impl WavefrontParser {
             .to_object()
     }
 
-    fn load_mtl_libraries(&self, file: &str) -> Result<(), String> {
+    fn load_mtl_libraries(&self, file: &str) -> anyhow::Result<()> {
         file.lines()
             .map(|line| line.trim())
             .map(|line| match line.split_whitespace().next() {
@@ -67,23 +68,23 @@ impl WavefrontParser {
                     file_names
                         .into_iter()
                         .map(|file_name| self.load_mtl(file_name))
-                        .collect::<Result<(), _>>()
+                        .collect::<anyhow::Result<()>>()
                 }
                 _ => Ok(()),
             })
-            .collect::<Result<(), _>>()?;
+            .collect::<anyhow::Result<()>>()?;
 
         Ok(())
     }
 
-    fn load_mtl(&self, file_name: &str) -> Result<(), String> {
+    fn load_mtl(&self, file_name: &str) -> anyhow::Result<()> {
         if let Some(_) = self.mtl_cache.borrow().get(file_name) {
             return Ok(());
         }
 
         let file = self.resource_path.join(format!("{}.mtl", file_name));
         println!("loading MTL file {}", file.to_str().unwrap());
-        let contents = fs::read_to_string(file).map_err(|e| e.to_string())?;
+        let contents = fs::read_to_string(file)?;
 
         self.mtl_cache
             .borrow_mut()
@@ -92,7 +93,7 @@ impl WavefrontParser {
         Ok(())
     }
 
-    fn parse_obj(&self, input: &str) -> Result<ObjData, String> {
+    fn parse_obj(&self, input: &str) -> anyhow::Result<ObjData> {
         let material_cache = self.mtl_cache.borrow();
 
         let mut vertices = vec![];
@@ -117,13 +118,13 @@ impl WavefrontParser {
                             .filter(|s| !s.is_empty())
                             .map(|file_name| {
                                 material_cache.get(file_name).ok_or_else(|| {
-                                    format!(
+                                    anyhow!(
                                         "material library `{}` must be loaded before obj file can be parsed",
                                         file_name
                                     )
                                 })
                             })
-                            .collect::<Result<Vec<_>, _>>();
+                            .collect::<anyhow::Result<Vec<_>>>();
 
                         materials.map(|materials| {
                             materials.into_iter().flat_map(|m| m.0.iter()).for_each(|(material_name, material)| {
@@ -145,8 +146,8 @@ impl WavefrontParser {
                         Ok(())
                     }
                     Some("usemtl") => {
-                        parts.next().ok_or_else(|| "`usemtl` statement does not name the material".to_owned()).and_then(|name| {
-                            let loaded = loaded_materials.get(name).ok_or_else(|| format!(
+                        parts.next().ok_or_else(|| anyhow!("`usemtl` statement does not name the material")).and_then(|name| {
+                            let loaded = loaded_materials.get(name).ok_or_else(|| anyhow!(
                                 "cannot `usemtl {}` as it has not been loaded from an MTL library",
                                 name
                             ));
@@ -157,7 +158,7 @@ impl WavefrontParser {
                     _ => Ok(()),
                 }
             })
-            .collect::<Result<(), String>>()?;
+            .collect::<anyhow::Result<()>>()?;
 
         if !polys.is_empty() {
             groups.push(Group { polygons: polys })
@@ -171,7 +172,7 @@ impl WavefrontParser {
     }
 }
 
-pub fn parse_mtl(input: &str) -> Result<Materials, String> {
+pub fn parse_mtl(input: &str) -> anyhow::Result<Materials> {
     MaterialParser {
         input,
         current: None,
@@ -196,7 +197,7 @@ struct MaterialParser<'input> {
 }
 
 impl<'input> MaterialParser<'input> {
-    fn parse(mut self) -> Result<Materials, String> {
+    fn parse(mut self) -> anyhow::Result<Materials> {
         self.input
             .lines()
             .map(|line| line.trim())
@@ -207,9 +208,9 @@ impl<'input> MaterialParser<'input> {
                     Some("newmtl") => {
                         self.save_current_material()?;
                         self.current = Some((
-                            parts.next().ok_or_else(|| {
-                                "`newmtl` statement must provide a name".to_owned()
-                            })?,
+                            parts
+                                .next()
+                                .ok_or_else(|| anyhow!("`newmtl` statement must provide a name"))?,
                             Material::default(),
                         ))
                     }
@@ -251,31 +252,31 @@ impl<'input> MaterialParser<'input> {
 
                 Ok(())
             })
-            .collect::<Result<(), String>>()?;
+            .collect::<anyhow::Result<()>>()?;
 
         self.save_current_material()?;
         Ok(Materials(self.materials))
     }
 
-    fn save_current_material(&mut self) -> Result<(), String> {
+    fn save_current_material(&mut self) -> anyhow::Result<()> {
         if let Some((name, material)) = self.current.take() {
             if let Some(_) = self.materials.insert(name.to_owned(), material) {
-                return Err(format!("duplicate material with name `{}`", name));
+                bail!("duplicate material with name `{}`", name);
             }
         };
 
         return Ok(());
     }
 
-    fn current_material(&mut self) -> Result<&mut Material, String> {
+    fn current_material(&mut self) -> anyhow::Result<&mut Material> {
         if let Some((_, material)) = &mut self.current {
             Ok(material)
         } else {
-            return Err("A material must be defined with a `newmtl` statement before material properties can be defined".to_owned());
+            bail!("A material must be defined with a `newmtl` statement before material properties can be defined");
         }
     }
 
-    fn apply_illumination(&mut self, illum: Option<&str>) -> Result<(), String> {
+    fn apply_illumination(&mut self, illum: Option<&str>) -> anyhow::Result<()> {
         match illum {
             Some("0") => {
                 self.current_material()?.ambient = 1.0;
@@ -304,28 +305,25 @@ impl<'input> MaterialParser<'input> {
                     self.current_material()?.transparency = 1.0
                 }
             }
-            Some("10") => return Err("illum model 10 is not supported".to_owned()),
+            Some("10") => bail!("illum model 10 is not supported"),
             Some(other) => {
-                return Err(format!(
-                    "invalid illum value `{}` - must be between 0 and 10",
-                    other
-                ))
+                bail!("invalid illum value `{}` - must be between 0 and 10", other)
             }
-            None => return Err("illum does not have a value".to_owned()),
+            None => bail!("illum does not have a value"),
         };
 
-        return Ok(());
+        Ok(())
     }
 }
 
-fn parse_colour(iterator: &mut SplitWhitespace) -> Result<Colour, String> {
+fn parse_colour(iterator: &mut SplitWhitespace) -> anyhow::Result<Colour> {
     match iterator.next() {
-        Some("spectral" | "xyz") => Err("only RGB statements are supported".to_owned()),
-        None => Err("statement does not specify an RGB colour".to_owned()),
+        Some("spectral" | "xyz") => bail!("only RGB statements are supported"),
+        None => bail!("statement does not specify an RGB colour"),
         Some(r) => {
             let red = r
                 .parse::<f64>()
-                .map_err(|e| format!("unparseable colour component ({})", e.to_string()))?;
+                .map_err(|e| anyhow!("unparseable colour component ({})", e.to_string()))?;
             let green = iterator.next().and_then(|g| g.parse::<f64>().ok());
             let blue = iterator.next().and_then(|b| b.parse::<f64>().ok());
 
@@ -333,10 +331,7 @@ fn parse_colour(iterator: &mut SplitWhitespace) -> Result<Colour, String> {
                 if let Some(blue) = blue {
                     Ok(Colour::new(red, green, blue))
                 } else {
-                    Err(
-                        "Invalid RGB colour in statement - must either specify 1 f64 value or 3"
-                            .to_owned(),
-                    )
+                    bail!("Invalid RGB colour in statement - must either specify 1 f64 value or 3")
                 }
             } else {
                 Ok(Colour::greyscale(red))
@@ -354,7 +349,7 @@ fn parse_colour(iterator: &mut SplitWhitespace) -> Result<Colour, String> {
 /// - if three equal values are specified, e.g. `Ka 1 1 1`, the first value will be returned
 /// - if two zero values and a nonzero value are specified e.g. `Ka 0 1 0`, the nonzero value will be returned
 /// - if three different values are specified, then the ray tracer cannot accurately represent this, but the values will be averaged to attempt a vaguely accurate portrayal
-fn parse_rgb_to_f64(iterator: &mut SplitWhitespace) -> Result<f64, String> {
+fn parse_rgb_to_f64(iterator: &mut SplitWhitespace) -> anyhow::Result<f64> {
     let colour = parse_colour(iterator)?;
 
     if colour.green() == 0.0 && colour.blue() == 0.0 {
@@ -368,14 +363,14 @@ fn parse_rgb_to_f64(iterator: &mut SplitWhitespace) -> Result<f64, String> {
     }
 }
 
-fn parse_vertex(mut line_parts: SplitWhitespace) -> Result<Point3D, String> {
+fn parse_vertex(mut line_parts: SplitWhitespace) -> anyhow::Result<Point3D> {
     let mut next = || {
         line_parts
             .next()
-            .ok_or_else(|| "missing line part".to_owned())
+            .ok_or_else(|| anyhow!("missing line part"))
             .and_then(|part| {
                 part.parse::<f64>()
-                    .map_err(|e| format!("unparseable vertex data `{}` ({})", part, e.to_string(),))
+                    .map_err(|e| anyhow!("unparseable vertex data `{}` ({})", part, e.to_string(),))
             })
     };
 
@@ -385,10 +380,10 @@ fn parse_vertex(mut line_parts: SplitWhitespace) -> Result<Point3D, String> {
 fn parse_polygon(
     line_parts: SplitWhitespace,
     material: Option<Material>,
-) -> Result<Polygon, String> {
-    fn parse_usize(s: &str) -> Result<usize, String> {
+) -> anyhow::Result<Polygon> {
+    fn parse_usize(s: &str) -> anyhow::Result<usize> {
         s.parse::<usize>()
-            .map_err(|e| format!("Unparseable polygon data `{}` ({})", s, e.to_string(),))
+            .map_err(|e| anyhow!("Unparseable polygon data `{}` ({})", s, e.to_string()))
     }
 
     let vertices = line_parts
@@ -396,7 +391,7 @@ fn parse_polygon(
             let mut parts = part.split('/');
             let vertex = parts
                 .next()
-                .ok_or_else(|| format!("Invalid polygon data: `{}`", part))?;
+                .ok_or_else(|| anyhow!("Invalid polygon data: `{}`", part))?;
             let vertex = parse_usize(vertex)?;
 
             let mut next = || {
@@ -416,19 +411,19 @@ fn parse_polygon(
                 normal,
             })
         })
-        .collect::<Result<Vec<_>, String>>()?;
+        .collect::<anyhow::Result<Vec<_>>>()?;
 
     Ok(Polygon { vertices, material })
 }
 
-fn parse_normal(mut line_parts: SplitWhitespace) -> Result<Vector3D, String> {
+fn parse_normal(mut line_parts: SplitWhitespace) -> anyhow::Result<Vector3D> {
     let mut next = || {
         line_parts
             .next()
-            .ok_or_else(|| "missing line part".to_owned())
+            .ok_or_else(|| anyhow!("missing line part"))
             .and_then(|part| {
                 part.parse::<f64>()
-                    .map_err(|e| format!("unparseable normal data `{}` ({})", part, e.to_string(),))
+                    .map_err(|e| anyhow!("unparseable normal data `{}` ({})", part, e.to_string()))
             })
     };
 
@@ -468,7 +463,7 @@ impl ObjData {
         self.normals.get(index - 1).copied()
     }
 
-    pub fn to_object(&self) -> Result<Object, String> {
+    pub fn to_object(&self) -> anyhow::Result<Object> {
         let convert_group = |group: &Group| {
             let mut triangles = vec![];
 
@@ -481,20 +476,22 @@ impl ObjData {
                         if let Some(vertex) = self.vertex(vert_index) {
                             vertices.push(vertex)
                         } else {
-                            return Err(format!(
+                            bail!(
                                 "invalid vertex reference `{}` in face {:?}",
-                                vert_index, polygon
-                            ));
+                                vert_index,
+                                polygon
+                            );
                         }
 
                         if let Some(normal_index) = normal_index {
                             if let Some(normal) = self.normal(normal_index) {
                                 normals.push(normal)
                             } else {
-                                return Err(format!(
+                                bail!(
                                     "invalid normal reference `{}` in face {:?}",
-                                    normal_index, polygon
-                                ));
+                                    normal_index,
+                                    polygon
+                                );
                             }
                         }
                     }
@@ -512,10 +509,10 @@ impl ObjData {
                             normals[2].normalised(),
                         )
                     } else {
-                        return Err(format!(
+                        bail!(
                             "Face {:?} must either have normals for all faces or no faces",
                             polygon
-                        ));
+                        );
                     };
 
                     if let Some(material) = &polygon.material {
