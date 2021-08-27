@@ -8,3 +8,5 @@ cargo run --release --example [example folder name, e.g. area_light]
 ```
 
 See [YAML parser README](/src/yaml_parser/README.md) for a description of the YAML scene description format
+
+![Rendered dragons scene](/examples/dragons/dragons_supersampled.png)
